@@ -1,17 +1,42 @@
 version: "3"
 services:
-  hmpps-hdc-api:
-    build:
-      context: .
-    network_mode: "host"
-    container_name: hmpps-hdc-api
+  licences-api-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: licences-api-db
+    restart: always
     ports:
-      - "8081:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
+      - '5432:5432'
     environment:
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=dev
+      - POSTGRES_PASSWORD=licences-api
+      - POSTGRES_USER=licences
+      - POSTGRES_DB=licences-api
+
+  localstack-api:
+    image: localstack/localstack:3.0.2
+    networks:
+      - hmpps
+    container_name: localstack-api
+    ports:
+      - "4666:4666"
+      - "4610-4659:4610-4659"
+    environment:
+      - DEBUG=${DEBUG- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - GATEWAY_LISTEN=0.0.0.0:4666
+      - EXTERNAL_SERVICE_PORTS_START=4610
+      - EXTERNAL_SERVICE_PORTS_END=4659
+      - MAIN_CONTAINER_NAME=localstack-api
+      - AWS_ENDPOINT_URL=http://localhost:4666
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: awslocal sqs list-queues
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 networks:
   hmpps:
