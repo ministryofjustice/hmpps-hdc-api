@@ -1,0 +1,34 @@
+#
+# The "-dev" profile is for running the API service locally against pre-existing
+# docker containers that are listening on known port numbers for hmpps-auth (8090) and
+# a postgres database (5432).
+#
+
+# Most values are inherited from - application.yml - except the following:
+spring:
+  jpa:
+    show-sql: true
+
+# Container-provider local auth server
+hmpps:
+  auth:
+    token:
+      url: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token"
+  prison:
+    api:
+      url: "https://prison-api-dev.prison.service.justice.gov.uk/api"
+  prisonersearch:
+    api:
+      url: "https://prisoner-search-dev.prison.service.justice.gov.uk"
+
+hmpps.sqs:
+  provider: localstack
+  localstackUrl: http://localhost:4666
+  queues:
+    domaineventsqueue:
+      queueName: domainevents-queue
+      dlqName: domainevents-queue-dlq
+      subscribeTopicId: domainevents
+  topics:
+    domainevents:
+      arn: arn:aws:sns:eu-west-2:000000000000:domainevents-topic

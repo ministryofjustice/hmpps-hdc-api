@@ -1,5 +1,6 @@
 generic-service:
   nameOverride: hmpps-hdc-api
+  serviceAccountName: hmpps-hdc-api
   productId: "DPS062" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
   replicaCount: 4
@@ -30,7 +31,13 @@ generic-service:
   namespace_secrets:
     hmpps-hdc-api:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-
+      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
+      SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
+    dps-rds-instance-output:
+      DB_SERVER: "rds_instance_address"
+      DB_NAME: "database_name"
+      DB_USER: "database_username"
+      DB_PASS: "database_password"
   allowlist:
     groups:
       - internal
