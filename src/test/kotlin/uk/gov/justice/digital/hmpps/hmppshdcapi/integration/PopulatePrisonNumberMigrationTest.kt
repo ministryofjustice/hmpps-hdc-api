@@ -24,6 +24,7 @@ class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
 
   @Test
   @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/populate-prison-number.sql",
   )
   fun `Perform migration`() {
@@ -80,7 +81,7 @@ class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
   @Test
   fun `Unauthorized (401) when no token is supplied`() {
     webTestClient.get()
-      .uri("/licence/id/1")
+      .uri("/migrations/populate-prison-numbers/3")
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED.value())
