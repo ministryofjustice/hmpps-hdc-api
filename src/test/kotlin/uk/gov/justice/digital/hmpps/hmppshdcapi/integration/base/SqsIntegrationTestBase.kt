@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base
 
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.helpers.LocalStackContainer.setL
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
+import uk.gov.justice.hmpps.sqs.MissingQueueException
 import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,13 +29,23 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   @SpyBean
   protected lateinit var hmppsSqsPropertiesSpy: HmppsSqsProperties
 
+  protected val domainEventsTopic by lazy {
+    hmppsQueueService.findByTopicId("domainevents")
+      ?: throw MissingQueueException("HmppsTopic domainevents not found")
+  }
+  protected val domainEventsTopicSnsClient by lazy { domainEventsTopic.snsClient }
+  protected val domainEventsTopicArn by lazy { domainEventsTopic.arn }
+
   protected val mergeOffenderQueue by lazy { hmppsQueueService.findByQueueId("domaineventsqueue") as HmppsQueue }
 
   @BeforeEach
   fun cleanQueue() {
     mergeOffenderQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(mergeOffenderQueue.queueUrl).build())
-    mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
+    await untilCallTo { mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get() } matches { it == 0 }
   }
+
+  fun getNumberOfMessagesCurrentlyOnQueue(): Int? =
+    mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance
