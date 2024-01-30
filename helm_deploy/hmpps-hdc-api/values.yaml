@@ -38,6 +38,10 @@ generic-service:
       DB_NAME: "database_name"
       DB_USER: "database_username"
       DB_PASS: "database_password"
+    hdc-domain-events-sqs-instance-output:
+      HMPPS_SQS_QUEUES_DOMAINEVENTSQUEUE_QUEUE_NAME: "sqs_queue_name"
+    hdc-domain-events-sqs-dl-instance-output:
+      HMPPS_SQS_QUEUES_DOMAINEVENTSQUEUE_DLQ_NAME: "sqs_queue_name"
   allowlist:
     groups:
       - internal
