@@ -66,12 +66,12 @@ if [[ $1 == "--connect-db" ]]; then
   export DB_NAME=licences
   export DB_PASS=licences
   echo "Starting the API locally with separate licences DB"
-  SPRING_PROFILES_ACTIVE=stdout,dev ./gradlew bootRun
+  SPRING_PROFILES_ACTIVE=stdout,dev,localstack ./gradlew bootRun
 
 else
   # connect to DB running from local docker-compose app
-  export DB_NAME=licences-api
-  export DB_PASS=licences-api
+  export DB_NAME=hmpps-hdc-api
+  export DB_PASS=hmpps-hdc-api
 
   export SPRING_DATASOURCE_URL='jdbc:postgresql://${DB_SERVER}/${DB_NAME}'
   if [[ $1 == "--start-docker" ]]; then
@@ -79,5 +79,5 @@ else
   fi
   wait_for_docker
   echo "Starting the API locally"
-  SPRING_PROFILES_ACTIVE=stdout,dev,flyway ./gradlew bootRun
+  SPRING_PROFILES_ACTIVE=stdout,dev,flyway,localstack ./gradlew bootRun
 fi

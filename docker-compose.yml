@@ -9,9 +9,9 @@ services:
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_PASSWORD=licences-api
+      - POSTGRES_PASSWORD=hmpps-hdc-api
       - POSTGRES_USER=licences
-      - POSTGRES_DB=licences-api
+      - POSTGRES_DB=hmpps-hdc-api
 
   localstack-api:
     image: localstack/localstack:3.0.2
