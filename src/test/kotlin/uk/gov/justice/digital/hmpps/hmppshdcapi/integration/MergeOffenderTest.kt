@@ -5,12 +5,15 @@ import org.awaitility.kotlin.await
 import org.awaitility.kotlin.untilAsserted
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.jdbc.Sql
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AdditionalInformationMerge
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Done
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HMPPSMergeDomainEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MERGE_EVENT_NAME
@@ -25,6 +28,9 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceRepository: LicenceRepository
+
+  @MockBean
+  lateinit var done: Done
 
   private val awaitAtMost30Secs
     get() = await.atMost(Duration.ofSeconds(30))
@@ -45,19 +51,45 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
     )
 
     awaitAtMost30Secs untilAsserted {
-      verify(telemetryClient).trackEvent(
-        MERGE_EVENT_NAME,
-        mapOf(
-          "NOMS-MERGE-FROM" to OLD_PRISON_NUMBER,
-          "NOMS-MERGE-TO" to NEW_PRISON_NUMBER,
-          "UPDATED-RECORDS" to "3",
-        ),
-        null,
-      )
+      verify(done).complete()
     }
+
+    verify(telemetryClient).trackEvent(
+      MERGE_EVENT_NAME,
+      mapOf(
+        "NOMS-MERGE-FROM" to OLD_PRISON_NUMBER,
+        "NOMS-MERGE-TO" to NEW_PRISON_NUMBER,
+        "UPDATED-RECORDS" to "3",
+      ),
+      null,
+    )
 
     assertThat(licenceRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(0)
     assertThat(licenceRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(4)
+
+    assertThat(getNumberOfMessagesCurrentlyOnQueue()).isEqualTo(0)
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/merge-offender.sql",
+  )
+  fun checkNoEventWhenNoRecordsToUpdate() {
+    val someNonExistentPrisonNumber = "ZZ1234AA"
+    assertThat(licenceRepository.findAllByPrisonNumber(someNonExistentPrisonNumber)).hasSize(0)
+
+    publishDomainEventMessage(
+      PRISONER_MERGE_EVENT_TYPE,
+      AdditionalInformationMerge(removedNomsNumber = someNonExistentPrisonNumber, nomsNumber = NEW_PRISON_NUMBER),
+      "A prisoner has been merged from $someNonExistentPrisonNumber to $NEW_PRISON_NUMBER",
+    )
+
+    awaitAtMost30Secs untilAsserted {
+      verify(done).complete()
+    }
+
+    verifyNoInteractions(telemetryClient)
 
     assertThat(getNumberOfMessagesCurrentlyOnQueue()).isEqualTo(0)
   }

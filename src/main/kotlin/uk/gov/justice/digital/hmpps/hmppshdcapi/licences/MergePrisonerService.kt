@@ -8,11 +8,18 @@ import org.springframework.stereotype.Service
 
 const val MERGE_EVENT_NAME = "hdc-api.prisoner.merged"
 
+fun interface Done {
+  fun complete()
+}
+
+val NO_OP = Done { }
+
 @Service
 @Transactional
 class MergePrisonerService(
   private val licenceRepository: LicenceRepository,
   private val telemetryClient: TelemetryClient,
+  private val done: Done = NO_OP,
 ) {
 
   companion object {
@@ -32,6 +39,10 @@ class MergePrisonerService(
         licence
       }
 
+    if (updatedLicences.isEmpty()) {
+      return done.complete()
+    }
+
     licenceRepository.saveAllAndFlush(updatedLicences)
 
     telemetryClient.trackEvent(
@@ -43,5 +54,6 @@ class MergePrisonerService(
       ),
       null,
     )
+    return done.complete()
   }
 }
