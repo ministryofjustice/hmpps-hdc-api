@@ -18,6 +18,7 @@ val NO_OP = Done { }
 @Transactional
 class MergePrisonerService(
   private val licenceRepository: LicenceRepository,
+  private val licenceVersionRepository: LicenceVersionRepository,
   private val telemetryClient: TelemetryClient,
   private val done: Done = NO_OP,
 ) {
@@ -34,23 +35,32 @@ class MergePrisonerService(
 
     val updatedLicences = licenceRepository.findAllByPrisonNumber(oldPrisonerNumber)
       .map { licence ->
-        log.debug("Updating licence {}", licence.id)
+        log.debug("Updating licence: {}", licence.id)
         licence.prisonNumber = newPrisonerNumber
         licence
       }
 
-    if (updatedLicences.isEmpty()) {
+    val updatedLicenceVersions = licenceVersionRepository.findAllByPrisonNumber(oldPrisonerNumber)
+      .map { licenceVersion ->
+        log.debug("Updating licence version: {}", licenceVersion.id)
+        licenceVersion.prisonNumber = newPrisonerNumber
+        licenceVersion
+      }
+
+    if (updatedLicences.isEmpty() && updatedLicenceVersions.isEmpty()) {
       return done.complete()
     }
 
-    licenceRepository.saveAllAndFlush(updatedLicences)
+    if (updatedLicences.isNotEmpty()) licenceRepository.saveAllAndFlush(updatedLicences)
+    if (updatedLicenceVersions.isNotEmpty()) licenceVersionRepository.saveAllAndFlush(updatedLicenceVersions)
 
     telemetryClient.trackEvent(
       MERGE_EVENT_NAME,
       mapOf(
         "NOMS-MERGE-FROM" to oldPrisonerNumber,
         "NOMS-MERGE-TO" to newPrisonerNumber,
-        "UPDATED-RECORDS" to updatedLicences.size.toString(),
+        "UPDATED-LICENCE-RECORDS" to updatedLicences.size.toString(),
+        "UPDATED-LICENCE-VERSION-RECORDS" to updatedLicenceVersions.size.toString(),
       ),
       null,
     )
