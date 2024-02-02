@@ -169,6 +169,7 @@ CREATE TABLE public.audit (
                               details jsonb NULL,
                               CONSTRAINT audit_pkey PRIMARY KEY (id)
 );
+CREATE INDEX audit_by_booking_id ON public.audit USING btree (((details ->> 'bookingId'::text)));
 
 -- Permissions
 
@@ -248,6 +249,8 @@ CREATE TABLE public.licence_versions (
                                          "version" int4 NOT NULL,
                                          "template" varchar(255) NOT NULL,
                                          vary_version int4 NOT NULL DEFAULT 0,
+                                         prison_number varchar(7) NULL,
+
                                          CONSTRAINT licence_versions_booking_id_version_vary_version_unique UNIQUE (booking_id, version, vary_version),
                                          CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
 );

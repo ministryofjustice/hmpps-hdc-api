@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AdditionalInformationMe
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Done
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HMPPSMergeDomainEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MERGE_EVENT_NAME
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PrisonOffenderEventListener.Companion.PRISONER_MERGE_EVENT_TYPE
 import java.time.Duration
@@ -28,6 +29,9 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceRepository: LicenceRepository
+
+  @Autowired
+  lateinit var licenceVersionRepository: LicenceVersionRepository
 
   @MockBean
   lateinit var done: Done
@@ -43,6 +47,8 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
   fun check() {
     assertThat(licenceRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(3)
     assertThat(licenceRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(1)
+    assertThat(licenceVersionRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(1)
+    assertThat(licenceVersionRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(1)
 
     publishDomainEventMessage(
       PRISONER_MERGE_EVENT_TYPE,
@@ -59,13 +65,16 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
       mapOf(
         "NOMS-MERGE-FROM" to OLD_PRISON_NUMBER,
         "NOMS-MERGE-TO" to NEW_PRISON_NUMBER,
-        "UPDATED-RECORDS" to "3",
+        "UPDATED-LICENCE-RECORDS" to "3",
+        "UPDATED-LICENCE-VERSION-RECORDS" to "1",
       ),
       null,
     )
 
     assertThat(licenceRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(0)
     assertThat(licenceRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(4)
+    assertThat(licenceVersionRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(0)
+    assertThat(licenceVersionRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(2)
 
     assertThat(getNumberOfMessagesCurrentlyOnQueue()).isEqualTo(0)
   }
@@ -77,6 +86,7 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
   )
   fun checkNoEventWhenNoRecordsToUpdate() {
     val someNonExistentPrisonNumber = "ZZ1234AA"
+    assertThat(licenceRepository.findAllByPrisonNumber(someNonExistentPrisonNumber)).hasSize(0)
     assertThat(licenceRepository.findAllByPrisonNumber(someNonExistentPrisonNumber)).hasSize(0)
 
     publishDomainEventMessage(
