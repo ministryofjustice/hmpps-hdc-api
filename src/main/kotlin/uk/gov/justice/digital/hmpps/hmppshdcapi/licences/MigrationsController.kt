@@ -22,13 +22,16 @@ const val MIGRATION_ROLE = "HDC_MIGRATION_ADMIN"
 @RestController
 @PreAuthorize("hasAnyRole('$MIGRATION_ROLE')")
 @RequestMapping("/migrations", produces = [MediaType.APPLICATION_JSON_VALUE])
-class MigrationsController(private val populatePrisonNumberMigration: PopulatePrisonNumberMigration) {
+class MigrationsController(
+  private val populateLicencePrisonNumberMigration: PopulateLicencePrisonNumberMigration,
+  private val populateLicenceVersionPrisonNumberMigration: PopulateLicenceVersionPrisonNumberMigration,
+) {
 
-  @PostMapping("/populate-prison-numbers/{numberToMigrate}")
+  @PostMapping("/populate-prison-numbers-for-licences/{numberToMigrate}")
   @ResponseBody
   @Operation(
-    summary = "Migration job to populate licences table with prison numbers",
-    description = "Migration job to populate licences table with prison numbers. " +
+    summary = "Migration job to populate the licences table with prison numbers",
+    description = "Migration job to populate the licences table with prison numbers. " +
       "Requires $MIGRATION_ROLE.",
     security = [SecurityRequirement(name = "ROLE_$MIGRATION_ROLE")],
   )
@@ -40,26 +43,88 @@ class MigrationsController(private val populatePrisonNumberMigration: PopulatePr
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = PopulatePrisonNumberMigration.Response::class),
+            schema = Schema(implementation = PopulateLicencePrisonNumberMigration.Response::class),
           ),
         ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorised, requires a valid Oauth2 token",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Forbidden, requires an appropriate role",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
     ],
   )
-  fun populatePrisonNumbers(
+  fun populatePrisonNumbersForLicences(
     @PathVariable(name = "numberToMigrate")
     @Parameter(name = "numberToMigrate", description = "This is the number of licences to migrate in one batch")
     @Min(1)
     numberToMigrate: Int,
-  ) = populatePrisonNumberMigration.run(numberToMigrate)
+  ) = populateLicencePrisonNumberMigration.run(numberToMigrate)
+
+  @PostMapping("/populate-prison-numbers-for-licence-versions/{numberToMigrate}")
+  @ResponseBody
+  @Operation(
+    summary = "Migration job to populate the licence versions table with prison numbers",
+    description = "Migration job to populate the licence versions table with prison numbers. " +
+      "Requires $MIGRATION_ROLE.",
+    security = [SecurityRequirement(name = "ROLE_$MIGRATION_ROLE")],
+  )
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Migration response",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = PopulateLicenceVersionPrisonNumberMigration.Response::class),
+          ),
+        ],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorised, requires a valid Oauth2 token",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Forbidden, requires an appropriate role",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
+      ),
+    ],
+  )
+  fun populatePrisonNumbersForLicenceVersions(
+    @PathVariable(name = "numberToMigrate")
+    @Parameter(
+      name = "numberToMigrate",
+      description = "This is the number of licence versions to migrate in one batch",
+    )
+    @Min(1)
+    numberToMigrate: Int,
+  ) = populateLicenceVersionPrisonNumberMigration.run(numberToMigrate)
 }
