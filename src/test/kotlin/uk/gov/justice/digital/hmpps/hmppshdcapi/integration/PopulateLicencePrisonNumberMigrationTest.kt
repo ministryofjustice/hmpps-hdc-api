@@ -13,11 +13,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MIGRATION_ROLE
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulatePrisonNumberMigration
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicencePrisonNumberMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 
-class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
+class PopulateLicencePrisonNumberMigrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceRepository: LicenceRepository
@@ -36,13 +36,13 @@ class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
     )
 
     val result = webTestClient.post()
-      .uri("/migrations/populate-prison-numbers/3")
+      .uri("/migrations/populate-prison-numbers-for-licences/3")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf("ROLE_$MIGRATION_ROLE")))
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBody(PopulatePrisonNumberMigration.Response::class.java)
+      .expectBody(PopulateLicencePrisonNumberMigration.Response::class.java)
       .returnResult().responseBody!!
 
     with(result) {
@@ -67,7 +67,7 @@ class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
   @Test
   fun `Get forbidden (403) when incorrect roles are supplied`() {
     val result = webTestClient.post()
-      .uri("/migrations/populate-prison-numbers/3")
+      .uri("/migrations/populate-prison-numbers-for-licences/3")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf("ROLE_VERY_WRONG_ROLE")))
       .exchange()
@@ -81,7 +81,7 @@ class PopulatePrisonNumberMigrationTest : SqsIntegrationTestBase() {
   @Test
   fun `Unauthorized (401) when no token is supplied`() {
     webTestClient.get()
-      .uri("/migrations/populate-prison-numbers/3")
+      .uri("/migrations/populate-prison-numbers-for-licences/3")
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED.value())
