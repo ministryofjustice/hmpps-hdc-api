@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 
-const val MIGRATION_ROLE = "HDC_MIGRATION_ADMIN"
+const val MIGRATION_ROLE = "HDC_ADMIN"
 
 @RestController
 @PreAuthorize("hasAnyRole('$MIGRATION_ROLE')")

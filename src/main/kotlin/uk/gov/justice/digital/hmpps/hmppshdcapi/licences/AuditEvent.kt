@@ -12,33 +12,29 @@ import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "licence_versions")
-class LicenceVersion(
+@Table(name = "audit")
+class AuditEvent(
   @Id
   @NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   val id: Long? = null,
-  var prisonNumber: String?,
-  val bookingId: Long,
-
-  val timestamp: LocalDateTime,
-  val version: Int,
-  val template: String,
-  val varyVersion: Int,
+  var timestamp: LocalDateTime,
+  var user: String,
+  var action: String,
 
   @Type(JsonBinaryType::class)
   @Column(columnDefinition = "jsonb")
-  val licence: Map<String, Any>?,
+  val details: Map<String, Any>,
 ) {
 
   override fun toString(): String {
-    return "LicenceVersion(id=$id, prison_number='$prisonNumber', bookingId=$bookingId)"
+    return "Audit(id=$id, timestamp='$timestamp', user=$user, action=$action, details= $details)"
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is LicenceVersion) return false
+    if (other !is AuditEvent) return false
 
     if (id != other.id) return false
 

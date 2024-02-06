@@ -22,6 +22,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("io.opentelemetry:opentelemetry-api:1.34.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.0.0")
+  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.5.1")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-core")
