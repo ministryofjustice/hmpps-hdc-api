@@ -26,4 +26,18 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
       .expectStatus().isOk()
       .expectBody().json(jsonFromFile("subject-access-request.json"), true)
   }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/subject-access-request.sql",
+  )
+  fun `Check response of subject access request when no result`() {
+    webTestClient.get()
+      .uri("/subject-access-request?prn=ZZZZZZ")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_$MIGRATION_ROLE")))
+      .exchange()
+      .expectStatus().isNoContent()
+  }
 }
