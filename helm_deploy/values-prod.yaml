@@ -4,6 +4,8 @@
 generic-service:
   ingress:
     host: hdc-api.hmpps.service.justice.gov.uk
+
+  env:
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     HMPPS_AUTH_TOKEN_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token"
     HMPPS_PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk/api"
