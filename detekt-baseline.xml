@@ -8,6 +8,7 @@
     <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt$HMPPSMessage$val MessageAttributes: HMPPSMessageAttributes</ID>
     <ID>LongParameterList:Licence.kt$Licence$( @Id @NotNull @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id", nullable = false) val id: Long? = null, var prisonNumber: String?, val bookingId: Long, val stage: String, val version: Int, val transitionDate: LocalDateTime, val varyVersion: Int, val additionalConditionsVersion: Int?, val standardConditionsVersion: Int?, @Type(JsonBinaryType::class) @Column(columnDefinition = "jsonb") val licence: Map&lt;String, Any&gt;?, )</ID>
     <ID>LongParameterList:LicenceVersion.kt$LicenceVersion$( @Id @NotNull @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id", nullable = false) val id: Long? = null, var prisonNumber: String?, val bookingId: Long, val timestamp: LocalDateTime, val version: Int, val template: String, val varyVersion: Int, @Type(JsonBinaryType::class) @Column(columnDefinition = "jsonb") val licence: Map&lt;String, Any&gt;?, )</ID>
+    <ID>MagicNumber:MigrationsController.kt$MigrationsController$100</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
   </CurrentIssues>
 </SmellBaseline>

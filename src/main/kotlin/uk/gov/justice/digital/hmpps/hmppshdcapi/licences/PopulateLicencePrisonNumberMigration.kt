@@ -4,23 +4,24 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 
 const val UNKNOWN_PRISON_NUMBER = "???"
+const val UNKNOWN_PRISON_NUMBER_BY_PRISON_API = "!!!"
 
 @Service
 class PopulateLicencePrisonNumberMigration(
   private val licenceRepository: LicenceRepository,
-  private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val prisonApiClient: PrisonApiClient,
 ) {
 
   @Transactional
   fun run(numberToMigrate: Int): Response {
     val licencesToMigrate = licencesToMigrate(numberToMigrate)
 
-    val licences = licencesToMigrate.content.map { (licence, prisoner) ->
-      val prisonNumber = prisoner?.prisonerNumber ?: UNKNOWN_PRISON_NUMBER
+    val licences = licencesToMigrate.content.map { (licence, booking) ->
+      val prisonNumber = booking?.offenderNo ?: UNKNOWN_PRISON_NUMBER_BY_PRISON_API
       licence.prisonNumber = prisonNumber
       licence
     }
@@ -38,16 +39,15 @@ class PopulateLicencePrisonNumberMigration(
     )
   }
 
-  private fun licencesToMigrate(numberToMigrate: Int): Page<Pair<Licence, Prisoner?>> {
-    val hdcLicences = licenceRepository.findByPrisonNumberIsNull(Pageable.ofSize(numberToMigrate))
-    val prisoners = getPrisoners(hdcLicences)
-    return hdcLicences.map { it to prisoners[it.bookingId.toString()] }
+  private fun licencesToMigrate(numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
+    val hdcLicences = licenceRepository.findByPrisonNumber(UNKNOWN_PRISON_NUMBER, Pageable.ofSize(numberToMigrate))
+    val bookings = getBookings(hdcLicences)
+    return hdcLicences.map { it to bookings[it.bookingId] }
   }
 
-  private fun getPrisoners(hdcLicences: Page<Licence>): Map<String, Prisoner> {
-    val bookingIds = hdcLicences.content.map { it.bookingId }
-    val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds)
-    return prisoners.associateBy { it.bookingId }
+  private fun getBookings(hdcLicences: Page<Licence>): Map<Long, Booking> {
+    val bookings = hdcLicences.content.mapNotNull { prisonApiClient.getBooking(it.bookingId) }
+    return bookings.associateBy { it.bookingId }
   }
 
   data class Response(
