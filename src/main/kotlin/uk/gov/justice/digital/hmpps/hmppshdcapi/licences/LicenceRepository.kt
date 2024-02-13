@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface LicenceRepository : JpaRepository<Licence, Long>, JpaSpecificationExecutor<Licence> {
-  fun findByPrisonNumberIsNull(pageable: Pageable): Page<Licence>
+  fun findByPrisonNumber(prisonNumber: String, pageable: Pageable): Page<Licence>
   fun findAllByPrisonNumber(prisonNumber: String): List<Licence>
 }

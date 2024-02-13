@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -73,6 +74,7 @@ class MigrationsController(
     @PathVariable(name = "numberToMigrate")
     @Parameter(name = "numberToMigrate", description = "This is the number of licences to migrate in one batch")
     @Min(1)
+    @Max(100)
     numberToMigrate: Int,
   ) = populateLicencePrisonNumberMigration.run(numberToMigrate)
 
@@ -125,6 +127,7 @@ class MigrationsController(
       description = "This is the number of licence versions to migrate in one batch",
     )
     @Min(1)
+    @Max(100)
     numberToMigrate: Int,
   ) = populateLicenceVersionPrisonNumberMigration.run(numberToMigrate)
 }

@@ -10,12 +10,12 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MIGRATION_ROLE
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceVersionPrisonNumberMigration
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER_BY_PRISON_API
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 
 class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase() {
 
@@ -28,12 +28,8 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
     "classpath:test_data/populate-prison-number.sql",
   )
   fun `Perform migration`() {
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
-      listOf(
-        Prisoner("A1234BB", "10", "MDI"),
-        Prisoner("A1234CC", "40", "MDI"),
-      ),
-    )
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234BB", 10L, "MDI"))
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 40L, "MDI"))
 
     val result = webTestClient.post()
       .uri("/migrations/populate-prison-numbers-for-licence-versions/3")
@@ -53,14 +49,15 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
       assertThat(totalRemaining).isEqualTo(1)
     }
 
-    val records = licenceVersionRepository.findAll().sortedBy { it.bookingId }.map { it.bookingId to it.prisonNumber }
+    val records =
+      licenceVersionRepository.findAll().sortedBy { it.bookingId }.map { it.bookingId to it.prisonNumber }
 
     assertThat(records).containsExactly(
       10L to "A1234BB",
       20L to "A1234AA", // Previously populated in DB
-      30L to UNKNOWN_PRISON_NUMBER, // Not found in prisoner offender search
+      30L to UNKNOWN_PRISON_NUMBER_BY_PRISON_API, // Not found in prison api
       40L to "A1234CC",
-      50L to null, // Not picked up due to limit of 3
+      50L to "???", // Not picked up due to limit of 3
     )
   }
 
@@ -89,21 +86,21 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
 
   private companion object {
 
-    val prisonerSearchMockServer = PrisonerSearchMockServer()
+    val prisonApiMockServer = PrisonApiMockServer()
 
     @JvmStatic
     @BeforeAll
     fun startMocks() {
       hmppsAuthMockServer.start()
       hmppsAuthMockServer.stubGrantToken()
-      prisonerSearchMockServer.start()
+      prisonApiMockServer.start()
     }
 
     @JvmStatic
     @AfterAll
     fun stopMocks() {
       hmppsAuthMockServer.stop()
-      prisonerSearchMockServer.stop()
+      prisonApiMockServer.stop()
     }
   }
 }
