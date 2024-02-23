@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MIGRATION_ROLE
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceVersionPrisonNumberMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER_BY_PRISON_API
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
@@ -34,7 +34,7 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
     val result = webTestClient.post()
       .uri("/migrations/populate-prison-numbers-for-licence-versions/3")
       .accept(MediaType.APPLICATION_JSON)
-      .headers(setAuthorisation(roles = listOf("ROLE_$MIGRATION_ROLE")))
+      .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_HDC_ADMIN")))
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -54,10 +54,13 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
 
     assertThat(records).containsExactly(
       10L to "A1234BB",
-      20L to "A1234AA", // Previously populated in DB
-      30L to UNKNOWN_PRISON_NUMBER_BY_PRISON_API, // Not found in prison api
+      // Previously populated in DB
+      20L to "A1234AA",
+      // Not found in prison api
+      30L to UNKNOWN_PRISON_NUMBER_BY_PRISON_API,
       40L to "A1234CC",
-      50L to "???", // Not picked up due to limit of 3
+      // Not picked up due to limit of 3
+      50L to "???",
     )
   }
 

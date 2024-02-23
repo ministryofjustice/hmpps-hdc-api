@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
-
-const val MIGRATION_ROLE = "HDC_ADMIN"
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
 
 @RestController
-@PreAuthorize("hasAnyRole('$MIGRATION_ROLE')")
+@PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
 @RequestMapping("/migrations", produces = [MediaType.APPLICATION_JSON_VALUE])
 class MigrationsController(
   private val populateLicencePrisonNumberMigration: PopulateLicencePrisonNumberMigration,
@@ -33,8 +33,8 @@ class MigrationsController(
   @Operation(
     summary = "Migration job to populate the licences table with prison numbers",
     description = "Migration job to populate the licences table with prison numbers. " +
-      "Requires $MIGRATION_ROLE.",
-    security = [SecurityRequirement(name = "ROLE_$MIGRATION_ROLE")],
+      "Requires $ROLE_HDC_ADMIN.",
+    security = [SecurityRequirement(name = SCHEME_HDC_ADMIN)],
   )
   @ApiResponses(
     value = [
@@ -83,8 +83,8 @@ class MigrationsController(
   @Operation(
     summary = "Migration job to populate the licence versions table with prison numbers",
     description = "Migration job to populate the licence versions table with prison numbers. " +
-      "Requires $MIGRATION_ROLE.",
-    security = [SecurityRequirement(name = "ROLE_$MIGRATION_ROLE")],
+      "Requires $ROLE_HDC_ADMIN.",
+    security = [SecurityRequirement(name = SCHEME_HDC_ADMIN)],
   )
   @ApiResponses(
     value = [

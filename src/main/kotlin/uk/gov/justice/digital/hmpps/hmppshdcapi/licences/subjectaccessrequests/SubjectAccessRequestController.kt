@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
-
-const val SAR_ROLE = "SAR_DATA_ACCESS"
-const val HDC_SAR_ROLE = "HDC_ADMIN"
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_SAR_DATA_ACCESS
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_SAR_DATA_ACCESS
 
 private const val HTTP_STATUS_NOT_SUPPORTED = 209
 
@@ -41,7 +42,7 @@ private val NO_CONTENT = ResponseEntity
   )
 
 @RestController
-@PreAuthorize("hasAnyRole('$SAR_ROLE', '$HDC_SAR_ROLE')")
+@PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN', '$ROLE_SAR_DATA_ACCESS')")
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class SubjectAccessRequestController(private val subjectAccessRequestService: SubjectAccessRequestService) {
   @GetMapping(value = ["/subject-access-request"])
@@ -49,8 +50,8 @@ class SubjectAccessRequestController(private val subjectAccessRequestService: Su
   @Operation(
     summary = "Get a list of licences and audits summaries matching the nomis Prison Reference Number(prn).",
     description = "Returns a list of licences and audit details for the Prison Reference Number (prn). " +
-      "Requires ROLE_$SAR_ROLE or ROLE_$HDC_SAR_ROLE.",
-    security = [SecurityRequirement(name = "ROLE_$SAR_ROLE"), SecurityRequirement(name = "ROLE_$HDC_SAR_ROLE")],
+      "Requires ROLE_$ROLE_HDC_ADMIN or ROLE_$ROLE_SAR_DATA_ACCESS.",
+    security = [SecurityRequirement(name = SCHEME_HDC_ADMIN), SecurityRequirement(name = SCHEME_SAR_DATA_ACCESS)],
   )
   @ApiResponses(
     value = [
