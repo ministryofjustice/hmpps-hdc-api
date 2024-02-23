@@ -19,6 +19,12 @@ import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+const val ROLE_SAR_DATA_ACCESS = "SAR_DATA_ACCESS"
+const val ROLE_HDC_ADMIN = "HDC_ADMIN"
+
+const val SCHEME_SAR_DATA_ACCESS = "sar-data-access"
+const val SCHEME_HDC_ADMIN = "hdc-admin"
+
 @Configuration
 class OpenApiConfiguration(
   buildProperties: BuildProperties,
@@ -41,24 +47,27 @@ class OpenApiConfiguration(
     )
     .components(
       Components().addSecuritySchemes(
-        "bearer-jwt",
+        SCHEME_HDC_ADMIN,
         SecurityScheme()
           .type(SecurityScheme.Type.HTTP)
           .scheme("bearer")
           .bearerFormat("JWT")
           .`in`(SecurityScheme.In.HEADER)
-          .name("Authorization"),
-      )
-        .addSecuritySchemes(
-          "hmpps-auth",
-          SecurityScheme()
-            .flows(getFlows())
-            .type(SecurityScheme.Type.OAUTH2)
-            .openIdConnectUrl("$oauthUrl/.well-known/openid-configuration"),
-        ),
+          .name("Authorization")
+          .description("A HMPPS Auth access token with the `$ROLE_HDC_ADMIN` role."),
+      ).addSecuritySchemes(
+        SCHEME_SAR_DATA_ACCESS,
+        SecurityScheme()
+          .type(SecurityScheme.Type.HTTP)
+          .scheme("bearer")
+          .bearerFormat("JWT")
+          .`in`(SecurityScheme.In.HEADER)
+          .name("Authorization")
+          .description("A HMPPS Auth access token with the `$ROLE_SAR_DATA_ACCESS` role."),
+      ),
     )
-    .addSecurityItem(SecurityRequirement().addList("bearer-jwt", listOf("read", "write")))
-    .addSecurityItem(SecurityRequirement().addList("hmpps-auth"))
+    .addSecurityItem(SecurityRequirement().addList(SCHEME_HDC_ADMIN, listOf("read", "write")))
+    .addSecurityItem(SecurityRequirement().addList(SCHEME_SAR_DATA_ACCESS, listOf("read")))
 
   fun getFlows(): OAuthFlows {
     val flows = OAuthFlows()

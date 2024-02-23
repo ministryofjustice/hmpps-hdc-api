@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_SAR_DATA_ACCESS
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.MIGRATION_ROLE
 import java.nio.charset.StandardCharsets.UTF_8
 
 class SubjectAccessRequestTest : SqsIntegrationTestBase() {
@@ -21,7 +21,7 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
     webTestClient.get()
       .uri("/subject-access-request?prn=A1234AA")
       .accept(MediaType.APPLICATION_JSON)
-      .headers(setAuthorisation(roles = listOf("ROLE_$MIGRATION_ROLE")))
+      .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_SAR_DATA_ACCESS")))
       .exchange()
       .expectStatus().isOk()
       .expectBody().json(jsonFromFile("subject-access-request.json"), true)
@@ -36,7 +36,7 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
     webTestClient.get()
       .uri("/subject-access-request?prn=ZZZZZZ")
       .accept(MediaType.APPLICATION_JSON)
-      .headers(setAuthorisation(roles = listOf("ROLE_$MIGRATION_ROLE")))
+      .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_SAR_DATA_ACCESS")))
       .exchange()
       .expectStatus().isNoContent()
   }
