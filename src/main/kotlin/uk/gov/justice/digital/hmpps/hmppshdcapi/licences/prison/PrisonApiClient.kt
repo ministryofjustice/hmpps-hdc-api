@@ -19,7 +19,7 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
   fun getBooking(bookingId: Long): Booking? {
     val booking = prisonerSearchApiWebClient
       .get()
-      .uri("/bookings/$bookingId")
+      .uri("/bookings/{bookingId}", bookingId)
       .accept(MediaType.APPLICATION_JSON)
       .retrieve()
       .bodyToMono(Booking::class.java)
