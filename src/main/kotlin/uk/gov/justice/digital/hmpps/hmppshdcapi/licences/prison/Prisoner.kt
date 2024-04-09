@@ -10,4 +10,6 @@ data class Booking(
   val offenderNo: String,
   val bookingId: Long,
   val agencyId: String,
+  val topupSupervisionExpiryDate: String?,
+  val licenceExpiryDate: String?,
 )
