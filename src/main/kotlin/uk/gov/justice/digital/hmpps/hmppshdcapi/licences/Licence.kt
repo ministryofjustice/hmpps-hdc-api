@@ -28,6 +28,7 @@ class Licence(
   val varyVersion: Int,
   val additionalConditionsVersion: Int?,
   val standardConditionsVersion: Int?,
+  var deletedAt: LocalDateTime?,
 
   @Type(JsonBinaryType::class)
   @Column(columnDefinition = "jsonb")
