@@ -28,8 +28,8 @@ class PopulateLicenceVersionPrisonNumberMigrationTest : SqsIntegrationTestBase()
     "classpath:test_data/populate-prison-number.sql",
   )
   fun `Perform migration`() {
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234BB", 10L, "MDI"))
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 40L, "MDI"))
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234BB", 10L, "MDI","2023-04-01", "2024-04-01"))
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 40L, "MDI","2023-04-01", "2024-04-01"))
 
     val result = webTestClient.post()
       .uri("/migrations/populate-prison-numbers-for-licence-versions/3")
