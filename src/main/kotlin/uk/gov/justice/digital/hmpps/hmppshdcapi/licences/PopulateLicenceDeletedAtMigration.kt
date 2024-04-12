@@ -20,7 +20,7 @@ class PopulateLicenceDeletedAtMigration(
 
   @Transactional
   fun run(previousLastIdProcessed: Long) {
-   val licencesRecords = licencesToMigrate(previousLastIdProcessed)
+    val licencesRecords = licencesToMigrate(previousLastIdProcessed)
     do {
       val lastIdProcessed = licencesRecords.content.last().first.id
       println(lastIdProcessed)
