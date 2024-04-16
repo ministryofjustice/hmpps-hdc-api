@@ -16,7 +16,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicencePrisonNumberMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER_BY_PRISON_API
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
-import java.time.LocalDateTime
 
 class PopulateLicencePrisonNumberMigrationTest : SqsIntegrationTestBase() {
 
