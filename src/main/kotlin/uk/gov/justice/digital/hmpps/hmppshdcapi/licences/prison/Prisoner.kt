@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalDateTime
+
 data class Prisoner(
   val prisonerNumber: String,
   val bookingId: String,
@@ -10,6 +13,8 @@ data class Booking(
   val offenderNo: String,
   val bookingId: Long,
   val agencyId: String,
-  val topupSupervisionExpiryDate: String?,
-  val licenceExpiryDate: String?,
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  val topupSupervisionExpiryDate: LocalDateTime?,
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  val licenceExpiryDate: LocalDateTime?,
 )

@@ -7,9 +7,10 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import java.time.LocalDateTime
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 val UNKNOWN_DELETED_AT = null
-const val NUMBER_TO_MIGRATE = 1000
 
 @Service
 class PopulateLicenceDeletedAtMigration(
@@ -18,18 +19,22 @@ class PopulateLicenceDeletedAtMigration(
   private val prisonApiClient: PrisonApiClient,
 ) {
 
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
   @Transactional
-  fun run(previousLastIdProcessed: Long) {
-    val licencesRecords = licencesToMigrate(previousLastIdProcessed)
+  fun run(previousLastIdProcessed: Long, numberToMigrate: Int = 1000) {
+    val licencesRecords = licencesToMigrate(previousLastIdProcessed, numberToMigrate)
     do {
       val lastIdProcessed = licencesRecords.content.last().first.id
-      println(lastIdProcessed)
-      applyAnySoftDeletes(licencesRecords)
+      log.info("Last Id processed in batch: $lastIdProcessed")
+      applyAnySoftDeletes(licencesRecords, numberToMigrate)
     } while (!licencesRecords.isEmpty)
   }
 
-  private fun licencesToMigrate(previousLastIdProcessed: Long): Page<Pair<Licence, Booking?>> {
-    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Limit.of(NUMBER_TO_MIGRATE))
+  private fun licencesToMigrate(previousLastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
+    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Limit.of(numberToMigrate))
     val bookings = getBookings(hdcLicences)
     return hdcLicences.map { it to bookings[it.bookingId] }
   }
@@ -37,6 +42,26 @@ class PopulateLicenceDeletedAtMigration(
   private fun getBookings(hdcLicences: Page<Licence>): Map<Long, Booking> {
     val bookings = hdcLicences.content.mapNotNull { prisonApiClient.getBooking(it.bookingId) }
     return bookings.associateBy { it.bookingId }
+  }
+
+  fun isToBeSoftDeleted(booking: Booking?, today: LocalDateTime): Boolean {
+    val topupSupervisionExpiryDate = booking?.topupSupervisionExpiryDate
+    val licenceExpiryDate = booking?.licenceExpiryDate
+    if (topupSupervisionExpiryDate != null && licenceExpiryDate != null) {
+      if (topupSupervisionExpiryDate < licenceExpiryDate) {
+        val isLEDTodayOrPast = licenceExpiryDate <= today
+        if (isLEDTodayOrPast) return true
+      }
+    }
+    if (topupSupervisionExpiryDate != null) {
+      val isTUSEDTodayOrPast = topupSupervisionExpiryDate <= today
+      if (isTUSEDTodayOrPast) return true
+    }
+    if (licenceExpiryDate != null) {
+      val isLEDTodayOrPast = licenceExpiryDate <= today
+      if (isLEDTodayOrPast) return true
+    }
+    return false
   }
 
   private fun softDeleteLicenceVersions(bookingId: Long) {
@@ -48,30 +73,13 @@ class PopulateLicenceDeletedAtMigration(
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
 
-  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Booking?>>): Response {
+  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Booking?>>, numberToMigrate: Int): Response {
     val licences = licencesRecords.content.map { (licence, booking) ->
-      val topupSupervisionExpiryDate = booking?.topupSupervisionExpiryDate
-      val licenceExpiryDate = booking?.licenceExpiryDate
       val today = LocalDateTime.now()
 
-      if (LocalDateTime.parse(topupSupervisionExpiryDate) < LocalDateTime.parse(licenceExpiryDate)) {
-        val isLEDTodayOrPast = LocalDateTime.parse(licenceExpiryDate) <= today
-        if (isLEDTodayOrPast) {
-          licence.deletedAt = today
-          softDeleteLicenceVersions(licence.bookingId)
-        }
-      } else if (topupSupervisionExpiryDate != null) {
-        val isTUSEDTodayOrPast = LocalDateTime.parse(topupSupervisionExpiryDate) <= today
-        if (isTUSEDTodayOrPast) {
-          licence.deletedAt = today
-          softDeleteLicenceVersions(licence.bookingId)
-        }
-      } else {
-        val isLEDTodayOrPast = LocalDateTime.parse(licenceExpiryDate) <= today
-        if (isLEDTodayOrPast) {
-          licence.deletedAt = today
-          softDeleteLicenceVersions(licence.bookingId)
-        }
+      if (isToBeSoftDeleted(booking, today)) {
+        licence.deletedAt = today
+        softDeleteLicenceVersions(licence.bookingId)
       }
       licence
     }
@@ -82,7 +90,7 @@ class PopulateLicenceDeletedAtMigration(
     return Response(
       migrateFail = missingCount,
       migrateSuccess = licencesRecords.content.size - missingCount,
-      batchSize = NUMBER_TO_MIGRATE,
+      batchSize = numberToMigrate,
       totalBatches = licencesRecords.totalPages,
       totalRemaining = licencesRecords.totalElements - licences.size,
     )

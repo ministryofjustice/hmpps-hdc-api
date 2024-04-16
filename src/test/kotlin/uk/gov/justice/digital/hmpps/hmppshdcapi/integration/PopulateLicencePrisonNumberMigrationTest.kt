@@ -16,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicencePrisonNumberMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.UNKNOWN_PRISON_NUMBER_BY_PRISON_API
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
+import java.time.LocalDateTime
 
 class PopulateLicencePrisonNumberMigrationTest : SqsIntegrationTestBase() {
 
@@ -28,8 +29,8 @@ class PopulateLicencePrisonNumberMigrationTest : SqsIntegrationTestBase() {
     "classpath:test_data/populate-prison-number.sql",
   )
   fun `Perform migration`() {
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234BB", 10L, "MDI", "2023-04-01", "2024-04-01"))
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 40L, "MDI", "2023-04-01", "2024-04-01"))
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234BB", 10L, "MDI", null, null))
+    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 40L, "MDI", null, null))
 
     val result = webTestClient.post()
       .uri("/migrations/populate-prison-numbers-for-licences/3")
