@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import java.time.LocalDateTime
 
-
 class PopulateLicenceDeleteAtMigrationTest {
   private val licenceRepository = mock<LicenceRepository>()
   private val licenceVersionRepository = mock<LicenceVersionRepository>()
@@ -26,7 +25,6 @@ class PopulateLicenceDeleteAtMigrationTest {
     )
 
   private val today = LocalDateTime.of(2024, 4, 16, 0, 0)
-
 
   @BeforeEach
   fun reset() {
@@ -95,7 +93,7 @@ class PopulateLicenceDeleteAtMigrationTest {
       bookingId = 1,
       agencyId = "MDI",
       topupSupervisionExpiryDate = null,
-      licenceExpiryDate = null
+      licenceExpiryDate = null,
     )
   }
 }
