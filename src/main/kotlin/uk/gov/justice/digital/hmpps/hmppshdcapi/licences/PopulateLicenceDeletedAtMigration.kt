@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 val UNKNOWN_DELETED_AT = null
@@ -44,9 +45,10 @@ class PopulateLicenceDeletedAtMigration(
     return bookings.associateBy { it.bookingId }
   }
 
-  fun isToBeSoftDeleted(booking: Booking?, today: LocalDateTime): Boolean {
+  fun isToBeSoftDeleted(booking: Booking?): Boolean {
     val topupSupervisionExpiryDate = booking?.topupSupervisionExpiryDate
     val licenceExpiryDate = booking?.licenceExpiryDate
+    val today = LocalDate.now()
     if (topupSupervisionExpiryDate != null && licenceExpiryDate != null) {
       if (topupSupervisionExpiryDate < licenceExpiryDate) {
         val isLEDTodayOrPast = licenceExpiryDate <= today
@@ -64,9 +66,8 @@ class PopulateLicenceDeletedAtMigration(
     return false
   }
 
-  private fun softDeleteLicenceVersions(bookingId: Long) {
+  private fun softDeleteLicenceVersions(bookingId: Long, today: LocalDateTime) {
     val hdcLicenceVersions = licenceVersionRepository.findAllByBookingId(bookingId)
-    val today = LocalDateTime.now()
     for (licenceVersion in hdcLicenceVersions) {
       licenceVersion.deletedAt = today
     }
@@ -77,9 +78,9 @@ class PopulateLicenceDeletedAtMigration(
     val licences = licencesRecords.content.map { (licence, booking) ->
       val today = LocalDateTime.now()
 
-      if (isToBeSoftDeleted(booking, today)) {
+      if (isToBeSoftDeleted(booking)) {
         licence.deletedAt = today
-        softDeleteLicenceVersions(licence.bookingId)
+        softDeleteLicenceVersions(licence.bookingId, today)
       }
       licence
     }

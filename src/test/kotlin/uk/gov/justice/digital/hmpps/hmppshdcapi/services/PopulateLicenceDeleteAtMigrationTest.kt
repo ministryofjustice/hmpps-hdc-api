@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepositor
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceDeletedAtMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 class PopulateLicenceDeleteAtMigrationTest {
   private val licenceRepository = mock<LicenceRepository>()
@@ -24,7 +24,7 @@ class PopulateLicenceDeleteAtMigrationTest {
       prisonApiClient,
     )
 
-  private val today = LocalDateTime.of(2024, 4, 16, 0, 0)
+  private val today = LocalDate.of(2024, 4, 16)
 
   @BeforeEach
   fun reset() {
@@ -34,7 +34,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is before LED and LED is today`() {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -42,7 +42,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is before LED and LED is in the past`() {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(2), licenceExpiryDate = today.minusDays(1))
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -50,7 +50,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is today`() {
     val booking = booking.copy(topupSupervisionExpiryDate = today)
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -58,7 +58,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is in the past`() {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(1))
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -66,7 +66,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is null but LED is today`() {
     val booking = booking.copy(licenceExpiryDate = today)
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -74,7 +74,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is to be soft deleted when TUSED is null but LED is in the past`() {
     val booking = booking.copy(licenceExpiryDate = today.minusDays(1))
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(true)
   }
@@ -82,7 +82,7 @@ class PopulateLicenceDeleteAtMigrationTest {
   @Test
   fun `is not to be soft deleted when both TUSED and LED are null`() {
     val booking = booking.copy(topupSupervisionExpiryDate = null, licenceExpiryDate = null)
-    val result = service.isToBeSoftDeleted(booking, today)
+    val result = service.isToBeSoftDeleted(booking)
 
     assertThat(result).isEqualTo(false)
   }
