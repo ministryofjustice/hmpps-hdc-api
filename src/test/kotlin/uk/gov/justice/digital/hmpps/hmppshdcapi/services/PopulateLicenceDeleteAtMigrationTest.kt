@@ -36,7 +36,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -44,7 +44,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(2), licenceExpiryDate = today.minusDays(1))
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -52,7 +52,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(topupSupervisionExpiryDate = today)
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -60,7 +60,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(topupSupervisionExpiryDate = today.minusDays(1))
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -68,7 +68,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(licenceExpiryDate = today)
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -76,7 +76,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(licenceExpiryDate = today.minusDays(1))
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(true)
+    assertThat(result).isTrue
   }
 
   @Test
@@ -84,7 +84,7 @@ class PopulateLicenceDeleteAtMigrationTest {
     val booking = booking.copy(topupSupervisionExpiryDate = null, licenceExpiryDate = null)
     val result = service.isToBeSoftDeleted(booking)
 
-    assertThat(result).isEqualTo(false)
+    assertThat(result).isFalse
   }
 
   private companion object {

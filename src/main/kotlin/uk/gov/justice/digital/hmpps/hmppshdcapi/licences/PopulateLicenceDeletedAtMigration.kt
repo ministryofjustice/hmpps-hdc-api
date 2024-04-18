@@ -45,23 +45,18 @@ class PopulateLicenceDeletedAtMigration(
     return bookings.associateBy { it.bookingId }
   }
 
-  fun isToBeSoftDeleted(booking: Booking?): Boolean {
-    val topupSupervisionExpiryDate = booking?.topupSupervisionExpiryDate
-    val licenceExpiryDate = booking?.licenceExpiryDate
+  fun isToBeSoftDeleted(booking: Booking): Boolean {
+    val topupSupervisionExpiryDate = booking.topupSupervisionExpiryDate
+    val licenceExpiryDate = booking.licenceExpiryDate
     val today = LocalDate.now()
-    if (topupSupervisionExpiryDate != null && licenceExpiryDate != null) {
-      if (topupSupervisionExpiryDate < licenceExpiryDate) {
-        val isLEDTodayOrPast = licenceExpiryDate <= today
-        if (isLEDTodayOrPast) return true
-      }
+    if (topupSupervisionExpiryDate == null && licenceExpiryDate != null) {
+      return licenceExpiryDate <= today
+    }
+    if (topupSupervisionExpiryDate != null && licenceExpiryDate != null && topupSupervisionExpiryDate < licenceExpiryDate) {
+      return licenceExpiryDate <= today
     }
     if (topupSupervisionExpiryDate != null) {
-      val isTUSEDTodayOrPast = topupSupervisionExpiryDate <= today
-      if (isTUSEDTodayOrPast) return true
-    }
-    if (licenceExpiryDate != null) {
-      val isLEDTodayOrPast = licenceExpiryDate <= today
-      if (isLEDTodayOrPast) return true
+      return topupSupervisionExpiryDate <= today
     }
     return false
   }
@@ -78,7 +73,7 @@ class PopulateLicenceDeletedAtMigration(
     val licences = licencesRecords.content.map { (licence, booking) ->
       val today = LocalDateTime.now()
 
-      if (isToBeSoftDeleted(booking)) {
+      if (booking != null && isToBeSoftDeleted(booking)) {
         licence.deletedAt = today
         softDeleteLicenceVersions(licence.bookingId, today)
       }
