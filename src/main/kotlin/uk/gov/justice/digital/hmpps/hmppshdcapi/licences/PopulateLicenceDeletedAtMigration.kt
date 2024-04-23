@@ -35,7 +35,7 @@ class PopulateLicenceDeletedAtMigration(
   }
 
   private fun licencesToMigrate(previousLastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
-    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Pageable.ofSize(numberToMigrate))
+    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Pageable.ofSize(numberToMigrate))
     val bookings = getBookings(hdcLicences)
     return hdcLicences.map { it to bookings[it.bookingId] }
   }
