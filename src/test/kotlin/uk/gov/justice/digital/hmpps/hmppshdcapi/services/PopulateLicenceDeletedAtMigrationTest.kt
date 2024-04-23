@@ -12,7 +12,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import java.time.LocalDate
 
-class PopulateLicenceDeleteAtMigrationTest {
+class PopulateLicenceDeletedAtMigrationTest {
   private val licenceRepository = mock<LicenceRepository>()
   private val licenceVersionRepository = mock<LicenceVersionRepository>()
   private val prisonApiClient = mock<PrisonApiClient>()
