@@ -11,5 +11,5 @@ import java.time.LocalDateTime
 interface LicenceRepository : JpaRepository<Licence, Long>, JpaSpecificationExecutor<Licence> {
   fun findByPrisonNumber(prisonNumber: String, pageable: Pageable): Page<Licence>
   fun findAllByPrisonNumber(prisonNumber: String): List<Licence>
-  fun findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(deletedAt: LocalDateTime?, lastProcessed: Long, pageable: Pageable): Page<Licence>
+  fun findAllByDeletedAtAndIdGreaterThanLastProcessedOrderByIdAsc(deletedAt: LocalDateTime?, lastProcessed: Long, pageable: Pageable): Page<Licence>
 }
