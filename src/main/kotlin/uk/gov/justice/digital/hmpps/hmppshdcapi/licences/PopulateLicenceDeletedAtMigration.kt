@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.Limit
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
@@ -35,7 +35,7 @@ class PopulateLicenceDeletedAtMigration(
   }
 
   private fun licencesToMigrate(previousLastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
-    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Limit.of(numberToMigrate))
+    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedAndOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Pageable.ofSize(numberToMigrate))
     val bookings = getBookings(hdcLicences)
     return hdcLicences.map { it to bookings[it.bookingId] }
   }
