@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
@@ -8,6 +9,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 
 class PrisonApiMockServer : WireMockServer(8091) {
+  private val mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
   fun stubGetByBookingId(booking: Booking) {
     stubFor(
       get(urlEqualTo("/api/bookings/${booking.bookingId}"))
@@ -16,7 +18,7 @@ class PrisonApiMockServer : WireMockServer(8091) {
             "Content-Type",
             "application/json",
           ).withBody(
-            ObjectMapper().writeValueAsString(booking),
+            mapper.writeValueAsString(booking),
           ).withStatus(200),
         ),
     )

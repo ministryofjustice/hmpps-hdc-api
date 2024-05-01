@@ -142,7 +142,7 @@ GRANT ALL ON SEQUENCE public.warnings_id_seq TO licences;
 
 CREATE TABLE public.active_local_delivery_units (
                                                     id serial4 NOT NULL,
-                                                    "timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                                    "timestamp" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                                     ldu_code varchar(10) NOT NULL,
                                                     probation_area_code varchar(255) NOT NULL,
                                                     CONSTRAINT active_local_delivery_units_pkey PRIMARY KEY (id)
@@ -163,7 +163,7 @@ GRANT ALL ON TABLE public.active_local_delivery_units TO licences;
 
 CREATE TABLE public.audit (
                               id serial4 NOT NULL,
-                              "timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                              "timestamp" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
                               "user" varchar(50) NOT NULL,
                               "action" varchar(50) NOT NULL,
                               details jsonb NULL,
@@ -243,18 +243,18 @@ GRANT ALL ON TABLE public.knex_migrations_lock TO licences;
 
 CREATE TABLE public.licence_versions (
                                          id serial4 NOT NULL,
-                                         "timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                         "timestamp" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                          licence jsonb NULL,
                                          booking_id int4 NOT NULL,
                                          "version" int4 NOT NULL,
                                          "template" varchar(255) NOT NULL,
-                                         vary_version int4 NOT NULL DEFAULT 0,
+                                         vary_version int4 DEFAULT 0 NOT NULL,
                                          prison_number varchar(7) NULL,
-
-                                         CONSTRAINT licence_versions_booking_id_version_vary_version_unique UNIQUE (booking_id, version, vary_version),
+                                         deleted_at timestamp NULL,
                                          CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_version_by_booking_id ON public.licence_versions USING btree (booking_id, version, id, template);
+CREATE UNIQUE INDEX licence_versions_booking_id_version_vary_version_unique ON public.licence_versions USING btree (booking_id, version, vary_version) WHERE (deleted_at IS NULL);
 
 -- Permissions
 
@@ -275,10 +275,11 @@ CREATE TABLE public.licences (
                                  stage varchar(255) NOT NULL,
                                  "version" int4 NOT NULL,
                                  transition_date timestamptz NULL,
-                                 vary_version int4 NOT NULL DEFAULT 0,
+                                 vary_version int4 DEFAULT 0 NOT NULL,
                                  additional_conditions_version int4 NULL,
                                  standard_conditions_version int4 NULL,
                                  prison_number varchar(7) NULL,
+                                 deleted_at timestamp NULL,
                                  CONSTRAINT licences_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_by_booking_id ON public.licences USING btree (booking_id, id, stage, version);
@@ -327,10 +328,10 @@ CREATE TABLE public.staff_ids (
                                   organisation varchar(255) NULL,
                                   job_role varchar(255) NULL,
                                   email varchar(255) NULL,
-                                  org_email varchar(255) NULL,
                                   telephone varchar(255) NULL,
-                                  auth_onboarded bool NOT NULL DEFAULT false,
-                                  deleted bool NOT NULL DEFAULT false,
+                                  org_email varchar(255) NULL,
+                                  auth_onboarded bool DEFAULT false NOT NULL,
+                                  deleted bool DEFAULT false NOT NULL,
                                   delius_username varchar(255) NULL,
                                   staff_identifier int8 NULL, -- Delius staff identifier (not staff code)
                                   CONSTRAINT pk_staff_id PRIMARY KEY (nomis_id)
@@ -354,7 +355,7 @@ GRANT ALL ON TABLE public.staff_ids TO licences;
 
 CREATE TABLE public.warnings (
                                  id serial4 NOT NULL,
-                                 "timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 "timestamp" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                  booking_id int4 NOT NULL,
                                  code varchar(255) NOT NULL,
                                  message varchar(255) NOT NULL,
@@ -372,6 +373,50 @@ ALTER TABLE public.warnings OWNER TO licences;
 GRANT ALL ON TABLE public.warnings TO licences;
 
 
+-- public.v_licence_versions_excluding_deleted source
+
+CREATE OR REPLACE VIEW public.v_licence_versions_excluding_deleted
+AS SELECT licence_versions.id,
+          licence_versions."timestamp",
+          licence_versions.licence,
+          licence_versions.booking_id,
+          licence_versions.version,
+          licence_versions.template,
+          licence_versions.vary_version,
+          licence_versions.prison_number,
+          licence_versions.deleted_at
+   FROM licence_versions
+   WHERE licence_versions.deleted_at IS NULL;
+
+-- Permissions
+
+ALTER TABLE public.v_licence_versions_excluding_deleted OWNER TO licences;
+GRANT ALL ON TABLE public.v_licence_versions_excluding_deleted TO licences;
+
+
+-- public.v_licences_excluding_deleted source
+
+CREATE OR REPLACE VIEW public.v_licences_excluding_deleted
+AS SELECT licences.id,
+          licences.licence,
+          licences.booking_id,
+          licences.stage,
+          licences.version,
+          licences.transition_date,
+          licences.vary_version,
+          licences.additional_conditions_version,
+          licences.standard_conditions_version,
+          licences.prison_number,
+          licences.deleted_at
+   FROM licences
+   WHERE licences.deleted_at IS NULL;
+
+-- Permissions
+
+ALTER TABLE public.v_licences_excluding_deleted OWNER TO licences;
+GRANT ALL ON TABLE public.v_licences_excluding_deleted TO licences;
+
+
 -- public.v_staff_ids source
 
 CREATE OR REPLACE VIEW public.v_staff_ids
@@ -382,8 +427,8 @@ AS SELECT staff_ids.nomis_id,
           staff_ids.organisation,
           staff_ids.job_role,
           staff_ids.email,
-          staff_ids.org_email,
           staff_ids.telephone,
+          staff_ids.org_email,
           staff_ids.auth_onboarded,
           staff_ids.deleted,
           staff_ids.delius_username,
