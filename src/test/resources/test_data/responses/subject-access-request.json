@@ -52,7 +52,8 @@
               "decision": "Yes"
             }
           }
-        }
+        },
+        "deletedAt": null
       }
     ],
     "licenceVersions": [
@@ -205,7 +206,8 @@
               "additionalConditionsRequired": "No"
             }
           }
-        }
+        },
+        "deletedAt": null
       },
       {
         "id": 396,
@@ -357,7 +359,8 @@
               "additionalConditionsJustification": "Why they added additional condition here."
             }
           }
-        }
+        },
+        "deletedAt": null
       }
     ],
     "auditEvents": [

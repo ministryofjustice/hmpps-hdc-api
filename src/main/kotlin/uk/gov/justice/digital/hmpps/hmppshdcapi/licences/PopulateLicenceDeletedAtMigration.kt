@@ -11,8 +11,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-val UNKNOWN_DELETED_AT = null
-
 @Service
 class PopulateLicenceDeletedAtMigration(
   private val licenceRepository: LicenceRepository,
@@ -25,17 +23,30 @@ class PopulateLicenceDeletedAtMigration(
   }
 
   @Transactional
-  fun run(previousLastIdProcessed: Long, numberToMigrate: Int = 1000) {
-    val licencesRecords = licencesToMigrate(previousLastIdProcessed, numberToMigrate)
+  fun run(lastIdProcessed: Long, numberToMigrate: Int = 1000): Response {
+
+    val licencesRecords = licencesToMigrate(lastIdProcessed, numberToMigrate)
     do {
-      val lastIdProcessed = licencesRecords.content.last().first.id
-      log.info("Last Id processed in batch: $lastIdProcessed")
-      applyAnySoftDeletes(licencesRecords, numberToMigrate)
+      val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
+      log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
+      val licences = applyAnySoftDeletes(licencesRecords, numberToMigrate)
+
+      licenceRepository.saveAllAndFlush(licences)
+
+      val missingCount = licencesRecords.count { (_, prisoner) -> prisoner == null }
+
+      return Response(
+        migrateFail = missingCount,
+        migrateSuccess = licencesRecords.content.size - missingCount,
+        batchSize = numberToMigrate,
+        totalBatches = licencesRecords.totalPages,
+        totalRemaining = licencesRecords.totalElements - licences.size,
+      )
     } while (!licencesRecords.isEmpty)
   }
 
-  private fun licencesToMigrate(previousLastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
-    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedOrderByIdAsc(UNKNOWN_DELETED_AT, previousLastIdProcessed, Pageable.ofSize(numberToMigrate))
+  private fun licencesToMigrate(lastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Booking?>> {
+    val hdcLicences = licenceRepository.findAllByDeletedAtAndIdGreaterThanLastProcessedOrderByIdAsc(lastIdProcessed, Pageable.ofSize(numberToMigrate))
     val bookings = getBookings(hdcLicences)
     return hdcLicences.map { it to bookings[it.bookingId] }
   }
@@ -69,7 +80,7 @@ class PopulateLicenceDeletedAtMigration(
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
 
-  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Booking?>>, numberToMigrate: Int): Response {
+  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Booking?>>, numberToMigrate: Int): List<Licence> {
     val licences = licencesRecords.content.map { (licence, booking) ->
       val today = LocalDateTime.now()
 
@@ -79,17 +90,7 @@ class PopulateLicenceDeletedAtMigration(
       }
       licence
     }
-    licenceRepository.saveAllAndFlush(licences)
-
-    val missingCount = licencesRecords.count { (_, prisoner) -> prisoner == null }
-
-    return Response(
-      migrateFail = missingCount,
-      migrateSuccess = licencesRecords.content.size - missingCount,
-      batchSize = numberToMigrate,
-      totalBatches = licencesRecords.totalPages,
-      totalRemaining = licencesRecords.totalElements - licences.size,
-    )
+    return licences
   }
 
   data class Response(

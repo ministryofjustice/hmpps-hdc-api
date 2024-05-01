@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
 class MigrationsController(
   private val populateLicencePrisonNumberMigration: PopulateLicencePrisonNumberMigration,
   private val populateLicenceVersionPrisonNumberMigration: PopulateLicenceVersionPrisonNumberMigration,
+  private val populateLicenceDeletedAtMigration: PopulateLicenceDeletedAtMigration,
 ) {
 
   @PostMapping("/populate-prison-numbers-for-licences/{numberToMigrate}")
@@ -130,4 +131,58 @@ class MigrationsController(
     @Max(100)
     numberToMigrate: Int,
   ) = populateLicenceVersionPrisonNumberMigration.run(numberToMigrate)
+
+  @PostMapping("/populate-deleted-at-for-licences/{lastIdProcessed}/{numberToMigrate}")
+  @ResponseBody
+  @Operation(
+    summary = "Migration job to populate the licences table with deleted at timestamp for soft deletion",
+    description = "Migration job to populate the licences table with deleted at timestamp for soft deletion." +
+      "Requires $ROLE_HDC_ADMIN.",
+    security = [SecurityRequirement(name = SCHEME_HDC_ADMIN)],
+  )
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Migration response",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = PopulateLicenceDeletedAtMigration.Response::class),
+          ),
+        ],
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorised, requires a valid Oauth2 token",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Forbidden, requires an appropriate role",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
+      ),
+    ],
+  )
+  fun populateDeletedAtForLicences(
+    @PathVariable(name = "lastIdProcessed")
+    @Parameter(name = "lastIdProcessed", description = "This is the Id number of the last licence to be processed in the previous batch migrated")
+    @Min(0)
+    lastIdProcessed: Long,
+    @PathVariable(name = "numberToMigrate")
+    @Parameter(name = "numberToMigrate", description = "This is the number of licences to migrate in one batch")
+    @Min(1)
+    @Max(1000)
+    numberToMigrate: Int,
+  ) = populateLicenceDeletedAtMigration.run(lastIdProcessed, numberToMigrate)
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
@@ -38,7 +39,7 @@ class HmppsHdcApiExceptionHandler {
         userMessage = "Validation failure: ${e.message}",
         developerMessage = e.message,
       ),
-    ).also { log.info("Validation exception: {}", e.message) }
+    ).also { log.info("Validation exception: {}", e.message, e) }
 
   @ExceptionHandler(NoResourceFoundException::class)
   fun handleValidationException(e: NoResourceFoundException): ResponseEntity<ErrorResponse> = ResponseEntity
@@ -50,6 +51,22 @@ class HmppsHdcApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.info("Validation exception: {}", e.message) }
+
+  @ExceptionHandler(HandlerMethodValidationException::class)
+  fun handleHandlerMethodValidationException(e: HandlerMethodValidationException): ResponseEntity<ErrorResponse> =
+    e.allErrors.map { it.toString() }.distinct().sorted().joinToString("\n").let { validationErrors ->
+      ResponseEntity
+        .status(BAD_REQUEST)
+        .body(
+          ErrorResponse(
+            status = BAD_REQUEST,
+            userMessage = "Validation failure(s): ${
+              e.allErrors.map { it.defaultMessage }.distinct().sorted().joinToString("\n")
+            }",
+            developerMessage = "${e.message} $validationErrors",
+          ),
+        ).also { log.info("Validation exception: $validationErrors\n {}", e.message) }
+    }
 
   @ExceptionHandler(Exception::class)
   fun handleException(e: Exception): ResponseEntity<ErrorResponse> = ResponseEntity
