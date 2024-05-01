@@ -56,8 +56,7 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
     }
 
     val records = licenceRepository.findAll().sortedBy { it.bookingId }.associate { it.bookingId to it.deletedAt }
-    val versions = licenceVersionRepository.findAll().sortedBy { it.id }.associate {it.id to it.deletedAt }
-
+    val versions = licenceVersionRepository.findAll().sortedBy { it.id }.associate { it.id to it.deletedAt }
 
     assertThat(records.filterValues { it != null }).containsKeys(10L, 30L, 40L)
     assertThat(records.filterValues { it == null }).containsKeys(50L)
@@ -110,6 +109,5 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
     }
 
     private val log = LoggerFactory.getLogger(this::class.java)
-
   }
 }
