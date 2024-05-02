@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,11 +11,11 @@ import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceDeletedAtMigration
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.time.LocalDate
 
 class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
@@ -33,9 +32,11 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
     "classpath:test_data/populate-deleted-at.sql",
   )
   fun `Perform migration`() {
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234AA", 10L, "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)))
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234CC", 30L, "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()))
-    prisonApiMockServer.stubGetByBookingId(Booking("A1234EE", 50L, "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null))
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(listOf(
+      Prisoner("A1234BB", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
+      Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
+      Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null),
+    ),)
 
     val result = webTestClient.post()
       .uri("/migrations/populate-deleted-at-for-licences/0/4")
@@ -91,23 +92,22 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
 
   private companion object {
 
-    val prisonApiMockServer = PrisonApiMockServer()
+    val prisonerSearchMockServer = PrisonerSearchMockServer()
 
     @JvmStatic
     @BeforeAll
     fun startMocks() {
       hmppsAuthMockServer.start()
       hmppsAuthMockServer.stubGrantToken()
-      prisonApiMockServer.start()
+      prisonerSearchMockServer.start()
     }
 
     @JvmStatic
     @AfterAll
     fun stopMocks() {
       hmppsAuthMockServer.stop()
-      prisonApiMockServer.stop()
+      prisonerSearchMockServer.stop()
     }
 
-    private val log = LoggerFactory.getLogger(this::class.java)
   }
 }
