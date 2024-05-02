@@ -32,11 +32,13 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
     "classpath:test_data/populate-deleted-at.sql",
   )
   fun `Perform migration`() {
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(listOf(
-      Prisoner("A1234BB", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
-      Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
-      Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null),
-    ),)
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+      listOf(
+        Prisoner("A1234BB", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
+        Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
+        Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null)
+      ),
+    )
 
     val result = webTestClient.post()
       .uri("/migrations/populate-deleted-at-for-licences/0/4")
@@ -108,6 +110,5 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
       hmppsAuthMockServer.stop()
       prisonerSearchMockServer.stop()
     }
-
   }
 }

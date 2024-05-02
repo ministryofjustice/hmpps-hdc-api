@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.services
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
