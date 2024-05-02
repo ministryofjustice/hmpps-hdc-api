@@ -40,7 +40,7 @@ class PopulateLicenceDeletedAtMigration(
         batchSize = numberToMigrate,
         totalBatches = licencesRecords.totalPages,
         totalRemaining = licencesRecords.totalElements - licences.size,
-        lastIdProcessed = lastIdProcessed,
+        lastIdProcessed = "${lastIdProcessed ?: " no records processed"}",
       )
     } while (!licencesRecords.isEmpty)
   }
@@ -100,6 +100,6 @@ class PopulateLicenceDeletedAtMigration(
     val batchSize: Int,
     val totalBatches: Int,
     val totalRemaining: Long,
-    val lastIdProcessed: Long?,
+    val lastIdProcessed: String,
   )
 }
