@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface LicenceRepository : JpaRepository<Licence, Long>, JpaSpecificationExecutor<Licence> {
-  fun findByPrisonNumber(prisonNumber: String, pageable: Pageable): Page<Licence>
   fun findAllByPrisonNumber(prisonNumber: String): List<Licence>
 
   @Query("select l from Licence l where l.deletedAt is null and l.id > ?1 order by l.id asc")
