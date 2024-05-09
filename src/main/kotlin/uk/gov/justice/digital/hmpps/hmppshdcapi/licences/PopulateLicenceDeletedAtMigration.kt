@@ -23,6 +23,35 @@ class PopulateLicenceDeletedAtMigration(
   }
 
   @Transactional
+  fun run(numberToMigrate: Int = 1000): Response {
+    val licencesRecords = licencesToMigrate(numberToMigrate)
+    do {
+      val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
+      log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
+      val licences = applyAnySoftDeletes(licencesRecords)
+
+      licenceRepository.saveAllAndFlush(licences)
+
+      val missingCount = licencesRecords.count { (_, prisoner) -> prisoner == null }
+
+      return Response(
+        migrateFail = missingCount,
+        migrateSuccess = licencesRecords.content.size - missingCount,
+        batchSize = numberToMigrate,
+        totalBatches = licencesRecords.totalPages,
+        totalRemaining = licencesRecords.totalElements - licences.size,
+        lastIdProcessed = lastIdProcessed,
+      )
+    } while (!licencesRecords.isEmpty)
+  }
+
+  private fun licencesToMigrate(numberToMigrate: Int): Page<Pair<Licence, Prisoner?>> {
+    val hdcLicences = licenceRepository.findAllByDeletedAtOrderByIdAsc(Pageable.ofSize(numberToMigrate))
+    val prisoners = getPrisoners(hdcLicences)
+    return hdcLicences.map { it to prisoners[it.bookingId.toString()] }
+  }
+
+  @Transactional
   fun run(lastIdProcessed: Long, numberToMigrate: Int = 1000): Response {
     val licencesRecords = licencesToMigrate(lastIdProcessed, numberToMigrate)
     do {
@@ -40,7 +69,7 @@ class PopulateLicenceDeletedAtMigration(
         batchSize = numberToMigrate,
         totalBatches = licencesRecords.totalPages,
         totalRemaining = licencesRecords.totalElements - licences.size,
-        lastIdProcessed = "${lastIdProcessed ?: " no records processed"}",
+        lastIdProcessed = lastIdProcessed,
       )
     } while (!licencesRecords.isEmpty)
   }
@@ -100,6 +129,6 @@ class PopulateLicenceDeletedAtMigration(
     val batchSize: Int,
     val totalBatches: Int,
     val totalRemaining: Long,
-    val lastIdProcessed: String,
+    val lastIdProcessed: Long?,
   )
 }

@@ -13,4 +13,7 @@ interface LicenceRepository : JpaRepository<Licence, Long>, JpaSpecificationExec
 
   @Query("select l from Licence l where l.deletedAt is null and l.id > ?1 order by l.id asc")
   fun findAllByDeletedAtAndIdGreaterThanLastProcessedOrderByIdAsc(lastProcessed: Long, pageable: Pageable): Page<Licence>
+
+  @Query("select l from Licence l where l.deletedAt is null order by l.id asc")
+  fun findAllByDeletedAtOrderByIdAsc(pageable: Pageable): Page<Licence>
 }
