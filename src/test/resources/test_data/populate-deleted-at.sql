@@ -9,10 +9,11 @@ values
 
 insert into licence_versions(id, booking_id, prison_number, version, vary_version, template,  deleted_at)
 values
-    (11, 10, 'A1234AA', '1', '0', 'hdc_ap', null),
+    (11, 10, 'A1234AA', '2', '0', 'hdc_ap', null),
     (12, 20, 'A1234BB', '1', '0', 'hdc_ap', null),
     (13, 30, 'A1234CC', '1', '0', 'hdc_ap', null),
     (14, 30, 'A1234CC', '2', '0', 'hdc_ap', null),
     (15, 40, 'A1234DD', '1', '0', 'hdc_ap', '2022-07-27 15:00:00'),
-    (16, 50, 'A1234EE', '1', '0', 'hdc_ap', null),
-    (17, 60, 'A1234FF', '1', '0', 'hdc_ap', null);
+    (16, 50, 'A1234AA', '1', '0', 'hdc_ap', '2022-07-27 15:00:00'),
+    (17, 60, 'A1234FF', '1', '0', 'hdc_ap', null),
+    (18, 70, 'A1234EE', '1', '0', 'hdc_ap', null);
