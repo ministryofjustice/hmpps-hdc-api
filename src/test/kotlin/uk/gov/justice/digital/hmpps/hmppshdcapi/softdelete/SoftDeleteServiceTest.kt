@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppshdcapi.services
+package uk.gov.justice.digital.hmpps.hmppshdcapi.softdelete
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -7,18 +7,18 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceDeletedAtMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService
 import java.time.LocalDate
 
-class PopulateLicenceDeletedAtMigrationTest {
+class SoftDeleteServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
   private val licenceVersionRepository = mock<LicenceVersionRepository>()
   private val prisonSearchApiClient = mock<PrisonSearchApiClient>()
 
   private val service =
-    PopulateLicenceDeletedAtMigration(
+    SoftDeleteService(
       licenceRepository,
       licenceVersionRepository,
       prisonSearchApiClient,

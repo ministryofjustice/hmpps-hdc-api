@@ -14,11 +14,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceDeletedAtMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.MigrationBatchResponse
 import java.time.LocalDate
 
-class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
+class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceRepository: LicenceRepository
@@ -47,15 +47,15 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBody(PopulateLicenceDeletedAtMigration.Response::class.java)
+      .expectBody(MigrationBatchResponse::class.java)
       .returnResult().responseBody!!
 
     with(result) {
-      assertThat(migrateSuccess).isEqualTo(3)
-      assertThat(migrateFail).isEqualTo(1)
+      assertThat(totalProcessed).isEqualTo(4)
+      assertThat(totalFailedToProcess).isEqualTo(1)
       assertThat(batchSize).isEqualTo(4)
-      assertThat(totalBatches).isEqualTo(2)
-      assertThat(totalRemaining).isEqualTo(1)
+      assertThat(totalDeleted).isEqualTo(2)
+      assertThat(lastIdProcessed).isEqualTo(5)
     }
 
     val records = licenceRepository.findAll().sortedBy { it.bookingId }.associate { it.bookingId to it.deletedAt }
