@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface LicenceVersionRepository : JpaRepository<LicenceVersion, Long>, JpaSpecificationExecutor<LicenceVersion> {
   fun findAllByPrisonNumber(prisonNumber: String): List<LicenceVersion>
-  fun findAllByBookingId(bookingId: Long): List<LicenceVersion>
+  fun findAllByBookingIdAndDeletedAtIsNull(bookingId: Long): List<LicenceVersion>
 }

@@ -14,11 +14,12 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.PopulateLicenceDeletedAtMigration
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.MigrationBatchResponse
 import java.time.LocalDate
+import java.time.LocalDateTime
 
-class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
+class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceRepository: LicenceRepository
@@ -34,7 +35,7 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
   fun `Perform migration`() {
     prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
       listOf(
-        Prisoner("A1234BB", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
+        Prisoner("A1234AA", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
         Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
         Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null),
       ),
@@ -47,15 +48,15 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBody(PopulateLicenceDeletedAtMigration.Response::class.java)
+      .expectBody(MigrationBatchResponse::class.java)
       .returnResult().responseBody!!
 
     with(result) {
-      assertThat(migrateSuccess).isEqualTo(3)
-      assertThat(migrateFail).isEqualTo(1)
+      assertThat(totalProcessed).isEqualTo(4)
+      assertThat(totalFailedToProcess).isEqualTo(1)
       assertThat(batchSize).isEqualTo(4)
-      assertThat(totalBatches).isEqualTo(2)
-      assertThat(totalRemaining).isEqualTo(1)
+      assertThat(totalDeleted).isEqualTo(2)
+      assertThat(lastIdProcessed).isEqualTo(5)
     }
 
     val records = licenceRepository.findAll().sortedBy { it.bookingId }.associate { it.bookingId to it.deletedAt }
@@ -65,8 +66,12 @@ class PopulateLicenceDeletedAtMigrationTest : SqsIntegrationTestBase() {
     assertThat(records.filterValues { it == null }).containsKeys(50L)
     // multiple versions of a licence are also soft deleted where appropriate
     // e.g. licence versions 13 and 14 of licence bookingId 30 deletedAt populated with timestamp and therefore not null
-    assertThat(versions.filterValues { it != null }).containsKeys(11, 13, 14, 15)
-    assertThat(versions.filterValues { it == null }).containsKeys(12, 16, 17)
+    assertThat(versions.filterValues { it != null }).containsKeys(11, 13, 14, 15, 16)
+    assertThat(versions.filterValues { it == null }).containsKeys(12, 17, 18)
+
+    // We don't re-delete previously deleted licences
+    assertThat(versions[16]).isEqualTo(LocalDateTime.of(2022, 7, 27, 15, 0, 0, 0))
+    assertThat(versions[11]!!.toLocalDate()).isEqualTo(LocalDate.now())
   }
 
   @Test

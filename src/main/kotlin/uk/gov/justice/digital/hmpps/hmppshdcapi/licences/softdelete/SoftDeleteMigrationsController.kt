@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
+package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.MigrationBatchResponse
 
 @RestController
 @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
 @RequestMapping("/migrations", produces = [MediaType.APPLICATION_JSON_VALUE])
-class MigrationsController(
-  private val populateLicenceDeletedAtMigration: PopulateLicenceDeletedAtMigration,
+class SoftDeleteMigrationsController(
+  private val softDeleteService: SoftDeleteService,
 ) {
   @PostMapping("/populate-deleted-at-for-licences/{lastIdProcessed}/{numberToMigrate}")
   @ResponseBody
@@ -42,7 +43,7 @@ class MigrationsController(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = PopulateLicenceDeletedAtMigration.Response::class),
+            schema = Schema(implementation = MigrationBatchResponse::class),
           ),
         ],
       ),
@@ -78,43 +79,5 @@ class MigrationsController(
     @Min(1)
     @Max(1000)
     numberToMigrate: Int,
-  ) = populateLicenceDeletedAtMigration.run(lastIdProcessed, numberToMigrate)
-
-  @PostMapping("/populate-deleted-at-for-licences/{numberToMigrate}")
-  @ResponseBody
-  @Operation(
-    summary = "Migration job to populate the licences table with deleted at timestamp for soft deletion",
-    description = "Migration job to populate the licences table with deleted at timestamp for soft deletion.",
-  )
-  @ApiResponses(
-    value = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Migration response",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = PopulateLicenceDeletedAtMigration.Response::class),
-          ),
-        ],
-      ),
-      ApiResponse(
-        responseCode = "401",
-        description = "Unauthorised, requires a valid Oauth2 token",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class),
-          ),
-        ],
-      ),
-    ],
-  )
-  fun populateDeletedAtForLicences(
-    @PathVariable(name = "numberToMigrate")
-    @Parameter(name = "numberToMigrate", description = "This is the number of licences to migrate in one batch")
-    @Min(1)
-    @Max(1000)
-    numberToMigrate: Int,
-  ) = populateLicenceDeletedAtMigration.run(numberToMigrate)
+  ) = softDeleteService.runMigration(lastIdProcessed, numberToMigrate)
 }
