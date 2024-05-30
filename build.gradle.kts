@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.4"
-  kotlin("plugin.spring") version "1.9.23"
-  kotlin("plugin.jpa") version "1.9.23"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.0"
+  kotlin("plugin.spring") version "2.0.0"
+  kotlin("plugin.jpa") version "2.0.0"
   id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
@@ -22,14 +22,14 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("io.opentelemetry:opentelemetry-api:1.34.1")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0")
-  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.7.3")
+  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.7.5")
 
   // Database dependencies
-  runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.7.2")
+  runtimeOnly("org.flywaydb:flyway-database-postgresql")
+  runtimeOnly("org.postgresql:postgresql:42.7.3")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:3.1.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.0")
 
   // OpenAPI
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
@@ -42,12 +42,12 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.16")
+  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.22")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
-  testImplementation("org.testcontainers:postgresql:1.19.7")
-  testImplementation("org.testcontainers:localstack:1.19.7")
+  testImplementation("org.testcontainers:postgresql:1.19.8")
+  testImplementation("org.testcontainers:localstack:1.19.8")
 }
 
 kotlin {
@@ -56,9 +56,8 @@ kotlin {
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-      jvmTarget = "21"
-    }
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    compilerOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
   }
   withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     reports {
@@ -113,4 +112,12 @@ detekt {
 
 allOpen {
   annotation("jakarta.persistence.Entity")
+}
+
+configurations.matching { it.name == "detekt" }.all {
+  resolutionStrategy.eachDependency {
+    if (requested.group == "org.jetbrains.kotlin") {
+      useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
+    }
+  }
 }
