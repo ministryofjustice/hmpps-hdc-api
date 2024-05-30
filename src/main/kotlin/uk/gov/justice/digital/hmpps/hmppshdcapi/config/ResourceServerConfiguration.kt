@@ -34,6 +34,8 @@ class ResourceServerConfiguration {
           "/health/**",
           "/info",
           "/h2-console/**",
+          // The following endpoints are secured in the ingress rather than the app so that they can be called from within the namespace without requiring authentication
+          "/jobs/**",
           "/v3/api-docs/**",
           "/swagger-ui.html",
           "/swagger-ui/**",
