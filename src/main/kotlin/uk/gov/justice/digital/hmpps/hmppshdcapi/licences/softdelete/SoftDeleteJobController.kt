@@ -9,18 +9,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.springframework.http.MediaType
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.JobResponse
 
 @RestController
-@PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
 @RequestMapping("/jobs", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoftDeleteJobController(
   private val softDeleteService: SoftDeleteService,
