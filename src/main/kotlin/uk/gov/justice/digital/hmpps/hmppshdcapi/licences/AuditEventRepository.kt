@@ -13,4 +13,10 @@ interface AuditEventRepository : JpaRepository<AuditEvent, Long>, JpaSpecificati
     value = "select id, timestamp, user, action, details from audit where details ->> 'bookingId' in :bookingIds order by timestamp desc;",
   )
   fun findByBookingIds(bookingIds: Collection<String>): List<AuditEvent>
+
+  @Query(
+    nativeQuery = true,
+    value = "insert into audit user, action, details;",
+  )
+  fun addRecord(user: String, action: String, details: Map<String, Any>)
 }

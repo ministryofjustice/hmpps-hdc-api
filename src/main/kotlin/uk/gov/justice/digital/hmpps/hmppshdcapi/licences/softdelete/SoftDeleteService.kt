@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
@@ -18,6 +19,7 @@ import java.time.LocalDateTime
 class SoftDeleteService(
   private val licenceRepository: LicenceRepository,
   private val licenceVersionRepository: LicenceVersionRepository,
+  private val auditEventRepository: AuditEventRepository,
   private val prisonSearchApiClient: PrisonSearchApiClient,
 ) {
 
@@ -114,7 +116,7 @@ class SoftDeleteService(
     }
   }
 
-  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
@@ -122,6 +124,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
+      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE SOFT DELETED", mapOf("bookingId" to it.bookingId) )
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
@@ -132,6 +135,7 @@ class SoftDeleteService(
     val hdcLicenceVersions = licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(bookingId)
     for (licenceVersion in hdcLicenceVersions) {
       licenceVersion.deletedAt = today
+      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE VERSION SOFT DELETED", mapOf("bookingId" to licenceVersion.bookingId) )
     }
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
