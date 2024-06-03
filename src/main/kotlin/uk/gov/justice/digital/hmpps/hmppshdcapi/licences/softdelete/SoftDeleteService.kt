@@ -124,7 +124,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE SOFT DELETED", mapOf("bookingId" to it.bookingId) )
+      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE SOFT DELETED", mapOf("bookingId" to it.bookingId))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
@@ -135,7 +135,7 @@ class SoftDeleteService(
     val hdcLicenceVersions = licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(bookingId)
     for (licenceVersion in hdcLicenceVersions) {
       licenceVersion.deletedAt = today
-      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE VERSION SOFT DELETED", mapOf("bookingId" to licenceVersion.bookingId) )
+      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE VERSION SOFT DELETED", mapOf("bookingId" to licenceVersion.bookingId))
     }
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
