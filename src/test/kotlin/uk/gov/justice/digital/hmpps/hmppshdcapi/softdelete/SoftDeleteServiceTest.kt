@@ -93,24 +93,26 @@ class SoftDeleteServiceTest {
   @Test
   fun `records an audit event when licence is soft deleted`() {
     val prisoner = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
+    val auditEvent = AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE SOFT DELETED", details = mapOf("bookingId" to "1"),)
     val result = service.isToBeSoftDeleted(prisoner)
 
-    whenever(auditEventRepository.save(anEvent)).thenReturn(anEvent)
+    whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
     service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))))
     assertThat(result).isTrue
-    verify(auditEventRepository, times(1)).addRecord("SYSTEM_EVENT", "LICENCE SOFT DELETED", mapOf("bookingId" to licence.bookingId))
+    verify(auditEventRepository, times(1)).save(auditEvent)
   }
 
   @Test
   fun `records an audit event when licence version is soft deleted`() {
     val prisoner = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
+    val auditEvent = AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE VERSION SOFT DELETED", details = mapOf("bookingId" to "1"),)
     val result = service.isToBeSoftDeleted(prisoner)
 
-    whenever(auditEventRepository.save(anEvent)).thenReturn(anEvent)
+    whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
     whenever(licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(1L)).thenReturn(listOf(licenceVersion))
     service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))))
     assertThat(result).isTrue
-    verify(auditEventRepository, times(1)).addRecord("SYSTEM_EVENT", "LICENCE VERSION SOFT DELETED", mapOf("bookingId" to licence.bookingId))
+    verify(auditEventRepository, times(2)).save(auditEvent)
   }
 
   @Test
@@ -154,13 +156,6 @@ class SoftDeleteServiceTest {
       varyVersion = 0,
       deletedAt = null,
       licence = null,
-    )
-
-    val anEvent = AuditEvent(
-      timestamp = LocalDateTime.now(),
-      user = "SYSTEM_EVENT",
-      action = "SOFT DELETED",
-      details = mapOf("bookingId" to "1"),
     )
   }
 }

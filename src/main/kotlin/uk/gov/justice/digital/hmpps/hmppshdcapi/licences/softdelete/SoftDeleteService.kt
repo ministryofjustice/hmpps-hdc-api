@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
@@ -124,7 +125,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE SOFT DELETED", mapOf("bookingId" to it.bookingId))
+      auditEventRepository.save(AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE SOFT DELETED", details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
@@ -135,7 +136,7 @@ class SoftDeleteService(
     val hdcLicenceVersions = licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(bookingId)
     for (licenceVersion in hdcLicenceVersions) {
       licenceVersion.deletedAt = today
-      auditEventRepository.addRecord("SYSTEM_EVENT", "LICENCE VERSION SOFT DELETED", mapOf("bookingId" to licenceVersion.bookingId))
+      auditEventRepository.save(AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE VERSION SOFT DELETED", details = mapOf("bookingId" to licenceVersion.bookingId)))
     }
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
