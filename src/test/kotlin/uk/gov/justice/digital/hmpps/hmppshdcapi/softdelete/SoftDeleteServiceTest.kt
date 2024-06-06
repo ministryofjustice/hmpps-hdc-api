@@ -103,19 +103,6 @@ class SoftDeleteServiceTest {
   }
 
   @Test
-  fun `records an audit event when licence version is soft deleted`() {
-    val prisoner = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
-    val auditEvent = AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE VERSION SOFT DELETED", details = mapOf("bookingId" to "1"))
-    val result = service.isToBeSoftDeleted(prisoner)
-
-    whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
-    whenever(licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(1L)).thenReturn(listOf(licenceVersion))
-    service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))))
-    assertThat(result).isTrue
-    verify(auditEventRepository, times(2)).save(auditEvent)
-  }
-
-  @Test
   fun `is not to be soft deleted when both TUSED and LED are null`() {
     val prisoner = prisoner.copy(topupSupervisionExpiryDate = null, licenceExpiryDate = null)
     val result = service.isToBeSoftDeleted(prisoner)

@@ -136,7 +136,6 @@ class SoftDeleteService(
     val hdcLicenceVersions = licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(bookingId)
     for (licenceVersion in hdcLicenceVersions) {
       licenceVersion.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE VERSION SOFT DELETED", details = mapOf("bookingId" to licenceVersion.bookingId)))
     }
     licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
