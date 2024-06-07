@@ -57,12 +57,6 @@ class SoftDeleteService(
     )
   }
 
-  private fun licencesToMigrate(numberToMigrate: Int): Page<Pair<Licence, Prisoner?>> {
-    val hdcLicences = licenceRepository.findAllByDeletedAtOrderByIdAsc(Pageable.ofSize(numberToMigrate))
-    val prisoners = getPrisoners(hdcLicences)
-    return hdcLicences.map { it to prisoners[it.bookingId.toString()] }
-  }
-
   @Transactional
   fun runMigration(initialIdToProcess: Long, numberToMigrate: Int = 1000): MigrationBatchResponse {
     val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
