@@ -13,7 +13,7 @@ services:
       - POSTGRES_USER=licences
       - POSTGRES_DB=hmpps-hdc-api
 
-  localstack-api:
+  localstack-hdc-api:
     image: localstack/localstack:3.0.2
     networks:
       - hmpps

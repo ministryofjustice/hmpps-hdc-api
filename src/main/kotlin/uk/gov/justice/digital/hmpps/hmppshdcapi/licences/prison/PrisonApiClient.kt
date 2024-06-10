@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -30,29 +29,28 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
     return booking
   }
 
-  fun resetHdcChecks(bookingId: Long): HttpStatusCode? = prisonerSearchApiWebClient
-    .delete()
-    .uri("/api/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/checks-passed", bookingId)
-    .accept(MediaType.APPLICATION_JSON)
-    .exchangeToMono { Mono.just(it.statusCode()) }
-    .onErrorResume(::coerceClientErrorToStatusCode)
-    .block()
-
-
-  private fun coerceClientErrorToStatusCode(exception: Throwable): Mono<HttpStatusCode?> =
-    with(exception) {
-      when (this) {
-        is WebClientResponseException -> {
-          log.info("failed on call ${request?.uri?.path}", exception)
-          Mono.just(this.statusCode)
-        }
-
-        else -> {
-          log.info("failed call due to unexpected reason: ${exception.message}", exception)
-          Mono.empty()
-        }
+  fun resetHdcChecks(bookingId: Long): Boolean {
+    val response = prisonerSearchApiWebClient
+      .delete()
+      .uri("/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/checks-passed", bookingId)
+      .accept(MediaType.APPLICATION_JSON)
+      .exchangeToMono {
+        Mono.just(it)
       }
+      .block()
+
+    return if (response.statusCode().is2xxSuccessful) {
+      log.info("Successfully reset licence for booking $bookingId, status:${response.statusCode()}")
+      true
+    } else {
+      log.warn(
+        "Failed to reset licence for booking $bookingId, status:${response.statusCode()}, uri: ${response.request().uri}, body: ${
+          response.toEntity(String::class.java).block()
+        }",
+      )
+      false
     }
+  }
 
   private fun <API_RESPONSE_BODY_TYPE> coerce404ResponseToNull(exception: Throwable): Mono<API_RESPONSE_BODY_TYPE> =
     with(exception) {

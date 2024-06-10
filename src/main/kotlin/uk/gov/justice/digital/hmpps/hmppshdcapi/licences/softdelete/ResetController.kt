@@ -8,11 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Max
-import jakarta.validation.constraints.Min
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,7 +19,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.ResetService.ResetResponse
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.MigrationBatchResponse
 
 @RestController
 @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
@@ -72,6 +68,6 @@ class ResetController(
     ],
   )
   fun resetLicences(
-    @Parameter(required = true) @RequestBody bookingIds: List<Long>
-   ) = resetService.resetLicences(bookingIds)
+    @Parameter(required = true) @Valid @RequestBody bookingIds: List<Long>,
+  ) = resetService.resetLicences(bookingIds)
 }
