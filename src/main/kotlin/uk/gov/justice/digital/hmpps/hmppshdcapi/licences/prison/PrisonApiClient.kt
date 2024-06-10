@@ -29,6 +29,29 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
     return booking
   }
 
+  fun resetHdcChecks(bookingId: Long): Boolean {
+    val response = prisonerSearchApiWebClient
+      .delete()
+      .uri("/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/checks-passed", bookingId)
+      .accept(MediaType.APPLICATION_JSON)
+      .exchangeToMono {
+        Mono.just(it)
+      }
+      .block()
+
+    return if (response.statusCode().is2xxSuccessful) {
+      log.info("Successfully reset licence for booking $bookingId, status:${response.statusCode()}")
+      true
+    } else {
+      log.warn(
+        "Failed to reset licence for booking $bookingId, status:${response.statusCode()}, uri: ${response.request().uri}, body: ${
+          response.toEntity(String::class.java).block()
+        }",
+      )
+      false
+    }
+  }
+
   private fun <API_RESPONSE_BODY_TYPE> coerce404ResponseToNull(exception: Throwable): Mono<API_RESPONSE_BODY_TYPE> =
     with(exception) {
       when {
