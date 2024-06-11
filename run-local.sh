@@ -66,7 +66,7 @@ if [[ $1 == "--connect-db" ]]; then
   export DB_NAME=licences
   export DB_PASS=licences
   echo "Starting the API locally with separate licences DB"
-  SPRING_PROFILES_ACTIVE=stdout,dev,localstack ./gradlew bootRun
+  SPRING_PROFILES_ACTIVE=stdout,dev ./gradlew bootRun
 
 else
   # connect to DB running from local docker-compose app
@@ -79,5 +79,5 @@ else
   fi
   wait_for_docker
   echo "Starting the API locally"
-  SPRING_PROFILES_ACTIVE=stdout,dev,flyway,localstack ./gradlew bootRun
+  SPRING_PROFILES_ACTIVE=stdout,dev,flyway ./gradlew bootRun
 fi

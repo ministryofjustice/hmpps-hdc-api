@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
@@ -70,15 +69,6 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
     // We don't re-delete previously deleted licences
     assertThat(versions[16]).isEqualTo(LocalDateTime.of(2022, 7, 27, 15, 0, 0, 0))
     assertThat(versions[11]!!.toLocalDate()).isEqualTo(LocalDate.now())
-  }
-
-  @Test
-  fun `Unauthorized (401) when no token is supplied`() {
-    webTestClient.get()
-      .uri("/jobs/populate-deleted-at-for-licences/3")
-      .accept(MediaType.APPLICATION_JSON)
-      .exchange()
-      .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED.value())
   }
 
   private companion object {

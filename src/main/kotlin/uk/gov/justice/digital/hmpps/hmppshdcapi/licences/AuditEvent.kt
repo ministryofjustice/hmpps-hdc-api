@@ -19,7 +19,7 @@ class AuditEvent(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   val id: Long? = null,
-  var timestamp: LocalDateTime = LocalDateTime.now(),
+  var timestamp: LocalDateTime?,
   @Column(name = "`user`", nullable = false)
   var user: String,
   var action: String,
