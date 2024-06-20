@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -77,9 +78,13 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
     assertThat(versions[16]).isEqualTo(LocalDateTime.of(2022, 7, 27, 15, 0, 0, 0))
     assertThat(versions[11]!!.toLocalDate()).isEqualTo(LocalDate.now())
 
-    val auditEvents = auditEventRepository.findAll().map { it to it.details["bookingId"] }
+    val events = auditEventRepository.findAll()
+    assertThat(events).hasSize(2)
 
-    assertThat(auditEvents[0]).isEqualTo(3)
+    assertThat(events).extracting("user", "action", "details").containsExactly(
+      Assertions.tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 10)),
+      Assertions.tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 30)),
+    )
   }
 
   @Test

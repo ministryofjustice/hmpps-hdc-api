@@ -41,7 +41,7 @@ class SoftDeleteService(
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
       log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords)
+      val deletedLicences = applyAnySoftDeletes(licencesRecords, "JOB")
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
@@ -65,7 +65,7 @@ class SoftDeleteService(
     val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords)
+    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, "MIGRATION")
 
     licenceRepository.saveAllAndFlush(licencesToSoftDelete)
 
@@ -111,7 +111,7 @@ class SoftDeleteService(
     }
   }
 
-  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: String): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
@@ -119,7 +119,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "SYSTEM_EVENT", action = "LICENCE SOFT DELETED", details = mapOf("bookingId" to it.bookingId)))
+      auditEventRepository.save(AuditEvent(user = "SYSTEM:${userType}", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
