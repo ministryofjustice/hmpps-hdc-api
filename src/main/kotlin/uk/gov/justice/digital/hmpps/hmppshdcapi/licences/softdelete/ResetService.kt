@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.time.LocalDateTime
 
 @Service
@@ -31,7 +32,7 @@ class ResetService(
     licences.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "SYSTEM:API", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
+      auditEventRepository.save(AuditEvent(user = "${AuditEventType.SYSTEM_API}", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
       when (prisonApiClient.resetHdcChecks(it.bookingId)) {
         true -> {

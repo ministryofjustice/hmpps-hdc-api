@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepositor
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -93,11 +94,11 @@ class SoftDeleteServiceTest {
   @Test
   fun `records an audit event when licence is soft deleted`() {
     val prisoner = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
-    val auditEvent = AuditEvent(user = "SYSTEM:JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1"))
+    val auditEvent = AuditEvent(user = "SYSTEM_JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1"))
     val result = service.isToBeSoftDeleted(prisoner)
 
     whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
-    service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))), "JOB")
+    service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))), AuditEventType.SYSTEM_JOB)
     assertThat(result).isTrue
     verify(auditEventRepository, times(1)).save(auditEvent)
   }

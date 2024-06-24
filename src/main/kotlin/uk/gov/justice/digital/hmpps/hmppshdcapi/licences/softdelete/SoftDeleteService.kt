@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -41,7 +42,7 @@ class SoftDeleteService(
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
       log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords, "JOB")
+      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB)
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
@@ -65,7 +66,7 @@ class SoftDeleteService(
     val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, "MIGRATION")
+    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION)
 
     licenceRepository.saveAllAndFlush(licencesToSoftDelete)
 
@@ -111,7 +112,7 @@ class SoftDeleteService(
     }
   }
 
-  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: String): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: AuditEventType): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
@@ -119,7 +120,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "SYSTEM:$userType", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
+      auditEventRepository.save(AuditEvent(user = "$userType", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
