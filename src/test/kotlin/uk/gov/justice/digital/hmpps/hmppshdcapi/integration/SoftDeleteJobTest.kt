@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.tuple
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -79,8 +79,8 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
     assertThat(events).hasSize(2)
 
     assertThat(events).extracting("user", "action", "details").containsExactly(
-      Assertions.tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 10)),
-      Assertions.tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 30)),
+      tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 10)),
+      tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 30)),
     )
   }
 
