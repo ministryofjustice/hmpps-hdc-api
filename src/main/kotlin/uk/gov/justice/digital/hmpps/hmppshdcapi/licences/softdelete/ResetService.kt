@@ -32,7 +32,7 @@ class ResetService(
     licences.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "${AuditEventType.SYSTEM_API}", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
+      auditEventRepository.save(AuditEvent(user = "${AuditEventType.SYSTEM_API.eventType}", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
       when (prisonApiClient.resetHdcChecks(it.bookingId)) {
         true -> {

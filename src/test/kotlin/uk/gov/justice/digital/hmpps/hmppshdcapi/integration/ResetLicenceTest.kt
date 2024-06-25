@@ -53,9 +53,9 @@ class ResetLicenceTest : SqsIntegrationTestBase() {
     assertThat(events).hasSize(3)
 
     assertThat(events).extracting("user", "action", "details").containsExactly(
-      tuple("SYSTEM_API", "RESET", mapOf("bookingId" to 10)),
-      tuple("SYSTEM_API", "RESET", mapOf("bookingId" to 30)),
-      tuple("SYSTEM_API", "RESET", mapOf("bookingId" to 40)),
+      tuple("SYSTEM:API", "RESET", mapOf("bookingId" to 10)),
+      tuple("SYSTEM:API", "RESET", mapOf("bookingId" to 30)),
+      tuple("SYSTEM:API", "RESET", mapOf("bookingId" to 40)),
     )
 
     val licences = licenceRepository.findAll().sortedBy { it.bookingId }

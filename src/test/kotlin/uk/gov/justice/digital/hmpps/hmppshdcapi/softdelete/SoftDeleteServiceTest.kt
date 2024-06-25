@@ -94,7 +94,7 @@ class SoftDeleteServiceTest {
   @Test
   fun `records an audit event when licence is soft deleted`() {
     val prisoner = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
-    val auditEvent = AuditEvent(user = "SYSTEM_JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1"))
+    val auditEvent = AuditEvent(user = "SYSTEM:JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1"))
     val result = service.isToBeSoftDeleted(prisoner)
 
     whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
