@@ -82,8 +82,8 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
     assertThat(events).hasSize(2)
 
     assertThat(events).extracting("user", "action", "details").containsExactly(
-      tuple("SYSTEM_MIGRATION", "RESET", mapOf("bookingId" to 10)),
-      tuple("SYSTEM_MIGRATION", "RESET", mapOf("bookingId" to 30)),
+      tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 10)),
+      tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 30)),
     )
   }
 

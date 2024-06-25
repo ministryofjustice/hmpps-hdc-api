@@ -79,8 +79,8 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
     assertThat(events).hasSize(2)
 
     assertThat(events).extracting("user", "action", "details").containsExactly(
-      tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 10)),
-      tuple("SYSTEM_JOB", "RESET", mapOf("bookingId" to 30)),
+      tuple("SYSTEM:JOB", "RESET", mapOf("bookingId" to 10)),
+      tuple("SYSTEM:JOB", "RESET", mapOf("bookingId" to 30)),
     )
   }
 
