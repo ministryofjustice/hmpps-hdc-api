@@ -98,7 +98,7 @@ class SoftDeleteServiceTest {
     val result = service.isToBeSoftDeleted(prisoner)
 
     whenever(auditEventRepository.save(auditEvent)).thenReturn(auditEvent)
-    service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))), AuditEventType.SYSTEM_JOB)
+    service.applyAnySoftDeletes(PageImpl(listOf(Pair(licence, prisoner))), AuditEventType.SYSTEM_JOB.eventType)
     assertThat(result).isTrue
     verify(auditEventRepository, times(1)).save(auditEvent)
   }

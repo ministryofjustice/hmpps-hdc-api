@@ -42,7 +42,7 @@ class SoftDeleteService(
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
       log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB)
+      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB.eventType)
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
@@ -66,7 +66,7 @@ class SoftDeleteService(
     val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION)
+    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION.eventType)
 
     licenceRepository.saveAllAndFlush(licencesToSoftDelete)
 
@@ -112,7 +112,7 @@ class SoftDeleteService(
     }
   }
 
-  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: AuditEventType): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: String): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
