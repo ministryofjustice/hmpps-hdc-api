@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
-import org.assertj.core.api.Assertions.tuple
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
