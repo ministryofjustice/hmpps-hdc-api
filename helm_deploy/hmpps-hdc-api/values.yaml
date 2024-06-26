@@ -57,3 +57,6 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-hdc-api
+
+cron:
+  resetLicences: "30 2 * * *"
