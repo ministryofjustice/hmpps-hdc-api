@@ -6,11 +6,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -18,6 +21,7 @@ import java.time.LocalDateTime
 class SoftDeleteService(
   private val licenceRepository: LicenceRepository,
   private val licenceVersionRepository: LicenceVersionRepository,
+  private val auditEventRepository: AuditEventRepository,
   private val prisonSearchApiClient: PrisonSearchApiClient,
 ) {
 
@@ -38,7 +42,7 @@ class SoftDeleteService(
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
       log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords)
+      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB.eventType)
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
@@ -62,7 +66,7 @@ class SoftDeleteService(
     val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords)
+    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION.eventType)
 
     licenceRepository.saveAllAndFlush(licencesToSoftDelete)
 
@@ -108,7 +112,7 @@ class SoftDeleteService(
     }
   }
 
-  private fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: String): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
@@ -116,6 +120,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
+      auditEventRepository.save(AuditEvent(user = "$userType", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 

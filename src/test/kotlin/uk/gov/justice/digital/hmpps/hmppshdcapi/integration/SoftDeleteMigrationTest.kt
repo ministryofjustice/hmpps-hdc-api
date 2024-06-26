@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
@@ -26,6 +28,9 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceVersionRepository: LicenceVersionRepository
+
+  @Autowired
+  lateinit var auditEventRepository: AuditEventRepository
 
   @Test
   @Sql(
@@ -72,6 +77,14 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
     // We don't re-delete previously deleted licences
     assertThat(versions[16]).isEqualTo(LocalDateTime.of(2022, 7, 27, 15, 0, 0, 0))
     assertThat(versions[11]!!.toLocalDate()).isEqualTo(LocalDate.now())
+
+    val events = auditEventRepository.findAll()
+    assertThat(events).hasSize(2)
+
+    assertThat(events).extracting("user", "action", "details").containsExactly(
+      tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 10)),
+      tuple("SYSTEM:MIGRATION", "RESET", mapOf("bookingId" to 30)),
+    )
   }
 
   @Test
