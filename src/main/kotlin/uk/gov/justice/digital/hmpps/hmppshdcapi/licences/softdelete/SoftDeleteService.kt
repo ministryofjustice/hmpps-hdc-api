@@ -42,7 +42,7 @@ class SoftDeleteService(
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
       log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB.eventType)
+      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB)
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
@@ -66,7 +66,7 @@ class SoftDeleteService(
     val licencesRecords = licencesToMigrate(initialIdToProcess, batchSize)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION.eventType)
+    val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION)
 
     licenceRepository.saveAllAndFlush(licencesToSoftDelete)
 
@@ -112,7 +112,7 @@ class SoftDeleteService(
     }
   }
 
-  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, userType: String): List<Licence> {
+  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, auditEventType: AuditEventType): List<Licence> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
@@ -120,7 +120,7 @@ class SoftDeleteService(
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = "$userType", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
+      auditEventRepository.save(AuditEvent(user = auditEventType.eventType, action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
       softDeleteLicenceVersions(it.bookingId, today)
     }
 
