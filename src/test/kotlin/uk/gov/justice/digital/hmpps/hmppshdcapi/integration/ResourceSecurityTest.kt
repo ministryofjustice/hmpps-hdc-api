@@ -27,7 +27,7 @@ class ResourceSecurityTest : SqsIntegrationTestBase() {
     "GET /v3/api-docs/swagger-config",
     "/error",
     "PUT /queue-admin/retry-all-dlqs",
-    "POST /jobs/populate-deleted-at-for-licences/{numberToProcess}",
+    "POST /jobs/delete-inactive-licences/{batchSize}",
   )
 
   @Test

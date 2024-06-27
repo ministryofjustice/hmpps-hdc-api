@@ -27,7 +27,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteSe
 class SoftDeleteMigrationsController(
   private val softDeleteService: SoftDeleteService,
 ) {
-  @PostMapping("/populate-deleted-at-for-licences/{lastIdProcessed}/{numberToMigrate}")
+  @PostMapping("/delete-inactive-licences/{lastIdProcessed}/{batchSize}")
   @ResponseBody
   @Operation(
     summary = "Migration to populate the licences table with deleted at timestamp for soft deletion",
@@ -74,10 +74,10 @@ class SoftDeleteMigrationsController(
     @Parameter(name = "lastIdProcessed", description = "This is the Id number of the last licence to be processed in the previous batch migrated")
     @Min(0)
     lastIdProcessed: Long,
-    @PathVariable(name = "numberToMigrate")
-    @Parameter(name = "numberToMigrate", description = "This is the number of licences to migrate in one batch")
+    @PathVariable(name = "batchSize")
+    @Parameter(name = "batchSize", description = "This is the number of licences to migrate in one batch")
     @Min(1)
     @Max(1000)
-    numberToMigrate: Int,
-  ) = softDeleteService.runMigration(lastIdProcessed, numberToMigrate)
+    batchSize: Int,
+  ) = softDeleteService.runMigration(lastIdProcessed, batchSize)
 }

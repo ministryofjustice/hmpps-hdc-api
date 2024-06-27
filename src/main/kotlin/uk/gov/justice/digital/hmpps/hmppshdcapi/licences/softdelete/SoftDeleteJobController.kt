@@ -23,8 +23,8 @@ class SoftDeleteJobController(
   private val softDeleteService: SoftDeleteService,
 ) {
   @Operation(
-    summary = "Job to populate the licences table with deleted at timestamp for soft deletion",
-    description = "Job to populate the licences table with deleted at timestamp for soft deletion.",
+    summary = "Job to delete licences that are no longer active.",
+    description = "Job to delete licences that are no longer active.",
   )
   @ApiResponses(
     value = [
@@ -50,13 +50,13 @@ class SoftDeleteJobController(
       ),
     ],
   )
-  @PostMapping("/populate-deleted-at-for-licences/{numberToProcess}")
+  @PostMapping("/delete-inactive-licences/{batchSize}")
   @ResponseBody
   fun populateDeletedAtForLicences(
-    @PathVariable(name = "numberToProcess")
-    @Parameter(name = "numberToProcess", description = "This is the number of licences to process in one batch")
+    @PathVariable(name = "batchSize")
+    @Parameter(name = "batchSize", description = "This is the number of licences to process in one batch")
     @Min(1)
     @Max(1000)
-    numberToMigrate: Int,
-  ) = softDeleteService.runJob(numberToMigrate)
+    batchSize: Int,
+  ) = softDeleteService.runJob(batchSize)
 }

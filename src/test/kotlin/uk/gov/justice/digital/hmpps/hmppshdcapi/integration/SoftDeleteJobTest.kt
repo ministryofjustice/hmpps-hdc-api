@@ -44,7 +44,7 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
     )
 
     val result = webTestClient.post()
-      .uri("/jobs/populate-deleted-at-for-licences/4")
+      .uri("/jobs/delete-inactive-licences/4")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf()))
       .exchange()
