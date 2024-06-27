@@ -47,7 +47,7 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
     )
 
     val result = webTestClient.post()
-      .uri("/migrations/populate-deleted-at-for-licences/0/4")
+      .uri("/migrations/delete-inactive-licences/0/4")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_HDC_ADMIN")))
       .exchange()
@@ -90,7 +90,7 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
   @Test
   fun `Get forbidden (403) when incorrect roles are supplied`() {
     val result = webTestClient.post()
-      .uri("/migrations/populate-deleted-at-for-licences/0/3")
+      .uri("/migrations/delete-inactive-licences/0/3")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf("ROLE_VERY_WRONG_ROLE")))
       .exchange()
@@ -104,7 +104,7 @@ class SoftDeleteMigrationTest : SqsIntegrationTestBase() {
   @Test
   fun `Unauthorized (401) when no token is supplied`() {
     webTestClient.get()
-      .uri("/migrations/populate-deleted-at-for-licences/0/3")
+      .uri("/migrations/delete-inactive-licences/0/3")
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED.value())

@@ -62,8 +62,8 @@ class SoftDeleteService(
   }
 
   @Transactional
-  fun runMigration(initialIdToProcess: Long, numberToMigrate: Int = 1000): MigrationBatchResponse {
-    val licencesRecords = licencesToMigrate(initialIdToProcess, numberToMigrate)
+  fun runMigration(initialIdToProcess: Long, batchSize: Int = 1000): MigrationBatchResponse {
+    val licencesRecords = licencesToMigrate(initialIdToProcess, batchSize)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
     log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
     val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION.eventType)
@@ -76,13 +76,13 @@ class SoftDeleteService(
       totalProcessed = licencesRecords.content.size,
       totalDeleted = licencesToSoftDelete.size,
       totalFailedToProcess = totalFailedToProcess,
-      batchSize = numberToMigrate,
+      batchSize = batchSize,
       lastIdProcessed = lastIdProcessed,
     )
   }
 
-  private fun licencesToMigrate(lastIdProcessed: Long, numberToMigrate: Int): Page<Pair<Licence, Prisoner?>> {
-    val hdcLicences = licenceRepository.findAllByIdGreaterThanLastProcessed(lastIdProcessed, Pageable.ofSize(numberToMigrate))
+  private fun licencesToMigrate(lastIdProcessed: Long, batchSize: Int): Page<Pair<Licence, Prisoner?>> {
+    val hdcLicences = licenceRepository.findAllByIdGreaterThanLastProcessed(lastIdProcessed, Pageable.ofSize(batchSize))
     val prisoners = getPrisoners(hdcLicences)
     return hdcLicences.map { it to prisoners[it.bookingId.toString()] }
   }

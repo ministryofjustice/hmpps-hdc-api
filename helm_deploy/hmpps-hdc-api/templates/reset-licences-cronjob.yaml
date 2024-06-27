@@ -22,4 +22,4 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - curl --fail --retry 2 -X POST https://hdc-api.hmpps.service.justice.gov.uk/jobs/populate-deleted-at-for-licences/500
+                - curl --fail --retry 2 -X POST https://hdc-api.hmpps.service.justice.gov.uk/jobs/delete-inactive-licences/500
