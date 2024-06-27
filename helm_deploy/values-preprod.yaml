@@ -21,3 +21,4 @@ generic-prometheus-alerts:
 
 cron:
   resetLicences: "30 7 * * *"
+  env: "hdc-api-preprod"
