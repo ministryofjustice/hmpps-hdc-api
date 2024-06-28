@@ -22,4 +22,7 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - curl --fail --retry 2 -X POST https://hdc-api-dev.hmpps.service.justice.gov.uk/jobs/delete-inactive-licences/500
+                - curl --fail --retry 2 -X POST "https://$BASE_URL/jobs/delete-inactive-licences/500"
+              env:
+                - name: BASE_URL
+                  value: {{ index .Values "generic-service" "ingress" "host" }}
