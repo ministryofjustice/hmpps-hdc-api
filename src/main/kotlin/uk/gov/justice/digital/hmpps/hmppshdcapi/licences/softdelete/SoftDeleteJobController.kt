@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProtectedByIngress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.JobResponse
 
 @RestController
-@ProtectedByIngress
 @RequestMapping("/jobs", produces = [MediaType.APPLICATION_JSON_VALUE])
 class SoftDeleteJobController(
   private val softDeleteService: SoftDeleteService,
