@@ -14,7 +14,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepositor
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
-import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.time.LocalDateTime
 
