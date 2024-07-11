@@ -60,7 +60,6 @@ class SoftDeleteService(
       batchSize = batchSize,
       totalBatches = totalBatches,
     )
-    sleep(2000)
   }
 
   @Transactional
@@ -91,6 +90,7 @@ class SoftDeleteService(
 
   private fun getPrisoners(hdcLicences: Page<Licence>): Map<String, Prisoner> {
     val bookingIds = hdcLicences.content.map { it.bookingId }
+    log.info(bookingIds.size.toString())
     val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds)
     return prisoners.associateBy { it.bookingId }
   }
