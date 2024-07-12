@@ -23,7 +23,7 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - curl --fail --retry 2 -X POST "https://$BASE_URL/jobs/delete-inactive-licences/200"
+                - curl --fail --retry 2 -X POST "https://$BASE_URL/jobs/delete-inactive-licences/50"
               env:
                 - name: BASE_URL
                   value: {{ index .Values "generic-service" "ingress" "host" }}
