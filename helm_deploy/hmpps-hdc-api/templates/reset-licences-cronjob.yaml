@@ -1,9 +1,10 @@
+{{- if .Values.cron.resetLicences.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: reset-licences
 spec:
-  schedule: "{{ .Values.cron.resetLicences }}"
+  schedule: "{{ .Values.cron.resetLicences.schedule }}"
   concurrencyPolicy: Replace
   failedJobsHistoryLimit: 5
   startingDeadlineSeconds: 43200
@@ -26,3 +27,4 @@ spec:
               env:
                 - name: BASE_URL
                   value: {{ index .Values "generic-service" "ingress" "host" }}
+{{- end }}

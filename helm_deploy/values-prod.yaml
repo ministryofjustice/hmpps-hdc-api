@@ -17,4 +17,6 @@ generic-prometheus-alerts:
   alertSeverity: cvl_alerts
 
 cron:
-  resetLicences: "30 2 * * *"
+  resetLicences:
+    enabled: false
+    schedule: "30 2 * * *"
