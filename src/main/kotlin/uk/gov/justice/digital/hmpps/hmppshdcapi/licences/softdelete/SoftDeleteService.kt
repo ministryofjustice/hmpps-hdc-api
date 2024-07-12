@@ -51,6 +51,7 @@ class SoftDeleteService(
       totalProcessed += licencesRecords.size
       totalDeleted += deletedLicences.size
       totalFailedToProcess += licencesRecords.count { (_, prisoner) -> prisoner == null }
+      sleep(1000)
     }
 
     return JobResponse(
@@ -60,7 +61,6 @@ class SoftDeleteService(
       batchSize = batchSize,
       totalBatches = totalBatches,
     )
-    sleep(1000)
   }
 
   @Transactional
