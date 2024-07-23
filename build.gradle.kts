@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.1"
   kotlin("plugin.spring") version "2.0.0"
   kotlin("plugin.jpa") version "2.0.0"
   id("io.gitlab.arturbosch.detekt") version "1.23.6"
@@ -20,8 +20,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
-  implementation("io.opentelemetry:opentelemetry-api:1.34.1")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
   implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.7.5")
 
   // Database dependencies
@@ -48,6 +47,7 @@ dependencies {
   testImplementation("com.h2database:h2")
   testImplementation("org.testcontainers:postgresql:1.19.8")
   testImplementation("org.testcontainers:localstack:1.19.8")
+  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.38.0")
 }
 
 kotlin {
