@@ -44,7 +44,7 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
     )
 
     val result = webTestClient.post()
-      .uri("/jobs/delete-inactive-licences/4")
+      .uri("/jobs/delete-inactive-licences")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf()))
       .exchange()
@@ -54,11 +54,11 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
       .returnResult().responseBody!!
 
     with(result) {
-      assertThat(totalProcessed).isEqualTo(12)
+      assertThat(totalProcessed).isEqualTo(5)
       assertThat(totalFailedToProcess).isEqualTo(2)
-      assertThat(batchSize).isEqualTo(4)
+      assertThat(batchSize).isEqualTo(50)
       assertThat(totalDeleted).isEqualTo(2)
-      assertThat(totalBatches).isEqualTo(3)
+      assertThat(totalBatches).isEqualTo(2)
     }
 
     val records = licenceRepository.findAll().sortedBy { it.bookingId }.associate { it.bookingId to it.deletedAt }

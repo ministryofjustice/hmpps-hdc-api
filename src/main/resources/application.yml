@@ -1,7 +1,6 @@
 info.app:
   name: Hmpps HDC Api
   version: 1.0
-
 spring:
   application:
     name: hmpps-hdc-api
@@ -42,6 +41,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
     show-sql: false
     generate-ddl: false
     hibernate:

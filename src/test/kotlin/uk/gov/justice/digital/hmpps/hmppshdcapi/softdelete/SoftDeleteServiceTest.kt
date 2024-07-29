@@ -1,13 +1,16 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.softdelete
 
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
@@ -18,6 +21,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepositor
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.JobResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,6 +31,7 @@ class SoftDeleteServiceTest {
   private val licenceVersionRepository = mock<LicenceVersionRepository>()
   private val auditEventRepository = mock<AuditEventRepository>()
   private val prisonSearchApiClient = mock<PrisonSearchApiClient>()
+  private val entityManager = mock<EntityManager>()
 
   private val service =
     SoftDeleteService(
@@ -34,13 +39,14 @@ class SoftDeleteServiceTest {
       licenceVersionRepository,
       auditEventRepository,
       prisonSearchApiClient,
+      entityManager,
     )
 
   private val today = LocalDate.of(2024, 4, 16)
 
   @BeforeEach
   fun reset() {
-    reset(licenceRepository, licenceVersionRepository, auditEventRepository, prisonSearchApiClient)
+    reset(licenceRepository, licenceVersionRepository, auditEventRepository, prisonSearchApiClient, entityManager)
   }
 
   @Test
@@ -111,6 +117,30 @@ class SoftDeleteServiceTest {
     assertThat(result).isFalse
   }
 
+  @Test
+  fun `runJob`() {
+    val prisonerPastLicenceEndDate = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
+
+    val firstBatch = listOf(
+      newLicence(1111) to prisonerPastLicenceEndDate.copy(bookingId = "1111"),
+      newLicence(2222) to prisonerPastLicenceEndDate.copy(bookingId = "2222"),
+    )
+    val secondBatch = listOf(
+      newLicence(3333) to prisonerPastLicenceEndDate.copy(bookingId = "3333"),
+      newLicence(4444) to prisonerPastLicenceEndDate.copy(bookingId = "4444"),
+    )
+
+    whenever(licenceRepository.findAllByIdGreaterThanLastProcessed(any(), any())).thenReturn(PageImpl(firstBatch.map { it.first })).thenReturn(PageImpl(secondBatch.map { it.first })).thenReturn(Page.empty())
+    whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(firstBatch.map { it.second }).thenReturn(secondBatch.map { it.second })
+    whenever(auditEventRepository.save(AuditEvent(user = "SYSTEM:JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1")))).thenReturn(AuditEvent(user = "SYSTEM:JOB", action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to "1")))
+
+    val result = service.runJob(batchSize = 2)
+
+    assertThat(result).isEqualTo(JobResponse(totalProcessed = 4, totalDeleted = 4, totalFailedToProcess = 0, batchSize = 2, totalBatches = 3))
+
+    verify(entityManager, times(3)).clear()
+  }
+
   private companion object {
     val prisoner = Prisoner(
       prisonerNumber = "A1234BC",
@@ -120,19 +150,22 @@ class SoftDeleteServiceTest {
       licenceExpiryDate = null,
     )
 
-    val licence = Licence(
-      id = 1L,
-      prisonNumber = "A1234BC",
-      bookingId = 1L,
-      stage = "ELIGIBILITY",
-      version = 1,
-      transitionDate = LocalDateTime.of(2024, 3, 16, 12, 0),
-      varyVersion = 0,
-      deletedAt = null,
-      additionalConditionsVersion = null,
-      standardConditionsVersion = null,
-      licence = null,
-    )
+    val newLicence = { bookingId: Long ->
+      Licence(
+        id = 1L,
+        prisonNumber = "A1234BC",
+        bookingId = bookingId,
+        stage = "ELIGIBILITY",
+        version = 1,
+        transitionDate = LocalDateTime.of(2024, 3, 16, 12, 0),
+        varyVersion = 0,
+        deletedAt = null,
+        additionalConditionsVersion = null,
+        standardConditionsVersion = null,
+        licence = null,
+      )
+    }
+    val licence = newLicence(1L)
 
     val licenceVersion = LicenceVersion(
       id = 1L,
