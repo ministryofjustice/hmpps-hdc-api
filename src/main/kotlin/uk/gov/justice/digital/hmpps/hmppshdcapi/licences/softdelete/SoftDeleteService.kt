@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete
 
+import jakarta.persistence.EntityManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
@@ -24,6 +25,7 @@ class SoftDeleteService(
   private val licenceVersionRepository: LicenceVersionRepository,
   private val auditEventRepository: AuditEventRepository,
   private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val entityManager: EntityManager,
 ) {
 
   companion object {
@@ -31,7 +33,7 @@ class SoftDeleteService(
   }
 
   @Transactional
-  fun runJob(batchSize: Int = 1000): JobResponse {
+  fun runJob(batchSize: Int = 50): JobResponse {
     var lastIdProcessed: Long? = 0L
     var totalBatches = 0
     var totalFailedToProcess = 0
@@ -39,6 +41,8 @@ class SoftDeleteService(
     var totalDeleted = 0
 
     while (lastIdProcessed != null) {
+      totalBatches++
+      log.info("Running batch: {}", totalBatches)
       val licencesRecords = licencesToMigrate(lastIdProcessed, batchSize)
       lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
@@ -47,10 +51,10 @@ class SoftDeleteService(
 
       licenceRepository.saveAllAndFlush(deletedLicences)
 
-      totalBatches++
-      totalProcessed += licencesRecords.size
+      totalProcessed += licencesRecords.numberOfElements
       totalDeleted += deletedLicences.size
       totalFailedToProcess += licencesRecords.count { (_, prisoner) -> prisoner == null }
+      entityManager.clear()
       sleep(1000)
     }
 
@@ -91,7 +95,6 @@ class SoftDeleteService(
 
   private fun getPrisoners(hdcLicences: Page<Licence>): Map<String, Prisoner> {
     val bookingIds = hdcLicences.content.map { it.bookingId }
-    log.info(bookingIds.size.toString())
     val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds)
     return prisoners.associateBy { it.bookingId }
   }
@@ -119,7 +122,7 @@ class SoftDeleteService(
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
-
+    log.info("found {} out of {} licences to delete", licencesToSoftDelete.size, licencesRecords.numberOfElements)
     licencesToSoftDelete.forEach {
       val today = LocalDateTime.now()
       it.deletedAt = today

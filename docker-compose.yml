@@ -17,7 +17,7 @@ services:
     image: localstack/localstack:3.0.2
     networks:
       - hmpps
-    container_name: localstack-api
+    container_name: localstack-hdc-api
     ports:
       - "4666:4666"
       - "4610-4659:4610-4659"
