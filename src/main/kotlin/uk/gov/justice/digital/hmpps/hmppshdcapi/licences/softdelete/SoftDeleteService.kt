@@ -7,10 +7,11 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository.LicenceIdentifiers
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
@@ -25,6 +26,7 @@ class SoftDeleteService(
   private val licenceVersionRepository: LicenceVersionRepository,
   private val auditEventRepository: AuditEventRepository,
   private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val transactionTemplate: TransactionTemplate,
   private val entityManager: EntityManager,
 ) {
 
@@ -32,7 +34,6 @@ class SoftDeleteService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Transactional
   fun runJob(batchSize: Int = 50): JobResponse {
     var lastIdProcessed: Long? = 0L
     var totalBatches = 0
@@ -41,20 +42,19 @@ class SoftDeleteService(
     var totalDeleted = 0
 
     while (lastIdProcessed != null) {
-      totalBatches++
-      log.info("Running batch: {}", totalBatches)
-      val licencesRecords = licencesToMigrate(lastIdProcessed, batchSize)
-      lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
+      runInTransaction {
+        totalBatches++
+        log.info("Running batch: {}", totalBatches)
+        val licencesRecords = licencesToMigrate(lastIdProcessed!!, batchSize)
+        lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
 
-      log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
-      val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB)
+        log.info("Last Id processed in batch: {}", lastIdProcessed ?: " no records processed")
+        val deletedLicences = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_JOB)
 
-      licenceRepository.saveAllAndFlush(deletedLicences)
-
-      totalProcessed += licencesRecords.numberOfElements
-      totalDeleted += deletedLicences.size
-      totalFailedToProcess += licencesRecords.count { (_, prisoner) -> prisoner == null }
-      entityManager.clear()
+        totalProcessed += licencesRecords.numberOfElements
+        totalDeleted += deletedLicences.size
+        totalFailedToProcess += licencesRecords.count { (_, prisoner) -> prisoner == null }
+      }
       sleep(1000)
     }
 
@@ -68,14 +68,11 @@ class SoftDeleteService(
   }
 
   @Transactional
-  fun runMigration(initialIdToProcess: Long, batchSize: Int = 1000): MigrationBatchResponse {
+  fun runMigration(initialIdToProcess: Long, batchSize: Int = 50): MigrationBatchResponse {
     val licencesRecords = licencesToMigrate(initialIdToProcess, batchSize)
     val lastIdProcessed = licencesRecords.content.lastOrNull()?.first?.id
-    log.info("Last Id processed in batch: ${lastIdProcessed ?: " no records processed"}")
+    log.info("Last Id processed in batch: {}", lastIdProcessed ?: " no records processed")
     val licencesToSoftDelete = applyAnySoftDeletes(licencesRecords, AuditEventType.SYSTEM_MIGRATION)
-
-    licenceRepository.saveAllAndFlush(licencesToSoftDelete)
-
     val totalFailedToProcess = licencesRecords.count { (_, prisoner) -> prisoner == null }
 
     return MigrationBatchResponse(
@@ -87,13 +84,13 @@ class SoftDeleteService(
     )
   }
 
-  private fun licencesToMigrate(lastIdProcessed: Long, batchSize: Int): Page<Pair<Licence, Prisoner?>> {
+  private fun licencesToMigrate(lastIdProcessed: Long, batchSize: Int): Page<Pair<LicenceIdentifiers, Prisoner?>> {
     val hdcLicences = licenceRepository.findAllByIdGreaterThanLastProcessed(lastIdProcessed, Pageable.ofSize(batchSize))
     val prisoners = getPrisoners(hdcLicences)
     return hdcLicences.map { it to prisoners[it.bookingId.toString()] }
   }
 
-  private fun getPrisoners(hdcLicences: Page<Licence>): Map<String, Prisoner> {
+  private fun getPrisoners(hdcLicences: Page<LicenceIdentifiers>): Map<String, Prisoner> {
     val bookingIds = hdcLicences.content.map { it.bookingId }
     val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds)
     return prisoners.associateBy { it.bookingId }
@@ -118,27 +115,31 @@ class SoftDeleteService(
     }
   }
 
-  fun applyAnySoftDeletes(licencesRecords: Page<Pair<Licence, Prisoner?>>, auditEventType: AuditEventType): List<Licence> {
+  fun applyAnySoftDeletes(
+    licencesRecords: Page<Pair<LicenceIdentifiers, Prisoner?>>,
+    auditEventType: AuditEventType,
+  ): List<LicenceIdentifiers> {
     val licencesToSoftDelete = licencesRecords.content
       .filter { (_, prisoner) -> prisoner != null && isToBeSoftDeleted(prisoner) }
       .map { (licence, _) -> licence }
+
     log.info("found {} out of {} licences to delete", licencesToSoftDelete.size, licencesRecords.numberOfElements)
+    val today = LocalDateTime.now()
+    licenceRepository.softDeleteLicence(today, licencesToSoftDelete.map { it.id })
+    licenceVersionRepository.softDeleteLicenceVersions(today, licencesToSoftDelete.map { it.bookingId })
+
     licencesToSoftDelete.forEach {
-      val today = LocalDateTime.now()
-      it.deletedAt = today
-      auditEventRepository.save(AuditEvent(user = auditEventType.eventType, action = "RESET", timestamp = LocalDateTime.now(), details = mapOf("bookingId" to it.bookingId)))
-      softDeleteLicenceVersions(it.bookingId, today)
+      auditEventRepository.save(
+        AuditEvent(
+          user = auditEventType.eventType,
+          action = "RESET",
+          timestamp = LocalDateTime.now(),
+          details = mapOf("bookingId" to it.bookingId),
+        ),
+      )
     }
 
     return licencesToSoftDelete
-  }
-
-  private fun softDeleteLicenceVersions(bookingId: Long, today: LocalDateTime) {
-    val hdcLicenceVersions = licenceVersionRepository.findAllByBookingIdAndDeletedAtIsNull(bookingId)
-    for (licenceVersion in hdcLicenceVersions) {
-      licenceVersion.deletedAt = today
-    }
-    licenceVersionRepository.saveAllAndFlush(hdcLicenceVersions)
   }
 
   data class JobResponse(
@@ -159,4 +160,11 @@ class SoftDeleteService(
     val batchSize: Int,
     val lastIdProcessed: Long?,
   )
+
+  private fun <R> runInTransaction(block: () -> R) =
+    transactionTemplate.execute {
+      block()
+      entityManager.flush()
+      entityManager.clear()
+    }
 }

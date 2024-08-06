@@ -12,11 +12,12 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository.LicenceIdentifiers
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
@@ -31,6 +32,7 @@ class SoftDeleteServiceTest {
   private val licenceVersionRepository = mock<LicenceVersionRepository>()
   private val auditEventRepository = mock<AuditEventRepository>()
   private val prisonSearchApiClient = mock<PrisonSearchApiClient>()
+  private val transactionTemplate = mock<TransactionTemplate>()
   private val entityManager = mock<EntityManager>()
 
   private val service =
@@ -39,6 +41,7 @@ class SoftDeleteServiceTest {
       licenceVersionRepository,
       auditEventRepository,
       prisonSearchApiClient,
+      transactionTemplate,
       entityManager,
     )
 
@@ -46,7 +49,7 @@ class SoftDeleteServiceTest {
 
   @BeforeEach
   fun reset() {
-    reset(licenceRepository, licenceVersionRepository, auditEventRepository, prisonSearchApiClient, entityManager)
+    reset(licenceRepository, licenceVersionRepository, auditEventRepository, prisonSearchApiClient, transactionTemplate, entityManager)
   }
 
   @Test
@@ -119,6 +122,9 @@ class SoftDeleteServiceTest {
 
   @Test
   fun `runJob`() {
+    whenever(transactionTemplate.execute<Any>(any())).thenAnswer {
+      (it.arguments[0] as TransactionCallback<*>).doInTransaction(null)
+    }
     val prisonerPastLicenceEndDate = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
 
     val firstBatch = listOf(
@@ -137,8 +143,7 @@ class SoftDeleteServiceTest {
     val result = service.runJob(batchSize = 2)
 
     assertThat(result).isEqualTo(JobResponse(totalProcessed = 4, totalDeleted = 4, totalFailedToProcess = 0, batchSize = 2, totalBatches = 3))
-
-    verify(entityManager, times(3)).clear()
+    verify(transactionTemplate, times(3)).execute(any<TransactionCallback<Any>>())
   }
 
   private companion object {
@@ -151,32 +156,12 @@ class SoftDeleteServiceTest {
     )
 
     val newLicence = { bookingId: Long ->
-      Licence(
+      LicenceIdentifiers(
         id = 1L,
         prisonNumber = "A1234BC",
         bookingId = bookingId,
-        stage = "ELIGIBILITY",
-        version = 1,
-        transitionDate = LocalDateTime.of(2024, 3, 16, 12, 0),
-        varyVersion = 0,
-        deletedAt = null,
-        additionalConditionsVersion = null,
-        standardConditionsVersion = null,
-        licence = null,
       )
     }
     val licence = newLicence(1L)
-
-    val licenceVersion = LicenceVersion(
-      id = 1L,
-      prisonNumber = "A1234BC",
-      bookingId = 1L,
-      timestamp = LocalDateTime.of(2024, 3, 16, 12, 0),
-      version = 1,
-      template = "hdc_ap",
-      varyVersion = 0,
-      deletedAt = null,
-      licence = null,
-    )
   }
 }
