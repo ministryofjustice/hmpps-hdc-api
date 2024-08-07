@@ -5,6 +5,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -19,6 +20,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.util.AuditEventType
 import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.concurrent.CompletableFuture
 
 @Service
 class SoftDeleteService(
@@ -34,7 +36,8 @@ class SoftDeleteService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun runJob(batchSize: Int = 50): JobResponse {
+  @Async
+  fun runJob(batchSize: Int = 50): CompletableFuture<JobResponse> {
     var lastIdProcessed: Long? = 0L
     var totalBatches = 0
     var totalFailedToProcess = 0
@@ -58,13 +61,15 @@ class SoftDeleteService(
       sleep(1000)
     }
 
-    return JobResponse(
+    val response = JobResponse(
       totalProcessed = totalProcessed,
       totalDeleted = totalDeleted,
       totalFailedToProcess = totalFailedToProcess,
       batchSize = batchSize,
       totalBatches = totalBatches,
     )
+    log.info("Job result: {}", response)
+    return CompletableFuture.completedFuture(response)
   }
 
   @Transactional

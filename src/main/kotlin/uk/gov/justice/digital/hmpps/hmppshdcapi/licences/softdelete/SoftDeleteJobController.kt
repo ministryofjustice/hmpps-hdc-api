@@ -5,13 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.http.HttpStatus.NO_CONTENT
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.JobResponse
 
 @RestController
 @RequestMapping("/jobs", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -25,14 +26,8 @@ class SoftDeleteJobController(
   @ApiResponses(
     value = [
       ApiResponse(
-        responseCode = "200",
-        description = "Migration response",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = JobResponse::class),
-          ),
-        ],
+        responseCode = "204",
+        description = "No body",
       ),
       ApiResponse(
         responseCode = "401",
@@ -48,5 +43,8 @@ class SoftDeleteJobController(
   )
   @PostMapping("/delete-inactive-licences")
   @ResponseBody
-  fun populateDeletedAtForLicences() = softDeleteService.runJob()
+  @ResponseStatus(NO_CONTENT)
+  fun populateDeletedAtForLicences() {
+    softDeleteService.runJob()
+  }
 }
