@@ -142,7 +142,7 @@ class SoftDeleteServiceTest {
 
     val result = service.runJob(batchSize = 2)
 
-    assertThat(result).isEqualTo(JobResponse(totalProcessed = 4, totalDeleted = 4, totalFailedToProcess = 0, batchSize = 2, totalBatches = 3))
+    assertThat(result.get()).isEqualTo(JobResponse(totalProcessed = 4, totalDeleted = 4, totalFailedToProcess = 0, batchSize = 2, totalBatches = 3))
     verify(transactionTemplate, times(3)).execute(any<TransactionCallback<Any>>())
   }
 

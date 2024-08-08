@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.untilAsserted
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -14,7 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService.JobResponse
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -29,6 +31,9 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var auditEventRepository: AuditEventRepository
 
+  private val awaitAtMost30Secs
+    get() = await.atMost(Duration.ofSeconds(30))
+
   @Test
   @Sql(
     "classpath:test_data/reset.sql",
@@ -37,28 +42,27 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
   fun `Perform job`() {
     prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
       listOf(
-        Prisoner("A1234AA", "10", "MDI", topupSupervisionExpiryDate = LocalDate.now(), licenceExpiryDate = LocalDate.now().minusDays(1)),
+        Prisoner(
+          "A1234AA",
+          "10",
+          "MDI",
+          topupSupervisionExpiryDate = LocalDate.now(),
+          licenceExpiryDate = LocalDate.now().minusDays(1),
+        ),
         Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
         Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null),
       ),
     )
 
-    val result = webTestClient.post()
+    webTestClient.post()
       .uri("/jobs/delete-inactive-licences")
       .accept(MediaType.APPLICATION_JSON)
       .headers(setAuthorisation(roles = listOf()))
       .exchange()
-      .expectStatus().isOk
-      .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBody(JobResponse::class.java)
-      .returnResult().responseBody!!
+      .expectStatus().isNoContent
 
-    with(result) {
-      assertThat(totalProcessed).isEqualTo(5)
-      assertThat(totalFailedToProcess).isEqualTo(2)
-      assertThat(batchSize).isEqualTo(50)
-      assertThat(totalDeleted).isEqualTo(2)
-      assertThat(totalBatches).isEqualTo(2)
+    awaitAtMost30Secs untilAsserted {
+      assertThat(auditEventRepository.count()).isEqualTo(2)
     }
 
     val records = licenceRepository.findAll().sortedBy { it.bookingId }.associate { it.bookingId to it.deletedAt }
