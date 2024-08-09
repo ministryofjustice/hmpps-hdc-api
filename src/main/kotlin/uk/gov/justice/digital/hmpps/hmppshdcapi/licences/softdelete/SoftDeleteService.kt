@@ -37,12 +37,14 @@ class SoftDeleteService(
   }
 
   @Async
-  fun runJob(batchSize: Int = 50): CompletableFuture<JobResponse> {
+  fun runJob(batchSize: Int = 500): CompletableFuture<JobResponse> {
     var lastIdProcessed: Long? = 0L
     var totalBatches = 0
     var totalFailedToProcess = 0
     var totalProcessed = 0
     var totalDeleted = 0
+
+    log.info("Starting soft delete job")
 
     while (lastIdProcessed != null) {
       runInTransaction {
@@ -68,7 +70,7 @@ class SoftDeleteService(
       batchSize = batchSize,
       totalBatches = totalBatches,
     )
-    log.info("Job result: {}", response)
+    log.info("Job finished: {}", response)
     return CompletableFuture.completedFuture(response)
   }
 
