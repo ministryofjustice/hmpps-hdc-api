@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 @Repository
 interface LicenceRepository : JpaRepository<Licence, Long>, JpaSpecificationExecutor<Licence> {
   fun findAllByPrisonNumber(prisonNumber: String): List<Licence>
+  fun findLicenceByBookingId(bookingId: Long): Licence
 
   @Query("select new uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository\$LicenceIdentifiers(l.id, l.prisonNumber, l.bookingId) from Licence l where l.deletedAt is null and l.id > ?1 order by l.id asc")
   fun findAllByIdGreaterThanLastProcessed(lastProcessed: Long, pageable: Pageable): Page<LicenceIdentifiers>
