@@ -11,6 +11,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.springframework.http.HttpStatusCode
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonContactDetails
 
 class PrisonApiMockServer : WireMockServer(8091) {
   private val mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
@@ -23,6 +24,20 @@ class PrisonApiMockServer : WireMockServer(8091) {
             "application/json",
           ).withBody(
             mapper.writeValueAsString(booking),
+          ).withStatus(200),
+        ),
+    )
+  }
+
+  fun stubGetPrisonContactDetails(prisonContactDetails: PrisonContactDetails) {
+    stubFor(
+      get(urlPathEqualTo("/api//agencies/prison/${prisonContactDetails.agencyId}"))
+        .willReturn(
+          aResponse().withHeader(
+            "Content-Type",
+            "application/json",
+          ).withBody(
+            mapper.writeValueAsString(prisonContactDetails),
           ).withStatus(200),
         ),
     )
