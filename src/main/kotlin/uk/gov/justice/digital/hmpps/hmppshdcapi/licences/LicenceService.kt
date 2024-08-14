@@ -7,9 +7,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
 @Service
 class LicenceService(
-  val licenceRepository: LicenceRepository,
-  val prisonApiClient: PrisonApiClient,
-  val objectMapper: ObjectMapper,
+  private val licenceRepository: LicenceRepository,
+  private val prisonApiClient: PrisonApiClient,
+  private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
     val licence = licenceRepository.findLicenceByBookingId(bookingId).licence

@@ -1,9 +1,13 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonContactDetails
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Telephone
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 object TestData {
-  fun preferredAddresslicence() = Licence(
+  fun aPreferredAddressLicence() = Licence(
     id = 1,
     prisonNumber = "A12345B",
     bookingId = 54321,
@@ -34,7 +38,7 @@ object TestData {
     ),
   )
 
-  fun cas2licence() = Licence(
+  fun aCas2Licence() = Licence(
     id = 1,
     prisonNumber = "A12345B",
     bookingId = 54321,
@@ -60,6 +64,28 @@ object TestData {
           ),
         ),
         "proposedAddress" to emptyMap(),
+      ),
+    ),
+  )
+
+  fun aBooking() = Booking(
+    offenderNo = "A12345B",
+    bookingId = 54321,
+    agencyId = "MDI",
+    topupSupervisionExpiryDate = LocalDate.of(2024, 8, 14),
+    licenceExpiryDate = LocalDate.of(2024, 8, 14),
+  )
+
+  fun somePrisonInformation() = PrisonContactDetails(
+    agencyId = "MDI",
+    phones = listOf(
+      Telephone(
+        number = "0123 456 7890",
+        type = "BUS",
+      ),
+      Telephone(
+        number = "0800 123 4567",
+        type = "FAX",
       ),
     ),
   )
