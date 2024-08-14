@@ -23,3 +23,13 @@ There are currently 3 modes:
 1. `./run-local.sh --start-docker` - starts docker images, waits for them to start and then runs the app against a standalone licences DB 
 2. `./run-local.sh` - waits/checks that the requisite docker images exist and then runs the app against a standalone licences DB
 3. `./run-local.sh --connect-db` - runs the app against the frontend licences DB docker image (requires localstack running)  
+
+### Linting
+
+To locate any linting issues
+
+`$ ./gradlew ktlintcheck`
+
+To apply some fixes following linting
+
+`$ ./gradlew ktlintformat` 

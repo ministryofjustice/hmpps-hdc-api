@@ -30,7 +30,7 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
   }
 
   fun getPrisonContactDetails(agencyId: String?): PrisonContactDetails? {
-    if (agencyId?.isEmpty() == true){
+    if (agencyId?.isEmpty() == true) {
       return null
     }
     val contactDetails = prisonerSearchApiWebClient

@@ -23,21 +23,21 @@ private const val HTTP_STATUS_NOT_SUPPORTED = 209
 @RestController
 @RequestMapping("/licence", produces = [MediaType.APPLICATION_JSON_VALUE])
 @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
-class LicenceController(private val licenceService:LicenceService) {
-  @GetMapping(value =["/hdc/{bookingId}"])
+class LicenceController(private val licenceService: LicenceService) {
+  @GetMapping(value = ["/hdc/{bookingId}"])
   @ResponseBody
   @Operation(
     summary = "Get a licence matching the booking ID.",
     description = "Returns a licence for the booking ID." +
       "Requires ROLE_$ROLE_HDC_ADMIN.",
-    security =[SecurityRequirement(name = SCHEME_HDC_ADMIN)],
+    security = [SecurityRequirement(name = SCHEME_HDC_ADMIN)],
   )
   @ApiResponses(
-    value =[
+    value = [
       ApiResponse(
         responseCode = "200",
         description = "Licence found",
-        content =[
+        content = [
           Content(
             mediaType = "application/json",
             schema = Schema(implementation = HdcLicence::class),
@@ -46,56 +46,56 @@ class LicenceController(private val licenceService:LicenceService) {
       ),
 
       ApiResponse(
-        responseCode ="204",
-        description ="Licence for this booking ID was not found.",
+        responseCode = "204",
+        description = "Licence for this booking ID was not found.",
       ),
 
       ApiResponse(
-        responseCode ="$HTTP_STATUS_NOT_SUPPORTED",
-        description ="Search by crn is not supported.",
-        content =[
+        responseCode = "$HTTP_STATUS_NOT_SUPPORTED",
+        description = "Search by crn is not supported.",
+        content = [
           Content(
-            mediaType="application/json",
-            schema =Schema(implementation=ErrorResponse::class),
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
           ),
         ],
       ),
 
       ApiResponse(
-        responseCode ="401",
-        description ="Unauthorised, requires a valid Oauth2 token",
-        content =[
+        responseCode = "401",
+        description = "Unauthorised, requires a valid Oauth2 token",
+        content = [
           Content(
-            mediaType="application/json",
-            schema =Schema(implementation=ErrorResponse::class),
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
           ),
         ],
       ),
 
       ApiResponse(
-        responseCode ="403",
-        description ="Forbidden, requires an appropriate role",
-        content =[
+        responseCode = "403",
+        description = "Forbidden, requires an appropriate role",
+        content = [
           Content(
-            mediaType="application/json",
-            schema =Schema(implementation=ErrorResponse::class),
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
           ),
         ],
       ),
 
       ApiResponse(
-        responseCode ="500",
-        description ="Unexpected error occurred",
-        content =[
+        responseCode = "500",
+        description = "Unexpected error occurred",
+        content = [
           Content(
-            mediaType="application/json",
-            schema =Schema(implementation=ErrorResponse::class),
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
           ),
         ],
       ),
     ],
   )
   fun getHdcLicenceByBookingId(
-      @PathVariable("bookingId") bookingId:Long
+    @PathVariable("bookingId") bookingId: Long,
   ) = licenceService.getByBookingId(bookingId)
 }

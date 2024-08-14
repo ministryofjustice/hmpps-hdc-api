@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "Describes a HDC Licence")
-data class HdcLicence (
+data class HdcLicence(
 
   @Schema(description = "The contact telephone number for the prison", example = "0121 123 4567")
   val prisonTelephone: String? = "",

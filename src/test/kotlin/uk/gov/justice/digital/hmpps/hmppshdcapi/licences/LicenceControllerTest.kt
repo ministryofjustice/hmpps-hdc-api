@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,7 +32,7 @@ import java.time.LocalDateTime
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [LicenceController::class])
 @WebAppConfiguration
-class LicenceControllerTest{
+class LicenceControllerTest {
 
   @MockBean
   private lateinit var licenceService: LicenceService
@@ -58,7 +57,7 @@ class LicenceControllerTest{
   }
 
   @Test
-  fun `get a licence by booking id` () {
+  fun `get a licence by booking id`() {
     whenever(licenceService.getByBookingId(1)).thenReturn(aHdcLicence)
 
     val result = mvc.perform(MockMvcRequestBuilders.get("/licence/hdc/1").accept(MediaType.APPLICATION_JSON))
