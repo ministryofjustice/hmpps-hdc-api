@@ -14,7 +14,6 @@ class LicenceService(
   fun getByBookingId(bookingId: Long): HdcLicence? {
     val licence = licenceRepository.findLicenceByBookingId(bookingId).licence
 
-    println(licence)
     if (licence.isNullOrEmpty()) {
       return null
     }
@@ -27,12 +26,12 @@ class LicenceService(
 
     var formattedAddress: String? = null
     if (cas2Requested === "Yes") {
-//      val cas2Address = cas2Referral.bassOffer
-//      address = getAddress(cas2Address)
+      val cas2Address = objectMapper.convertValue(cas2Referral, Cas2Referral::class.java).bassOffer
+      formattedAddress = getAddress(cas2Address)
     } else {
       val proposedAddress = licence["proposedAddress"]
-      val address = objectMapper.convertValue(proposedAddress, ProposedAddress::class.java).curfewAddress
-      formattedAddress = getAddress(address)
+      val curfewAddress = objectMapper.convertValue(proposedAddress, ProposedAddress::class.java).curfewAddress
+      formattedAddress = getAddress(curfewAddress)
     }
 
     val prisonContactDetails = prisonApiClient.getPrisonContactDetails(nomisData?.agencyId)
