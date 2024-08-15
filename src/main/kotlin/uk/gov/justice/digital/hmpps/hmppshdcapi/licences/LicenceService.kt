@@ -14,21 +14,25 @@ class LicenceService(
   fun getByBookingId(bookingId: Long): HdcLicence? {
     val licence = licenceRepository.findLicenceByBookingId(bookingId).licence
 
+    println(licence)
     if (licence.isNullOrEmpty()) {
       return null
     }
 
     val nomisData = prisonApiClient.getBooking(bookingId)
 
-    val cas2Referral = licence["bassReferral"] as Cas2Referral
+    val cas2Referral = licence["bassReferral"]
+
     val cas2Requested = objectMapper.convertValue(cas2Referral, Cas2Referral::class.java).bassRequest.bassRequested
-    val address: String?
+
+    var formattedAddress: String? = null
     if (cas2Requested === "Yes") {
-      val cas2Address = cas2Referral.bassOffer
-      address = getAddress(cas2Address)
+//      val cas2Address = cas2Referral.bassOffer
+//      address = getAddress(cas2Address)
     } else {
-      val curfewAddress = licence["curfewAddress"] as Address
-      address = getAddress(curfewAddress)
+      val proposedAddress = licence["proposedAddress"]
+      val address = objectMapper.convertValue(proposedAddress, ProposedAddress::class.java).curfewAddress
+      formattedAddress = getAddress(address)
     }
 
     val prisonContactDetails = prisonApiClient.getPrisonContactDetails(nomisData?.agencyId)
@@ -36,7 +40,7 @@ class LicenceService(
 
     return HdcLicence(
       prisonTelephone = telephoneNumber?.number,
-      curfewAddress = address,
+      curfewAddress = formattedAddress,
     )
   }
 
