@@ -21,7 +21,6 @@ class LicenceService(
     val nomisData = prisonApiClient.getBooking(bookingId)
 
     val cas2Referral = licence["bassReferral"]
-
     val cas2Requested = objectMapper.convertValue(cas2Referral, Cas2Referral::class.java).bassRequest.bassRequested
 
     var formattedAddress: String? = null
@@ -34,12 +33,18 @@ class LicenceService(
       formattedAddress = getAddress(curfewAddress)
     }
 
+    val curfewTimes = licence["curfew"]
+    val firstNightHours = objectMapper.convertValue(curfewTimes, Curfew::class.java).firstNight
+    val curfewHours = objectMapper.convertValue(curfewTimes, Curfew::class.java).curfewHours
+
     val prisonContactDetails = prisonApiClient.getPrisonContactDetails(nomisData?.agencyId)
     val telephoneNumber = prisonContactDetails?.phones?.find { it.type === "BUS" }
 
     return HdcLicence(
       prisonTelephone = telephoneNumber?.number,
       curfewAddress = formattedAddress,
+      firstNightCurfewHours = firstNightHours,
+      curfewHours = curfewHours
     )
   }
 

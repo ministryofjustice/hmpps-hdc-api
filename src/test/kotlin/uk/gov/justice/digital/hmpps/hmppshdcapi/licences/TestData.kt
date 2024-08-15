@@ -32,6 +32,28 @@ object TestData {
           "postCode" to "AB1 2CD",
         ),
       ),
+      "curfew" to mapOf(
+        "firstNight" to mapOf(
+          "firstNightFrom" to "16:00",
+          "firstNightUntil" to "08:00"
+        ),
+        "curfewHours" to mapOf(
+          "fridayFrom" to "20:00",
+          "mondayFrom" to "20:00",
+          "sundayFrom" to "20:00",
+          "fridayUntil" to "08:00",
+          "mondayUntil" to "08:00",
+          "sundayUntil" to "08:00",
+          "tuesdayFrom" to "20:00",
+          "saturdayFrom" to "20:00",
+          "thursdayFrom" to "20:00",
+          "tuesdayUntil" to "08:00",
+          "saturdayUntil" to "08:00",
+          "thursdayUntil" to "08:00",
+          "wednesdayFrom" to "20:00",
+          "wednesdayUntil" to "08:00",
+        )
+      )
     ),
   )
 
@@ -59,6 +81,28 @@ object TestData {
         ),
       ),
       "proposedAddress" to emptyMap(),
+      "curfew" to mapOf(
+        "firstNight" to mapOf(
+          "firstNightFrom" to "15:00",
+          "firstNightUntil" to "07:00"
+        ),
+        "curfewHours" to mapOf(
+          "fridayFrom" to "19:00",
+          "mondayFrom" to "19:00",
+          "sundayFrom" to "19:00",
+          "fridayUntil" to "07:00",
+          "mondayUntil" to "07:00",
+          "sundayUntil" to "07:00",
+          "tuesdayFrom" to "19:00",
+          "saturdayFrom" to "19:00",
+          "thursdayFrom" to "19:00",
+          "tuesdayUntil" to "07:00",
+          "saturdayUntil" to "07:00",
+          "thursdayUntil" to "07:00",
+          "wednesdayFrom" to "19:00",
+          "wednesdayUntil" to "07:00",
+        )
+      )
     ),
   )
 
