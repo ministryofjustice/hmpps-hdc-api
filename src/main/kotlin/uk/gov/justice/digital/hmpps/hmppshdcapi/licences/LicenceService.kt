@@ -44,7 +44,7 @@ class LicenceService(
       prisonTelephone = telephoneNumber?.number,
       curfewAddress = formattedAddress,
       firstNightCurfewHours = firstNightHours,
-      curfewHours = curfewHours
+      curfewHours = curfewHours,
     )
   }
 

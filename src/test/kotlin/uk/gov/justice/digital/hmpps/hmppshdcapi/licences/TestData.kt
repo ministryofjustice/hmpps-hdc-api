@@ -35,7 +35,7 @@ object TestData {
       "curfew" to mapOf(
         "firstNight" to mapOf(
           "firstNightFrom" to "16:00",
-          "firstNightUntil" to "08:00"
+          "firstNightUntil" to "08:00",
         ),
         "curfewHours" to mapOf(
           "fridayFrom" to "20:00",
@@ -52,8 +52,8 @@ object TestData {
           "thursdayUntil" to "08:00",
           "wednesdayFrom" to "20:00",
           "wednesdayUntil" to "08:00",
-        )
-      )
+        ),
+      ),
     ),
   )
 
@@ -84,7 +84,7 @@ object TestData {
       "curfew" to mapOf(
         "firstNight" to mapOf(
           "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00"
+          "firstNightUntil" to "07:00",
         ),
         "curfewHours" to mapOf(
           "fridayFrom" to "19:00",
@@ -101,8 +101,8 @@ object TestData {
           "thursdayUntil" to "07:00",
           "wednesdayFrom" to "19:00",
           "wednesdayUntil" to "07:00",
-        )
-      )
+        ),
+      ),
     ),
   )
 

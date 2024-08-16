@@ -44,19 +44,23 @@ class LicenceServiceTest {
     assertThat(result).isNotNull
     assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("1 The Street, Area, Town, AB1 2CD")
-    assertThat(result?.firstNightCurfewHours).isEqualTo(FirstNight(
-      "16:00",
-      "08:00"
-    ))
-    assertThat(result?.curfewHours).isEqualTo(CurfewHours(
-      "20:00", "08:00",
-      "20:00","08:00",
-      "20:00", "08:00",
-      "20:00", "08:00",
-      "20:00", "08:00",
-      "20:00", "08:00",
-      "20:00", "08:00",
-    ))
+    assertThat(result?.firstNightCurfewHours).isEqualTo(
+      FirstNight(
+        "16:00",
+        "08:00",
+      ),
+    )
+    assertThat(result?.curfewHours).isEqualTo(
+      CurfewHours(
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+      ),
+    )
   }
 
   @Test
@@ -70,18 +74,22 @@ class LicenceServiceTest {
     assertThat(result).isNotNull
     assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("2 The Street, Area 2, Town 2, EF3 4GH")
-    assertThat(result?.firstNightCurfewHours).isEqualTo(FirstNight(
-      "15:00",
-      "07:00"
-    ))
-    assertThat(result?.curfewHours).isEqualTo(CurfewHours(
-      "19:00", "07:00",
-      "19:00","07:00",
-      "19:00", "07:00",
-      "19:00", "07:00",
-      "19:00", "07:00",
-      "19:00", "07:00",
-      "19:00", "07:00",
-    ))
+    assertThat(result?.firstNightCurfewHours).isEqualTo(
+      FirstNight(
+        "15:00",
+        "07:00",
+      ),
+    )
+    assertThat(result?.curfewHours).isEqualTo(
+      CurfewHours(
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+      ),
+    )
   }
 }

@@ -28,12 +28,12 @@ data class Cas2Request(
 
 data class Curfew(
   val firstNight: FirstNight,
-  val curfewHours: CurfewHours
+  val curfewHours: CurfewHours,
 )
 
 data class FirstNight(
   val firstNightFrom: String,
-  val firstNightUntil: String
+  val firstNightUntil: String,
 )
 
 data class CurfewHours(
