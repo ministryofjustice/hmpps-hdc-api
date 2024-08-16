@@ -31,7 +31,7 @@ class PrisonApiMockServer : WireMockServer(8091) {
 
   fun stubGetPrisonContactDetails(prisonContactDetails: PrisonContactDetails) {
     stubFor(
-      get(urlPathEqualTo("/api//agencies/prison/${prisonContactDetails.agencyId}"))
+      get(urlPathEqualTo("/api/agencies/prison/${prisonContactDetails.agencyId}"))
         .willReturn(
           aResponse().withHeader(
             "Content-Type",
