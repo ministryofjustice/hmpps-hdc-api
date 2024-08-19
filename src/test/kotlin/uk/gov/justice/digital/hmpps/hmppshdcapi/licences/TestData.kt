@@ -58,9 +58,9 @@ object TestData {
   )
 
   fun aCas2Licence() = Licence(
-    id = 1,
-    prisonNumber = "A12345B",
-    bookingId = 54321,
+    id = 2,
+    prisonNumber = "C56789D",
+    bookingId = 98765,
     stage = "MODIFIED",
     version = 1,
     transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
@@ -106,9 +106,66 @@ object TestData {
     ),
   )
 
+  fun aCas2LicenceWithShortAddress() = Licence(
+    id = 2,
+    prisonNumber = "C56789D",
+    bookingId = 98765,
+    stage = "MODIFIED",
+    version = 1,
+    transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+    varyVersion = 0,
+    additionalConditionsVersion = null,
+    standardConditionsVersion = null,
+    deletedAt = null,
+    licence = mapOf(
+      "bassReferral" to mapOf(
+        "bassOffer" to mapOf(
+          "addressLine1" to "2 The Street",
+          "addressLine2" to null,
+          "addressTown" to "Town 2",
+          "postCode" to "EF3 4GH",
+        ),
+        "bassRequest" to mapOf(
+          "bassRequested" to "Yes",
+        ),
+      ),
+      "proposedAddress" to emptyMap(),
+      "curfew" to mapOf(
+        "firstNight" to mapOf(
+          "firstNightFrom" to "15:00",
+          "firstNightUntil" to "07:00",
+        ),
+        "curfewHours" to mapOf(
+          "fridayFrom" to "19:00",
+          "mondayFrom" to "19:00",
+          "sundayFrom" to "19:00",
+          "fridayUntil" to "07:00",
+          "mondayUntil" to "07:00",
+          "sundayUntil" to "07:00",
+          "tuesdayFrom" to "19:00",
+          "saturdayFrom" to "19:00",
+          "thursdayFrom" to "19:00",
+          "tuesdayUntil" to "07:00",
+          "saturdayUntil" to "07:00",
+          "thursdayUntil" to "07:00",
+          "wednesdayFrom" to "19:00",
+          "wednesdayUntil" to "07:00",
+        ),
+      ),
+    ),
+  )
+
   fun aBooking() = Booking(
     offenderNo = "A12345B",
     bookingId = 54321,
+    agencyId = "MDI",
+    topupSupervisionExpiryDate = LocalDate.of(2024, 8, 14),
+    licenceExpiryDate = LocalDate.of(2024, 8, 14),
+  )
+
+  fun anotherBooking() = Booking(
+    offenderNo = "C56789D",
+    bookingId = 98765,
     agencyId = "MDI",
     topupSupervisionExpiryDate = LocalDate.of(2024, 8, 14),
     licenceExpiryDate = LocalDate.of(2024, 8, 14),

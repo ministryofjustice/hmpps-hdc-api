@@ -25,7 +25,7 @@ class LicenceService(
     val cas2Requested = cas2Referral.bassRequest.bassRequested
 
     val formattedAddress: String?
-    if (cas2Requested === "Yes") {
+    if (cas2Requested == "Yes") {
       val cas2Address = cas2Referral.bassOffer
       formattedAddress = getAddress(cas2Address)
     } else {
@@ -49,10 +49,10 @@ class LicenceService(
   }
 
   private fun getAddress(addressObject: Address?): String? {
-    if (addressObject === null) {
+    if (addressObject == null) {
       return null
     }
-    return if (addressObject.addressLine2.isNotEmpty()) {
+    return if (addressObject.addressLine2 != null) {
       "${addressObject.addressLine1}, ${addressObject.addressLine2}, ${addressObject.addressTown}, ${addressObject.postCode}"
     } else {
       "${addressObject.addressLine1}, ${addressObject.addressTown}, ${addressObject.postCode}"

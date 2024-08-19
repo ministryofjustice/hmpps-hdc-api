@@ -58,6 +58,49 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     )
   }
 
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-licences.sql",
+  )
+  fun `Retrieve licence with cas2 address`() {
+    prisonApiMockServer.stubGetByBookingId(
+      TestData.anotherBooking(),
+    )
+    prisonApiMockServer.stubGetPrisonContactDetails(TestData.somePrisonInformation())
+
+    val result = webTestClient.get()
+      .uri("/licence/hdc/98765")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .exchange()
+      .expectStatus().isOk
+      .expectHeader().contentType(MediaType.APPLICATION_JSON)
+      .expectBody(HdcLicence::class.java)
+      .returnResult().responseBody
+
+    assertThat(result).isNotNull
+    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
+    assertThat(result?.curfewAddress).isEqualTo("100 CAS2 Street, The Avenue, Leeds, LS3 4BB")
+    assertThat(result?.firstNightCurfewHours).isEqualTo(
+      FirstNight(
+        "15:00",
+        "07:00",
+      ),
+    )
+    assertThat(result?.curfewHours).isEqualTo(
+      CurfewHours(
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+      ),
+    )
+  }
+
   private companion object {
 
     val prisonApiMockServer = PrisonApiMockServer()

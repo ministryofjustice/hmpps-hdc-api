@@ -17,7 +17,7 @@ data class ProposedAddress(
 
 data class Address(
   val addressLine1: String,
-  val addressLine2: String,
+  val addressLine2: String? = null,
   val addressTown: String,
   val postCode: String,
 )

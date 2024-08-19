@@ -92,4 +92,15 @@ class LicenceServiceTest {
       ),
     )
   }
+
+  @Test
+  fun `will correctly format a short Cas2 address`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2LicenceWithShortAddress())
+    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
+    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result?.curfewAddress).isEqualTo("2 The Street, Town 2, EF3 4GH")
+  }
 }
