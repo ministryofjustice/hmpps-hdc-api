@@ -18,5 +18,5 @@ generic-prometheus-alerts:
 
 cron:
   resetLicences:
-    enabled: false
+    enabled: true
     schedule: "30 2 * * *"
