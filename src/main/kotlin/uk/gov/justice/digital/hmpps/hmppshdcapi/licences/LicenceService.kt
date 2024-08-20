@@ -26,11 +26,11 @@ class LicenceService(
 
     val formattedAddress: String?
     if (cas2Requested == "Yes") {
-      val cas2Address = cas2Referral.bassOffer
+      val cas2Address = cas2Referral.bassOffer as Address
       formattedAddress = getAddress(cas2Address)
     } else {
       val proposedAddress = licence["proposedAddress"]
-      val curfewAddress = objectMapper.convertValue(proposedAddress, ProposedAddress::class.java).curfewAddress
+      val curfewAddress = objectMapper.convertValue(proposedAddress, ProposedAddress::class.java).curfewAddress as Address
       formattedAddress = getAddress(curfewAddress)
     }
 
@@ -48,10 +48,7 @@ class LicenceService(
     )
   }
 
-  private fun getAddress(addressObject: Address?): String? {
-    if (addressObject == null) {
-      return null
-    }
+  private fun getAddress(addressObject: Address): String {
     return if (addressObject.addressLine2 != null) {
       "${addressObject.addressLine1}, ${addressObject.addressLine2}, ${addressObject.addressTown}, ${addressObject.postCode}"
     } else {

@@ -103,4 +103,13 @@ class LicenceServiceTest {
 
     assertThat(result?.curfewAddress).isEqualTo("2 The Street, Town 2, EF3 4GH")
   }
+
+  @Test
+  fun `will return early if no HDC licence`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(null)
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result).isNull()
+  }
 }

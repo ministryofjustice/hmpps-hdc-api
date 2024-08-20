@@ -7,11 +7,13 @@ data class LicenceData(
 )
 
 data class Cas2Referral(
+  // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
   val bassOffer: Address? = null,
   val bassRequest: Cas2Request,
 )
 
 data class ProposedAddress(
+  // curfewAddress only nullable as address will be either this if ProposedAddress or bassOffer if cas2
   val curfewAddress: Address? = null,
 )
 
