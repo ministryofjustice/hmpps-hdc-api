@@ -12,7 +12,9 @@ class LicenceService(
   private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
-    val licence = licenceRepository.findLicenceByBookingId(bookingId).licence
+    val licenceObject = licenceRepository.findLicenceByBookingId(bookingId) ?: return null
+
+    val licence = licenceObject.licence
 
     if (licence.isNullOrEmpty()) {
       return null
@@ -48,11 +50,9 @@ class LicenceService(
     )
   }
 
-  private fun getAddress(addressObject: Address): String {
-    return if (addressObject.addressLine2 != null) {
-      "${addressObject.addressLine1}, ${addressObject.addressLine2}, ${addressObject.addressTown}, ${addressObject.postCode}"
-    } else {
-      "${addressObject.addressLine1}, ${addressObject.addressTown}, ${addressObject.postCode}"
-    }
+  private fun getAddress(addressObject: Address): String = if (addressObject.addressLine2 != null) {
+    "${addressObject.addressLine1}, ${addressObject.addressLine2}, ${addressObject.addressTown}, ${addressObject.postCode}"
+  } else {
+    "${addressObject.addressLine1}, ${addressObject.addressTown}, ${addressObject.postCode}"
   }
 }

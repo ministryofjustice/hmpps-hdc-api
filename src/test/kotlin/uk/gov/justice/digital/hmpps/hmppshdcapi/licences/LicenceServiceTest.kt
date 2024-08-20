@@ -9,6 +9,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 
@@ -61,6 +64,9 @@ class LicenceServiceTest {
         "20:00", "08:00",
       ),
     )
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(prisonApiClient, times(1)).getBooking(54321L)
+    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
@@ -91,6 +97,10 @@ class LicenceServiceTest {
         "19:00", "07:00",
       ),
     )
+
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(prisonApiClient, times(1)).getBooking(54321L)
+    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
@@ -102,6 +112,10 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result?.curfewAddress).isEqualTo("2 The Street, Town 2, EF3 4GH")
+
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(prisonApiClient, times(1)).getBooking(54321L)
+    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
@@ -111,5 +125,8 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNull()
+
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verifyNoInteractions(prisonApiClient)
   }
 }
