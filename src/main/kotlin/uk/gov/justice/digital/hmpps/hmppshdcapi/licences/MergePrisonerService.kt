@@ -48,6 +48,7 @@ class MergePrisonerService(
       }
 
     if (updatedLicences.isEmpty() && updatedLicenceVersions.isEmpty()) {
+      log.debug("Updated licences and updated licence versions are empty")
       return done.complete()
     }
 
@@ -64,6 +65,8 @@ class MergePrisonerService(
       ),
       null,
     )
+    log.debug("Updating licences after event: {}", updatedLicences.size.toString())
+    log.debug("Updating licence version after event: {}", updatedLicenceVersions.size.toString())
     return done.complete()
   }
 }
