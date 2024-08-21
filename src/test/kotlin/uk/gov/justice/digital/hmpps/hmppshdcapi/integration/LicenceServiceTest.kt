@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.TestData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
-class RetrieveHdcLicence : SqsIntegrationTestBase() {
+class LicenceServiceTest : SqsIntegrationTestBase() {
 
   @Test
   @Sql(
