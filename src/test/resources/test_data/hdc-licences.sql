@@ -1,5 +1,5 @@
 INSERT INTO licences
-(id, licence, booking_id, stage, "version", transition_date, vary_version, additional_conditions_version,
+(id, licence, booking_id, stage, version, transition_date, vary_version, additional_conditions_version,
  standard_conditions_version, prison_number, deleted_at)
 VALUES (1,
 '{
