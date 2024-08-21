@@ -2,7 +2,85 @@ INSERT INTO licences
 (id, licence, booking_id, stage, version, transition_date, vary_version, additional_conditions_version,
  standard_conditions_version, prison_number, deleted_at)
 VALUES (1,
-'{
+        '{
+          "risk": {
+            "riskManagement": {
+              "version": "2",
+              "emsInformation": "Yes",
+              "unsuitableReason": "",
+              "hasConsideredChecks": "Yes",
+              "emsInformationDetails": "Test.",
+              "riskManagementDetails": "",
+              "proposedAddressSuitable": "Yes",
+              "awaitingOtherInformation": "No",
+              "nonDisclosableInformation": "No",
+              "nonDisclosableInformationDetails": ""
+            }
+          },
+          "curfew": {
+            "firstNight": {
+              "firstNightFrom": "15:00",
+              "firstNightUntil": "07:00"
+            },
+            "curfewHours": {
+              "allFrom": "19:00",
+              "allUntil": "07:00",
+              "fridayFrom": "19:00",
+              "mondayFrom": "19:00",
+              "sundayFrom": "19:00",
+              "fridayUntil": "07:00",
+              "mondayUntil": "07:00",
+              "sundayUntil": "07:00",
+              "tuesdayFrom": "19:00",
+              "saturdayFrom": "19:00",
+              "thursdayFrom": "19:00",
+              "tuesdayUntil": "07:00",
+              "saturdayUntil": "07:00",
+              "thursdayUntil": "07:00",
+              "wednesdayFrom": "19:00",
+              "wednesdayUntil": "07:00"
+            },
+            "approvedPremises": {
+              "required": "No"
+            },
+            "curfewAddressReview": {
+              "consent": "Yes",
+              "electricity": "Yes",
+              "homeVisitConducted": "Yes",
+              "addressReviewComments": "Test."
+            }
+          },
+          "victim": {
+            "victimLiaison": {
+              "decision": "No"
+            }
+          },
+          "approval": {
+            "release": {
+              "decision": "Yes",
+              "decisionMaker": "Tim Mccluskey",
+              "reasonForDecision": ""
+            }
+          },
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
+          "reporting": {
+            "reportingInstructions": {
+              "name": "Bob Smith",
+              "postcode": "1111 1AD",
+              "telephone": "01234 123456",
+              "townOrCity": "Blackburn",
+              "organisation": "Blackburn NPS",
+              "reportingDate": "28/03/2023",
+              "reportingTime": "12:00",
+              "buildingAndStreet1": "10 York Street",
+              "buildingAndStreet2": ""
+            }
+          },
           "eligibility": {
             "crdTime": {
               "decision": "No"
@@ -11,6 +89,17 @@ VALUES (1,
               "decision": "No"
             },
             "suitability": {
+              "decision": "No"
+            }
+          },
+          "finalChecks": {
+            "onRemand": {
+              "decision": "No"
+            },
+            "seriousOffence": {
+              "decision": "No"
+            },
+            "confiscationOrder": {
               "decision": "No"
             }
           },
@@ -31,7 +120,7 @@ VALUES (1,
               },
               "postCode": "LS1 2AA",
               "residents": [],
-              "telephone": "44000000000",
+              "telephone": "01234 111111",
               "addressTown": "Leeds",
               "addressLine1": "123 Approved Premises Street 2",
               "addressLine2": "Off St Michaels Place",
@@ -43,12 +132,44 @@ VALUES (1,
               "decision": "Yes"
             }
           },
+          "licenceConditions": {
+            "bespoke": [],
+            "standard": {
+              "additionalConditionsRequired": "Yes"
+            },
+            "additional": {
+              "CAMERA_APPROVAL": {}
+            },
+            "conditionsSummary": {
+              "additionalConditionsJustification": "Why they added additional condition here."
+            }
+          }
+        }'::jsonb,
+        54321, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null),
+       (2,
+        '{
+          "risk": {
+            "riskManagement": {
+              "version": "2",
+              "emsInformation": "Yes",
+              "unsuitableReason": "",
+              "hasConsideredChecks": "Yes",
+              "emsInformationDetails": "Test.",
+              "riskManagementDetails": "",
+              "proposedAddressSuitable": "Yes",
+              "awaitingOtherInformation": "No",
+              "nonDisclosableInformation": "No",
+              "nonDisclosableInformationDetails": ""
+            }
+          },
           "curfew": {
-            "firstNight":{
+            "firstNight": {
               "firstNightFrom": "15:00",
               "firstNightUntil": "07:00"
             },
             "curfewHours": {
+              "allFrom": "19:00",
+              "allUntil": "07:00",
               "fridayFrom": "19:00",
               "mondayFrom": "19:00",
               "sundayFrom": "19:00",
@@ -63,69 +184,106 @@ VALUES (1,
               "thursdayUntil": "07:00",
               "wednesdayFrom": "19:00",
               "wednesdayUntil": "07:00"
+            },
+            "approvedPremises": {
+              "required": "No"
+            },
+            "curfewAddressReview": {
+              "consent": "Yes",
+              "electricity": "Yes",
+              "homeVisitConducted": "Yes",
+              "addressReviewComments": "Test."
+            }
+          },
+          "victim": {
+            "victimLiaison": {
+              "decision": "No"
+            }
+          },
+          "approval": {
+            "release": {
+              "decision": "Yes",
+              "decisionMaker": "Tim Mccluskey",
+              "reasonForDecision": ""
+            }
+          },
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
+          "reporting": {
+            "reportingInstructions": {
+              "name": "Bob Smith",
+              "postcode": "1111 1AD",
+              "telephone": "01234 123456",
+              "townOrCity": "Blackburn",
+              "organisation": "Blackburn NPS",
+              "reportingDate": "28/03/2023",
+              "reportingTime": "12:00",
+              "buildingAndStreet1": "10 York Street",
+              "buildingAndStreet2": ""
+            }
+          },
+          "eligibility": {
+            "crdTime": {
+              "decision": "No"
+            },
+            "excluded": {
+              "decision": "No"
+            },
+            "suitability": {
+              "decision": "No"
+            }
+          },
+          "finalChecks": {
+            "onRemand": {
+              "decision": "No"
+            },
+            "seriousOffence": {
+              "decision": "No"
+            },
+            "confiscationOrder": {
+              "decision": "No"
+            }
+          },
+          "bassReferral": {
+            "bassOffer": {
+              "bassArea": "Leeds",
+              "postCode": "LS3 4BB",
+              "telephone": "55000000000",
+              "addressTown": "Leeds",
+              "addressLine1": "100 CAS2 Street",
+              "addressLine2": "The Avenue",
+              "bassAccepted": "Yes",
+              "bassOfferDetails": ""
+            },
+            "bassRequest": {
+              "specificArea": "No",
+              "bassRequested": "Yes",
+              "additionalInformation": ""
+            }
+          },
+          "proposedAddress": {
+            "optOut": {
+              "decision": "No"
+            },
+            "addressProposed": {
+              "decision": "No"
+            }
+          },
+          "licenceConditions": {
+            "bespoke": [],
+            "standard": {
+              "additionalConditionsRequired": "Yes"
+            },
+            "additional": {
+              "CAMERA_APPROVAL": {}
+            },
+            "conditionsSummary": {
+              "additionalConditionsJustification": "Why they added additional condition here."
             }
           }
         }'::jsonb,
-        54321, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null),
-       (2,
-        '{
-                  "eligibility": {
-                    "crdTime": {
-                      "decision": "No"
-                    },
-                    "excluded": {
-                      "decision": "No"
-                    },
-                    "suitability": {
-                      "decision": "No"
-                    }
-                  },
-                  "bassReferral": {
-                    "bassOffer": {
-                     "bassArea": "Leeds",
-                     "postCode": "LS3 4BB",
-                     "telephone": "55000000000",
-                     "addressTown": "Leeds",
-                     "addressLine1": "100 CAS2 Street",
-                     "addressLine2": "The Avenue",
-                     "bassAccepted": "Yes",
-                     "bassOfferDetails": ""
-                   },
-                   "bassRequest": {
-                    "specificArea": "No",
-                    "bassRequested": "Yes",
-                    "additionalInformation": ""
-                   }
-                  },
-                  "proposedAddress": {
-                    "optOut": {
-                      "decision": "No"
-                    },
-                    "addressProposed": {
-                      "decision": "No"
-                    }
-                  },
-                  "curfew": {
-                    "firstNight":{
-                      "firstNightFrom": "15:00",
-                      "firstNightUntil": "07:00"
-                    },
-                    "curfewHours": {
-                      "fridayFrom": "19:00",
-                      "mondayFrom": "19:00",
-                      "sundayFrom": "19:00",
-                      "fridayUntil": "07:00",
-                      "mondayUntil": "07:00",
-                      "sundayUntil": "07:00",
-                      "tuesdayFrom": "19:00",
-                      "saturdayFrom": "19:00",
-                      "thursdayFrom": "19:00",
-                      "tuesdayUntil": "07:00",
-                      "saturdayUntil": "07:00",
-                      "thursdayUntil": "07:00",
-                      "wednesdayFrom": "19:00",
-                      "wednesdayUntil": "07:00"
-                    }
-                  }
-                }'::jsonb,
         98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'C56789D', null);
