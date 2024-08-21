@@ -97,5 +97,5 @@ class LicenceController(private val licenceService: LicenceService) {
   )
   fun getHdcLicenceByBookingId(
     @PathVariable("bookingId") bookingId: Long,
-  ) = licenceService.getByBookingId(bookingId)
+  ): HdcLicence? = licenceService.getByBookingId(bookingId)
 }
