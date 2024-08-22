@@ -1,7 +1,7 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.3"
-  kotlin("plugin.spring") version "2.0.0"
-  kotlin("plugin.jpa") version "2.0.0"
+  kotlin("plugin.spring") version "2.0.10"
+  kotlin("plugin.jpa") version "2.0.10"
   id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
@@ -22,6 +22,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
   implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.7.5")
+  implementation("org.springframework.security:spring-security-config:6.3.2")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
