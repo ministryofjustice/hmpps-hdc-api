@@ -27,9 +27,10 @@ object LocalStackContainer {
 
   private fun startLocalstackIfNotRunning(): LocalStackContainer? {
     if (localstackIsRunning()) return null
+    log.info("Starting localstack test container")
     val logConsumer = Slf4jLogConsumer(log).withPrefix("localstack")
     return LocalStackContainer(
-      DockerImageName.parse("localstack/localstack").withTag("3"),
+      DockerImageName.parse("localstack/localstack").withTag("3.6"),
     ).apply {
       withServices(LocalStackContainer.Service.SQS, LocalStackContainer.Service.SNS)
       withEnv("DEFAULT_REGION", "eu-west-2")
@@ -46,6 +47,7 @@ object LocalStackContainer {
       val serverSocket = ServerSocket(4566)
       serverSocket.localPort == 0
     } catch (e: IOException) {
+      log.info("localstack running on 4566")
       true
     }
 }

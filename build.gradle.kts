@@ -45,8 +45,8 @@ dependencies {
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
-  testImplementation("org.testcontainers:postgresql:1.19.8")
-  testImplementation("org.testcontainers:localstack:1.19.8")
+  testImplementation("org.testcontainers:postgresql:1.20.1")
+  testImplementation("org.testcontainers:localstack:1.20.1")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.38.0")
 }
 

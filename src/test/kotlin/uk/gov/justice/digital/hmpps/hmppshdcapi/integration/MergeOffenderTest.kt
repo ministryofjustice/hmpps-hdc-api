@@ -7,13 +7,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.jdbc.Sql
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AdditionalInformationMerge
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Done
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HMPPSMergeDomainEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
@@ -32,9 +30,6 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
 
   @Autowired
   lateinit var licenceVersionRepository: LicenceVersionRepository
-
-  @MockBean
-  lateinit var done: Done
 
   private val awaitAtMost30Secs
     get() = await.atMost(Duration.ofSeconds(30))
@@ -57,7 +52,7 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
     )
 
     awaitAtMost30Secs untilAsserted {
-      verify(done).complete()
+      verify(eventProcessingComplete).complete()
     }
 
     verify(telemetryClient).trackEvent(
@@ -96,7 +91,7 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
     )
 
     awaitAtMost30Secs untilAsserted {
-      verify(done).complete()
+      verify(eventProcessingComplete).complete()
     }
 
     verifyNoInteractions(telemetryClient)
