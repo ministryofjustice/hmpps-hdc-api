@@ -37,8 +37,8 @@ class LicenceServiceTest {
   }
 
   @Test
-  fun `will retrieve HDC licence with a preferred address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aPreferredAddressLicence())
+  fun `will retrieve HDC licence with an approved preferred address`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCurfewApprovedPremisesRequiredLicence())
     whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
     whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
@@ -46,7 +46,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
-    assertThat(result?.curfewAddress).isEqualTo("1 The Street, Area, Town, AB1 2CD")
+    assertThat(result?.curfewAddress).isEqualTo("4 The Street, Area 4, Town 4, MN4 5OP")
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         "16:00",
@@ -64,6 +64,40 @@ class LicenceServiceTest {
         "20:00", "08:00",
       ),
     )
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(prisonApiClient, times(1)).getBooking(54321L)
+    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
+  }
+
+  @Test
+  fun `will retrieve HDC licence with an approved Cas2 address`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2ApprovedPremisesLicence())
+    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
+    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result).isNotNull
+    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
+    assertThat(result?.curfewAddress).isEqualTo("3 The Avenue, Area 3, Town 3, IJ3 4KL")
+    assertThat(result?.firstNightCurfewHours).isEqualTo(
+      FirstNight(
+        "15:00",
+        "07:00",
+      ),
+    )
+    assertThat(result?.curfewHours).isEqualTo(
+      CurfewHours(
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+        "19:00", "07:00",
+      ),
+    )
+
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
     verify(prisonApiClient, times(1)).getBooking(54321L)
     verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
@@ -98,6 +132,39 @@ class LicenceServiceTest {
       ),
     )
 
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(prisonApiClient, times(1)).getBooking(54321L)
+    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
+  }
+
+  @Test
+  fun `will retrieve HDC licence with a preferred address`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aPreferredAddressLicence())
+    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
+    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result).isNotNull
+    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
+    assertThat(result?.curfewAddress).isEqualTo("1 The Street, Area, Town, AB1 2CD")
+    assertThat(result?.firstNightCurfewHours).isEqualTo(
+      FirstNight(
+        "16:00",
+        "08:00",
+      ),
+    )
+    assertThat(result?.curfewHours).isEqualTo(
+      CurfewHours(
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+        "20:00", "08:00",
+      ),
+    )
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
     verify(prisonApiClient, times(1)).getBooking(54321L)
     verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)

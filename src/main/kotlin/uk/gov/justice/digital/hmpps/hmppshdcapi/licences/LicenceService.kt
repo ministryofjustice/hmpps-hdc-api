@@ -40,7 +40,6 @@ class LicenceService(
       curfewHours = curfew.curfewHours,
     )
 
-    // - Unit tests to include the two new approved premise scenarios
     // - Update unit test to include test for new bassAccepted and change in bassRequested being a decision rather than a string
     // - Integration test data - add extra licences to the sql file which show approved premise licences
     // - Add integration tests for those licences

@@ -174,10 +174,10 @@ object TestData {
           "bassRequested" to "Yes",
         ),
         "approvedPremisesAddress" to mapOf(
-          "addressLine1" to "2 The Street",
-          "addressLine2" to "Area 2",
-          "addressTown" to "Town 2",
-          "postCode" to "EF3 4GH",
+          "addressLine1" to "3 The Avenue",
+          "addressLine2" to "Area 3",
+          "addressTown" to "Town 3",
+          "postCode" to "IJ3 4KL",
         ),
         "bassAreaCheck" to mapOf(
           "approvedPremisesRequiredYesNo" to "Yes",
@@ -229,14 +229,7 @@ object TestData {
           "approvedPremisesRequiredYesNo" to "No",
         ),
       ),
-      "proposedAddress" to mapOf(
-        "curfewAddress" to mapOf(
-          "addressLine1" to "1 The Street",
-          "addressLine2" to "Area",
-          "addressTown" to "Town",
-          "postCode" to "AB1 2CD",
-        ),
-      ),
+      "proposedAddress" to emptyMap(),
       "curfew" to mapOf(
         "firstNight" to mapOf(
           "firstNightFrom" to "16:00",
@@ -259,10 +252,10 @@ object TestData {
           "wednesdayUntil" to "08:00",
         ),
         "approvedPremisesAddress" to mapOf(
-          "addressLine1" to "2 The Street",
-          "addressLine2" to "Area 2",
-          "addressTown" to "Town 2",
-          "postCode" to "EF1 2GH",
+          "addressLine1" to "4 The Street",
+          "addressLine2" to "Area 4",
+          "addressTown" to "Town 4",
+          "postCode" to "MN4 5OP",
         ),
         "approvedPremises" to mapOf(
           "required" to "Yes",
