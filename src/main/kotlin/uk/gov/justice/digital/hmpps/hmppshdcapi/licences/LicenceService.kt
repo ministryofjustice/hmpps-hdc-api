@@ -40,7 +40,6 @@ class LicenceService(
       curfewHours = curfew.curfewHours,
     )
 
-    // - Update unit test to include test for new bassAccepted and change in bassRequested being a decision rather than a string
     // - Integration test data - add extra licences to the sql file which show approved premise licences
     // - Add integration tests for those licences
   }
@@ -52,7 +51,6 @@ class LicenceService(
     val isCas2Accepted = cas2Referral.bassOffer?.bassAccepted == OfferAccepted.Yes
 
     if (isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired) {
-      println("In here")
       return formatAddress(curfew.approvedPremisesAddress!!)
     }
 
@@ -61,6 +59,7 @@ class LicenceService(
     }
 
     if (isCas2Requested && isCas2Accepted) {
+      println("In here cas2 req and acc")
       val cas2Address = cas2Referral.bassOffer as Cas2Offer
       val address = Address(
         addressLine1 = cas2Address.addressLine1,

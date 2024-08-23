@@ -22,7 +22,7 @@ data class Cas2Referral(
   val bassOffer: Cas2Offer? = null,
   val bassRequest: Cas2Request,
   val approvedPremisesAddress: Address? = null,
-  val bassAreaCheck: BassAreaCheck? = null,
+  val bassAreaCheck: Cas2AreaCheck? = null,
 )
 
 data class ProposedAddress(
@@ -82,6 +82,6 @@ data class ApprovedPremises(
   val required: Decision,
 )
 
-data class BassAreaCheck(
+data class Cas2AreaCheck(
   val approvedPremisesRequiredYesNo: Decision,
 )

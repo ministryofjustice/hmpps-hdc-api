@@ -199,12 +199,25 @@ class LicenceServiceTest {
 
   @Test
   fun `test getLicence when curfew approved premise is required`() {
-    val result = service.getAddress(aCurfew)
+    val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress)
 
-    assertThat(result).isNull()
+    assertThat(result).isEqualTo("2 The Street, Area 2, Town 2, EF1 2GH")
+  }
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verifyNoInteractions(prisonApiClient)
+  @Test
+  fun `test getLicence when cas2 approved premise is required`() {
+    val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.Yes))
+    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)
+
+    assertThat(result).isEqualTo("4 The Street, Area 4, Town 4, IJ4 4KL")
+  }
+
+  @Test
+  fun `test getLicence when cas2 address is required`() {
+    val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.Yes))
+    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)
+
+    assertThat(result).isEqualTo("3 The Street, Area 3, Town 3, GH3 3IJ")
   }
 
   private companion object {
@@ -238,6 +251,37 @@ class LicenceServiceTest {
       ),
       ApprovedPremises(
         Decision.Yes,
+      ),
+    )
+
+    val aCas2Referral = Cas2Referral(
+      Cas2Offer(
+        "3 The Street",
+        "Area 3",
+        "Town 3",
+        "GH3 3IJ",
+        OfferAccepted.Yes,
+      ),
+      Cas2Request(
+        Decision.Yes
+      ),
+      Address(
+        "4 The Street",
+        "Area 4",
+        "Town 4",
+        "IJ4 4KL",
+      ),
+      Cas2AreaCheck(
+        Decision.No
+      )
+    )
+
+    val aProposedAddress = ProposedAddress(
+      Address(
+        "5 The Street",
+        "Area 5",
+        "Town 5",
+        "KL5 5MN",
       ),
     )
   }
