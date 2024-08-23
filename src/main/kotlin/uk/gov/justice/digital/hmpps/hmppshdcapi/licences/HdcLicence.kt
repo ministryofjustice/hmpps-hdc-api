@@ -22,7 +22,7 @@ data class Cas2Referral(
   val bassOffer: Cas2Offer? = null,
   val bassRequest: Cas2Request,
   val approvedPremisesAddress: Address? = null,
-  val bassAreaCheck: BassAreaCheck,
+  val bassAreaCheck: BassAreaCheck? = null,
 )
 
 data class ProposedAddress(
@@ -52,8 +52,8 @@ data class Cas2Request(
 data class Curfew(
   val firstNight: FirstNight,
   val curfewHours: CurfewHours,
-  val approvedPremisesAddress: Address,
-  val approvedPremises: ApprovedPremises,
+  val approvedPremisesAddress: Address? = null,
+  val approvedPremises: ApprovedPremises? = null,
 )
 
 data class FirstNight(

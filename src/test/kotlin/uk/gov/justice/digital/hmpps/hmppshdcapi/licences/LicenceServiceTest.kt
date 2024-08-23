@@ -129,4 +129,49 @@ class LicenceServiceTest {
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
     verifyNoInteractions(prisonApiClient)
   }
+
+  @Test
+  fun `test getLicence when curfew approved premise is required`() {
+    val result = service.getAddress(aCurfew)
+
+    assertThat(result).isNull()
+
+    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verifyNoInteractions(prisonApiClient)
+  }
+
+  private companion object {
+
+    val aCurfew = Curfew(
+      FirstNight(
+        "16:00",
+        "08:00",
+      ),
+      CurfewHours(
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+        "20:00",
+        "08:00",
+      ),
+      Address(
+        "2 The Street",
+        "Area 2",
+        "Town 2",
+        "EF1 2GH",
+      ),
+      ApprovedPremises(
+        Decision.Yes,
+      ),
+    )
+  }
 }
