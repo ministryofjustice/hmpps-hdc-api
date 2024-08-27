@@ -11,13 +11,10 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
-  private val prisonApiClient = mock<PrisonApiClient>()
 
   private val objectMapper = ObjectMapper().apply {
     registerModule(Jdk8Module())
@@ -27,25 +24,21 @@ class LicenceServiceTest {
 
   private val service = LicenceService(
     licenceRepository = licenceRepository,
-    prisonApiClient = prisonApiClient,
     objectMapper = objectMapper,
   )
 
   @BeforeEach
   fun reset() {
-    reset(licenceRepository, prisonApiClient)
+    reset(licenceRepository)
   }
 
   @Test
   fun `will retrieve HDC licence with an approved preferred address`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCurfewApprovedPremisesRequiredLicence())
-    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
-    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
-    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("4 The Street, Area 4, Town 4, MN4 5OP")
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
@@ -65,20 +58,15 @@ class LicenceServiceTest {
       ),
     )
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verify(prisonApiClient, times(1)).getBooking(54321L)
-    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
   fun `will retrieve HDC licence with an approved Cas2 address`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2ApprovedPremisesLicence())
-    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
-    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
-    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("3 The Avenue, Area 3, Town 3, IJ3 4KL")
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
@@ -99,20 +87,15 @@ class LicenceServiceTest {
     )
 
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verify(prisonApiClient, times(1)).getBooking(54321L)
-    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
   fun `will retrieve HDC licence with a Cas2 address`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2Licence())
-    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
-    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
-    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("2 The Street, Area 2, Town 2, EF3 4GH")
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
@@ -133,20 +116,15 @@ class LicenceServiceTest {
     )
 
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verify(prisonApiClient, times(1)).getBooking(54321L)
-    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
   fun `will retrieve HDC licence with a preferred address`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aPreferredAddressLicence())
-    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
-    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
-    assertThat(result?.prisonTelephone).isEqualTo(TestData.somePrisonInformation().phones.first().number)
     assertThat(result?.curfewAddress).isEqualTo("1 The Street, Area, Town, AB1 2CD")
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
@@ -166,23 +144,17 @@ class LicenceServiceTest {
       ),
     )
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verify(prisonApiClient, times(1)).getBooking(54321L)
-    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
   fun `will correctly format a short Cas2 address`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2LicenceWithShortAddress())
-    whenever(prisonApiClient.getBooking(54321L)).thenReturn(TestData.aBooking())
-    whenever(prisonApiClient.getPrisonContactDetails(TestData.aBooking().agencyId)).thenReturn(TestData.somePrisonInformation())
 
     val result = service.getByBookingId(54321L)
 
     assertThat(result?.curfewAddress).isEqualTo("2 The Street, Town 2, EF3 4GH")
 
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verify(prisonApiClient, times(1)).getBooking(54321L)
-    verify(prisonApiClient, times(1)).getPrisonContactDetails(TestData.aBooking().agencyId)
   }
 
   @Test
@@ -194,7 +166,6 @@ class LicenceServiceTest {
     assertThat(result).isNull()
 
     verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
-    verifyNoInteractions(prisonApiClient)
   }
 
   @Test
@@ -214,10 +185,65 @@ class LicenceServiceTest {
 
   @Test
   fun `test getLicence when cas2 address is required`() {
-    val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.Yes))
-    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)
+    val noCurfewApprovedPremisesRequired = aCurfew.copy(
+      approvedPremises = ApprovedPremises(
+        Decision.No,
+      ),
+    )
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, aCas2Referral, aProposedAddress)
 
     assertThat(result).isEqualTo("3 The Street, Area 3, Town 3, GH3 3IJ")
+  }
+
+  @Test
+  fun `test getLicence when no curfew or Cas2 address is required`() {
+    val noCurfewApprovedPremisesRequired = aCurfew.copy(
+      approvedPremises = ApprovedPremises(
+        Decision.No,
+      ),
+    )
+    val noCas2Referral = aCas2Referral.copy(
+      bassOffer = aCas2Offer.copy(
+        bassAccepted = OfferAccepted.Unsuitable,
+      ),
+      bassRequest = Cas2Request(
+        Decision.No,
+      ),
+    )
+
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)
+
+    assertThat(result).isEqualTo("5 The Street, Area 5, Town 5, KL5 5MN")
+  }
+
+  @Test
+  fun `address formats correctly when address line 2 is not present`() {
+    val noCurfewApprovedPremisesRequired = aCurfew.copy(
+      approvedPremises = ApprovedPremises(
+        Decision.No,
+      ),
+    )
+    val noCas2Referral = aCas2Referral.copy(
+      bassOffer = aCas2Offer.copy(
+        bassAccepted = OfferAccepted.Unsuitable,
+      ),
+      bassRequest = Cas2Request(
+        Decision.No,
+      ),
+    )
+
+    val anotherProposedAddress = aProposedAddress.copy(
+      Address(
+        "5 The Street",
+        null,
+        "Town 5",
+        "KL5 5MN",
+      ),
+    )
+
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)
+
+    assertThat(result).isEqualTo("5 The Street, Town 5, KL5 5MN")
   }
 
   private companion object {
@@ -254,16 +280,18 @@ class LicenceServiceTest {
       ),
     )
 
+    val aCas2Offer = Cas2Offer(
+      "3 The Street",
+      "Area 3",
+      "Town 3",
+      "GH3 3IJ",
+      OfferAccepted.Yes,
+    )
+
     val aCas2Referral = Cas2Referral(
-      Cas2Offer(
-        "3 The Street",
-        "Area 3",
-        "Town 3",
-        "GH3 3IJ",
-        OfferAccepted.Yes,
-      ),
+      aCas2Offer,
       Cas2Request(
-        Decision.Yes
+        Decision.Yes,
       ),
       Address(
         "4 The Street",
@@ -272,8 +300,8 @@ class LicenceServiceTest {
         "IJ4 4KL",
       ),
       Cas2AreaCheck(
-        Decision.No
-      )
+        Decision.No,
+      ),
     )
 
     val aProposedAddress = ProposedAddress(

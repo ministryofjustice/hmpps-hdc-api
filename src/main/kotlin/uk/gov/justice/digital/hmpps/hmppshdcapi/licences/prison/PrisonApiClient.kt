@@ -29,22 +29,6 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
     return booking
   }
 
-  fun getPrisonContactDetails(agencyId: String?): PrisonContactDetails? {
-    if (agencyId?.isEmpty() == true) {
-      return null
-    }
-    val contactDetails = prisonerSearchApiWebClient
-      .get()
-      .uri("/agencies/prison/{agencyId}", agencyId)
-      .accept(MediaType.APPLICATION_JSON)
-      .retrieve()
-      .bodyToMono(PrisonContactDetails::class.java)
-      .onErrorResume(::coerce404ResponseToNull)
-      .block()
-
-    return contactDetails
-  }
-
   fun resetHdcChecks(bookingId: Long): Boolean {
     val response = prisonerSearchApiWebClient
       .delete()

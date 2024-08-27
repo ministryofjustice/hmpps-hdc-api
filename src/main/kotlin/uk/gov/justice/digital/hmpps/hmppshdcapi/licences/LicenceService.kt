@@ -2,13 +2,11 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
 @Service
 class LicenceService(
   private val licenceRepository: LicenceRepository,
-  private val prisonApiClient: PrisonApiClient,
   private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
@@ -29,19 +27,11 @@ class LicenceService(
     val proposedAddressObject = licence["proposedAddress"]
     val proposedAddress = objectMapper.convertValue(proposedAddressObject, ProposedAddress::class.java)
 
-    val nomisData = prisonApiClient.getBooking(bookingId)
-    val prisonContactDetails = prisonApiClient.getPrisonContactDetails(nomisData?.agencyId)
-    val telephoneNumber = prisonContactDetails?.phones?.find { it.type == "BUS" }
-
     return HdcLicence(
-      prisonTelephone = telephoneNumber?.number,
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
       firstNightCurfewHours = curfew.firstNight,
       curfewHours = curfew.curfewHours,
     )
-
-    // - Integration test data - add extra licences to the sql file which show approved premise licences
-    // - Add integration tests for those licences
   }
 
   fun getAddress(curfew: Curfew, cas2Referral: Cas2Referral, proposedAddress: ProposedAddress): String {
@@ -59,7 +49,6 @@ class LicenceService(
     }
 
     if (isCas2Requested && isCas2Accepted) {
-      println("In here cas2 req and acc")
       val cas2Address = cas2Referral.bassOffer as Cas2Offer
       val address = Address(
         addressLine1 = cas2Address.addressLine1,
@@ -69,7 +58,6 @@ class LicenceService(
       )
       return formatAddress(address)
     }
-
     return formatAddress(proposedAddress.curfewAddress!!)
   }
 

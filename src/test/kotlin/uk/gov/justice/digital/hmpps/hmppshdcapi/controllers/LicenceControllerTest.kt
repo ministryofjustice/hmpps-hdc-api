@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
+package uk.gov.justice.digital.hmpps.hmppshdcapi.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
@@ -22,6 +22,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
 @ExtendWith(SpringExtension::class)
@@ -71,7 +75,6 @@ class LicenceControllerTest {
 
   private companion object {
     val aLicence = HdcLicence(
-      "0800 800 800",
       "123 Approved Premises Street 2, Off St Michaels Place, Leeds, LS1 2AA",
       FirstNight(
         firstNightFrom = "15:00",
