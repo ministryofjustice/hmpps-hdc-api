@@ -33,7 +33,7 @@ wait_for_docker () {
     until [ "`docker inspect -f {{.State.Running}} licences-api-db`" == true ]; do
         sleep 0.1;
     done;
-    until [ "`docker inspect -f {{.State.Health.Status}} localstack-api`" == "healthy" ]; do
+    until [ "`docker inspect -f {{.State.Health.Status}} localstack-hdc-api`" == "healthy" ]; do
         sleep 0.1;
     done;
 
