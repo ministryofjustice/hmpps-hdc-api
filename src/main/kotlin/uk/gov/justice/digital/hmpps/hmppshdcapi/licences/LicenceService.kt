@@ -27,7 +27,7 @@ class LicenceService(
     val proposedAddressObject = licence["proposedAddress"]
     val proposedAddress = objectMapper.convertValue(proposedAddressObject, ProposedAddress::class.java)
 
-    return transformToHdcLicence(
+    return HdcLicence(
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
       firstNightCurfewHours = curfew.firstNight,
       curfewHours = curfew.curfewHours,
