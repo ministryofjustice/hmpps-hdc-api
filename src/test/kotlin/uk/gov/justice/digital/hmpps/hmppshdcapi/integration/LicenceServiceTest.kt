@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
@@ -29,9 +30,15 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .expectBody(HdcLicence::class.java)
       .returnResult().responseBody
 
-    println(result)
     assertThat(result).isNotNull
-    assertThat(result?.curfewAddress).isEqualTo("1 Test Street, Test Area, Test Town, T33 3ST")
+    assertThat(result?.curfewAddress).isEqualTo(
+      CurfewAddress(
+        "1 Test Street",
+        "Test Area",
+        "Test Town",
+        "T33 3ST",
+      ),
+    )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         "15:00",
@@ -68,7 +75,14 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
-    assertThat(result?.curfewAddress).isEqualTo("2 Test Road, Another Town, AB1 2CD")
+    assertThat(result?.curfewAddress).isEqualTo(
+      CurfewAddress(
+        "2 Test Road",
+        null,
+        "Another Town",
+        "AB1 2CD",
+      ),
+    )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         "15:00",
@@ -105,7 +119,14 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
-    assertThat(result?.curfewAddress).isEqualTo("100 CAS2 Street, The Avenue, Leeds, LS3 4BB")
+    assertThat(result?.curfewAddress).isEqualTo(
+      CurfewAddress(
+        "100 CAS2 Street",
+        "The Avenue",
+        "Leeds",
+        "LS3 4BB",
+      ),
+    )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         "15:00",
@@ -142,7 +163,14 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
-    assertThat(result?.curfewAddress).isEqualTo("123 Approved Premises Street 2, Off St Michaels Place, Leeds, LS1 2AA")
+    assertThat(result?.curfewAddress).isEqualTo(
+      CurfewAddress(
+        "123 Approved Premises Street 2",
+        "Off St Michaels Place",
+        "Leeds",
+        "LS1 2AA",
+      ),
+    )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         "15:00",

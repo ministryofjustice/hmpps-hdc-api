@@ -8,7 +8,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence as ModelHdcLice
 */
 
 fun transformToHdcLicence(
-  curfewAddress: String?,
+  curfewAddress: CurfewAddress?,
   firstNightCurfewHours: FirstNight?,
   curfewHours: CurfewHours?,
 ) = ModelHdcLicence(

@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
@@ -75,7 +76,12 @@ class LicenceControllerTest {
 
   private companion object {
     val aLicence = HdcLicence(
-      "123 Approved Premises Street 2, Off St Michaels Place, Leeds, LS1 2AA",
+      CurfewAddress(
+        addressLine1 = "123 Approved Premises Street 2",
+        addressLine2 = "Off St Michaels Place",
+        addressTown = "Leeds",
+        postCode = "LS1 2AA",
+      ),
       FirstNight(
         firstNightFrom = "15:00",
         firstNightUntil = "07:00",

@@ -34,11 +34,11 @@ class LicenceService(
     )
   }
 
-  fun getAddress(curfew: Curfew, cas2Referral: Cas2Referral, proposedAddress: ProposedAddress): String {
-    val isCurfewApprovedPremisesRequired = curfew.approvedPremises?.required == Decision.Yes
-    val isCas2ApprovedPremisesRequired = cas2Referral.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.Yes
-    val isCas2Requested = cas2Referral.bassRequest.bassRequested == Decision.Yes
-    val isCas2Accepted = cas2Referral.bassOffer?.bassAccepted == OfferAccepted.Yes
+  fun getAddress(curfew: Curfew, cas2Referral: Cas2Referral, proposedAddress: ProposedAddress): CurfewAddress {
+    val isCurfewApprovedPremisesRequired = curfew.approvedPremises?.required == Decision.YES
+    val isCas2ApprovedPremisesRequired = cas2Referral.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
+    val isCas2Requested = cas2Referral.bassRequest.bassRequested == Decision.YES
+    val isCas2Accepted = cas2Referral.bassOffer?.bassAccepted == OfferAccepted.YES
 
     if (isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired) {
       return formatAddress(curfew.approvedPremisesAddress!!)
@@ -49,21 +49,17 @@ class LicenceService(
     }
 
     if (isCas2Requested && isCas2Accepted) {
-      val cas2Address = cas2Referral.bassOffer as Cas2Offer
-      val address = Address(
-        addressLine1 = cas2Address.addressLine1,
-        addressLine2 = cas2Address.addressLine2,
-        addressTown = cas2Address.addressTown,
-        postCode = cas2Address.postCode,
-      )
-      return formatAddress(address)
+      val cas2Address = cas2Referral.bassOffer!!
+      return formatAddress(cas2Address)
     }
     return formatAddress(proposedAddress.curfewAddress!!)
   }
 
-  private fun formatAddress(addressObject: Address): String = if (addressObject.addressLine2 != null) {
-    "${addressObject.addressLine1}, ${addressObject.addressLine2}, ${addressObject.addressTown}, ${addressObject.postCode}"
-  } else {
-    "${addressObject.addressLine1}, ${addressObject.addressTown}, ${addressObject.postCode}"
-  }
+  private fun formatAddress(addressObject: Address): CurfewAddress =
+    CurfewAddress(
+      addressLine1 = addressObject.addressLine1,
+      addressLine2 = addressObject.addressLine2,
+      addressTown = addressObject.addressTown,
+      postCode = addressObject.postCode,
+    )
 }
