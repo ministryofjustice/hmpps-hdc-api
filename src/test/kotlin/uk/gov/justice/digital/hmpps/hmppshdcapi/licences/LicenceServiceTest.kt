@@ -4,14 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.time.LocalDateTime
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
@@ -193,14 +196,16 @@ class LicenceServiceTest {
   }
 
   @Test
-  fun `will return early if no HDC licence`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(null)
+  fun `will throw exception if no HDC licence`() {
+    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(anExceptionLicence())
 
-    val result = service.getByBookingId(54321L)
+    val exception = assertThrows<EntityNotFoundException> {
+      service.getByBookingId(54321L)
+    }
 
-    assertThat(result).isNull()
+    assertThat(exception).isInstanceOf(EntityNotFoundException::class.java)
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findLicenceByBookingId(anExceptionLicence().bookingId)
   }
 
   @Test
@@ -357,6 +362,20 @@ class LicenceServiceTest {
         "Town 5",
         "KL5 5MN",
       ),
+    )
+
+    fun anExceptionLicence() = Licence(
+      id = 1,
+      prisonNumber = "A12345B",
+      bookingId = 54321,
+      stage = "MODIFIED",
+      version = 1,
+      transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+      varyVersion = 0,
+      additionalConditionsVersion = null,
+      standardConditionsVersion = null,
+      deletedAt = null,
+      licence = null,
     )
   }
 }

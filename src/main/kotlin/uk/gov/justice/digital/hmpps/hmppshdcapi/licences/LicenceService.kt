@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
@@ -15,7 +16,7 @@ class LicenceService(
     val licence = licenceObject.licence
 
     if (licence.isNullOrEmpty()) {
-      return null
+      throw EntityNotFoundException("Licence data not found for booking $bookingId")
     }
 
     val cas2ReferralObject = licence["bassReferral"]
