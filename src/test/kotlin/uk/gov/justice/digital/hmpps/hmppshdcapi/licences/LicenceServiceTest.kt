@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,6 +13,7 @@ import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import java.time.LocalDateTime
 
 class LicenceServiceTest {
@@ -196,14 +196,15 @@ class LicenceServiceTest {
   }
 
   @Test
-  fun `will throw exception if no HDC licence`() {
+  fun `will throw exception if no HDC licence data found`() {
     whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(anExceptionLicence())
 
-    val exception = assertThrows<EntityNotFoundException> {
+    val exception = assertThrows<NoDataFoundException> {
       service.getByBookingId(54321L)
     }
 
-    assertThat(exception).isInstanceOf(EntityNotFoundException::class.java)
+    assertThat(exception).isInstanceOf(NoDataFoundException::class.java)
+    assertThat(exception.message).isEqualTo("No licence data found for booking id 54321")
 
     verify(licenceRepository, times(1)).findLicenceByBookingId(anExceptionLicence().bookingId)
   }

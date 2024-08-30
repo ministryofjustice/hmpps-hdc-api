@@ -47,10 +47,10 @@ class HmppsHdcApiExceptionHandler {
     .body(
       ErrorResponse(
         status = NOT_FOUND,
-        userMessage = "Validation failure: ${e.message}",
+        userMessage = "No resource found failure: ${e.message}",
         developerMessage = e.message,
       ),
-    ).also { log.info("Validation exception: {}", e.message) }
+    ).also { log.info("No resource found exception: {}", e.message) }
 
   @ExceptionHandler(HandlerMethodValidationException::class)
   fun handleHandlerMethodValidationException(e: HandlerMethodValidationException): ResponseEntity<ErrorResponse> =
@@ -78,6 +78,19 @@ class HmppsHdcApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.error("Unexpected exception", e) }
+
+  @ExceptionHandler(NoDataFoundException::class)
+  fun handleNoDataFoundException(e: NoDataFoundException): ResponseEntity<ErrorResponse> = ResponseEntity
+    .status(NOT_FOUND)
+    .body(
+      ErrorResponse(
+        status = NOT_FOUND,
+        userMessage = "Data not found: ${e.message}",
+        developerMessage = e.message,
+      ),
+    ).also { log.info("Data not found exception: {}", e.message) }
+
+  class NoDataFoundException(dataType: String, idType: String, id: Long) : Exception("No $dataType found for $idType $id")
 
   private companion object {
     private val log = LoggerFactory.getLogger(this::class.java)

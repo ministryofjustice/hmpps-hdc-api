@@ -4,8 +4,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
@@ -188,6 +190,43 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "19:00", "07:00",
       ),
     )
+  }
+
+  @Test
+  fun `Get forbidden (403) when incorrect roles are supplied`() {
+    val result = webTestClient.get()
+      .uri("/licence/hdc/12345")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_VERY_WRONG")))
+      .exchange()
+      .expectStatus().isEqualTo(HttpStatus.FORBIDDEN.value())
+      .expectBody(ErrorResponse::class.java)
+      .returnResult().responseBody
+
+    assertThat(result?.userMessage).contains("Access Denied")
+  }
+
+  @Test
+  fun `Unauthorized (401) when no token is supplied`() {
+    webTestClient.get()
+      .uri("/licence/hdc/12345")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED.value())
+  }
+
+  @Test
+  fun `Get not found (404) when no licence data is found`() {
+    val result = webTestClient.get()
+      .uri("/licence/hdc/11111")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .exchange()
+      .expectStatus().isEqualTo(HttpStatus.NOT_FOUND.value())
+      .expectBody(ErrorResponse::class.java)
+      .returnResult().responseBody
+
+    assertThat(result?.userMessage).isEqualTo("Data not found: No licence data found for booking id 11111")
   }
 
   private companion object {

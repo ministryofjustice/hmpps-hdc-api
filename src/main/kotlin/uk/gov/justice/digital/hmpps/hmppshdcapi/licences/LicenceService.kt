@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 
 @Service
@@ -11,12 +11,12 @@ class LicenceService(
   private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
-    val licenceObject = licenceRepository.findLicenceByBookingId(bookingId) ?: return null
+    val licenceObject = licenceRepository.findLicenceByBookingId(bookingId)
 
-    val licence = licenceObject.licence
+    val licence = licenceObject?.licence
 
     if (licence.isNullOrEmpty()) {
-      throw EntityNotFoundException("Licence data not found for booking $bookingId")
+      throw NoDataFoundException("licence data", "booking id", bookingId)
     }
 
     val cas2ReferralObject = licence["bassReferral"]
