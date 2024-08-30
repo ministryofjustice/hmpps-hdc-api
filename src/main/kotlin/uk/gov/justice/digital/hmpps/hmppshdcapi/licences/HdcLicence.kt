@@ -25,7 +25,7 @@ interface Address {
   val addressLine1: String
   val addressLine2: String?
   val addressTown: String
-  val postCode: String
+  val postcode: String
 }
 
 data class LicenceData(
@@ -51,14 +51,18 @@ data class CurfewAddress(
   override val addressLine1: String,
   override val addressLine2: String? = null,
   override val addressTown: String,
-  override val postCode: String,
+
+  @JsonProperty("postCode")
+  override val postcode: String,
 ) : Address
 
 data class Cas2Offer(
   override val addressLine1: String,
   override val addressLine2: String? = null,
   override val addressTown: String,
-  override val postCode: String,
+
+  @JsonProperty("postCode")
+  override val postcode: String,
   val bassAccepted: OfferAccepted,
 ) : Address
 
