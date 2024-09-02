@@ -82,7 +82,16 @@ class LicenceController(private val licenceService: LicenceService) {
           ),
         ],
       ),
-
+      ApiResponse(
+        responseCode = "404",
+        description = "The licence data for this booking ID was not found",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
+      ),
       ApiResponse(
         responseCode = "500",
         description = "Unexpected error occurred",
