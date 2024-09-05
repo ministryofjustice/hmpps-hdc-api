@@ -11,9 +11,13 @@ class LicenceService(
   private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
-    val licenceObject = licenceRepository.findLicenceByBookingId(bookingId)
+    val licences = licenceRepository.findByBookingIds(listOf(bookingId))
 
-    val licence = licenceObject?.licence
+    if (licences.isEmpty()) {
+      throw NoDataFoundException("licence", "booking id", bookingId)
+    }
+
+    val licence = licences.first().licence
 
     if (licence.isNullOrEmpty()) {
       throw NoDataFoundException("licence data", "booking id", bookingId)
