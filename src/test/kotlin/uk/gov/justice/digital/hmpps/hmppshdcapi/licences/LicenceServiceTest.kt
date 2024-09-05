@@ -37,7 +37,7 @@ class LicenceServiceTest {
 
   @Test
   fun `will retrieve HDC licence with an approved preferred address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCurfewApprovedPremisesRequiredLicence())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCurfewApprovedPremisesRequiredLicence()))
 
     val result = service.getByBookingId(54321L)
 
@@ -67,12 +67,12 @@ class LicenceServiceTest {
         "20:00", "08:00",
       ),
     )
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will retrieve HDC licence with an approved Cas2 address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2ApprovedPremisesLicence())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2ApprovedPremisesLicence()))
 
     val result = service.getByBookingId(54321L)
 
@@ -103,12 +103,12 @@ class LicenceServiceTest {
       ),
     )
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will retrieve HDC licence with a Cas2 address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2Licence())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2Licence()))
 
     val result = service.getByBookingId(54321L)
 
@@ -139,12 +139,12 @@ class LicenceServiceTest {
       ),
     )
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will retrieve HDC licence with a preferred address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aPreferredAddressLicence())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aPreferredAddressLicence()))
 
     val result = service.getByBookingId(54321L)
 
@@ -174,12 +174,12 @@ class LicenceServiceTest {
         "20:00", "08:00",
       ),
     )
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will correctly format a short Cas2 address`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(TestData.aCas2LicenceWithShortAddress())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2LicenceWithShortAddress()))
 
     val result = service.getByBookingId(54321L)
 
@@ -192,12 +192,26 @@ class LicenceServiceTest {
       ),
     )
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(54321L)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
+  }
+
+  @Test
+  fun `will throw exception if no HDC licence found`() {
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(emptyList())
+
+    val exception = assertThrows<NoDataFoundException> {
+      service.getByBookingId(54321L)
+    }
+
+    assertThat(exception).isInstanceOf(NoDataFoundException::class.java)
+    assertThat(exception.message).isEqualTo("No licence found for booking id 54321")
+
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will throw exception if no HDC licence data found`() {
-    whenever(licenceRepository.findLicenceByBookingId(54321L)).thenReturn(anExceptionLicence())
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(anExceptionLicence()))
 
     val exception = assertThrows<NoDataFoundException> {
       service.getByBookingId(54321L)
@@ -206,7 +220,7 @@ class LicenceServiceTest {
     assertThat(exception).isInstanceOf(NoDataFoundException::class.java)
     assertThat(exception.message).isEqualTo("No licence data found for booking id 54321")
 
-    verify(licenceRepository, times(1)).findLicenceByBookingId(anExceptionLicence().bookingId)
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
