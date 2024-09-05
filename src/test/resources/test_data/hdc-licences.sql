@@ -260,10 +260,4 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null),
-
-        -- Create a licence with no licence data
-       (5,
-        null,
-        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null);
-
+        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null);
