@@ -230,7 +230,7 @@ class LicenceServiceTest {
     assertThat(result.addressLine1).isEqualTo(aCurfew.approvedPremisesAddress!!.addressLine1)
     assertThat(result.addressLine2).isEqualTo(aCurfew.approvedPremisesAddress!!.addressLine2)
     assertThat(result.addressTown).isEqualTo(aCurfew.approvedPremisesAddress!!.addressTown)
-    assertThat(result.postcode).isEqualTo(aCurfew.approvedPremisesAddress!!.postcode)
+    assertThat(result.postCode).isEqualTo(aCurfew.approvedPremisesAddress!!.postCode)
   }
 
   @Test
@@ -241,7 +241,7 @@ class LicenceServiceTest {
     assertThat(result.addressLine1).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressLine1)
     assertThat(result.addressLine2).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressLine2)
     assertThat(result.addressTown).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressTown)
-    assertThat(result.postcode).isEqualTo(aCas2Referral.approvedPremisesAddress!!.postcode)
+    assertThat(result.postCode).isEqualTo(aCas2Referral.approvedPremisesAddress!!.postCode)
   }
 
   @Test
@@ -256,7 +256,7 @@ class LicenceServiceTest {
     assertThat(result.addressLine1).isEqualTo(aCas2Referral.bassOffer!!.addressLine1)
     assertThat(result.addressLine2).isEqualTo(aCas2Referral.bassOffer!!.addressLine2)
     assertThat(result.addressTown).isEqualTo(aCas2Referral.bassOffer!!.addressTown)
-    assertThat(result.postcode).isEqualTo(aCas2Referral.bassOffer!!.postcode)
+    assertThat(result.postCode).isEqualTo(aCas2Referral.bassOffer!!.postCode)
   }
 
   @Test
