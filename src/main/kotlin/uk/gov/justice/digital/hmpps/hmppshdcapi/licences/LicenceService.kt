@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 @Service
 class LicenceService(
   private val licenceRepository: LicenceRepository,
+<<<<<<< Updated upstream
   private val objectMapper: ObjectMapper,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
@@ -16,6 +17,12 @@ class LicenceService(
     if (licences.isEmpty()) {
       throw NoDataFoundException("licence", "booking id", bookingId)
     }
+=======
+  private val prisonApiClient: PrisonApiClient,
+) {
+  fun getByBookingId(bookingId: Long): HdcLicence? {
+    val licence = licenceRepository.findLicenceByBookingId(bookingId)?.licence ?: return null
+>>>>>>> Stashed changes
 
     val licence = licences.first().licence
 
@@ -23,6 +30,7 @@ class LicenceService(
       throw NoDataFoundException("licence data", "booking id", bookingId)
     }
 
+<<<<<<< Updated upstream
     val cas2ReferralObject = licence["bassReferral"]
     val cas2Referral = objectMapper.convertValue(cas2ReferralObject, Cas2Referral::class.java)
 
@@ -31,6 +39,22 @@ class LicenceService(
 
     val proposedAddressObject = licence["proposedAddress"]
     val proposedAddress = objectMapper.convertValue(proposedAddressObject, ProposedAddress::class.java)
+=======
+    val cas2Referral = licence.bassReferral
+    val cas2Requested = cas2Referral?.bassRequest?.bassRequested
+
+    val address = if (cas2Requested == "Yes") {
+     cas2Referral.bassOffer
+    } else {
+     licence.proposedAddress?.curfewAddress
+
+    }
+    val formattedAddress = address?.let { getAddress(it) }
+
+    val curfewTimes = licence.curfew
+    val firstNightHours = curfewTimes?.firstNight
+    val curfewHours = curfewTimes?.curfewHours
+>>>>>>> Stashed changes
 
     return HdcLicence(
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),

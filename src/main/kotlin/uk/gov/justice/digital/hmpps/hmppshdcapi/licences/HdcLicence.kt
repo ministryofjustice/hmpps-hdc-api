@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+<<<<<<< Updated upstream
 import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class Decision {
@@ -28,12 +29,18 @@ interface Address {
   val postcode: String
 }
 
+=======
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+>>>>>>> Stashed changes
 data class LicenceData(
-  val bassReferral: Cas2Referral,
-  val proposedAddress: ProposedAddress,
-  val curfew: Curfew,
+  val bassReferral: Cas2Referral?,
+  val proposedAddress: ProposedAddress?,
+  val curfew: Curfew?,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2Referral(
   // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
   val bassOffer: Cas2Offer? = null,
@@ -42,11 +49,13 @@ data class Cas2Referral(
   val bassAreaCheck: Cas2AreaCheck? = null,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ProposedAddress(
   // curfewAddress only nullable as address will be either this if ProposedAddress or bassOffer if cas2
   val curfewAddress: CurfewAddress? = null,
 )
 
+<<<<<<< Updated upstream
 data class CurfewAddress(
   override val addressLine1: String,
   override val addressLine2: String? = null,
@@ -65,11 +74,22 @@ data class Cas2Offer(
   override val postcode: String,
   val bassAccepted: OfferAccepted,
 ) : Address
+=======
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Address(
+  val addressLine1: String,
+  val addressLine2: String? = null,
+  val addressTown: String,
+  val postCode: String,
+)
+>>>>>>> Stashed changes
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2Request(
   val bassRequested: Decision,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Curfew(
   val firstNight: FirstNight,
   val curfewHours: CurfewHours,
@@ -77,11 +97,13 @@ data class Curfew(
   val approvedPremises: ApprovedPremises? = null,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class FirstNight(
   val firstNightFrom: String,
   val firstNightUntil: String,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class CurfewHours(
   val mondayFrom: String,
   val mondayUntil: String,
