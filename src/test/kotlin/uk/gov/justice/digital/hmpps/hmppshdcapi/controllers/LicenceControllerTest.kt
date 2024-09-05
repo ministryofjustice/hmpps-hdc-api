@@ -80,7 +80,7 @@ class LicenceControllerTest {
         addressLine1 = "123 Approved Premises Street 2",
         addressLine2 = "Off St Michaels Place",
         addressTown = "Leeds",
-        postcode = "LS1 2AA",
+        postCode = "LS1 2AA",
       ),
       FirstNight(
         firstNightFrom = "15:00",
