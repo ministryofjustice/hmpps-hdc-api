@@ -52,7 +52,7 @@ data class CurfewAddress(
   override val addressLine2: String? = null,
   override val addressTown: String,
 
-  @JsonProperty("postCode")
+  @JsonProperty("postCode", access = JsonProperty.Access.READ_ONLY)
   override val postcode: String,
 ) : Address
 
@@ -61,7 +61,7 @@ data class Cas2Offer(
   override val addressLine2: String? = null,
   override val addressTown: String,
 
-  @JsonProperty("postCode")
+  @JsonProperty("postCode", access = JsonProperty.Access.READ_ONLY)
   override val postcode: String,
   val bassAccepted: OfferAccepted,
 ) : Address
