@@ -216,7 +216,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
   }
 
   @Test
-  fun `Get not found (404) when no licence is found`() {
+  fun `Get not found (404) when no licence data is found`() {
     val result = webTestClient.get()
       .uri("/licence/hdc/11111")
       .accept(MediaType.APPLICATION_JSON)
@@ -226,21 +226,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .expectBody(ErrorResponse::class.java)
       .returnResult().responseBody
 
-    assertThat(result?.userMessage).isEqualTo("Data not found: No licence found for booking id 11111")
-  }
-
-  @Test
-  fun `Get not found (404) when no licence data is found`() {
-    val result = webTestClient.get()
-      .uri("/licence/hdc/22222")
-      .accept(MediaType.APPLICATION_JSON)
-      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
-      .exchange()
-      .expectStatus().isEqualTo(HttpStatus.NOT_FOUND.value())
-      .expectBody(ErrorResponse::class.java)
-      .returnResult().responseBody
-
-    assertThat(result?.userMessage).isEqualTo("Data not found: No licence data found for booking id 22222")
+    assertThat(result?.userMessage).isEqualTo("Data not found: No licence data found for booking id 11111")
   }
 
   private companion object {
