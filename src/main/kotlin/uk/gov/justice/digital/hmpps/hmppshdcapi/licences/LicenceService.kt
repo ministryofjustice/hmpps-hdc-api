@@ -65,6 +65,6 @@ class LicenceService(
       addressLine1 = addressObject.addressLine1,
       addressLine2 = addressObject.addressLine2,
       addressTown = addressObject.addressTown,
-      postcode = addressObject.postcode,
+      postCode = addressObject.postCode,
     )
 }
