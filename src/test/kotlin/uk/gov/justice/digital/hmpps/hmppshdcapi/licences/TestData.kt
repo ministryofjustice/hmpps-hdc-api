@@ -16,40 +16,36 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassRequest" to mapOf(
-          "bassRequested" to "No",
+    licence = LicenceData(
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = "No"),
+        bassOffer = null,
+      ),
+      proposedAddress = ProposedAddress(
+        Address(
+          addressLine1 = "1 The Street",
+          addressLine2 = "Area",
+          addressTown = "Town",
+          postCode = "AB1 2CD",
         ),
       ),
-      "proposedAddress" to mapOf(
-        "curfewAddress" to mapOf(
-          "addressLine1" to "1 The Street",
-          "addressLine2" to "Area",
-          "addressTown" to "Town",
-          "postCode" to "AB1 2CD",
-        ),
-      ),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "16:00",
-          "firstNightUntil" to "08:00",
-        ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "20:00",
-          "mondayFrom" to "20:00",
-          "sundayFrom" to "20:00",
-          "fridayUntil" to "08:00",
-          "mondayUntil" to "08:00",
-          "sundayUntil" to "08:00",
-          "tuesdayFrom" to "20:00",
-          "saturdayFrom" to "20:00",
-          "thursdayFrom" to "20:00",
-          "tuesdayUntil" to "08:00",
-          "saturdayUntil" to "08:00",
-          "thursdayUntil" to "08:00",
-          "wednesdayFrom" to "20:00",
-          "wednesdayUntil" to "08:00",
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "16:00", firstNightUntil = "08:00"),
+        curfewHours = CurfewHours(
+          fridayFrom = "20:00",
+          mondayFrom = "20:00",
+          sundayFrom = "20:00",
+          fridayUntil = "08:00",
+          mondayUntil = "08:00",
+          sundayUntil = "08:00",
+          tuesdayFrom = "20:00",
+          saturdayFrom = "20:00",
+          thursdayFrom = "20:00",
+          tuesdayUntil = "08:00",
+          saturdayUntil = "08:00",
+          thursdayUntil = "08:00",
+          wednesdayFrom = "20:00",
+          wednesdayUntil = "08:00",
         ),
       ),
     ),
@@ -66,6 +62,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+<<<<<<< Updated upstream
     licence = mapOf(
       "bassReferral" to mapOf(
         "bassOffer" to mapOf(
@@ -77,29 +74,36 @@ object TestData {
         ),
         "bassRequest" to mapOf(
           "bassRequested" to "Yes",
+=======
+    licence = LicenceData(
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = "Yes"),
+        bassOffer = Address(
+          addressLine1 = "2 The Street",
+          addressLine2 = "Area 2",
+          addressTown = "Town 2",
+          postCode = "EF3 4GH",
+>>>>>>> Stashed changes
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00",
-        ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "19:00",
-          "mondayFrom" to "19:00",
-          "sundayFrom" to "19:00",
-          "fridayUntil" to "07:00",
-          "mondayUntil" to "07:00",
-          "sundayUntil" to "07:00",
-          "tuesdayFrom" to "19:00",
-          "saturdayFrom" to "19:00",
-          "thursdayFrom" to "19:00",
-          "tuesdayUntil" to "07:00",
-          "saturdayUntil" to "07:00",
-          "thursdayUntil" to "07:00",
-          "wednesdayFrom" to "19:00",
-          "wednesdayUntil" to "07:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        curfewHours = CurfewHours(
+          fridayFrom = "19:00",
+          mondayFrom = "19:00",
+          sundayFrom = "19:00",
+          fridayUntil = "07:00",
+          mondayUntil = "07:00",
+          sundayUntil = "07:00",
+          tuesdayFrom = "19:00",
+          saturdayFrom = "19:00",
+          thursdayFrom = "19:00",
+          tuesdayUntil = "07:00",
+          saturdayUntil = "07:00",
+          thursdayUntil = "07:00",
+          wednesdayFrom = "19:00",
+          wednesdayUntil = "07:00",
         ),
       ),
     ),
@@ -116,6 +120,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+<<<<<<< Updated upstream
     licence = mapOf(
       "bassReferral" to mapOf(
         "bassOffer" to mapOf(
@@ -127,29 +132,36 @@ object TestData {
         ),
         "bassRequest" to mapOf(
           "bassRequested" to "Yes",
+=======
+    licence = LicenceData(
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = "Yes"),
+        bassOffer = Address(
+          addressLine1 = "2 The Street",
+          addressLine2 = null,
+          addressTown = "Town 2",
+          postCode = "EF3 4GH",
+>>>>>>> Stashed changes
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00",
-        ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "19:00",
-          "mondayFrom" to "19:00",
-          "sundayFrom" to "19:00",
-          "fridayUntil" to "07:00",
-          "mondayUntil" to "07:00",
-          "sundayUntil" to "07:00",
-          "tuesdayFrom" to "19:00",
-          "saturdayFrom" to "19:00",
-          "thursdayFrom" to "19:00",
-          "tuesdayUntil" to "07:00",
-          "saturdayUntil" to "07:00",
-          "thursdayUntil" to "07:00",
-          "wednesdayFrom" to "19:00",
-          "wednesdayUntil" to "07:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        curfewHours = CurfewHours(
+          fridayFrom = "19:00",
+          mondayFrom = "19:00",
+          sundayFrom = "19:00",
+          fridayUntil = "07:00",
+          mondayUntil = "07:00",
+          sundayUntil = "07:00",
+          tuesdayFrom = "19:00",
+          saturdayFrom = "19:00",
+          thursdayFrom = "19:00",
+          tuesdayUntil = "07:00",
+          saturdayUntil = "07:00",
+          thursdayUntil = "07:00",
+          wednesdayFrom = "19:00",
+          wednesdayUntil = "07:00",
         ),
       ),
     ),

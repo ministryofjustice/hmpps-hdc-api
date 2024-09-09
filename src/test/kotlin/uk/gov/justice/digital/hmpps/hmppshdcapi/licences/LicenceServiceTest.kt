@@ -27,7 +27,11 @@ class LicenceServiceTest {
 
   private val service = LicenceService(
     licenceRepository = licenceRepository,
+<<<<<<< Updated upstream
     objectMapper = objectMapper,
+=======
+    prisonApiClient = prisonApiClient,
+>>>>>>> Stashed changes
   )
 
   @BeforeEach
