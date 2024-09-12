@@ -29,6 +29,7 @@ interface Address {
   val postCode: String
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class LicenceData(
   val bassReferral: Cas2Referral?,
   val proposedAddress: ProposedAddress?,
