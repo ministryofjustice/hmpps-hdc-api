@@ -32,12 +32,10 @@ class Licence(
 
   @Type(JsonBinaryType::class)
   @Column(columnDefinition = "jsonb")
-  val licence: Map<String, Any>?,
+  val licence: LicenceData?,
 ) {
 
-  override fun toString(): String {
-    return "Licence(id=$id, prison_number='$prisonNumber', bookingId=$bookingId)"
-  }
+  override fun toString(): String = "Licence(id=$id, prison_number='$prisonNumber', bookingId=$bookingId)"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -48,7 +46,5 @@ class Licence(
     return true
   }
 
-  override fun hashCode(): Int {
-    return id?.hashCode() ?: 0
-  }
+  override fun hashCode(): Int = id?.hashCode() ?: 0
 }

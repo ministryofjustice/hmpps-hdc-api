@@ -1,9 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,15 +15,8 @@ import java.time.LocalDateTime
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
 
-  private val objectMapper = ObjectMapper().apply {
-    registerModule(Jdk8Module())
-    registerModule(JavaTimeModule())
-    registerKotlinModule()
-  }
-
   private val service = LicenceService(
     licenceRepository = licenceRepository,
-    objectMapper = objectMapper,
   )
 
   @BeforeEach
@@ -296,7 +285,7 @@ class LicenceServiceTest {
     )
     val noCas2Referral = aCas2Referral.copy(
       bassOffer = aCas2Offer.copy(
-        bassAccepted = OfferAccepted.UNSUITABLE,
+        bassAccepted = OfferAccepted.UNAVAILABLE,
       ),
       bassRequest = Cas2Request(
         Decision.NO,
