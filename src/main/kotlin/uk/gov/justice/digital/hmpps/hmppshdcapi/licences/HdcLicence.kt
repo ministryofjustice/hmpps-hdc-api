@@ -31,9 +31,24 @@ interface Address {
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class LicenceData(
+  val eligibility: Eligibility?,
   val bassReferral: Cas2Referral?,
   val proposedAddress: ProposedAddress?,
   val curfew: Curfew?,
+  val risk: Risk?,
+  val reporting: Reporting?,
+  val victim: Victim?,
+  val licenceConditions: LicenceConditions?,
+  val documented: Document?,
+  val approval: Approval?,
+  val finalChecks: FinalChecks?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Eligibility(
+  val crdTime: Decision,
+  val excluded: Decision,
+  val suitability: Decision
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -113,4 +128,104 @@ data class ApprovedPremises(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2AreaCheck(
   val approvedPremisesRequiredYesNo: Decision,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Risk (
+  val riskManagement: RiskManagement
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class RiskManagement(
+  val version: String,
+  val emsInformation: Decision?,
+  val unsuitableReason: String?,
+  val hasConsideredChecks: Decision?,
+  val emsInformationDetails: String?,
+  val riskManagementDetails: String?,
+  val proposedAddressSuitable: Decision?,
+  val awaitingOtherInformation: Decision?,
+  val nonDisclosableInformation: Decision?,
+  val nonDisclosableInformationDetails: String?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Victim (
+  val victimLiaison: VictimLiaison
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VictimLiaison (
+  val victimLiaison: Decision?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Approval (
+  val release: Release
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Release (
+  val decision: Decision?,
+  val decisionMaker: String?,
+  val reasonForDecision: String?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Document (
+  val template: Template
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Template (
+  val decision: String?,
+  val offenceCommittedBeforeFeb2015: Decision?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Reporting (
+  val reportingInstructions: ReportingInstructions
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ReportingInstructions (
+  val name: String?,
+  val postcode: String?,
+  val telephone: String?,
+  val townOrCity: String?,
+  val organisation: String?,
+  val reportingDate: String?,
+  val reportingTime: String?,
+  val buildingAndStreet1: String?,
+  val buildingAndStreet2: String?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class FinalChecks(
+  val onRemand: Decision,
+  val seriousOffence: Decision,
+  val confiscationOrder: Decision
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class LicenceConditions(
+  val bespoke: List<String>?,
+  val standard: Standard?,
+  val additional: Additional?,
+  val conditionsSummary: ConditionsSummary?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Standard(
+  val additionalConditionsJustification: String?
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Additional(
+  // TO DO
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ConditionsSummary(
+  val additionalConditionsJustification: String?
 )
