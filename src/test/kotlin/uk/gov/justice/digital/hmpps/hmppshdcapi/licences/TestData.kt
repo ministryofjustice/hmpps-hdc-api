@@ -17,6 +17,11 @@ object TestData {
     standardConditionsVersion = null,
     deletedAt = null,
     licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = Decision.NO,
+        excluded = Decision.NO,
+        suitability = Decision.NO,
+      ),
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
@@ -48,6 +53,76 @@ object TestData {
           sundayUntil = "08:00",
         ),
       ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation =  Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = ""
+        )
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation= "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street"
+        )
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        )
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        )
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        )
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker =  "Tim Mccluskey",
+          reasonForDecision = "",
+        )
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+          ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        )
+      )
     ),
   )
 
@@ -63,6 +138,11 @@ object TestData {
     standardConditionsVersion = null,
     deletedAt = null,
     licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = Decision.NO,
+        excluded = Decision.NO,
+        suitability = Decision.NO,
+      ),
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
@@ -93,6 +173,76 @@ object TestData {
           sundayUntil = "07:00",
         ),
       ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation =  Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = ""
+        )
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "Bob Smith",
+          postcode = "1111 1AD",
+          telephone = "01234 123456",
+          townOrCity = "Blackburn",
+          organisation= "Blackburn NPS",
+          reportingDate = "28/03/2023",
+          reportingTime = "12:00",
+          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet2 = ""
+        )
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        )
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        )
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        )
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker =  "Tim Mccluskey",
+          reasonForDecision = "",
+        )
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        )
+      )
     ),
   )
 
@@ -108,6 +258,11 @@ object TestData {
     standardConditionsVersion = null,
     deletedAt = null,
     licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = Decision.NO,
+        excluded = Decision.NO,
+        suitability = Decision.NO,
+      ),
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
@@ -138,6 +293,76 @@ object TestData {
           sundayUntil = "07:00",
         ),
       ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation =  Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = ""
+        )
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "Bob Smith",
+          postcode = "1111 1AD",
+          telephone = "01234 123456",
+          townOrCity = "Blackburn",
+          organisation= "Blackburn NPS",
+          reportingDate = "28/03/2023",
+          reportingTime = "12:00",
+          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet2 = ""
+        )
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        )
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        )
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        )
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker =  "Tim Mccluskey",
+          reasonForDecision = "",
+        )
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        )
+      )
     ),
   )
 
@@ -153,6 +378,11 @@ object TestData {
     standardConditionsVersion = null,
     deletedAt = null,
     licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = Decision.NO,
+        excluded = Decision.NO,
+        suitability = Decision.NO,
+      ),
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = null,
@@ -186,6 +416,76 @@ object TestData {
           sundayUntil = "07:00",
         ),
       ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation =  Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = ""
+        )
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation= "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street"
+        )
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        )
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        )
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        )
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker =  "Tim Mccluskey",
+          reasonForDecision = "",
+        )
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        )
+      )
     ),
   )
 
@@ -201,6 +501,11 @@ object TestData {
     standardConditionsVersion = null,
     deletedAt = null,
     licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = Decision.NO,
+        excluded = Decision.NO,
+        suitability = Decision.NO,
+      ),
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
@@ -238,6 +543,76 @@ object TestData {
           required = Decision.YES,
         ),
       ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation =  Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = ""
+        )
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation= "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street"
+        )
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        )
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        )
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        )
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker =  "Tim Mccluskey",
+          reasonForDecision = "",
+        )
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        )
+      )
     ),
   )
 

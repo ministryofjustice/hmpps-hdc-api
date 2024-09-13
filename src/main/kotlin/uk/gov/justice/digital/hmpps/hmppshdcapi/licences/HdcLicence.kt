@@ -40,7 +40,7 @@ data class LicenceData(
   val reporting: Reporting?,
   val victim: Victim?,
   val licenceConditions: LicenceConditions?,
-  val documented: Document?,
+  val document: Document?,
   val approval: Approval?,
   val finalChecks: FinalChecks?,
 )
@@ -140,6 +140,9 @@ data class Risk(
 data class RiskManagement(
   val version: String,
   val emsInformation: Decision?,
+  val pomConsultation: Decision?,
+  val mentalHealthPlan: Decision?,
+  val manageInTheCommunity: Decision?,
   val unsuitableReason: String?,
   val hasConsideredChecks: Decision?,
   val emsInformationDetails: String?,
@@ -148,6 +151,7 @@ data class RiskManagement(
   val awaitingOtherInformation: Decision?,
   val nonDisclosableInformation: Decision?,
   val nonDisclosableInformationDetails: String?,
+  val manageInTheCommunityNotPossibleReason: String?
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -157,7 +161,7 @@ data class Victim(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class VictimLiaison(
-  val victimLiaison: Decision?,
+  val decision: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -203,9 +207,24 @@ data class ReportingInstructions(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class FinalChecks(
-  val onRemand: Decision,
-  val seriousOffence: Decision,
-  val confiscationOrder: Decision,
+  val onRemand: OnRemand?,
+  val seriousOffence: SeriousOffence?,
+  val confiscationOrder: ConfiscationOrder?,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class OnRemand(
+  val decision: Decision,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class SeriousOffence(
+  val decision: Decision,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ConfiscationOrder(
+  val decision: Decision,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -218,7 +237,7 @@ data class LicenceConditions(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Standard(
-  val additionalConditionsJustification: String?,
+  val additionalConditionsRequired: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
