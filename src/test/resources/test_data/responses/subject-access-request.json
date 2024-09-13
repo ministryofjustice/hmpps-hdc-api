@@ -11,6 +11,7 @@
         "varyVersion": 0,
         "additionalConditionsVersion": 1,
         "standardConditionsVersion": 2,
+        "deletedAt": null,
         "licence": {
           "eligibility": {
             "crdTime": {
@@ -24,36 +25,30 @@
             }
           },
           "bassReferral": {
+            "bassOffer": null,
             "bassRequest": {
               "bassRequested": "No"
-            }
+            },
+            "approvedPremisesAddress": null,
+            "bassAreaCheck": null
           },
           "proposedAddress": {
-            "optOut": {
-              "decision": "No"
-            },
             "curfewAddress": {
-              "occupier": {
-                "name": "Some Duty Officer",
-                "isOffender": "Yes",
-                "relationship": ""
-              },
-              "postCode": "LS1 2AA",
-              "residents": [],
-              "telephone": "44000000000",
-              "addressTown": "Leeds",
               "addressLine1": "123 Approved Premises Street 2",
               "addressLine2": "prisoner had requested BASS address",
-              "additionalInformation": "",
-              "residentOffenceDetails": "",
-              "cautionedAgainstResident": "No"
-            },
-            "addressProposed": {
-              "decision": "Yes"
+              "addressTown": "Leeds",
+              "postCode": "LS1 2AA"
             }
-          }
-        },
-        "deletedAt": null
+          },
+          "curfew": null,
+          "risk": null,
+          "reporting": null,
+          "victim": null,
+          "licenceConditions": null,
+          "document": null,
+          "approval": null,
+          "finalChecks": null
+        }
       }
     ],
     "licenceVersions": [
@@ -65,6 +60,7 @@
         "version": 29,
         "template": "hdc_ap",
         "varyVersion": 0,
+        "deletedAt": null,
         "licence": {
           "risk": {
             "riskManagement": {
@@ -206,8 +202,7 @@
               "additionalConditionsRequired": "No"
             }
           }
-        },
-        "deletedAt": null
+        }
       },
       {
         "id": 396,
@@ -217,6 +212,7 @@
         "version": 3,
         "template": "hdc_ap",
         "varyVersion": 0,
+        "deletedAt": null,
         "licence": {
           "risk": {
             "riskManagement": {
@@ -359,8 +355,7 @@
               "additionalConditionsJustification": "Why they added additional condition here."
             }
           }
-        },
-        "deletedAt": null
+        }
       }
     ],
     "auditEvents": [

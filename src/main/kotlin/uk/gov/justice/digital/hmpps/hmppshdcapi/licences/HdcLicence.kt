@@ -47,9 +47,14 @@ data class LicenceData(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Eligibility(
-  val crdTime: Decision,
-  val excluded: Decision,
-  val suitability: Decision,
+  val crdTime: DecisionMade,
+  val excluded: DecisionMade,
+  val suitability: DecisionMade,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class DecisionMade(
+  val decision: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -151,7 +156,7 @@ data class RiskManagement(
   val awaitingOtherInformation: Decision?,
   val nonDisclosableInformation: Decision?,
   val nonDisclosableInformationDetails: String?,
-  val manageInTheCommunityNotPossibleReason: String?
+  val manageInTheCommunityNotPossibleReason: String?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
