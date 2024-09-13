@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -41,14 +42,14 @@ data class LicenceData(
   val licenceConditions: LicenceConditions?,
   val documented: Document?,
   val approval: Approval?,
-  val finalChecks: FinalChecks?
+  val finalChecks: FinalChecks?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Eligibility(
   val crdTime: Decision,
   val excluded: Decision,
-  val suitability: Decision
+  val suitability: Decision,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -131,8 +132,8 @@ data class Cas2AreaCheck(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Risk (
-  val riskManagement: RiskManagement
+data class Risk(
+  val riskManagement: RiskManagement,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -146,49 +147,49 @@ data class RiskManagement(
   val proposedAddressSuitable: Decision?,
   val awaitingOtherInformation: Decision?,
   val nonDisclosableInformation: Decision?,
-  val nonDisclosableInformationDetails: String?
+  val nonDisclosableInformationDetails: String?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Victim (
-  val victimLiaison: VictimLiaison
+data class Victim(
+  val victimLiaison: VictimLiaison,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class VictimLiaison (
-  val victimLiaison: Decision?
+data class VictimLiaison(
+  val victimLiaison: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Approval (
-  val release: Release
+data class Approval(
+  val release: Release,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Release (
+data class Release(
   val decision: Decision?,
   val decisionMaker: String?,
-  val reasonForDecision: String?
+  val reasonForDecision: String?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Document (
-  val template: Template
+data class Document(
+  val template: Template,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Template (
+data class Template(
   val decision: String?,
-  val offenceCommittedBeforeFeb2015: Decision?
+  val offenceCommittedBeforeFeb2015: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Reporting (
-  val reportingInstructions: ReportingInstructions
+data class Reporting(
+  val reportingInstructions: ReportingInstructions,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class ReportingInstructions (
+data class ReportingInstructions(
   val name: String?,
   val postcode: String?,
   val telephone: String?,
@@ -197,14 +198,14 @@ data class ReportingInstructions (
   val reportingDate: String?,
   val reportingTime: String?,
   val buildingAndStreet1: String?,
-  val buildingAndStreet2: String?
+  val buildingAndStreet2: String?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class FinalChecks(
   val onRemand: Decision,
   val seriousOffence: Decision,
-  val confiscationOrder: Decision
+  val confiscationOrder: Decision,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -212,20 +213,148 @@ data class LicenceConditions(
   val bespoke: List<String>?,
   val standard: Standard?,
   val additional: Additional?,
-  val conditionsSummary: ConditionsSummary?
+  val conditionsSummary: ConditionsSummary?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Standard(
-  val additionalConditionsJustification: String?
+  val additionalConditionsJustification: String?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Additional(
-  // TO DO
+  @JsonProperty("RESIDE_AT_SPECIFIC_PLACE")
+  val resideAtSpecificPlace: Any?,
+
+  @JsonAlias("NO_RESIDE", "NORESIDE")
+  val noReside: Any?,
+
+  @JsonAlias("NO_CONTACT_PRISONER", "NOCONTACTPRISONER")
+  val noContactPrisoner: Any?,
+
+  @JsonProperty("NO_CONTACT_SEX_OFFENDER")
+  val noContactSexOffender: Any?,
+
+  @JsonProperty("NO_CONTACT_ASSOCIATE")
+  val noContactAssociate: Any?,
+
+  @JsonAlias("NO_UNSUPERVISED_CONTACT", "NOUNSUPERVISEDCONTACT")
+  val noUnsupervisedContact: Any?,
+
+  @JsonAlias("NO_COMMUNICATE_VICTIM", "NOCOMMUNICATEVICTIM")
+  val noCommunicateVictim: Any?,
+
+  @JsonProperty("ATTENDDEPENDENCY")
+  val attendingDependency: Any?,
+
+  @JsonAlias("NO_CONTACT_NAMED", "NOCONTACTNAMED")
+  val noContactNamed: Any?,
+
+  @JsonAlias("ATTEND_DEPENDENCY_IN_DRUGS_SECTION", "ATTENDDEPENDENCYINDRUGSSECTION")
+  val attendDependencyInDrugsSection: Any?,
+
+  @JsonAlias("ATTEND_ALL", "ATTENDALL")
+  val attendAll: Any?,
+
+  @JsonAlias("HOME_VISITS", "HOMEVISITS")
+  val homeVisits: Any?,
+
+  @JsonProperty("RETURN_TO_UK")
+  val returnToUk: Any?,
+
+  @JsonAlias("NO_WORK_WITH_AGE", "NOWORKWITHAGE")
+  val noWorkWithAge: Any?,
+
+  @JsonAlias("COMPLY_REQUIREMENTS", "COMPLYREQUIREMENTS")
+  val complyRequirements: Any?,
+
+  @JsonProperty("SPECIFIC_ITEM")
+  val specificItem: Any?,
+
+  @JsonAlias("SURRENDER_PASSPORT", "SURRENDERPASSPORT")
+  val surrenderPassport: Any?,
+
+  @JsonAlias("ONE_PHONE", "ONEPHONE")
+  val onePhone: Any?,
+
+  @JsonAlias("NO_INTERNET", "NOINTERNET")
+  val noInternet: Any?,
+
+  @JsonAlias("USAGE_HISTORY", "USAGEHISTORY")
+  val usageHistory: Any?,
+
+  @JsonProperty("NO_CAMERA")
+  val noCamera: Any?,
+
+  @JsonProperty("CAMERA_APPROVAL")
+  val cameraApproval: Any?,
+
+  @JsonAlias("NO_CAMERA_PHONE", "NOCAMERAPHONE")
+  val noCameraPhone: Any?,
+
+  @JsonAlias("INTIMATE_RELATIONSHIP", "INTIMATERELATIONSHIP")
+  val intimateRelationship: Any?,
+
+  @JsonAlias("NOTIFY_RELATIONSHIP", "NOTIFYRELATIONSHIP")
+  val notifyRelationship: Any?,
+
+  @JsonAlias("NOTIFY_PASSPORT", "NOTIFYPASSPORT")
+  val notifyPassport: Any?,
+
+  @JsonAlias("VEHICLE_DETAILS", "VEHICLEDETAILS")
+  val vehicleDetails: Any?,
+
+  @JsonAlias("REMAIN_ADDRESS", "REMAINADDRESS")
+  val remainAddress: Any?,
+
+  @JsonAlias("CONFINE_ADDRESS", "CONFINEADDRESS")
+  val confineAddress: Any?,
+
+  @JsonProperty("POLICE_ESCORT")
+  val policeEscort: Any?,
+
+  @JsonAlias("NO_CHILDRENS_AREA", "NOCHILDRENSAREA")
+  val noChildrenArea: Any?,
+
+  @JsonAlias("EXCLUSION_ADDRESS", "EXCLUSIONADDRESS")
+  val exclusionAddress: Any?,
+
+  @JsonAlias("EXCLUSION_AREA", "EXCLUSIONAREA")
+  val exclusionArea: Any?,
+
+  @JsonAlias("REPORT_TO", "REPORTTO")
+  val reportTo: Any?,
+
+  @JsonProperty("POLYGRAPH")
+  val polygraph: Any?,
+
+  @JsonProperty("DONT_HAMPER_DRUG_TESTING")
+  val dontHamperDrugTesting: Any?,
+
+  @JsonProperty("DRUG_TESTING")
+  val drugTesting: Any?,
+
+  @JsonProperty("ELECTRONIC_MONITORING_INSTALLATION")
+  val electronMonitoringInstallation: Any?,
+
+  @JsonProperty("ELECTRONIC_MONITORING_TRAIL")
+  val electronMonitoringTrail: Any?,
+
+  @JsonProperty("CURFEW_UNTIL_INSTALLATION")
+  val curfewUntilInstallation: Any?,
+
+  @JsonProperty("ALCOHOL_MONITORING")
+  val alcoholMonitoring: Any?,
+
+  @JsonProperty("ALLOW_POLICE_SEARCH")
+  val allowPoliceSearch: Any?,
+
+  @JsonProperty("ATTEND_SAMPLE")
+  val attendSample: Any?,
+
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ConditionsSummary(
-  val additionalConditionsJustification: String?
+  val additionalConditionsJustification: String?,
 )
