@@ -16,40 +16,111 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassRequest" to mapOf(
-          "bassRequested" to "No",
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.NO),
+        bassOffer = null,
+      ),
+      proposedAddress = ProposedAddress(
+        CurfewAddress(
+          addressLine1 = "1 The Street",
+          addressLine2 = "Area",
+          addressTown = "Town",
+          postCode = "AB1 2CD",
         ),
       ),
-      "proposedAddress" to mapOf(
-        "curfewAddress" to mapOf(
-          "addressLine1" to "1 The Street",
-          "addressLine2" to "Area",
-          "addressTown" to "Town",
-          "postCode" to "AB1 2CD",
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "16:00", firstNightUntil = "08:00"),
+        curfewHours = CurfewHours(
+          mondayFrom = "20:00",
+          mondayUntil = "08:00",
+          tuesdayFrom = "20:00",
+          tuesdayUntil = "08:00",
+          wednesdayFrom = "20:00",
+          wednesdayUntil = "08:00",
+          thursdayFrom = "20:00",
+          thursdayUntil = "08:00",
+          fridayFrom = "20:00",
+          fridayUntil = "08:00",
+          saturdayFrom = "20:00",
+          saturdayUntil = "08:00",
+          sundayFrom = "20:00",
+          sundayUntil = "08:00",
         ),
       ),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "16:00",
-          "firstNightUntil" to "08:00",
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
         ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "20:00",
-          "mondayFrom" to "20:00",
-          "sundayFrom" to "20:00",
-          "fridayUntil" to "08:00",
-          "mondayUntil" to "08:00",
-          "sundayUntil" to "08:00",
-          "tuesdayFrom" to "20:00",
-          "saturdayFrom" to "20:00",
-          "thursdayFrom" to "20:00",
-          "tuesdayUntil" to "08:00",
-          "saturdayUntil" to "08:00",
-          "thursdayUntil" to "08:00",
-          "wednesdayFrom" to "20:00",
-          "wednesdayUntil" to "08:00",
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation = "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
         ),
       ),
     ),
@@ -66,40 +137,110 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassOffer" to mapOf(
-          "addressLine1" to "2 The Street",
-          "addressLine2" to "Area 2",
-          "addressTown" to "Town 2",
-          "postCode" to "EF3 4GH",
-          "bassAccepted" to "Yes",
-        ),
-        "bassRequest" to mapOf(
-          "bassRequested" to "Yes",
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.YES),
+        bassOffer = Cas2Offer(
+          addressLine1 = "2 The Street",
+          addressLine2 = "Area 2",
+          addressTown = "Town 2",
+          postCode = "EF3 4GH",
+          bassAccepted = OfferAccepted.YES,
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        curfewHours = CurfewHours(
+          mondayFrom = "19:00",
+          mondayUntil = "07:00",
+          tuesdayFrom = "19:00",
+          tuesdayUntil = "07:00",
+          wednesdayFrom = "19:00",
+          wednesdayUntil = "07:00",
+          thursdayFrom = "19:00",
+          thursdayUntil = "07:00",
+          fridayFrom = "19:00",
+          fridayUntil = "07:00",
+          saturdayFrom = "19:00",
+          saturdayUntil = "07:00",
+          sundayFrom = "19:00",
+          sundayUntil = "07:00",
         ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "19:00",
-          "mondayFrom" to "19:00",
-          "sundayFrom" to "19:00",
-          "fridayUntil" to "07:00",
-          "mondayUntil" to "07:00",
-          "sundayUntil" to "07:00",
-          "tuesdayFrom" to "19:00",
-          "saturdayFrom" to "19:00",
-          "thursdayFrom" to "19:00",
-          "tuesdayUntil" to "07:00",
-          "saturdayUntil" to "07:00",
-          "thursdayUntil" to "07:00",
-          "wednesdayFrom" to "19:00",
-          "wednesdayUntil" to "07:00",
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "Bob Smith",
+          postcode = "1111 1AD",
+          telephone = "01234 123456",
+          townOrCity = "Blackburn",
+          organisation = "Blackburn NPS",
+          reportingDate = "28/03/2023",
+          reportingTime = "12:00",
+          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet2 = "",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
         ),
       ),
     ),
@@ -116,40 +257,110 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassOffer" to mapOf(
-          "addressLine1" to "2 The Street",
-          "addressLine2" to null,
-          "addressTown" to "Town 2",
-          "postCode" to "EF3 4GH",
-          "bassAccepted" to "Yes",
-        ),
-        "bassRequest" to mapOf(
-          "bassRequested" to "Yes",
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.YES),
+        bassOffer = Cas2Offer(
+          addressLine1 = "2 The Street",
+          addressLine2 = null,
+          addressTown = "Town 2",
+          postCode = "EF3 4GH",
+          bassAccepted = OfferAccepted.YES,
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        curfewHours = CurfewHours(
+          mondayFrom = "19:00",
+          mondayUntil = "07:00",
+          tuesdayFrom = "19:00",
+          tuesdayUntil = "07:00",
+          wednesdayFrom = "19:00",
+          wednesdayUntil = "07:00",
+          thursdayFrom = "19:00",
+          thursdayUntil = "07:00",
+          fridayFrom = "19:00",
+          fridayUntil = "07:00",
+          saturdayFrom = "19:00",
+          saturdayUntil = "07:00",
+          sundayFrom = "19:00",
+          sundayUntil = "07:00",
         ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "19:00",
-          "mondayFrom" to "19:00",
-          "sundayFrom" to "19:00",
-          "fridayUntil" to "07:00",
-          "mondayUntil" to "07:00",
-          "sundayUntil" to "07:00",
-          "tuesdayFrom" to "19:00",
-          "saturdayFrom" to "19:00",
-          "thursdayFrom" to "19:00",
-          "tuesdayUntil" to "07:00",
-          "saturdayUntil" to "07:00",
-          "thursdayUntil" to "07:00",
-          "wednesdayFrom" to "19:00",
-          "wednesdayUntil" to "07:00",
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "Bob Smith",
+          postcode = "1111 1AD",
+          telephone = "01234 123456",
+          townOrCity = "Blackburn",
+          organisation = "Blackburn NPS",
+          reportingDate = "28/03/2023",
+          reportingTime = "12:00",
+          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet2 = "",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
         ),
       ),
     ),
@@ -166,42 +377,113 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassRequest" to mapOf(
-          "bassRequested" to "Yes",
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.YES),
+        bassOffer = null,
+        approvedPremisesAddress = CurfewAddress(
+          addressLine1 = "3 The Avenue",
+          addressLine2 = "Area 3",
+          addressTown = "Town 3",
+          postCode = "IJ3 4KL",
         ),
-        "approvedPremisesAddress" to mapOf(
-          "addressLine1" to "3 The Avenue",
-          "addressLine2" to "Area 3",
-          "addressTown" to "Town 3",
-          "postCode" to "IJ3 4KL",
-        ),
-        "bassAreaCheck" to mapOf(
-          "approvedPremisesRequiredYesNo" to "Yes",
+        bassAreaCheck = Cas2AreaCheck(
+          approvedPremisesRequiredYesNo = Decision.YES,
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "15:00",
-          "firstNightUntil" to "07:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        curfewHours = CurfewHours(
+          mondayFrom = "19:00",
+          mondayUntil = "07:00",
+          tuesdayFrom = "19:00",
+          tuesdayUntil = "07:00",
+          wednesdayFrom = "19:00",
+          wednesdayUntil = "07:00",
+          thursdayFrom = "19:00",
+          thursdayUntil = "07:00",
+          fridayFrom = "19:00",
+          fridayUntil = "07:00",
+          saturdayFrom = "19:00",
+          saturdayUntil = "07:00",
+          sundayFrom = "19:00",
+          sundayUntil = "07:00",
         ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "19:00",
-          "mondayFrom" to "19:00",
-          "sundayFrom" to "19:00",
-          "fridayUntil" to "07:00",
-          "mondayUntil" to "07:00",
-          "sundayUntil" to "07:00",
-          "tuesdayFrom" to "19:00",
-          "saturdayFrom" to "19:00",
-          "thursdayFrom" to "19:00",
-          "tuesdayUntil" to "07:00",
-          "saturdayUntil" to "07:00",
-          "thursdayUntil" to "07:00",
-          "wednesdayFrom" to "19:00",
-          "wednesdayUntil" to "07:00",
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation = "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
         ),
       ),
     ),
@@ -218,45 +500,117 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
-    licence = mapOf(
-      "bassReferral" to mapOf(
-        "bassRequest" to mapOf(
-          "bassRequested" to "No",
-        ),
-        "bassAreaCheck" to mapOf(
-          "approvedPremisesRequiredYesNo" to "No",
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.NO),
+        bassOffer = null,
+        approvedPremisesAddress = null,
+        bassAreaCheck = Cas2AreaCheck(
+          approvedPremisesRequiredYesNo = Decision.NO,
         ),
       ),
-      "proposedAddress" to emptyMap(),
-      "curfew" to mapOf(
-        "firstNight" to mapOf(
-          "firstNightFrom" to "16:00",
-          "firstNightUntil" to "08:00",
+      proposedAddress = null,
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = "16:00", firstNightUntil = "08:00"),
+        curfewHours = CurfewHours(
+          mondayFrom = "20:00",
+          mondayUntil = "08:00",
+          tuesdayFrom = "20:00",
+          tuesdayUntil = "08:00",
+          wednesdayFrom = "20:00",
+          wednesdayUntil = "08:00",
+          thursdayFrom = "20:00",
+          thursdayUntil = "08:00",
+          fridayFrom = "20:00",
+          fridayUntil = "08:00",
+          saturdayFrom = "20:00",
+          saturdayUntil = "08:00",
+          sundayFrom = "20:00",
+          sundayUntil = "08:00",
         ),
-        "curfewHours" to mapOf(
-          "fridayFrom" to "20:00",
-          "mondayFrom" to "20:00",
-          "sundayFrom" to "20:00",
-          "fridayUntil" to "08:00",
-          "mondayUntil" to "08:00",
-          "sundayUntil" to "08:00",
-          "tuesdayFrom" to "20:00",
-          "saturdayFrom" to "20:00",
-          "thursdayFrom" to "20:00",
-          "tuesdayUntil" to "08:00",
-          "saturdayUntil" to "08:00",
-          "thursdayUntil" to "08:00",
-          "wednesdayFrom" to "20:00",
-          "wednesdayUntil" to "08:00",
+        approvedPremisesAddress = CurfewAddress(
+          addressLine1 = "4 The Street",
+          addressLine2 = "Area 4",
+          addressTown = "Town 4",
+          postCode = "MN4 5OP",
         ),
-        "approvedPremisesAddress" to mapOf(
-          "addressLine1" to "4 The Street",
-          "addressLine2" to "Area 4",
-          "addressTown" to "Town 4",
-          "postCode" to "MN4 5OP",
+        approvedPremises = ApprovedPremises(
+          required = Decision.YES,
         ),
-        "approvedPremises" to mapOf(
-          "required" to "Yes",
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation = "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
         ),
       ),
     ),
