@@ -10,13 +10,19 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import java.time.Clock
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
+  private val clock: Clock = Clock.fixed(Instant.parse("2023-12-05T00:00:00Z"), ZoneId.systemDefault())
 
   private val service = LicenceService(
     licenceRepository = licenceRepository,
+    clock = clock
   )
 
   @BeforeEach
@@ -45,15 +51,71 @@ class LicenceServiceTest {
         "08:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        CurfewTimes(
+          5L,
+          "Monday",
+          LocalTime.of(20, 0),
+          "Tuesday",
+          LocalTime.of(8, 0),
+          1L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Tuesday",
+          LocalTime.of(20, 0),
+          "Wednesday",
+          LocalTime.of(8, 0),
+          2L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Wednesday",
+          LocalTime.of(20, 0),
+          "Thursday",
+          LocalTime.of(8, 0),
+          3L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Thursday",
+          LocalTime.of(20, 0),
+          "Friday",
+          LocalTime.of(8, 0),
+          4L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Friday",
+          LocalTime.of(20, 0),
+          "Saturday",
+          LocalTime.of(8, 0),
+          5L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Saturday",
+          LocalTime.of(20, 0),
+          "Sunday",
+          LocalTime.of(8, 0),
+          6L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          5L,
+          "Sunday",
+          LocalTime.of(20, 0),
+          "Monday",
+          LocalTime.of(8, 0),
+          7L,
+          LocalDateTime.now(clock),
+        ),
       ),
     )
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
@@ -80,15 +142,71 @@ class LicenceServiceTest {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        CurfewTimes(
+          4L,
+          "Monday",
+          LocalTime.of(19, 0),
+          "Tuesday",
+          LocalTime.of(7, 0),
+          1L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Tuesday",
+          LocalTime.of(19, 0),
+          "Wednesday",
+          LocalTime.of(7, 0),
+          2L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Wednesday",
+          LocalTime.of(19, 0),
+          "Thursday",
+          LocalTime.of(7, 0),
+          3L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Thursday",
+          LocalTime.of(19, 0),
+          "Friday",
+          LocalTime.of(7, 0),
+          4L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Friday",
+          LocalTime.of(19, 0),
+          "Saturday",
+          LocalTime.of(7, 0),
+          5L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Saturday",
+          LocalTime.of(19, 0),
+          "Sunday",
+          LocalTime.of(7, 0),
+          6L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          4L,
+          "Sunday",
+          LocalTime.of(19, 0),
+          "Monday",
+          LocalTime.of(7, 0),
+          7L,
+          LocalDateTime.now(clock),
+        ),
       ),
     )
 
@@ -116,15 +234,71 @@ class LicenceServiceTest {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        CurfewTimes(
+          2L,
+          "Monday",
+          LocalTime.of(19, 0),
+          "Tuesday",
+          LocalTime.of(7, 0),
+          1L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Tuesday",
+          LocalTime.of(19, 0),
+          "Wednesday",
+          LocalTime.of(7, 0),
+          2L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Wednesday",
+          LocalTime.of(19, 0),
+          "Thursday",
+          LocalTime.of(7, 0),
+          3L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Thursday",
+          LocalTime.of(19, 0),
+          "Friday",
+          LocalTime.of(7, 0),
+          4L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Friday",
+          LocalTime.of(19, 0),
+          "Saturday",
+          LocalTime.of(7, 0),
+          5L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Saturday",
+          LocalTime.of(19, 0),
+          "Sunday",
+          LocalTime.of(7, 0),
+          6L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          2L,
+          "Sunday",
+          LocalTime.of(19, 0),
+          "Monday",
+          LocalTime.of(7, 0),
+          7L,
+          LocalDateTime.now(clock),
+        ),
       ),
     )
 
@@ -152,15 +326,71 @@ class LicenceServiceTest {
         "08:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
-        "20:00", "08:00",
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        CurfewTimes(
+          1L,
+          "Monday",
+          LocalTime.of(20, 0),
+          "Tuesday",
+          LocalTime.of(8, 0),
+          1L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Tuesday",
+          LocalTime.of(20, 0),
+          "Wednesday",
+          LocalTime.of(8, 0),
+          2L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Wednesday",
+          LocalTime.of(20, 0),
+          "Thursday",
+          LocalTime.of(8, 0),
+          3L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Thursday",
+          LocalTime.of(20, 0),
+          "Friday",
+          LocalTime.of(8, 0),
+          4L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Friday",
+          LocalTime.of(20, 0),
+          "Saturday",
+          LocalTime.of(8, 0),
+          5L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Saturday",
+          LocalTime.of(20, 0),
+          "Sunday",
+          LocalTime.of(8, 0),
+          6L,
+          LocalDateTime.now(clock),
+        ),
+        CurfewTimes(
+          1L,
+          "Sunday",
+          LocalTime.of(20, 0),
+          "Monday",
+          LocalTime.of(8, 0),
+          7L,
+          LocalDateTime.now(clock),
+        ),
       ),
     )
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))

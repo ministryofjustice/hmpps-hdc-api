@@ -23,11 +23,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @ExtendWith(SpringExtension::class)
 @ActiveProfiles("test")
@@ -86,21 +88,70 @@ class LicenceControllerTest {
         firstNightFrom = "15:00",
         firstNightUntil = "07:00",
       ),
-      CurfewHours(
-        mondayFrom = "19:00",
-        mondayUntil = "07:00",
-        tuesdayFrom = "19:00",
-        tuesdayUntil = "07:00",
-        wednesdayFrom = "19:00",
-        wednesdayUntil = "07:00",
-        thursdayFrom = "19:00",
-        thursdayUntil = "07:00",
-        fridayFrom = "19:00",
-        fridayUntil = "07:00",
-        saturdayFrom = "19:00",
-        saturdayUntil = "07:00",
-        sundayFrom = "19:00",
-        sundayUntil = "07:00",
+      listOf(
+        CurfewTimes(
+          1L,
+          "Monday",
+          LocalTime.of(19, 0),
+          "Tuesday",
+          LocalTime.of(7, 0),
+          1L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Tuesday",
+          LocalTime.of(19, 0),
+          "Wednesday",
+          LocalTime.of(7, 0),
+          2L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Wednesday",
+          LocalTime.of(19, 0),
+          "Thursday",
+          LocalTime.of(7, 0),
+          3L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Thursday",
+          LocalTime.of(19, 0),
+          "Friday",
+          LocalTime.of(7, 0),
+          4L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Friday",
+          LocalTime.of(19, 0),
+          "Saturday",
+          LocalTime.of(7, 0),
+          5L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Saturday",
+          LocalTime.of(19, 0),
+          "Sunday",
+          LocalTime.of(7, 0),
+          6L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
+        CurfewTimes(
+          1L,
+          "Sunday",
+          LocalTime.of(19, 0),
+          "Monday",
+          LocalTime.of(7, 0),
+          7L,
+          LocalDateTime.of(2024, 8, 14, 9, 0),
+        ),
       ),
     )
   }
