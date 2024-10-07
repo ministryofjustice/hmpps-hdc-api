@@ -22,7 +22,7 @@ class LicenceServiceTest {
 
   private val service = LicenceService(
     licenceRepository = licenceRepository,
-    clock = clock
+    clock = clock,
   )
 
   @BeforeEach
@@ -59,7 +59,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Tuesday",
           LocalTime.of(8, 0),
-          1L,
+          1,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -68,7 +68,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Wednesday",
           LocalTime.of(8, 0),
-          2L,
+          2,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -77,7 +77,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Thursday",
           LocalTime.of(8, 0),
-          3L,
+          3,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -86,7 +86,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Friday",
           LocalTime.of(8, 0),
-          4L,
+          4,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -95,7 +95,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Saturday",
           LocalTime.of(8, 0),
-          5L,
+          5,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -104,7 +104,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Sunday",
           LocalTime.of(8, 0),
-          6L,
+          6,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -113,7 +113,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Monday",
           LocalTime.of(8, 0),
-          7L,
+          7,
           LocalDateTime.now(clock),
         ),
       ),
@@ -150,7 +150,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Tuesday",
           LocalTime.of(7, 0),
-          1L,
+          1,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -159,7 +159,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Wednesday",
           LocalTime.of(7, 0),
-          2L,
+          2,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -168,7 +168,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Thursday",
           LocalTime.of(7, 0),
-          3L,
+          3,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -177,7 +177,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Friday",
           LocalTime.of(7, 0),
-          4L,
+          4,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -186,7 +186,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Saturday",
           LocalTime.of(7, 0),
-          5L,
+          5,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -195,7 +195,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Sunday",
           LocalTime.of(7, 0),
-          6L,
+          6,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -204,7 +204,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Monday",
           LocalTime.of(7, 0),
-          7L,
+          7,
           LocalDateTime.now(clock),
         ),
       ),
@@ -242,7 +242,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Tuesday",
           LocalTime.of(7, 0),
-          1L,
+          1,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -251,7 +251,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Wednesday",
           LocalTime.of(7, 0),
-          2L,
+          2,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -260,7 +260,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Thursday",
           LocalTime.of(7, 0),
-          3L,
+          3,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -269,7 +269,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Friday",
           LocalTime.of(7, 0),
-          4L,
+          4,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -278,7 +278,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Saturday",
           LocalTime.of(7, 0),
-          5L,
+          5,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -287,7 +287,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Sunday",
           LocalTime.of(7, 0),
-          6L,
+          6,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -296,7 +296,7 @@ class LicenceServiceTest {
           LocalTime.of(19, 0),
           "Monday",
           LocalTime.of(7, 0),
-          7L,
+          7,
           LocalDateTime.now(clock),
         ),
       ),
@@ -334,7 +334,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Tuesday",
           LocalTime.of(8, 0),
-          1L,
+          1,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -343,7 +343,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Wednesday",
           LocalTime.of(8, 0),
-          2L,
+          2,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -352,7 +352,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Thursday",
           LocalTime.of(8, 0),
-          3L,
+          3,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -361,7 +361,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Friday",
           LocalTime.of(8, 0),
-          4L,
+          4,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -370,7 +370,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Saturday",
           LocalTime.of(8, 0),
-          5L,
+          5,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -379,7 +379,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Sunday",
           LocalTime.of(8, 0),
-          6L,
+          6,
           LocalDateTime.now(clock),
         ),
         CurfewTimes(
@@ -388,7 +388,7 @@ class LicenceServiceTest {
           LocalTime.of(20, 0),
           "Monday",
           LocalTime.of(8, 0),
-          7L,
+          7,
           LocalDateTime.now(clock),
         ),
       ),

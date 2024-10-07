@@ -78,6 +78,7 @@ class LicenceControllerTest {
 
   private companion object {
     val aLicence = HdcLicence(
+      licenceId = 1L,
       CurfewAddress(
         addressLine1 = "123 Approved Premises Street 2",
         addressLine2 = "Off St Michaels Place",
@@ -95,7 +96,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Tuesday",
           LocalTime.of(7, 0),
-          1L,
+          1,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -104,7 +105,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Wednesday",
           LocalTime.of(7, 0),
-          2L,
+          2,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -113,7 +114,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Thursday",
           LocalTime.of(7, 0),
-          3L,
+          3,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -122,7 +123,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Friday",
           LocalTime.of(7, 0),
-          4L,
+          4,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -131,7 +132,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Saturday",
           LocalTime.of(7, 0),
-          5L,
+          5,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -140,7 +141,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Sunday",
           LocalTime.of(7, 0),
-          6L,
+          6,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
@@ -149,7 +150,7 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Monday",
           LocalTime.of(7, 0),
-          7L,
+          7,
           LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
       ),

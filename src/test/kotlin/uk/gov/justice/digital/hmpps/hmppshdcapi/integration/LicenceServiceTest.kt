@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.groups.Tuple
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -10,9 +11,9 @@ import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.LocalTime
 
 class LicenceServiceTest : SqsIntegrationTestBase() {
 
@@ -47,17 +48,27 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-      ),
-    )
+    assertThat(result?.curfewTimes?.size).isEqualTo(7)
+    assertThat(result?.curfewTimes)
+      .extracting<Tuple> {
+        Tuple.tuple(
+          it?.licenceId,
+          it?.fromDay,
+          it?.fromTime,
+          it?.untilDay,
+          it?.untilTime,
+          it?.curfewTimesSequence,
+        )
+      }
+      .contains(
+        Tuple.tuple(3L, "Monday", LocalTime.of(19, 0), "Tuesday", LocalTime.of(7, 0), 1),
+        Tuple.tuple(3L, "Tuesday", LocalTime.of(19, 0), "Wednesday", LocalTime.of(7, 0), 2),
+        Tuple.tuple(3L, "Wednesday", LocalTime.of(19, 0), "Thursday", LocalTime.of(7, 0), 3),
+        Tuple.tuple(3L, "Thursday", LocalTime.of(19, 0), "Friday", LocalTime.of(7, 0), 4),
+        Tuple.tuple(3L, "Friday", LocalTime.of(19, 0), "Saturday", LocalTime.of(7, 0), 5),
+        Tuple.tuple(3L, "Saturday", LocalTime.of(19, 0), "Sunday", LocalTime.of(7, 0), 6),
+        Tuple.tuple(3L, "Sunday", LocalTime.of(19, 0), "Monday", LocalTime.of(7, 0), 7),
+      )
   }
 
   @Test
@@ -91,17 +102,27 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-      ),
-    )
+    assertThat(result?.curfewTimes?.size).isEqualTo(7)
+    assertThat(result?.curfewTimes)
+      .extracting<Tuple> {
+        Tuple.tuple(
+          it?.licenceId,
+          it?.fromDay,
+          it?.fromTime,
+          it?.untilDay,
+          it?.untilTime,
+          it?.curfewTimesSequence,
+        )
+      }
+      .contains(
+        Tuple.tuple(4L, "Monday", LocalTime.of(19, 0), "Tuesday", LocalTime.of(7, 0), 1),
+        Tuple.tuple(4L, "Tuesday", LocalTime.of(19, 0), "Wednesday", LocalTime.of(7, 0), 2),
+        Tuple.tuple(4L, "Wednesday", LocalTime.of(19, 0), "Thursday", LocalTime.of(7, 0), 3),
+        Tuple.tuple(4L, "Thursday", LocalTime.of(19, 0), "Friday", LocalTime.of(7, 0), 4),
+        Tuple.tuple(4L, "Friday", LocalTime.of(19, 0), "Saturday", LocalTime.of(7, 0), 5),
+        Tuple.tuple(4L, "Saturday", LocalTime.of(19, 0), "Sunday", LocalTime.of(7, 0), 6),
+        Tuple.tuple(4L, "Sunday", LocalTime.of(19, 0), "Monday", LocalTime.of(7, 0), 7),
+      )
   }
 
   @Test
@@ -135,17 +156,27 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-      ),
-    )
+    assertThat(result?.curfewTimes?.size).isEqualTo(7)
+    assertThat(result?.curfewTimes)
+      .extracting<Tuple> {
+        Tuple.tuple(
+          it?.licenceId,
+          it?.fromDay,
+          it?.fromTime,
+          it?.untilDay,
+          it?.untilTime,
+          it?.curfewTimesSequence,
+        )
+      }
+      .contains(
+        Tuple.tuple(2L, "Monday", LocalTime.of(19, 0), "Tuesday", LocalTime.of(7, 0), 1),
+        Tuple.tuple(2L, "Tuesday", LocalTime.of(19, 0), "Wednesday", LocalTime.of(7, 0), 2),
+        Tuple.tuple(2L, "Wednesday", LocalTime.of(19, 0), "Thursday", LocalTime.of(7, 0), 3),
+        Tuple.tuple(2L, "Thursday", LocalTime.of(19, 0), "Friday", LocalTime.of(7, 0), 4),
+        Tuple.tuple(2L, "Friday", LocalTime.of(19, 0), "Saturday", LocalTime.of(7, 0), 5),
+        Tuple.tuple(2L, "Saturday", LocalTime.of(19, 0), "Sunday", LocalTime.of(7, 0), 6),
+        Tuple.tuple(2L, "Sunday", LocalTime.of(19, 0), "Monday", LocalTime.of(7, 0), 7),
+      )
   }
 
   @Test
@@ -179,17 +210,27 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "07:00",
       ),
     )
-    assertThat(result?.curfewHours).isEqualTo(
-      CurfewHours(
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-        "19:00", "07:00",
-      ),
-    )
+    assertThat(result?.curfewTimes?.size).isEqualTo(7)
+    assertThat(result?.curfewTimes)
+      .extracting<Tuple> {
+        Tuple.tuple(
+          it?.licenceId,
+          it?.fromDay,
+          it?.fromTime,
+          it?.untilDay,
+          it?.untilTime,
+          it?.curfewTimesSequence,
+        )
+      }
+      .contains(
+        Tuple.tuple(1L, "Monday", LocalTime.of(19, 0), "Tuesday", LocalTime.of(7, 0), 1),
+        Tuple.tuple(1L, "Tuesday", LocalTime.of(19, 0), "Wednesday", LocalTime.of(7, 0), 2),
+        Tuple.tuple(1L, "Wednesday", LocalTime.of(19, 0), "Thursday", LocalTime.of(7, 0), 3),
+        Tuple.tuple(1L, "Thursday", LocalTime.of(19, 0), "Friday", LocalTime.of(7, 0), 4),
+        Tuple.tuple(1L, "Friday", LocalTime.of(19, 0), "Saturday", LocalTime.of(7, 0), 5),
+        Tuple.tuple(1L, "Saturday", LocalTime.of(19, 0), "Sunday", LocalTime.of(7, 0), 6),
+        Tuple.tuple(1L, "Sunday", LocalTime.of(19, 0), "Monday", LocalTime.of(7, 0), 7),
+      )
   }
 
   @Test

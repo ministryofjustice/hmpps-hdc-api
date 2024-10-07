@@ -28,6 +28,7 @@ class LicenceService(
     val proposedAddress = licenceData.proposedAddress
 
     return HdcLicence(
+      licenceId = licence.id,
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
       firstNightCurfewHours = curfew?.firstNight,
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
@@ -72,7 +73,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.mondayFrom),
         untilDay = "Tuesday",
         untilTime = LocalTime.parse(curfewHours.tuesdayUntil),
-        curfewTimesSequence = 1L,
+        curfewTimesSequence = 1,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day2 =
@@ -82,7 +83,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.tuesdayFrom),
         untilDay = "Wednesday",
         untilTime = LocalTime.parse(curfewHours.wednesdayUntil),
-        curfewTimesSequence = 2L,
+        curfewTimesSequence = 2,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day3 =
@@ -92,7 +93,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.wednesdayFrom),
         untilDay = "Thursday",
         untilTime = LocalTime.parse(curfewHours.thursdayUntil),
-        curfewTimesSequence = 3L,
+        curfewTimesSequence = 3,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day4 =
@@ -102,7 +103,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.thursdayFrom),
         untilDay = "Friday",
         untilTime = LocalTime.parse(curfewHours.fridayUntil),
-        curfewTimesSequence = 4L,
+        curfewTimesSequence = 4,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day5 =
@@ -112,7 +113,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.fridayFrom),
         untilDay = "Saturday",
         untilTime = LocalTime.parse(curfewHours.saturdayUntil),
-        curfewTimesSequence = 5L,
+        curfewTimesSequence = 5,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day6 =
@@ -122,7 +123,7 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.saturdayFrom),
         untilDay = "Sunday",
         untilTime = LocalTime.parse(curfewHours.sundayUntil),
-        curfewTimesSequence = 6L,
+        curfewTimesSequence = 6,
         createdTimestamp = LocalDateTime.now(clock),
       )
     val day7 =
@@ -132,11 +133,17 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.sundayFrom),
         untilDay = "Monday",
         untilTime = LocalTime.parse(curfewHours.mondayUntil),
-        curfewTimesSequence = 7L,
+        curfewTimesSequence = 7,
         createdTimestamp = LocalDateTime.now(clock),
       )
     return listOf(
-      day1, day2, day3, day4, day5, day6, day7
+      day1,
+      day2,
+      day3,
+      day4,
+      day5,
+      day6,
+      day7,
     )
   }
 }

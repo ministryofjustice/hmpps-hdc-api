@@ -133,12 +133,12 @@ data class CurfewHours(
 data class CurfewTimes(
   val licenceId: Long?,
   val fromDay: String,
-  @JsonFormat(pattern="HH:mm")
+  @JsonFormat(pattern = "HH:mm")
   val fromTime: LocalTime,
   val untilDay: String,
-  @JsonFormat(pattern="HH:mm")
+  @JsonFormat(pattern = "HH:mm")
   val untilTime: LocalTime,
-  val curfewTimesSequence: Long,
+  val curfewTimesSequence: Int,
   @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
   val createdTimestamp: LocalDateTime,
 )
