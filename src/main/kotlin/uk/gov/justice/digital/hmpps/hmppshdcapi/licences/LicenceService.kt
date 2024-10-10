@@ -3,14 +3,11 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
-import java.time.Clock
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
 class LicenceService(
   private val licenceRepository: LicenceRepository,
-  private val clock: Clock,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
     val licences = licenceRepository.findByBookingIds(listOf(bookingId))
@@ -27,13 +24,15 @@ class LicenceService(
     val curfew = licenceData.curfew
     val proposedAddress = licenceData.proposedAddress
 
-    return HdcLicence(
-      licenceId = licence.id,
-      curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
-      firstNightCurfewHours = curfew?.firstNight,
-      // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
-      curfewTimes = formatCurfewHoursObject(curfew?.curfewHours!!, licence.id),
-    )
+    return curfew?.curfewHours?.let { formatCurfewHoursObject(curfew.curfewHours, licence.id) }?.let {
+      HdcLicence(
+        licenceId = licence.id,
+        curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
+        firstNightCurfewHours = curfew.firstNight,
+        // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
+        curfewTimes = it,
+      )
+    }
   }
 
   fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress {
@@ -73,8 +72,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.mondayFrom),
         untilDay = "Tuesday",
         untilTime = LocalTime.parse(curfewHours.tuesdayUntil),
-        curfewTimesSequence = 1,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day2 =
       CurfewTimes(
@@ -83,8 +80,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.tuesdayFrom),
         untilDay = "Wednesday",
         untilTime = LocalTime.parse(curfewHours.wednesdayUntil),
-        curfewTimesSequence = 2,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day3 =
       CurfewTimes(
@@ -93,8 +88,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.wednesdayFrom),
         untilDay = "Thursday",
         untilTime = LocalTime.parse(curfewHours.thursdayUntil),
-        curfewTimesSequence = 3,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day4 =
       CurfewTimes(
@@ -103,8 +96,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.thursdayFrom),
         untilDay = "Friday",
         untilTime = LocalTime.parse(curfewHours.fridayUntil),
-        curfewTimesSequence = 4,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day5 =
       CurfewTimes(
@@ -113,8 +104,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.fridayFrom),
         untilDay = "Saturday",
         untilTime = LocalTime.parse(curfewHours.saturdayUntil),
-        curfewTimesSequence = 5,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day6 =
       CurfewTimes(
@@ -123,8 +112,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.saturdayFrom),
         untilDay = "Sunday",
         untilTime = LocalTime.parse(curfewHours.sundayUntil),
-        curfewTimesSequence = 6,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     val day7 =
       CurfewTimes(
@@ -133,8 +120,6 @@ class LicenceService(
         fromTime = LocalTime.parse(curfewHours.sundayFrom),
         untilDay = "Monday",
         untilTime = LocalTime.parse(curfewHours.mondayUntil),
-        curfewTimesSequence = 7,
-        createdTimestamp = LocalDateTime.now(clock),
       )
     return listOf(
       day1,

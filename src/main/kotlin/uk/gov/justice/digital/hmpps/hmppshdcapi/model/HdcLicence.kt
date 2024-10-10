@@ -17,5 +17,5 @@ data class HdcLicence(
   val firstNightCurfewHours: FirstNight? = null,
 
   @Schema(description = "The curfew times for the person following the first night")
-  val curfewTimes: List<CurfewTimes?> = emptyList(),
+  val curfewTimes: List<CurfewTimes>,
 )

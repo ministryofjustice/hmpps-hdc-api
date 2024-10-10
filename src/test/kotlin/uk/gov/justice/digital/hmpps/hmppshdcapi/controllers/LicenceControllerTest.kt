@@ -28,7 +28,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @ExtendWith(SpringExtension::class)
@@ -96,8 +95,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Tuesday",
           LocalTime.of(7, 0),
-          1,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -105,8 +102,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Wednesday",
           LocalTime.of(7, 0),
-          2,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -114,8 +109,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Thursday",
           LocalTime.of(7, 0),
-          3,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -123,8 +116,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Friday",
           LocalTime.of(7, 0),
-          4,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -132,8 +123,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Saturday",
           LocalTime.of(7, 0),
-          5,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -141,8 +130,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Sunday",
           LocalTime.of(7, 0),
-          6,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
         CurfewTimes(
           1L,
@@ -150,8 +137,6 @@ class LicenceControllerTest {
           LocalTime.of(19, 0),
           "Monday",
           LocalTime.of(7, 0),
-          7,
-          LocalDateTime.of(2024, 8, 14, 9, 0),
         ),
       ),
     )
