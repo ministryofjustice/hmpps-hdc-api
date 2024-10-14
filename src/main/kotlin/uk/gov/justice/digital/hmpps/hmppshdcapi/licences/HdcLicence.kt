@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 enum class Decision {
@@ -130,11 +131,10 @@ data class CurfewHours(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CurfewTimes(
-  val licenceId: Long?,
-  val fromDay: String,
+  val fromDay: DayOfWeek,
   @JsonFormat(pattern = "HH:mm")
   val fromTime: LocalTime,
-  val untilDay: String,
+  val untilDay: DayOfWeek,
   @JsonFormat(pattern = "HH:mm")
   val untilTime: LocalTime,
 )

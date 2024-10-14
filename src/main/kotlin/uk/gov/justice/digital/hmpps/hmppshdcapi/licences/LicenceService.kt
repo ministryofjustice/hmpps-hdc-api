@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 @Service
@@ -24,7 +25,7 @@ class LicenceService(
     val curfew = licenceData.curfew
     val proposedAddress = licenceData.proposedAddress
 
-    return curfew?.curfewHours?.let { formatCurfewHoursObject(curfew.curfewHours, licence.id) }?.let {
+    return curfew?.curfewHours?.let { formatCurfewHoursObject(curfew.curfewHours) }?.let {
       HdcLicence(
         licenceId = licence.id,
         curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
@@ -64,61 +65,54 @@ class LicenceService(
       postCode = addressObject.postCode,
     )
 
-  private fun formatCurfewHoursObject(curfewHours: CurfewHours, licenceId: Long?): List<CurfewTimes> {
+  private fun formatCurfewHoursObject(curfewHours: CurfewHours): List<CurfewTimes> {
     val day1 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Monday",
+        fromDay = DayOfWeek.MONDAY,
         fromTime = LocalTime.parse(curfewHours.mondayFrom),
-        untilDay = "Tuesday",
+        untilDay = DayOfWeek.TUESDAY,
         untilTime = LocalTime.parse(curfewHours.tuesdayUntil),
       )
     val day2 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Tuesday",
+        fromDay = DayOfWeek.TUESDAY,
         fromTime = LocalTime.parse(curfewHours.tuesdayFrom),
-        untilDay = "Wednesday",
+        untilDay = DayOfWeek.WEDNESDAY,
         untilTime = LocalTime.parse(curfewHours.wednesdayUntil),
       )
     val day3 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Wednesday",
+        fromDay = DayOfWeek.WEDNESDAY,
         fromTime = LocalTime.parse(curfewHours.wednesdayFrom),
-        untilDay = "Thursday",
+        untilDay = DayOfWeek.THURSDAY,
         untilTime = LocalTime.parse(curfewHours.thursdayUntil),
       )
     val day4 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Thursday",
+        fromDay = DayOfWeek.THURSDAY,
         fromTime = LocalTime.parse(curfewHours.thursdayFrom),
-        untilDay = "Friday",
+        untilDay = DayOfWeek.FRIDAY,
         untilTime = LocalTime.parse(curfewHours.fridayUntil),
       )
     val day5 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Friday",
+        fromDay = DayOfWeek.FRIDAY,
         fromTime = LocalTime.parse(curfewHours.fridayFrom),
-        untilDay = "Saturday",
+        untilDay = DayOfWeek.SATURDAY,
         untilTime = LocalTime.parse(curfewHours.saturdayUntil),
       )
     val day6 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Saturday",
+        fromDay = DayOfWeek.SATURDAY,
         fromTime = LocalTime.parse(curfewHours.saturdayFrom),
-        untilDay = "Sunday",
+        untilDay = DayOfWeek.SUNDAY,
         untilTime = LocalTime.parse(curfewHours.sundayUntil),
       )
     val day7 =
       CurfewTimes(
-        licenceId = licenceId,
-        fromDay = "Sunday",
+        fromDay = DayOfWeek.SUNDAY,
         fromTime = LocalTime.parse(curfewHours.sundayFrom),
-        untilDay = "Monday",
+        untilDay = DayOfWeek.MONDAY,
         untilTime = LocalTime.parse(curfewHours.mondayUntil),
       )
     return listOf(

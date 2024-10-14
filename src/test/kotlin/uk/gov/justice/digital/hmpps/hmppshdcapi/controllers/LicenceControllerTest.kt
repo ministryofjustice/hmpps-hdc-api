@@ -28,6 +28,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 @ExtendWith(SpringExtension::class)
@@ -90,52 +91,45 @@ class LicenceControllerTest {
       ),
       listOf(
         CurfewTimes(
-          1L,
-          "Monday",
+          DayOfWeek.MONDAY,
           LocalTime.of(19, 0),
-          "Tuesday",
+          DayOfWeek.TUESDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Tuesday",
+          DayOfWeek.TUESDAY,
           LocalTime.of(19, 0),
-          "Wednesday",
+          DayOfWeek.WEDNESDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Wednesday",
+          DayOfWeek.WEDNESDAY,
           LocalTime.of(19, 0),
-          "Thursday",
+          DayOfWeek.THURSDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Thursday",
+          DayOfWeek.THURSDAY,
           LocalTime.of(19, 0),
-          "Friday",
+          DayOfWeek.FRIDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Friday",
+          DayOfWeek.FRIDAY,
           LocalTime.of(19, 0),
-          "Saturday",
+          DayOfWeek.SATURDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Saturday",
+          DayOfWeek.SATURDAY,
           LocalTime.of(19, 0),
-          "Sunday",
+          DayOfWeek.SUNDAY,
           LocalTime.of(7, 0),
         ),
         CurfewTimes(
-          1L,
-          "Sunday",
+          DayOfWeek.SUNDAY,
           LocalTime.of(19, 0),
-          "Monday",
+          DayOfWeek.MONDAY,
           LocalTime.of(7, 0),
         ),
       ),

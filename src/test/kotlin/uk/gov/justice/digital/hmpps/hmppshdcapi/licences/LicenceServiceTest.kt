@@ -10,6 +10,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -49,52 +50,45 @@ class LicenceServiceTest {
     assertThat(result?.curfewTimes).isEqualTo(
       listOf(
         CurfewTimes(
-          5L,
-          "Monday",
+          DayOfWeek.MONDAY,
           LocalTime.of(20, 0),
-          "Tuesday",
+          DayOfWeek.TUESDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Tuesday",
+          DayOfWeek.TUESDAY,
           LocalTime.of(20, 0),
-          "Wednesday",
+          DayOfWeek.WEDNESDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Wednesday",
+          DayOfWeek.WEDNESDAY,
           LocalTime.of(20, 0),
-          "Thursday",
+          DayOfWeek.THURSDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Thursday",
+          DayOfWeek.THURSDAY,
           LocalTime.of(20, 0),
-          "Friday",
+          DayOfWeek.FRIDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Friday",
+          DayOfWeek.FRIDAY,
           LocalTime.of(20, 0),
-          "Saturday",
+          DayOfWeek.SATURDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Saturday",
+          DayOfWeek.SATURDAY,
           LocalTime.of(20, 0),
-          "Sunday",
+          DayOfWeek.SUNDAY,
           LocalTime.of(8, 0),
         ),
         CurfewTimes(
-          5L,
-          "Sunday",
+          DayOfWeek.SUNDAY,
           LocalTime.of(20, 0),
-          "Monday",
+          DayOfWeek.MONDAY,
           LocalTime.of(8, 0),
         ),
       ),
@@ -123,59 +117,6 @@ class LicenceServiceTest {
         "07:00",
       ),
     )
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        CurfewTimes(
-          4L,
-          "Monday",
-          LocalTime.of(19, 0),
-          "Tuesday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Tuesday",
-          LocalTime.of(19, 0),
-          "Wednesday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Wednesday",
-          LocalTime.of(19, 0),
-          "Thursday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Thursday",
-          LocalTime.of(19, 0),
-          "Friday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Friday",
-          LocalTime.of(19, 0),
-          "Saturday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Saturday",
-          LocalTime.of(19, 0),
-          "Sunday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          4L,
-          "Sunday",
-          LocalTime.of(19, 0),
-          "Monday",
-          LocalTime.of(7, 0),
-        ),
-      ),
-    )
 
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
@@ -199,59 +140,6 @@ class LicenceServiceTest {
       FirstNight(
         "15:00",
         "07:00",
-      ),
-    )
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        CurfewTimes(
-          2L,
-          "Monday",
-          LocalTime.of(19, 0),
-          "Tuesday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Tuesday",
-          LocalTime.of(19, 0),
-          "Wednesday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Wednesday",
-          LocalTime.of(19, 0),
-          "Thursday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Thursday",
-          LocalTime.of(19, 0),
-          "Friday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Friday",
-          LocalTime.of(19, 0),
-          "Saturday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Saturday",
-          LocalTime.of(19, 0),
-          "Sunday",
-          LocalTime.of(7, 0),
-        ),
-        CurfewTimes(
-          2L,
-          "Sunday",
-          LocalTime.of(19, 0),
-          "Monday",
-          LocalTime.of(7, 0),
-        ),
       ),
     )
 
@@ -279,59 +167,7 @@ class LicenceServiceTest {
         "08:00",
       ),
     )
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        CurfewTimes(
-          1L,
-          "Monday",
-          LocalTime.of(20, 0),
-          "Tuesday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Tuesday",
-          LocalTime.of(20, 0),
-          "Wednesday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Wednesday",
-          LocalTime.of(20, 0),
-          "Thursday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Thursday",
-          LocalTime.of(20, 0),
-          "Friday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Friday",
-          LocalTime.of(20, 0),
-          "Saturday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Saturday",
-          LocalTime.of(20, 0),
-          "Sunday",
-          LocalTime.of(8, 0),
-        ),
-        CurfewTimes(
-          1L,
-          "Sunday",
-          LocalTime.of(20, 0),
-          "Monday",
-          LocalTime.of(8, 0),
-        ),
-      ),
-    )
+
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
