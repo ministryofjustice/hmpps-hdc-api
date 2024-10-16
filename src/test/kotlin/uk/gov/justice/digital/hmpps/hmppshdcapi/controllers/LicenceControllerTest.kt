@@ -23,11 +23,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 @ExtendWith(SpringExtension::class)
 @ActiveProfiles("test")
@@ -76,6 +78,7 @@ class LicenceControllerTest {
 
   private companion object {
     val aLicence = HdcLicence(
+      licenceId = 1L,
       CurfewAddress(
         addressLine1 = "123 Approved Premises Street 2",
         addressLine2 = "Off St Michaels Place",
@@ -86,21 +89,49 @@ class LicenceControllerTest {
         firstNightFrom = "15:00",
         firstNightUntil = "07:00",
       ),
-      CurfewHours(
-        mondayFrom = "19:00",
-        mondayUntil = "07:00",
-        tuesdayFrom = "19:00",
-        tuesdayUntil = "07:00",
-        wednesdayFrom = "19:00",
-        wednesdayUntil = "07:00",
-        thursdayFrom = "19:00",
-        thursdayUntil = "07:00",
-        fridayFrom = "19:00",
-        fridayUntil = "07:00",
-        saturdayFrom = "19:00",
-        saturdayUntil = "07:00",
-        sundayFrom = "19:00",
-        sundayUntil = "07:00",
+      listOf(
+        CurfewTimes(
+          DayOfWeek.MONDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.TUESDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.TUESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.THURSDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.THURSDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.FRIDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.FRIDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SATURDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.SATURDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SUNDAY,
+          LocalTime.of(7, 0),
+        ),
+        CurfewTimes(
+          DayOfWeek.SUNDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.MONDAY,
+          LocalTime.of(7, 0),
+        ),
       ),
     )
   }

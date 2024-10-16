@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 enum class Decision {
   @JsonProperty("Yes")
@@ -124,6 +127,16 @@ data class CurfewHours(
   val saturdayUntil: String,
   val sundayFrom: String,
   val sundayUntil: String,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class CurfewTimes(
+  val fromDay: DayOfWeek,
+  @JsonFormat(pattern = "HH:mm")
+  val fromTime: LocalTime,
+  val untilDay: DayOfWeek,
+  @JsonFormat(pattern = "HH:mm")
+  val untilTime: LocalTime,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
