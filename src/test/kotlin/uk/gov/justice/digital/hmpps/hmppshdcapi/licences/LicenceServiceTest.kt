@@ -384,6 +384,7 @@ class LicenceServiceTest {
       additionalConditionsVersion = null,
       standardConditionsVersion = null,
       deletedAt = null,
+      licenceInCvl = false,
       licence = null,
     )
   }

@@ -27,6 +27,7 @@ class LicenceVersion(
   val template: String,
   val varyVersion: Int,
   var deletedAt: LocalDateTime?,
+  var licenceInCvl: Boolean,
 
   @Type(JsonBinaryType::class)
   @Column(columnDefinition = "jsonb")

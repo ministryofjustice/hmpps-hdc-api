@@ -16,6 +16,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+    licenceInCvl = false,
     licence = LicenceData(
       eligibility = Eligibility(
         crdTime = DecisionMade(Decision.NO),
@@ -137,6 +138,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+    licenceInCvl = false,
     licence = LicenceData(
       eligibility = Eligibility(
         crdTime = DecisionMade(Decision.NO),
@@ -257,6 +259,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+    licenceInCvl = false,
     licence = LicenceData(
       eligibility = Eligibility(
         crdTime = DecisionMade(Decision.NO),
@@ -377,6 +380,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+    licenceInCvl = false,
     licence = LicenceData(
       eligibility = Eligibility(
         crdTime = DecisionMade(Decision.NO),
@@ -500,6 +504,7 @@ object TestData {
     additionalConditionsVersion = null,
     standardConditionsVersion = null,
     deletedAt = null,
+    licenceInCvl = false,
     licence = LicenceData(
       eligibility = Eligibility(
         crdTime = DecisionMade(Decision.NO),
