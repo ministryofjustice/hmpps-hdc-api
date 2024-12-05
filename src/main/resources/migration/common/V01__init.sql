@@ -251,6 +251,7 @@ CREATE TABLE public.licence_versions (
                                          vary_version int4 DEFAULT 0 NOT NULL,
                                          prison_number varchar(7) NULL,
                                          deleted_at timestamp NULL,
+                                         licence_in_cvl bool DEFAULT false NOT NULL,
                                          CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_version_by_booking_id ON public.licence_versions USING btree (booking_id, version, id, template);
@@ -280,6 +281,7 @@ CREATE TABLE public.licences (
                                  standard_conditions_version int4 NULL,
                                  prison_number varchar(7) NULL,
                                  deleted_at timestamp NULL,
+                                 licence_in_cvl bool DEFAULT false NOT NULL,
                                  CONSTRAINT licences_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_by_booking_id ON public.licences USING btree (booking_id, id, stage, version);
@@ -384,7 +386,8 @@ AS SELECT licence_versions.id,
           licence_versions.template,
           licence_versions.vary_version,
           licence_versions.prison_number,
-          licence_versions.deleted_at
+          licence_versions.deleted_at,
+          licence_versions.licence_in_cvl
    FROM licence_versions
    WHERE licence_versions.deleted_at IS NULL;
 
@@ -407,7 +410,8 @@ AS SELECT licences.id,
           licences.additional_conditions_version,
           licences.standard_conditions_version,
           licences.prison_number,
-          licences.deleted_at
+          licences.deleted_at,
+          licences.licence_in_cvl
    FROM licences
    WHERE licences.deleted_at IS NULL;
 
