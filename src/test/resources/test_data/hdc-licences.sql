@@ -1,6 +1,6 @@
 INSERT INTO licences
 (id, licence, booking_id, stage, "version", transition_date, vary_version, additional_conditions_version,
- standard_conditions_version, prison_number, deleted_at)
+ standard_conditions_version, prison_number, deleted_at, licence_in_cvl)
 
 -- Create the data for a HDC licence with a preferred address
 VALUES (1,
@@ -68,7 +68,7 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        54321, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null),
+        54321, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false),
 
        -- Create the data for a HDC licence with a CAS2 address
        (2,
@@ -132,7 +132,7 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'C56789D', null),
+        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'C56789D', null, false),
 
        -- Create the data for an approved preferred premises HDC licence
        (3,
@@ -198,7 +198,7 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        12345, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null),
+        12345, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null, false),
 
        -- Create the data for a CAS2 approved premises HDC licence
        (4,
@@ -260,10 +260,10 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null),
+        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null, false),
 
         -- Create a licence with no licence data
        (5,
         null,
-        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null);
+        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false);
 

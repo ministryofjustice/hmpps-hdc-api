@@ -33,3 +33,18 @@ To locate any linting issues
 To apply some fixes following linting
 
 `$ ./gradlew ktlintformat` 
+
+### Re-generate the schema
+
+In DBeaver or whichever database tool you are using, establish a database connection then go to the navigator panel on the left. 
+Go into `Tables`, select the `Tables` folder and all tables within it. Then right click and Choose `Generate SQL` >> `DDL`. Make 
+sure you select the following options:
+
+* Use fully qualified names
+* Show comments
+* Show permissions
+* Show full DDL
+
+Then `Copy` and paste the generated SQL into `src/main/resources/migration/common/V01__init.sql`. Compare the commit changes in 
+the file to make sure all looks as expected and there are just the additions required made. Also make sure there are no passwords 
+in there before you commit. Replaces all of these passwords with `licences`.
