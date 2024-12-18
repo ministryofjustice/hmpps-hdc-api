@@ -37,7 +37,7 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
       .exchangeToMono {
         Mono.just(it)
       }
-      .block()
+      .block()!!
 
     return if (response.statusCode().is2xxSuccessful) {
       log.info("Successfully reset licence for booking $bookingId, status:${response.statusCode()}")

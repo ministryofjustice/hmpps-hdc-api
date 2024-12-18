@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.0.8"
-  kotlin("plugin.spring") version "2.0.10"
-  kotlin("plugin.jpa") version "2.0.10"
-  id("io.gitlab.arturbosch.detekt") version "1.23.6"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.0"
+  kotlin("plugin.spring") version "2.0.21"
+  kotlin("plugin.jpa") version "2.0.21"
+  id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
 
 configurations {
@@ -20,35 +20,35 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.4.0")
-  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.7.5")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.10.0")
+  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
   implementation("org.springframework.security:spring-security-config:6.3.2")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.3")
+  runtimeOnly("org.postgresql:postgresql:42.7.4")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.0.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.2.1")
 
   // OpenAPI
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
   // Test dependencies
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
-  testImplementation("io.jsonwebtoken:jjwt-api:0.12.5")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.5")
-  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.5")
-  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.22")
+  testImplementation("io.jsonwebtoken:jjwt-api:0.12.6")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
+  testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.6")
+  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
+  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.24")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
-  testImplementation("org.testcontainers:postgresql:1.20.1")
-  testImplementation("org.testcontainers:localstack:1.20.1")
-  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.38.0")
+  testImplementation("org.testcontainers:postgresql:1.20.4")
+  testImplementation("org.testcontainers:localstack:1.20.4")
+  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.45.0")
 }
 
 kotlin {
@@ -83,7 +83,7 @@ val integrationTest = task<Test>("integrationTest") {
 tasks.register<Copy>("installLocalGitHook") {
   from(File(rootProject.rootDir, ".scripts/pre-commit"))
   into(File(rootProject.rootDir, ".git/hooks"))
-  fileMode = "755".toInt(radix = 8)
+  filePermissions { unix(755) }
 }
 
 tasks.named<Test>("integrationTest") {
