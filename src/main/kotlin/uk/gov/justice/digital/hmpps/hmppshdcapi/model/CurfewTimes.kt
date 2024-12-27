@@ -13,13 +13,13 @@ data class CurfewTimes(
 
   @Schema(description = "The starting time for the curfew", example = "15:00")
   @JsonFormat(pattern = "HH:mm")
-  val fromTime: LocalTime,
+  val fromTime: LocalTime? = null,
 
   @Schema(description = "The ending day for the curfew time", example = "TUESDAY")
   val untilDay: DayOfWeek,
 
   @Schema(description = "The ending time for the curfew", example = "07:00")
   @JsonFormat(pattern = "HH:mm")
-  val untilTime: LocalTime,
+  val untilTime: LocalTime? = null,
 
 )
