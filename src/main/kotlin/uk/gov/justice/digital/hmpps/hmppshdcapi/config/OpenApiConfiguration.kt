@@ -14,10 +14,12 @@ import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
 import org.springdoc.core.customizers.OpenApiCustomizer
+import org.springdoc.core.utils.SpringDocUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.time.LocalTime
 
 const val ROLE_SAR_DATA_ACCESS = "SAR_DATA_ACCESS"
 const val ROLE_HDC_ADMIN = "HDC_ADMIN"
@@ -33,41 +35,45 @@ class OpenApiConfiguration(
   private val version: String = buildProperties.version
 
   @Bean
-  fun customOpenAPI(): OpenAPI = OpenAPI()
-    .servers(
-      listOf(
-        Server().url("/").description("Current url"),
-      ),
-    )
-    .info(
-      Info().title("HMPPS HDC API")
-        .version(version)
-        .description("API for viewing and managing HDC licence data")
-        .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
-    )
-    .components(
-      Components().addSecuritySchemes(
-        SCHEME_HDC_ADMIN,
-        SecurityScheme()
-          .type(SecurityScheme.Type.HTTP)
-          .scheme("bearer")
-          .bearerFormat("JWT")
-          .`in`(SecurityScheme.In.HEADER)
-          .name("Authorization")
-          .description("A HMPPS Auth access token with the `$ROLE_HDC_ADMIN` role."),
-      ).addSecuritySchemes(
-        SCHEME_SAR_DATA_ACCESS,
-        SecurityScheme()
-          .type(SecurityScheme.Type.HTTP)
-          .scheme("bearer")
-          .bearerFormat("JWT")
-          .`in`(SecurityScheme.In.HEADER)
-          .name("Authorization")
-          .description("A HMPPS Auth access token with the `$ROLE_SAR_DATA_ACCESS` role."),
-      ),
-    )
-    .addSecurityItem(SecurityRequirement().addList(SCHEME_HDC_ADMIN, listOf("read", "write")))
-    .addSecurityItem(SecurityRequirement().addList(SCHEME_SAR_DATA_ACCESS, listOf("read")))
+  fun customOpenAPI(): OpenAPI {
+    SpringDocUtils.getConfig()
+      .replaceWithSchema(LocalTime::class.java, Schema<LocalTime>().type("string").format("HH:mm").example("00:00"))
+    return OpenAPI()
+      .servers(
+        listOf(
+          Server().url("/").description("Current url"),
+        ),
+      )
+      .info(
+        Info().title("HMPPS HDC API")
+          .version(version)
+          .description("API for viewing and managing HDC licence data")
+          .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
+      )
+      .components(
+        Components().addSecuritySchemes(
+          SCHEME_HDC_ADMIN,
+          SecurityScheme()
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("bearer")
+            .bearerFormat("JWT")
+            .`in`(SecurityScheme.In.HEADER)
+            .name("Authorization")
+            .description("A HMPPS Auth access token with the `$ROLE_HDC_ADMIN` role."),
+        ).addSecuritySchemes(
+          SCHEME_SAR_DATA_ACCESS,
+          SecurityScheme()
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("bearer")
+            .bearerFormat("JWT")
+            .`in`(SecurityScheme.In.HEADER)
+            .name("Authorization")
+            .description("A HMPPS Auth access token with the `$ROLE_SAR_DATA_ACCESS` role."),
+        ),
+      )
+      .addSecurityItem(SecurityRequirement().addList(SCHEME_HDC_ADMIN, listOf("read", "write")))
+      .addSecurityItem(SecurityRequirement().addList(SCHEME_SAR_DATA_ACCESS, listOf("read")))
+  }
 
   fun getFlows(): OAuthFlows {
     val flows = OAuthFlows()

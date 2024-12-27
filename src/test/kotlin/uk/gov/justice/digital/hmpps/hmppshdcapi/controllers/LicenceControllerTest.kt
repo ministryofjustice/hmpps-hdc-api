@@ -22,11 +22,11 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewTimes
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -86,8 +86,8 @@ class LicenceControllerTest {
         postCode = "LS1 2AA",
       ),
       FirstNight(
-        firstNightFrom = "15:00",
-        firstNightUntil = "07:00",
+        firstNightFrom = LocalTime.of(15, 0),
+        firstNightUntil = LocalTime.of(7, 0),
       ),
       listOf(
         CurfewTimes(

@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.DayOfWeek
 import java.time.LocalTime
 
 enum class Decision {
@@ -107,36 +105,27 @@ data class Curfew(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class FirstNight(
-  val firstNightFrom: String,
-  val firstNightUntil: String,
+  val firstNightFrom: LocalTime,
+  val firstNightUntil: LocalTime,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CurfewHours(
-  val mondayFrom: String,
-  val mondayUntil: String,
-  val tuesdayFrom: String,
-  val tuesdayUntil: String,
-  val wednesdayFrom: String,
-  val wednesdayUntil: String,
-  val thursdayFrom: String,
-  val thursdayUntil: String,
-  val fridayFrom: String,
-  val fridayUntil: String,
-  val saturdayFrom: String,
-  val saturdayUntil: String,
-  val sundayFrom: String,
-  val sundayUntil: String,
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class CurfewTimes(
-  val fromDay: DayOfWeek,
-  @JsonFormat(pattern = "HH:mm")
-  val fromTime: LocalTime,
-  val untilDay: DayOfWeek,
-  @JsonFormat(pattern = "HH:mm")
-  val untilTime: LocalTime,
+  // are these always set - if not then they could be null in the model otherwise they could be non-nullable
+  val mondayFrom: LocalTime,
+  val mondayUntil: LocalTime,
+  val tuesdayFrom: LocalTime,
+  val tuesdayUntil: LocalTime,
+  val wednesdayFrom: LocalTime,
+  val wednesdayUntil: LocalTime,
+  val thursdayFrom: LocalTime,
+  val thursdayUntil: LocalTime,
+  val fridayFrom: LocalTime,
+  val fridayUntil: LocalTime,
+  val saturdayFrom: LocalTime,
+  val saturdayUntil: LocalTime,
+  val sundayFrom: LocalTime,
+  val sundayUntil: LocalTime,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
