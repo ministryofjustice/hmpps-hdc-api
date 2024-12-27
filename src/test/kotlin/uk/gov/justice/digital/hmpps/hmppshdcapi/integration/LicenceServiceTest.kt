@@ -10,10 +10,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import java.time.DayOfWeek
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
 import java.time.LocalTime
 
 class LicenceServiceTest : SqsIntegrationTestBase() {
@@ -45,8 +45,8 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
-        "15:00",
-        "07:00",
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
       ),
     )
     assertThat(result?.curfewTimes?.size).isEqualTo(7)
@@ -97,8 +97,8 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
-        "15:00",
-        "07:00",
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
       ),
     )
     assertThat(result?.curfewTimes?.size).isEqualTo(7)
@@ -131,8 +131,8 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
-        "15:00",
-        "07:00",
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
       ),
     )
     assertThat(result?.curfewTimes?.size).isEqualTo(7)
@@ -165,8 +165,8 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
-        "15:00",
-        "07:00",
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
       ),
     )
     assertThat(result?.curfewTimes?.size).isEqualTo(7)

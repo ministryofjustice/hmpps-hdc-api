@@ -1,9 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewTimes
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 
 @Schema(description = "Describes a HDC Licence")
 data class HdcLicence(
