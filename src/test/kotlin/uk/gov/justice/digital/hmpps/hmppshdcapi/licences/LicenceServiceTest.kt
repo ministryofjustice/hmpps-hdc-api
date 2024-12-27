@@ -13,6 +13,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandl
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes as ModelCurfewTimes
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight as ModelFirstNight
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
@@ -34,7 +37,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      CurfewAddress(
+      ModelCurfewAddress(
         "4 The Street",
         "Area 4",
         "Town 4",
@@ -42,50 +45,50 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      FirstNight(
-        "16:00",
-        "08:00",
+      ModelFirstNight(
+        LocalTime.of(16, 0),
+        LocalTime.of(8, 0),
       ),
     )
     assertThat(result?.curfewTimes).isEqualTo(
       listOf(
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.MONDAY,
           LocalTime.of(20, 0),
           DayOfWeek.TUESDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.TUESDAY,
           LocalTime.of(20, 0),
           DayOfWeek.WEDNESDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.WEDNESDAY,
           LocalTime.of(20, 0),
           DayOfWeek.THURSDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.THURSDAY,
           LocalTime.of(20, 0),
           DayOfWeek.FRIDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.FRIDAY,
           LocalTime.of(20, 0),
           DayOfWeek.SATURDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.SATURDAY,
           LocalTime.of(20, 0),
           DayOfWeek.SUNDAY,
           LocalTime.of(8, 0),
         ),
-        CurfewTimes(
+        ModelCurfewTimes(
           DayOfWeek.SUNDAY,
           LocalTime.of(20, 0),
           DayOfWeek.MONDAY,
@@ -104,7 +107,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      CurfewAddress(
+      ModelCurfewAddress(
         "3 The Avenue",
         "Area 3",
         "Town 3",
@@ -112,9 +115,56 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      FirstNight(
-        "15:00",
-        "07:00",
+      ModelFirstNight(
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
+      ),
+    )
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        ModelCurfewTimes(
+          DayOfWeek.MONDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.TUESDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.TUESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.THURSDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.THURSDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.FRIDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.FRIDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SATURDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SATURDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SUNDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SUNDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.MONDAY,
+          LocalTime.of(7, 0),
+        ),
       ),
     )
 
@@ -129,7 +179,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      CurfewAddress(
+      ModelCurfewAddress(
         "2 The Street",
         "Area 2",
         "Town 2",
@@ -137,9 +187,56 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      FirstNight(
-        "15:00",
-        "07:00",
+      ModelFirstNight(
+        LocalTime.of(15, 0),
+        LocalTime.of(7, 0),
+      ),
+    )
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        ModelCurfewTimes(
+          DayOfWeek.MONDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.TUESDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.TUESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.THURSDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.THURSDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.FRIDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.FRIDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SATURDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SATURDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.SUNDAY,
+          LocalTime.of(7, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SUNDAY,
+          LocalTime.of(19, 0),
+          DayOfWeek.MONDAY,
+          LocalTime.of(7, 0),
+        ),
       ),
     )
 
@@ -153,21 +250,69 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
+
     assertThat(result?.curfewAddress).isEqualTo(
-      CurfewAddress(
+      ModelCurfewAddress(
         "1 The Street",
         "Area",
         "Town",
         "AB1 2CD",
       ),
     )
+
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      FirstNight(
-        "16:00",
-        "08:00",
+      ModelFirstNight(
+        LocalTime.of(16, 0),
+        LocalTime.of(8, 0),
       ),
     )
 
+    assertThat(result?.curfewTimes).isEqualTo(
+      listOf(
+        ModelCurfewTimes(
+          DayOfWeek.MONDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.TUESDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.TUESDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.WEDNESDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.THURSDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.THURSDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.FRIDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.FRIDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.SATURDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SATURDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.SUNDAY,
+          LocalTime.of(8, 0),
+        ),
+        ModelCurfewTimes(
+          DayOfWeek.SUNDAY,
+          LocalTime.of(20, 0),
+          DayOfWeek.MONDAY,
+          LocalTime.of(8, 0),
+        ),
+      ),
+    )
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
@@ -178,7 +323,7 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result?.curfewAddress).isEqualTo(
-      CurfewAddress(
+      ModelCurfewAddress(
         "2 The Street",
         null,
         "Town 2",
@@ -310,8 +455,8 @@ class LicenceServiceTest {
 
     val aCurfew = Curfew(
       FirstNight(
-        "16:00",
-        "08:00",
+        LocalTime.of(16, 0),
+        LocalTime.of(8, 0),
       ),
       CurfewHours(
         "20:00",
