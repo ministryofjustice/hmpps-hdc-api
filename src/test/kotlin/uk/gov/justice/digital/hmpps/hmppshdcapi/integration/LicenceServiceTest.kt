@@ -10,10 +10,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
-import java.time.DayOfWeek
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 class LicenceServiceTest : SqsIntegrationTestBase() {
