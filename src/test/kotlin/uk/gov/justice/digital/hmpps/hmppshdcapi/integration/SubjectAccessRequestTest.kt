@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.json.JsonCompareMode.STRICT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_SAR_DATA_ACCESS
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import java.nio.charset.StandardCharsets.UTF_8
@@ -24,7 +25,7 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
       .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_SAR_DATA_ACCESS")))
       .exchange()
       .expectStatus().isOk()
-      .expectBody().json(jsonFromFile("subject-access-request.json"), true)
+      .expectBody().json(jsonFromFile("subject-access-request.json"), STRICT)
   }
 
   @Test

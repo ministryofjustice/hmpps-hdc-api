@@ -6,11 +6,11 @@ import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.helpers.LocalStackContainer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.helpers.LocalStackContainer.setLocalStackProperties
@@ -28,10 +28,10 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   @Autowired
   private lateinit var hmppsQueueService: HmppsQueueService
 
-  @SpyBean
+  @MockitoSpyBean
   protected lateinit var hmppsSqsPropertiesSpy: HmppsSqsProperties
 
-  @MockBean
+  @MockitoBean
   lateinit var eventProcessingComplete: EventProcessingComplete
 
   protected val domainEventsTopic by lazy {
@@ -46,7 +46,9 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   @BeforeEach
   fun cleanQueue() {
     mergeOffenderQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(mergeOffenderQueue.queueUrl).build())
-    await untilCallTo { mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get() } matches { it == 0 }
+    await untilCallTo {
+      mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
+    } matches { it == 0 }
   }
 
   fun getNumberOfMessagesCurrentlyOnQueue(): Int? =

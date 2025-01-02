@@ -21,6 +21,7 @@ import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
+import kotlin.time.Duration.Companion.seconds
 
 @Service
 class SoftDeleteService(
@@ -60,7 +61,7 @@ class SoftDeleteService(
         totalDeleted += deletedLicences.size
         totalFailedToProcess += licencesRecords.count { (_, prisoner) -> prisoner == null }
       }
-      sleep(1000)
+      sleep(1.seconds.inWholeMilliseconds)
     }
 
     val response = JobResponse(
