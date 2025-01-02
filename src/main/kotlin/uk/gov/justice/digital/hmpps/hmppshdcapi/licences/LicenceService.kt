@@ -3,7 +3,13 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
-import java.time.DayOfWeek
+import java.time.DayOfWeek.FRIDAY
+import java.time.DayOfWeek.MONDAY
+import java.time.DayOfWeek.SATURDAY
+import java.time.DayOfWeek.SUNDAY
+import java.time.DayOfWeek.THURSDAY
+import java.time.DayOfWeek.TUESDAY
+import java.time.DayOfWeek.WEDNESDAY
 import java.time.LocalTime
 
 @Service
@@ -36,25 +42,20 @@ class LicenceService(
     }
   }
 
-  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress {
+  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress? {
     val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
     val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
-    if (isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired) {
-      return formatAddress(curfew?.approvedPremisesAddress!!)
+    val address = when {
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.approvedPremisesAddress
+      isCas2ApprovedPremisesRequired -> cas2Referral.approvedPremisesAddress
+      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer
+      else -> proposedAddress?.curfewAddress
     }
 
-    if (isCas2ApprovedPremisesRequired) {
-      return formatAddress(cas2Referral?.approvedPremisesAddress!!)
-    }
-
-    if (isCas2Requested && isCas2Accepted) {
-      val cas2Address = cas2Referral?.bassOffer!!
-      return formatAddress(cas2Address)
-    }
-    return formatAddress(proposedAddress?.curfewAddress!!)
+    return address?.let { formatAddress(it) }
   }
 
   private fun formatAddress(addressObject: Address): CurfewAddress =
@@ -66,63 +67,49 @@ class LicenceService(
     )
 
   private fun formatCurfewHoursObject(curfewHours: CurfewHours): List<CurfewTimes> {
-    val day1 =
-      CurfewTimes(
-        fromDay = DayOfWeek.MONDAY,
-        fromTime = LocalTime.parse(curfewHours.mondayFrom),
-        untilDay = DayOfWeek.TUESDAY,
-        untilTime = LocalTime.parse(curfewHours.tuesdayUntil),
-      )
-    val day2 =
-      CurfewTimes(
-        fromDay = DayOfWeek.TUESDAY,
-        fromTime = LocalTime.parse(curfewHours.tuesdayFrom),
-        untilDay = DayOfWeek.WEDNESDAY,
-        untilTime = LocalTime.parse(curfewHours.wednesdayUntil),
-      )
-    val day3 =
-      CurfewTimes(
-        fromDay = DayOfWeek.WEDNESDAY,
-        fromTime = LocalTime.parse(curfewHours.wednesdayFrom),
-        untilDay = DayOfWeek.THURSDAY,
-        untilTime = LocalTime.parse(curfewHours.thursdayUntil),
-      )
-    val day4 =
-      CurfewTimes(
-        fromDay = DayOfWeek.THURSDAY,
-        fromTime = LocalTime.parse(curfewHours.thursdayFrom),
-        untilDay = DayOfWeek.FRIDAY,
-        untilTime = LocalTime.parse(curfewHours.fridayUntil),
-      )
-    val day5 =
-      CurfewTimes(
-        fromDay = DayOfWeek.FRIDAY,
-        fromTime = LocalTime.parse(curfewHours.fridayFrom),
-        untilDay = DayOfWeek.SATURDAY,
-        untilTime = LocalTime.parse(curfewHours.saturdayUntil),
-      )
-    val day6 =
-      CurfewTimes(
-        fromDay = DayOfWeek.SATURDAY,
-        fromTime = LocalTime.parse(curfewHours.saturdayFrom),
-        untilDay = DayOfWeek.SUNDAY,
-        untilTime = LocalTime.parse(curfewHours.sundayUntil),
-      )
-    val day7 =
-      CurfewTimes(
-        fromDay = DayOfWeek.SUNDAY,
-        fromTime = LocalTime.parse(curfewHours.sundayFrom),
-        untilDay = DayOfWeek.MONDAY,
-        untilTime = LocalTime.parse(curfewHours.mondayUntil),
-      )
     return listOf(
-      day1,
-      day2,
-      day3,
-      day4,
-      day5,
-      day6,
-      day7,
+      CurfewTimes(
+        fromDay = MONDAY,
+        fromTime = LocalTime.parse(curfewHours.mondayFrom),
+        untilDay = TUESDAY,
+        untilTime = LocalTime.parse(curfewHours.tuesdayUntil),
+      ),
+      CurfewTimes(
+        fromDay = TUESDAY,
+        fromTime = LocalTime.parse(curfewHours.tuesdayFrom),
+        untilDay = WEDNESDAY,
+        untilTime = LocalTime.parse(curfewHours.wednesdayUntil),
+      ),
+      CurfewTimes(
+        fromDay = WEDNESDAY,
+        fromTime = LocalTime.parse(curfewHours.wednesdayFrom),
+        untilDay = THURSDAY,
+        untilTime = LocalTime.parse(curfewHours.thursdayUntil),
+      ),
+      CurfewTimes(
+        fromDay = THURSDAY,
+        fromTime = LocalTime.parse(curfewHours.thursdayFrom),
+        untilDay = FRIDAY,
+        untilTime = LocalTime.parse(curfewHours.fridayUntil),
+      ),
+      CurfewTimes(
+        fromDay = FRIDAY,
+        fromTime = LocalTime.parse(curfewHours.fridayFrom),
+        untilDay = SATURDAY,
+        untilTime = LocalTime.parse(curfewHours.saturdayUntil),
+      ),
+      CurfewTimes(
+        fromDay = SATURDAY,
+        fromTime = LocalTime.parse(curfewHours.saturdayFrom),
+        untilDay = SUNDAY,
+        untilTime = LocalTime.parse(curfewHours.sundayUntil),
+      ),
+      CurfewTimes(
+        fromDay = SUNDAY,
+        fromTime = LocalTime.parse(curfewHours.sundayFrom),
+        untilDay = MONDAY,
+        untilTime = LocalTime.parse(curfewHours.mondayUntil),
+      ),
     )
   }
 }
