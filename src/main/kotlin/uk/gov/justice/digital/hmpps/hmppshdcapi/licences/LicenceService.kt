@@ -42,9 +42,9 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.approvedPremisesAddress
-      isCas2ApprovedPremisesRequired -> cas2Referral.approvedPremisesAddress
-      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.approvedPremisesAddress
+      isCas2ApprovedPremisesRequired -> cas2Referral?.approvedPremisesAddress
+      isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
       else -> proposedAddress?.curfewAddress
     }
 

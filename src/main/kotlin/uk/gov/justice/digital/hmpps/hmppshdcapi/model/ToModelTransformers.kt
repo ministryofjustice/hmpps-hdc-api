@@ -10,12 +10,12 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes as ModelCurfew
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight as ModelFirstNight
 
 fun transformToModelCurfewAddress(
-  address: EntityCurfewAddress,
+  address: EntityCurfewAddress?,
 ): ModelCurfewAddress = ModelCurfewAddress(
-  addressLine1 = address.addressLine1,
-  addressLine2 = address.addressLine2,
-  addressTown = address.addressTown,
-  postCode = address.postCode,
+  addressLine1 = address?.addressLine1,
+  addressLine2 = address?.addressLine2,
+  addressTown = address?.addressTown,
+  postCode = address?.postCode,
 )
 
 fun transformToModelCurfewTimes(
