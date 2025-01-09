@@ -14,6 +14,8 @@ generic-service:
     HMPPS_PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk/api"
     HMPPS_PRISONERSEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
 
+  retryDlqCronjob:
+    enabled: true
   scheduledDowntime:
     enabled: true
 
@@ -22,7 +24,11 @@ generic-service:
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod
   businessHoursOnly: true
-
+  rdsAlertsDatabases:
+    cloud-platform-d8898a26211073bc: "HDC"
+  sqsAlertsQueueNames:
+    - "Digital-Prison-Services-prod-hdc_domain_events_queue"
+    - "Digital-Prison-Services-prod-hdc_domain_events_dl"
 cron:
   resetLicences:
     enabled: true

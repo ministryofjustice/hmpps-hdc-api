@@ -11,10 +11,18 @@ generic-service:
     HMPPS_PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk/api"
     HMPPS_PRISONERSEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
 
+  retryDlqCronjob:
+    enabled: true
+
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack
 # See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts
+  rdsAlertsDatabases:
+    cloud-platform-a450784ed2b32c2e: "HDC"
+  sqsAlertsQueueNames:
+    - "Digital-Prison-Services-prod-hdc_domain_events_queue"
+    - "Digital-Prison-Services-prod-hdc_domain_events_dl"
 
 cron:
   resetLicences:

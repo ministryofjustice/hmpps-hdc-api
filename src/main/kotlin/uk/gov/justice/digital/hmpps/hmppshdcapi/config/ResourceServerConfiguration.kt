@@ -42,6 +42,7 @@ class ResourceServerConfiguration {
           "/swagger-resources",
           "/swagger-resources/configuration/ui",
           "/swagger-resources/configuration/security",
+          "/queue-admin/retry-all-dlqs",
         ).forEach { authorize(it, permitAll) }
         authorize(anyRequest, authenticated)
       }
