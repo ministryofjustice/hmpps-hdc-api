@@ -35,25 +35,20 @@ class LicenceService(
     )
   }
 
-  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress {
+  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress? {
     val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
     val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
-    if (isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired) {
-      return formatAddress(curfew?.approvedPremisesAddress!!)
+    val address = when {
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.approvedPremisesAddress
+      isCas2ApprovedPremisesRequired -> cas2Referral.approvedPremisesAddress
+      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer
+      else -> proposedAddress?.curfewAddress
     }
 
-    if (isCas2ApprovedPremisesRequired) {
-      return formatAddress(cas2Referral?.approvedPremisesAddress!!)
-    }
-
-    if (isCas2Requested && isCas2Accepted) {
-      val cas2Address = cas2Referral?.bassOffer!!
-      return formatAddress(cas2Address)
-    }
-    return formatAddress(proposedAddress?.curfewAddress!!)
+    return address?.let { formatAddress(it) }
   }
 
   private fun formatAddress(addressObject: Address): CurfewAddress =

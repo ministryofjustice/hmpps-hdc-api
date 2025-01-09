@@ -364,23 +364,27 @@ class LicenceServiceTest {
 
   @Test
   fun `test getLicence when curfew approved premise is required`() {
-    val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress)
+    val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress)!!
 
-    assertThat(result.addressLine1).isEqualTo(aCurfew.approvedPremisesAddress!!.addressLine1)
-    assertThat(result.addressLine2).isEqualTo(aCurfew.approvedPremisesAddress!!.addressLine2)
-    assertThat(result.addressTown).isEqualTo(aCurfew.approvedPremisesAddress!!.addressTown)
-    assertThat(result.postCode).isEqualTo(aCurfew.approvedPremisesAddress!!.postCode)
+    with(aCurfew.approvedPremisesAddress!!) {
+      assertThat(result.addressLine1).isEqualTo(addressLine1)
+      assertThat(result.addressLine2).isEqualTo(addressLine2)
+      assertThat(result.addressTown).isEqualTo(addressTown)
+      assertThat(result.postCode).isEqualTo(postCode)
+    }
   }
 
   @Test
   fun `test getLicence when cas2 approved premise is required`() {
     val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.YES))
-    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)
+    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)!!
 
-    assertThat(result.addressLine1).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressLine1)
-    assertThat(result.addressLine2).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressLine2)
-    assertThat(result.addressTown).isEqualTo(aCas2Referral.approvedPremisesAddress!!.addressTown)
-    assertThat(result.postCode).isEqualTo(aCas2Referral.approvedPremisesAddress!!.postCode)
+    with(aCas2Referral.approvedPremisesAddress!!) {
+      assertThat(result.addressLine1).isEqualTo(addressLine1)
+      assertThat(result.addressLine2).isEqualTo(addressLine2)
+      assertThat(result.addressTown).isEqualTo(addressTown)
+      assertThat(result.postCode).isEqualTo(postCode)
+    }
   }
 
   @Test
@@ -390,12 +394,15 @@ class LicenceServiceTest {
         Decision.NO,
       ),
     )
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, aCas2Referral, aProposedAddress)
 
-    assertThat(result.addressLine1).isEqualTo(aCas2Referral.bassOffer!!.addressLine1)
-    assertThat(result.addressLine2).isEqualTo(aCas2Referral.bassOffer!!.addressLine2)
-    assertThat(result.addressTown).isEqualTo(aCas2Referral.bassOffer!!.addressTown)
-    assertThat(result.postCode).isEqualTo(aCas2Referral.bassOffer!!.postCode)
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, aCas2Referral, aProposedAddress)!!
+
+    with(aCas2Referral.bassOffer!!) {
+      assertThat(result.addressLine1).isEqualTo(addressLine1)
+      assertThat(result.addressLine2).isEqualTo(addressLine2)
+      assertThat(result.addressTown).isEqualTo(addressTown)
+      assertThat(result.postCode).isEqualTo(postCode)
+    }
   }
 
   @Test

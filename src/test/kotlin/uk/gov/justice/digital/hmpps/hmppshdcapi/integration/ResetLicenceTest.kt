@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.json.JsonCompareMode.STRICT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
@@ -47,7 +48,7 @@ class ResetLicenceTest : SqsIntegrationTestBase() {
       .headers(setAuthorisation(roles = listOf("ROLE_${ROLE_HDC_ADMIN}")))
       .exchange()
       .expectStatus().isOk
-      .expectBody().json(jsonFromFile("reset-request.json"), true)
+      .expectBody().json(jsonFromFile("reset-request.json"), STRICT)
 
     val events = auditEventRepository.findAll()
     assertThat(events).hasSize(3)

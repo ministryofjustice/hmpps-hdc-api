@@ -12,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.transaction.support.SimpleTransactionStatus
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.transaction.support.TransactionTemplate
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
@@ -123,7 +124,7 @@ class SoftDeleteServiceTest {
   @Test
   fun `runJob`() {
     whenever(transactionTemplate.execute<Any>(any())).thenAnswer {
-      (it.arguments[0] as TransactionCallback<*>).doInTransaction(null)
+      (it.arguments[0] as TransactionCallback<*>).doInTransaction(SimpleTransactionStatus())
     }
     val prisonerPastLicenceEndDate = prisoner.copy(topupSupervisionExpiryDate = today.minusDays(1), licenceExpiryDate = today)
 
