@@ -421,9 +421,14 @@ class LicenceServiceTest {
       ),
     )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)!!
 
-    assertThat(result).isEqualTo(aProposedAddress.curfewAddress)
+    with(aProposedAddress.curfewAddress!!) {
+      assertThat(result.addressLine1).isEqualTo(addressLine1)
+      assertThat(result.addressLine2).isEqualTo(addressLine2)
+      assertThat(result.addressTown).isEqualTo(addressTown)
+      assertThat(result.postCode).isEqualTo(postCode)
+    }
   }
 
   @Test
@@ -453,9 +458,14 @@ class LicenceServiceTest {
       curfewAddress,
     )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)!!
 
-    assertThat(result).isEqualTo(curfewAddress)
+    with(curfewAddress) {
+      assertThat(result.addressLine1).isEqualTo(addressLine1)
+      assertThat(result.addressLine2).isEqualTo(addressLine2)
+      assertThat(result.addressTown).isEqualTo(addressTown)
+      assertThat(result.postCode).isEqualTo(postCode)
+    }
   }
 
   private companion object {

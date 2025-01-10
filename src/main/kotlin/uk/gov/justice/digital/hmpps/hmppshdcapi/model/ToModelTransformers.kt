@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import java.time.DayOfWeek
 import java.time.LocalTime
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress as EntityCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours as EntityCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight as EntityFirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes as ModelCurfew
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight as ModelFirstNight
 
 fun transformToModelCurfewAddress(
-  address: EntityCurfewAddress?,
+  address: Address?,
 ): ModelCurfewAddress = ModelCurfewAddress(
   addressLine1 = address?.addressLine1,
   addressLine2 = address?.addressLine2,
@@ -68,8 +68,8 @@ fun transformToModelCurfewTimes(
 }
 
 fun transformToModelFirstNight(
-  firstNight: EntityFirstNight?,
+  firstNight: EntityFirstNight,
 ): ModelFirstNight = ModelFirstNight(
-  firstNightFrom = firstNight?.firstNightFrom,
-  firstNightUntil = firstNight?.firstNightUntil,
+  firstNightFrom = firstNight.firstNightFrom,
+  firstNightUntil = firstNight.firstNightUntil,
 )

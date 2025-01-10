@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelFirstNight
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
 
 @Service
 class LicenceService(
@@ -28,34 +29,25 @@ class LicenceService(
 
     return HdcLicence(
       licenceId = licence.id,
-      curfewAddress = transformToModelCurfewAddress(getAddress(curfew, cas2Referral, proposedAddress)),
-      firstNightCurfewHours = transformToModelFirstNight(curfew?.firstNight),
+      curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
+      firstNightCurfewHours = curfew?.firstNight?.let{ transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = transformToModelCurfewTimes(curfew?.curfewHours),
     )
   }
 
-  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): CurfewAddress? {
+  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): ModelCurfewAddress? {
     val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
     val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.approvedPremisesAddress
-      isCas2ApprovedPremisesRequired -> cas2Referral?.approvedPremisesAddress
-      isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.approvedPremisesAddress
+      isCas2ApprovedPremisesRequired -> cas2Referral.approvedPremisesAddress
+      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer
       else -> proposedAddress?.curfewAddress
     }
-
-    return address?.let { formatAddress(it) }
+    return address?.let { transformToModelCurfewAddress(it) }
   }
-
-  private fun formatAddress(addressObject: Address): CurfewAddress =
-    CurfewAddress(
-      addressLine1 = addressObject.addressLine1,
-      addressLine2 = addressObject.addressLine2,
-      addressTown = addressObject.addressTown,
-      postCode = addressObject.postCode,
-    )
 }
