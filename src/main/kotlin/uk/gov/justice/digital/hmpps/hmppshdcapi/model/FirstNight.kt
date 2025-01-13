@@ -11,7 +11,7 @@ data class FirstNight(
   @JsonFormat(pattern = "HH:mm")
   val firstNightFrom: LocalTime? = null,
 
-  @Schema(description = "The end time for the curfew on the first night", example = "08:00")
+  @Schema(description = "The ending time for the curfew on the first night", example = "08:00")
   @JsonFormat(pattern = "HH:mm")
   val firstNightUntil: LocalTime? = null,
 )

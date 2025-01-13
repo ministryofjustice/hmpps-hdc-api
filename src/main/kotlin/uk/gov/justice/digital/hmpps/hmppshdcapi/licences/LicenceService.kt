@@ -32,7 +32,7 @@ class LicenceService(
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
-      curfewTimes = transformToModelCurfewTimes(curfew?.curfewHours),
+      curfewTimes = curfew?.let { transformToModelCurfewTimes(curfew.curfewHours) },
     )
   }
 
