@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 object TestData {
   fun aPreferredAddressLicence() = Licence(
@@ -36,7 +37,7 @@ object TestData {
         ),
       ),
       curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = "16:00", firstNightUntil = "08:00"),
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
         curfewHours = CurfewHours(
           mondayFrom = "20:00",
           mondayUntil = "08:00",
@@ -157,7 +158,7 @@ object TestData {
       ),
       proposedAddress = null,
       curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(15, 0), firstNightUntil = LocalTime.of(7, 0)),
         curfewHours = CurfewHours(
           mondayFrom = "19:00",
           mondayUntil = "07:00",
@@ -278,7 +279,7 @@ object TestData {
       ),
       proposedAddress = null,
       curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(15, 0), firstNightUntil = LocalTime.of(7, 0)),
         curfewHours = CurfewHours(
           mondayFrom = "19:00",
           mondayUntil = "07:00",
@@ -402,7 +403,7 @@ object TestData {
       ),
       proposedAddress = null,
       curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = "15:00", firstNightUntil = "07:00"),
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(15, 0), firstNightUntil = LocalTime.of(7, 0)),
         curfewHours = CurfewHours(
           mondayFrom = "19:00",
           mondayUntil = "07:00",
@@ -521,7 +522,7 @@ object TestData {
       ),
       proposedAddress = null,
       curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = "16:00", firstNightUntil = "08:00"),
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
         curfewHours = CurfewHours(
           mondayFrom = "20:00",
           mondayUntil = "08:00",
