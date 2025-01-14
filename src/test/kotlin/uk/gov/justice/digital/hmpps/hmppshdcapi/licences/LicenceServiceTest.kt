@@ -13,9 +13,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandl
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes as ModelCurfewTimes
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight as ModelFirstNight
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
@@ -37,7 +34,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      ModelCurfewAddress(
+      CurfewAddress(
         "4 The Street",
         "Area 4",
         "Town 4",
@@ -45,50 +42,50 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      ModelFirstNight(
-        LocalTime.of(16, 0),
-        LocalTime.of(8, 0),
+      FirstNight(
+        "16:00",
+        "08:00",
       ),
     )
     assertThat(result?.curfewTimes).isEqualTo(
       listOf(
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.MONDAY,
           LocalTime.of(20, 0),
           DayOfWeek.TUESDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.TUESDAY,
           LocalTime.of(20, 0),
           DayOfWeek.WEDNESDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.WEDNESDAY,
           LocalTime.of(20, 0),
           DayOfWeek.THURSDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.THURSDAY,
           LocalTime.of(20, 0),
           DayOfWeek.FRIDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.FRIDAY,
           LocalTime.of(20, 0),
           DayOfWeek.SATURDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.SATURDAY,
           LocalTime.of(20, 0),
           DayOfWeek.SUNDAY,
           LocalTime.of(8, 0),
         ),
-        ModelCurfewTimes(
+        CurfewTimes(
           DayOfWeek.SUNDAY,
           LocalTime.of(20, 0),
           DayOfWeek.MONDAY,
@@ -107,7 +104,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      ModelCurfewAddress(
+      CurfewAddress(
         "3 The Avenue",
         "Area 3",
         "Town 3",
@@ -115,56 +112,9 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      ModelFirstNight(
-        LocalTime.of(15, 0),
-        LocalTime.of(7, 0),
-      ),
-    )
-
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        ModelCurfewTimes(
-          DayOfWeek.MONDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.TUESDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.TUESDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.THURSDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.THURSDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.FRIDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.FRIDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.SATURDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SATURDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.SUNDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SUNDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.MONDAY,
-          LocalTime.of(7, 0),
-        ),
+      FirstNight(
+        "15:00",
+        "07:00",
       ),
     )
 
@@ -179,7 +129,7 @@ class LicenceServiceTest {
 
     assertThat(result).isNotNull
     assertThat(result?.curfewAddress).isEqualTo(
-      ModelCurfewAddress(
+      CurfewAddress(
         "2 The Street",
         "Area 2",
         "Town 2",
@@ -187,56 +137,9 @@ class LicenceServiceTest {
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      ModelFirstNight(
-        LocalTime.of(15, 0),
-        LocalTime.of(7, 0),
-      ),
-    )
-
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        ModelCurfewTimes(
-          DayOfWeek.MONDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.TUESDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.TUESDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.THURSDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.THURSDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.FRIDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.FRIDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.SATURDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SATURDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.SUNDAY,
-          LocalTime.of(7, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SUNDAY,
-          LocalTime.of(19, 0),
-          DayOfWeek.MONDAY,
-          LocalTime.of(7, 0),
-        ),
+      FirstNight(
+        "15:00",
+        "07:00",
       ),
     )
 
@@ -250,69 +153,21 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result).isNotNull
-
     assertThat(result?.curfewAddress).isEqualTo(
-      ModelCurfewAddress(
+      CurfewAddress(
         "1 The Street",
         "Area",
         "Town",
         "AB1 2CD",
       ),
     )
-
     assertThat(result?.firstNightCurfewHours).isEqualTo(
-      ModelFirstNight(
-        LocalTime.of(16, 0),
-        LocalTime.of(8, 0),
+      FirstNight(
+        "16:00",
+        "08:00",
       ),
     )
 
-    assertThat(result?.curfewTimes).isEqualTo(
-      listOf(
-        ModelCurfewTimes(
-          DayOfWeek.MONDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.TUESDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.TUESDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.WEDNESDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.THURSDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.THURSDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.FRIDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.FRIDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.SATURDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SATURDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.SUNDAY,
-          LocalTime.of(8, 0),
-        ),
-        ModelCurfewTimes(
-          DayOfWeek.SUNDAY,
-          LocalTime.of(20, 0),
-          DayOfWeek.MONDAY,
-          LocalTime.of(8, 0),
-        ),
-      ),
-    )
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
@@ -323,7 +178,7 @@ class LicenceServiceTest {
     val result = service.getByBookingId(54321L)
 
     assertThat(result?.curfewAddress).isEqualTo(
-      ModelCurfewAddress(
+      CurfewAddress(
         "2 The Street",
         null,
         "Town 2",
@@ -421,14 +276,9 @@ class LicenceServiceTest {
       ),
     )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)!!
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)
 
-    with(aProposedAddress.curfewAddress!!) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
-    }
+    assertThat(result).isEqualTo(aProposedAddress.curfewAddress)
   }
 
   @Test
@@ -458,22 +308,17 @@ class LicenceServiceTest {
       curfewAddress,
     )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)!!
+    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)
 
-    with(curfewAddress) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
-    }
+    assertThat(result).isEqualTo(curfewAddress)
   }
 
   private companion object {
 
     val aCurfew = Curfew(
       FirstNight(
-        LocalTime.of(16, 0),
-        LocalTime.of(8, 0),
+        "16:00",
+        "08:00",
       ),
       CurfewHours(
         "20:00",
