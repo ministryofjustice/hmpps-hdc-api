@@ -61,3 +61,5 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-hdc-api
+  sqsAlertsTotalMessagesThreshold: 1
+  sqsAlertsOldestThreshold: 10

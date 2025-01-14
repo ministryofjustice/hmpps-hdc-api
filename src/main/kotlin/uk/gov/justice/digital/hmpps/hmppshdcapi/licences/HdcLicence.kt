@@ -48,9 +48,9 @@ data class LicenceData(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Eligibility(
-  val crdTime: DecisionMade,
-  val excluded: DecisionMade,
-  val suitability: DecisionMade,
+  val crdTime: DecisionMade?,
+  val excluded: DecisionMade?,
+  val suitability: DecisionMade?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -62,7 +62,7 @@ data class DecisionMade(
 data class Cas2Referral(
   // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
   val bassOffer: Cas2Offer? = null,
-  val bassRequest: Cas2Request,
+  val bassRequest: Cas2Request? = null,
   val approvedPremisesAddress: CurfewAddress? = null,
   val bassAreaCheck: Cas2AreaCheck? = null,
 )
@@ -97,8 +97,8 @@ data class Cas2Request(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Curfew(
-  val firstNight: FirstNight,
-  val curfewHours: CurfewHours,
+  val firstNight: FirstNight?,
+  val curfewHours: CurfewHours?,
   val approvedPremisesAddress: CurfewAddress? = null,
   val approvedPremises: ApprovedPremises? = null,
 )
@@ -162,7 +162,7 @@ data class RiskManagement(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Victim(
-  val victimLiaison: VictimLiaison,
+  val victimLiaison: VictimLiaison?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
