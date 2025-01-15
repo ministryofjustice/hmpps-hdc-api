@@ -25,8 +25,8 @@ generic-prometheus-alerts:
   rdsAlertsDatabases:
     cloud-platform-181a70806e1a85f5: "HDC"
   sqsAlertsQueueNames:
-    - "Digital-Prison-Services-prod-hdc_domain_events_queue"
-    - "Digital-Prison-Services-prod-hdc_domain_events_dl"
+    - "Digital-Prison-Services-preprod-hdc_domain_events_queue"
+    - "Digital-Prison-Services-preprod-hdc_domain_events_dl"
 
 cron:
   resetLicences:
