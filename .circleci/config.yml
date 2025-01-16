@@ -65,6 +65,10 @@ workflows:
           user: licences
           password: hmpps-hdc-api
           initialise_database: "./gradlew initialiseDatabase"
+          filters:
+            branches:
+              only:
+                - main
       - validate:
           filters:
             tags:
