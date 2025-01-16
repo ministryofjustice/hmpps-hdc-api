@@ -6,6 +6,7 @@
 .idea/
 .gradle/
 build/
+.httpClient/
 
 # CMake
 cmake-build-debug/

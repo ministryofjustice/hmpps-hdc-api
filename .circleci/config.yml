@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
-  hmpps: ministryofjustice/hmpps@10
+  hmpps: ministryofjustice/hmpps@dev:alpha
+
 parameters:
   releases-slack-channel:
     type: string
@@ -11,6 +12,10 @@ parameters:
   localstack-version:
     type: string
     default: "3.0.2"
+  postgres-version:
+    type: string
+    default: "16.3"
+
 jobs:
   validate:
     executor:
@@ -18,7 +23,7 @@ jobs:
       jdk_tag: << pipeline.parameters.java-version >>
       localstack_tag: << pipeline.parameters.localstack-version >>
       services: "sns,sqs"
-      postgres_tag: "16"
+      postgres_tag: << pipeline.parameters.postgres-version >>
       postgres_username: "licences"
       postgres_password: "hmpps-hdc-api"
       postgres_db: "hmpps-hdc-api"
@@ -52,6 +57,14 @@ workflows:
   version: 2
   build-test-and-deploy:
     jobs:
+      - hmpps/database_schema_report:
+          jdk_tag: << pipeline.parameters.java-version >>
+          localstack_tag: << pipeline.parameters.localstack-version >>
+          postgres_tag: << pipeline.parameters.postgres-version >>
+          database_name: hmpps-hdc-api
+          user: licences
+          password: hmpps-hdc-api
+          initialise_database: "./gradlew initialiseDatabase"
       - validate:
           filters:
             tags:

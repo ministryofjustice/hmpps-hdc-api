@@ -56,6 +56,32 @@ kotlin {
 }
 
 tasks {
+  task<Test>("initialiseDatabase") {
+    include("**/InitialiseDatabaseTest.class")
+  }
+
+  task<Test>("integrationTest") {
+    description = "Integration tests"
+    group = "verification"
+    shouldRunAfter("test")
+    useJUnitPlatform()
+    filter {
+      includeTestsMatching("*.integration.*")
+    }
+  }
+
+  register<Copy>("installLocalGitHook") {
+    from(File(rootProject.rootDir, ".scripts/pre-commit"))
+    into(File(rootProject.rootDir, ".git/hooks"))
+    filePermissions { unix(755) }
+  }
+
+  named<Test>("test") {
+    filter {
+      excludeTestsMatching("*.integration.*")
+    }
+  }
+
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
     compilerOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
@@ -67,31 +93,6 @@ tasks {
   }
   getByName("check") {
     dependsOn(":ktlintCheck", "detekt")
-  }
-}
-
-val integrationTest = task<Test>("integrationTest") {
-  description = "Integration tests"
-  group = "verification"
-  shouldRunAfter("test")
-}
-
-tasks.register<Copy>("installLocalGitHook") {
-  from(File(rootProject.rootDir, ".scripts/pre-commit"))
-  into(File(rootProject.rootDir, ".git/hooks"))
-  filePermissions { unix(755) }
-}
-
-tasks.named<Test>("integrationTest") {
-  useJUnitPlatform()
-  filter {
-    includeTestsMatching("*.integration.*")
-  }
-}
-
-tasks.named<Test>("test") {
-  filter {
-    excludeTestsMatching("*.integration.*")
   }
 }
 
