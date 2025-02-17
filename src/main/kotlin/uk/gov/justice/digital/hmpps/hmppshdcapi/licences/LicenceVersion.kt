@@ -31,7 +31,7 @@ class LicenceVersion(
 
   @Type(JsonBinaryType::class)
   @Column(columnDefinition = "jsonb")
-  val licence: Map<String, Any>?,
+  val licence: LicenceData?,
 ) {
 
   override fun toString(): String {

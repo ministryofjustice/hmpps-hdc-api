@@ -108,7 +108,6 @@ class SubjectAccessRequestControllerTest {
       Content(
         licences = emptyList(),
         licenceVersions = emptyList(),
-        auditEvents = emptyList(),
       ),
     )
   }

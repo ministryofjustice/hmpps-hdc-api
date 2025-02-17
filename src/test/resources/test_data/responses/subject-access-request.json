@@ -64,15 +64,69 @@
         "deletedAt": null,
         "licenceInCvl": false,
         "licence": {
+          "eligibility": {
+            "crdTime": {
+              "decision": "No"
+            },
+            "excluded": {
+              "decision": "No"
+            },
+            "suitability": {
+              "decision": "No"
+            }
+          },
+          "bassReferral": {
+            "bassOffer": {
+              "addressLine1": "10",
+              "addressLine2": "street",
+              "addressTown": "Sheffield",
+              "postCode": "AA AA",
+              "bassAccepted": "Yes"
+            },
+            "bassRequest": {
+              "bassRequested": "Yes"
+            },
+            "approvedPremisesAddress": null,
+            "bassAreaCheck": {
+              "approvedPremisesRequiredYesNo": "No"
+            }
+          },
+          "proposedAddress": {
+            "curfewAddress": null
+          },
+          "curfew": {
+            "firstNight": {
+              "firstNightFrom": "15:00:00",
+              "firstNightUntil": "07:00:00"
+            },
+            "curfewHours": {
+              "mondayFrom": "19:00",
+              "mondayUntil": "07:00",
+              "tuesdayFrom": "19:00",
+              "tuesdayUntil": "07:00",
+              "wednesdayFrom": "19:00",
+              "wednesdayUntil": "07:00",
+              "thursdayFrom": "19:00",
+              "thursdayUntil": "07:00",
+              "fridayFrom": "19:00",
+              "fridayUntil": "07:00",
+              "saturdayFrom": "19:00",
+              "saturdayUntil": "07:00",
+              "sundayFrom": "19:00",
+              "sundayUntil": "07:00"
+            },
+            "approvedPremisesAddress": null,
+            "approvedPremises": null
+          },
           "risk": {
             "riskManagement": {
               "version": "3",
               "emsInformation": "No",
               "pomConsultation": "Yes",
               "mentalHealthPlan": "No",
+              "manageInTheCommunity": "Yes",
               "unsuitableReason": "",
               "hasConsideredChecks": "Yes",
-              "manageInTheCommunity": "Yes",
               "emsInformationDetails": "",
               "riskManagementDetails": "",
               "proposedAddressSuitable": "Yes",
@@ -80,52 +134,6 @@
               "nonDisclosableInformation": "No",
               "nonDisclosableInformationDetails": "",
               "manageInTheCommunityNotPossibleReason": ""
-            }
-          },
-          "curfew": {
-            "firstNight": {
-              "firstNightFrom": "15:00",
-              "firstNightUntil": "07:00"
-            },
-            "curfewHours": {
-              "allFrom": "19:00",
-              "allUntil": "07:00",
-              "fridayFrom": "19:00",
-              "mondayFrom": "19:00",
-              "sundayFrom": "19:00",
-              "fridayUntil": "07:00",
-              "mondayUntil": "07:00",
-              "sundayUntil": "07:00",
-              "tuesdayFrom": "19:00",
-              "saturdayFrom": "19:00",
-              "thursdayFrom": "19:00",
-              "tuesdayUntil": "07:00",
-              "saturdayUntil": "07:00",
-              "thursdayUntil": "07:00",
-              "wednesdayFrom": "19:00",
-              "wednesdayUntil": "07:00",
-              "daySpecificInputs": "No"
-            }
-          },
-          "victim": {
-            "victimLiaison": {
-              "decision": "No"
-            }
-          },
-          "approval": {
-            "release": {
-              "decision": "Yes",
-              "decisionMaker": "AAAAA",
-              "reasonForDecision": "hfdtuc"
-            },
-            "consideration": {
-              "decision": "Yes"
-            }
-          },
-          "document": {
-            "template": {
-              "decision": "hdc_ap",
-              "offenceCommittedBeforeFeb2015": "No"
             }
           },
           "reporting": {
@@ -141,22 +149,34 @@
               "buildingAndStreet2": "street"
             }
           },
-          "eligibility": {
-            "crdTime": {
+          "victim": {
+            "victimLiaison": {
               "decision": "No"
+            }
+          },
+          "licenceConditions": {
+            "bespoke": null,
+            "standard": {
+              "additionalConditionsRequired": "No"
             },
-            "excluded": {
-              "decision": "No"
-            },
-            "suitability": {
-              "decision": "No"
+            "additional": null,
+            "conditionsSummary": null
+          },
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
+          "approval": {
+            "release": {
+              "decision": "Yes",
+              "decisionMaker": "AAAAA",
+              "reasonForDecision": "hfdtuc"
             }
           },
           "finalChecks": {
             "onRemand": {
-              "decision": "No"
-            },
-            "segregation": {
               "decision": "No"
             },
             "seriousOffence": {
@@ -164,44 +184,6 @@
             },
             "confiscationOrder": {
               "decision": "No"
-            },
-            "undulyLenientSentence": {
-              "decision": "No"
-            }
-          },
-          "bassReferral": {
-            "bassOffer": {
-              "bassArea": "hhh",
-              "postCode": "AA AA",
-              "telephone": "11111",
-              "addressTown": "Sheffield",
-              "addressLine1": "10",
-              "addressLine2": "street",
-              "bassAccepted": "Yes",
-              "bassOfferDetails": ""
-            },
-            "bassRequest": {
-              "specificArea": "No",
-              "bassRequested": "Yes",
-              "additionalInformation": ""
-            },
-            "bassAreaCheck": {
-              "bassAreaReason": "",
-              "bassAreaCheckSeen": "true",
-              "approvedPremisesRequiredYesNo": "No"
-            }
-          },
-          "proposedAddress": {
-            "optOut": {
-              "decision": "No"
-            },
-            "addressProposed": {
-              "decision": "No"
-            }
-          },
-          "licenceConditions": {
-            "standard": {
-              "additionalConditionsRequired": "No"
             }
           }
         }
@@ -217,10 +199,66 @@
         "deletedAt": null,
         "licenceInCvl": false,
         "licence": {
+          "eligibility": {
+            "crdTime": {
+              "decision": "No"
+            },
+            "excluded": {
+              "decision": "No"
+            },
+            "suitability": {
+              "decision": "No"
+            }
+          },
+          "bassReferral": {
+            "bassOffer": null,
+            "bassRequest": {
+              "bassRequested": "No"
+            },
+            "approvedPremisesAddress": null,
+            "bassAreaCheck": null
+          },
+          "proposedAddress": {
+            "curfewAddress": {
+              "addressLine1": "10 Blackburn Road",
+              "addressLine2": "",
+              "addressTown": "Blackburn",
+              "postCode": "AA1 1JJ"
+            }
+          },
+          "curfew": {
+            "firstNight": {
+              "firstNightFrom": "15:00:00",
+              "firstNightUntil": "07:00:00"
+            },
+            "curfewHours": {
+              "mondayFrom": "19:00",
+              "mondayUntil": "07:00",
+              "tuesdayFrom": "19:00",
+              "tuesdayUntil": "07:00",
+              "wednesdayFrom": "19:00",
+              "wednesdayUntil": "07:00",
+              "thursdayFrom": "19:00",
+              "thursdayUntil": "07:00",
+              "fridayFrom": "19:00",
+              "fridayUntil": "07:00",
+              "saturdayFrom": "19:00",
+              "saturdayUntil": "07:00",
+              "sundayFrom": "19:00",
+              "sundayUntil": "07:00"
+            },
+            "approvedPremisesAddress": null,
+            "approvedPremises": {
+              "required": "No"
+            }
+          },
           "risk": {
             "riskManagement": {
               "version": "2",
               "emsInformation": "Yes",
+              "pomConsultation": null,
+              "mentalHealthPlan": null,
+              "manageInTheCommunity": null,
               "unsuitableReason": "",
               "hasConsideredChecks": "Yes",
               "emsInformationDetails": "Test.",
@@ -228,59 +266,8 @@
               "proposedAddressSuitable": "Yes",
               "awaitingOtherInformation": "No",
               "nonDisclosableInformation": "No",
-              "nonDisclosableInformationDetails": ""
-            }
-          },
-          "curfew": {
-            "firstNight": {
-              "firstNightFrom": "15:00",
-              "firstNightUntil": "07:00"
-            },
-            "curfewHours": {
-              "allFrom": "19:00",
-              "allUntil": "07:00",
-              "fridayFrom": "19:00",
-              "mondayFrom": "19:00",
-              "sundayFrom": "19:00",
-              "fridayUntil": "07:00",
-              "mondayUntil": "07:00",
-              "sundayUntil": "07:00",
-              "tuesdayFrom": "19:00",
-              "saturdayFrom": "19:00",
-              "thursdayFrom": "19:00",
-              "tuesdayUntil": "07:00",
-              "saturdayUntil": "07:00",
-              "thursdayUntil": "07:00",
-              "wednesdayFrom": "19:00",
-              "wednesdayUntil": "07:00",
-              "daySpecificInputs": "No"
-            },
-            "approvedPremises": {
-              "required": "No"
-            },
-            "curfewAddressReview": {
-              "consent": "Yes",
-              "electricity": "Yes",
-              "homeVisitConducted": "Yes",
-              "addressReviewComments": "Test."
-            }
-          },
-          "victim": {
-            "victimLiaison": {
-              "decision": "No"
-            }
-          },
-          "approval": {
-            "release": {
-              "decision": "Yes",
-              "decisionMaker": "Tim Mccluskey",
-              "reasonForDecision": ""
-            }
-          },
-          "document": {
-            "template": {
-              "decision": "hdc_ap",
-              "offenceCommittedBeforeFeb2015": "No"
+              "nonDisclosableInformationDetails": "",
+              "manageInTheCommunityNotPossibleReason": null
             }
           },
           "reporting": {
@@ -296,15 +283,76 @@
               "buildingAndStreet2": ""
             }
           },
-          "eligibility": {
-            "crdTime": {
+          "victim": {
+            "victimLiaison": {
               "decision": "No"
+            }
+          },
+          "licenceConditions": {
+            "bespoke": [],
+            "standard": {
+              "additionalConditionsRequired": "Yes"
             },
-            "excluded": {
-              "decision": "No"
+            "additional": {
+              "ALCOHOL_MONITORING": null,
+              "ALLOW_POLICE_SEARCH": null,
+              "attendAll": null,
+              "ATTENDDEPENDENCY": null,
+              "attendDependencyInDrugsSection": null,
+              "ATTEND_SAMPLE": null,
+              "CAMERA_APPROVAL": {},
+              "complyRequirements": null,
+              "confineAddress": null,
+              "CURFEW_UNTIL_INSTALLATION": null,
+              "DONT_HAMPER_DRUG_TESTING": null,
+              "DRUG_TESTING": null,
+              "ELECTRONIC_MONITORING_INSTALLATION": null,
+              "ELECTRONIC_MONITORING_TRAIL": null,
+              "exclusionAddress": null,
+              "exclusionArea": null,
+              "homeVisits": null,
+              "intimateRelationship": null,
+              "NO_CAMERA": null,
+              "noCameraPhone": null,
+              "noChildrenArea": null,
+              "noCommunicateVictim": null,
+              "NO_CONTACT_ASSOCIATE": null,
+              "noContactNamed": null,
+              "noContactPrisoner": null,
+              "NO_CONTACT_SEX_OFFENDER": null,
+              "noInternet": null,
+              "noReside": null,
+              "notifyPassport": null,
+              "notifyRelationship": null,
+              "noUnsupervisedContact": null,
+              "noWorkWithAge": null,
+              "onePhone": null,
+              "POLICE_ESCORT": null,
+              "POLYGRAPH": null,
+              "remainAddress": null,
+              "reportTo": null,
+              "RESIDE_AT_SPECIFIC_PLACE": null,
+              "RETURN_TO_UK": null,
+              "SPECIFIC_ITEM": null,
+              "surrenderPassport": null,
+              "usageHistory": null,
+              "vehicleDetails": null
             },
-            "suitability": {
-              "decision": "No"
+            "conditionsSummary": {
+              "additionalConditionsJustification": "Why they added additional condition here."
+            }
+          },
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
+          "approval": {
+            "release": {
+              "decision": "Yes",
+              "decisionMaker": "Tim Mccluskey",
+              "reasonForDecision": ""
             }
           },
           "finalChecks": {
@@ -317,74 +365,6 @@
             "confiscationOrder": {
               "decision": "No"
             }
-          },
-          "bassReferral": {
-            "bassRequest": {
-              "bassRequested": "No"
-            }
-          },
-          "proposedAddress": {
-            "optOut": {
-              "decision": "No"
-            },
-            "curfewAddress": {
-              "occupier": {
-                "name": "Bob Bobson",
-                "relationship": "Father"
-              },
-              "postCode": "AA1 1JJ",
-              "residents": [],
-              "telephone": "01234 111111",
-              "addressTown": "Blackburn",
-              "addressLine1": "10 Blackburn Road",
-              "addressLine2": "",
-              "additionalInformation": "",
-              "residentOffenceDetails": "",
-              "cautionedAgainstResident": "No"
-            },
-            "addressProposed": {
-              "decision": "Yes"
-            }
-          },
-          "licenceConditions": {
-            "bespoke": [],
-            "standard": {
-              "additionalConditionsRequired": "Yes"
-            },
-            "additional": {
-              "CAMERA_APPROVAL": {}
-            },
-            "conditionsSummary": {
-              "additionalConditionsJustification": "Why they added additional condition here."
-            }
-          }
-        }
-      }
-    ],
-    "auditEvents": [
-      {
-        "id": 33438,
-        "timestamp": "2023-05-05T15:56:02.684",
-        "user": "licences",
-        "action": "UPDATE_SECTION",
-        "details": {
-          "path": "/hdc/eligibility/suitability/20",
-          "bookingId": "20",
-          "userInput": {
-            "decision": "No"
-          }
-        }
-      },
-      {
-        "id": 33437,
-        "timestamp": "2023-05-05T15:56:01.908",
-        "user": "licences",
-        "action": "UPDATE_SECTION",
-        "details": {
-          "path": "/hdc/eligibility/excluded/10",
-          "bookingId": "10",
-          "userInput": {
-            "decision": "No"
           }
         }
       }
