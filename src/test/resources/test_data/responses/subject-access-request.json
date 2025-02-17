@@ -155,7 +155,12 @@
             }
           },
           "licenceConditions": {
-            "bespoke": null,
+            "bespoke": [
+              {
+                "approved": "Yes",
+                "text": "Some other condition"
+              }
+            ],
             "standard": {
               "additionalConditionsRequired": "No"
             },

@@ -21,7 +21,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.11.0")
-  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
   implementation("org.springframework.security:spring-security-config:6.3.2")
 
   // Database dependencies
