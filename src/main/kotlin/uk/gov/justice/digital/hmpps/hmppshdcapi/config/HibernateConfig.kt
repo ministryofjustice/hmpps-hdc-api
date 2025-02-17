@@ -13,6 +13,9 @@ class HibernateConfig {
   @Bean
   fun jsonFormatMapperCustomizer(objectMapper: ObjectMapper?): HibernatePropertiesCustomizer {
     log.info("Registering hibernate config")
+    objectMapper?.registeredModuleIds?.forEach {
+      log.info("* $it")
+    }
     return HibernatePropertiesCustomizer { properties ->
       properties[AvailableSettings.JSON_FORMAT_MAPPER] = JacksonJsonFormatMapper(objectMapper)
     }

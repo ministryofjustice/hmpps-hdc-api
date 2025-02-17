@@ -25,10 +25,10 @@ enum class OfferAccepted {
 }
 
 interface Address {
-  val addressLine1: String
+  val addressLine1: String?
   val addressLine2: String?
-  val addressTown: String
-  val postCode: String
+  val addressTown: String?
+  val postCode: String?
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -75,19 +75,19 @@ data class ProposedAddress(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CurfewAddress(
-  override val addressLine1: String,
+  override val addressLine1: String? = null,
   override val addressLine2: String? = null,
-  override val addressTown: String,
-  override val postCode: String,
+  override val addressTown: String? = null,
+  override val postCode: String? = null,
 ) : Address
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2Offer(
-  override val addressLine1: String,
+  override val addressLine1: String? = null,
   override val addressLine2: String? = null,
-  override val addressTown: String,
-  override val postCode: String,
-  val bassAccepted: OfferAccepted,
+  override val addressTown: String? = null,
+  override val postCode: String? = null,
+  val bassAccepted: OfferAccepted?,
 ) : Address
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -234,8 +234,14 @@ data class ConfiscationOrder(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+data class BespokeCondition(
+  val approved: String?,
+  val text: String?,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class LicenceConditions(
-  val bespoke: List<String>?,
+  val bespoke: List<BespokeCondition>?,
   val standard: Standard?,
   val additional: Additional?,
   val conditionsSummary: ConditionsSummary?,

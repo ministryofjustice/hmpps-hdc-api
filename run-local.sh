@@ -68,6 +68,14 @@ if [[ $1 == "--connect-db" ]]; then
   echo "Starting the API locally with separate licences DB"
   SPRING_PROFILES_ACTIVE=stdout,dev ./gradlew bootRun
 
+elif [[ $1 == "--connect-t3" ]]; then
+  # connect to DB running from frontend app
+  export DB_NAME=$(kubectl -n licences-dev get secrets dps-rds-instance-output -o json | jq -r '.data.database_name | @base64d')
+  export DB_PASS=$(kubectl -n licences-dev get secrets dps-rds-instance-output -o json | jq -r '.data.database_password | @base64d')
+  export DB_USER=$(kubectl -n licences-dev get secrets dps-rds-instance-output -o json | jq -r '.data.database_username | @base64d')
+  echo "Starting the API locally running against T3 (port-forward needs to be running)"
+  SPRING_PROFILES_ACTIVE=stdout,dev ./gradlew bootRun
+
 else
   # connect to DB running from local docker-compose app
   export DB_NAME=hmpps-hdc-api
