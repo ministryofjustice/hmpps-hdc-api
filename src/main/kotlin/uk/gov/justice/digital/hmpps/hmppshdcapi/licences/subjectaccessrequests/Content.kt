@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.subjectaccessrequests
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
 
