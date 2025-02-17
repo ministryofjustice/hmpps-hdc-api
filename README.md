@@ -34,6 +34,23 @@ To apply some fixes following linting
 
 `$ ./gradlew ktlintformat` 
 
+### Static Code Analysis
+
+We use a tool called Detekt locally to provide code smell
+analysis for the project. A baseline currently exists with all the existing
+issues at `detekt-baseline.yml`.
+
+To generate/re-generate the baseline:
+
+`$ ./gradlew detektBaseline`
+
+To run Detekt:
+
+`$ ./gradlew detekt`
+
+Detekt provides some helpful reports in HTML as well which can be opened in any
+browser. These are available at `build/reports/detekt`.
+
 ### Re-generate the schema
 
 In DBeaver or whichever database tool you are using, establish a database connection then go to the navigator panel on the left. 
