@@ -368,34 +368,6 @@
           }
         }
       }
-    ],
-    "auditEvents": [
-      {
-        "id": 33438,
-        "timestamp": "2023-05-05T15:56:02.684",
-        "user": "licences",
-        "action": "UPDATE_SECTION",
-        "details": {
-          "path": "/hdc/eligibility/suitability/20",
-          "bookingId": "20",
-          "userInput": {
-            "decision": "No"
-          }
-        }
-      },
-      {
-        "id": 33437,
-        "timestamp": "2023-05-05T15:56:01.908",
-        "user": "licences",
-        "action": "UPDATE_SECTION",
-        "details": {
-          "path": "/hdc/eligibility/excluded/10",
-          "bookingId": "10",
-          "userInput": {
-            "decision": "No"
-          }
-        }
-      }
     ]
   }
 }
