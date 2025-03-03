@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import java.time.DayOfWeek
-import java.time.LocalTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours as EntityCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight as EntityFirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
