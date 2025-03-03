@@ -111,20 +111,20 @@ data class FirstNight(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CurfewHours(
-  val mondayFrom: String,
-  val mondayUntil: String,
-  val tuesdayFrom: String,
-  val tuesdayUntil: String,
-  val wednesdayFrom: String,
-  val wednesdayUntil: String,
-  val thursdayFrom: String,
-  val thursdayUntil: String,
-  val fridayFrom: String,
-  val fridayUntil: String,
-  val saturdayFrom: String,
-  val saturdayUntil: String,
-  val sundayFrom: String,
-  val sundayUntil: String,
+  val mondayFrom: LocalTime,
+  val mondayUntil: LocalTime,
+  val tuesdayFrom: LocalTime,
+  val tuesdayUntil: LocalTime,
+  val wednesdayFrom: LocalTime,
+  val wednesdayUntil: LocalTime,
+  val thursdayFrom: LocalTime,
+  val thursdayUntil: LocalTime,
+  val fridayFrom: LocalTime,
+  val fridayUntil: LocalTime,
+  val saturdayFrom: LocalTime,
+  val saturdayUntil: LocalTime,
+  val sundayFrom: LocalTime,
+  val sundayUntil: LocalTime,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
