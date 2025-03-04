@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import java.time.DayOfWeek
-import java.time.LocalTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours as EntityCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight as EntityFirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
@@ -24,45 +23,45 @@ fun transformToModelCurfewTimes(
   return listOf(
     ModelCurfewTimes(
       fromDay = DayOfWeek.MONDAY,
-      fromTime = curfewHours?.mondayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.mondayFrom,
       untilDay = DayOfWeek.TUESDAY,
-      untilTime = curfewHours?.tuesdayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.tuesdayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.TUESDAY,
-      fromTime = curfewHours?.tuesdayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.tuesdayFrom,
       untilDay = DayOfWeek.WEDNESDAY,
-      untilTime = curfewHours?.wednesdayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.wednesdayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.WEDNESDAY,
-      fromTime = curfewHours?.wednesdayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.wednesdayFrom,
       untilDay = DayOfWeek.THURSDAY,
-      untilTime = curfewHours?.thursdayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.thursdayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.THURSDAY,
-      fromTime = curfewHours?.thursdayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.thursdayFrom,
       untilDay = DayOfWeek.FRIDAY,
-      untilTime = curfewHours?.fridayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.fridayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.FRIDAY,
-      fromTime = curfewHours?.fridayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.fridayFrom,
       untilDay = DayOfWeek.SATURDAY,
-      untilTime = curfewHours?.saturdayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.saturdayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.SATURDAY,
-      fromTime = curfewHours?.saturdayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.saturdayFrom,
       untilDay = DayOfWeek.SUNDAY,
-      untilTime = curfewHours?.sundayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.sundayUntil,
     ),
     ModelCurfewTimes(
       fromDay = DayOfWeek.SUNDAY,
-      fromTime = curfewHours?.sundayFrom?.let { LocalTime.parse(it) },
+      fromTime = curfewHours?.sundayFrom,
       untilDay = DayOfWeek.MONDAY,
-      untilTime = curfewHours?.mondayUntil?.let { LocalTime.parse(it) },
+      untilTime = curfewHours?.mondayUntil,
     ),
   )
 }
