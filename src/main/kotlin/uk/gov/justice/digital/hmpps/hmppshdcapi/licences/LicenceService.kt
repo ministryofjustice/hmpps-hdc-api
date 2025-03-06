@@ -39,20 +39,48 @@ class LicenceService(
 
   fun checkForNullValues(curfewHours: CurfewHours?): Boolean {
     val missingTimes = mutableListOf<String>()
-    if (curfewHours?.mondayFrom == null) { missingTimes += "mondayFrom" }
-    if (curfewHours?.mondayUntil == null) { missingTimes += "mondayUntil" }
-    if (curfewHours?.tuesdayFrom == null) { missingTimes += "tuesdayFrom" }
-    if (curfewHours?.tuesdayUntil == null) { missingTimes += "tuesdayUntil" }
-    if (curfewHours?.wednesdayFrom == null) { missingTimes += "wednesdayFrom" }
-    if (curfewHours?.wednesdayUntil == null) { missingTimes += "wednesdayUntil" }
-    if (curfewHours?.thursdayFrom == null) { missingTimes += "thursdayFrom" }
-    if (curfewHours?.thursdayUntil == null) { missingTimes += "thursdayUntil" }
-    if (curfewHours?.fridayFrom == null) { missingTimes += "fridayFrom" }
-    if (curfewHours?.fridayUntil == null) { missingTimes += "fridayUntil" }
-    if (curfewHours?.saturdayFrom == null) { missingTimes += "saturdayFrom" }
-    if (curfewHours?.saturdayUntil == null) { missingTimes += "saturdayUntil" }
-    if (curfewHours?.sundayFrom == null) { missingTimes += "sundayFrom" }
-    if (curfewHours?.sundayUntil == null) { missingTimes += "sundayUntil" }
+    if (curfewHours?.mondayFrom == null) {
+      missingTimes += "mondayFrom"
+    }
+    if (curfewHours?.mondayUntil == null) {
+      missingTimes += "mondayUntil"
+    }
+    if (curfewHours?.tuesdayFrom == null) {
+      missingTimes += "tuesdayFrom"
+    }
+    if (curfewHours?.tuesdayUntil == null) {
+      missingTimes += "tuesdayUntil"
+    }
+    if (curfewHours?.wednesdayFrom == null) {
+      missingTimes += "wednesdayFrom"
+    }
+    if (curfewHours?.wednesdayUntil == null) {
+      missingTimes += "wednesdayUntil"
+    }
+    if (curfewHours?.thursdayFrom == null) {
+      missingTimes += "thursdayFrom"
+    }
+    if (curfewHours?.thursdayUntil == null) {
+      missingTimes += "thursdayUntil"
+    }
+    if (curfewHours?.fridayFrom == null) {
+      missingTimes += "fridayFrom"
+    }
+    if (curfewHours?.fridayUntil == null) {
+      missingTimes += "fridayUntil"
+    }
+    if (curfewHours?.saturdayFrom == null) {
+      missingTimes += "saturdayFrom"
+    }
+    if (curfewHours?.saturdayUntil == null) {
+      missingTimes += "saturdayUntil"
+    }
+    if (curfewHours?.sundayFrom == null) {
+      missingTimes += "sundayFrom"
+    }
+    if (curfewHours?.sundayUntil == null) {
+      missingTimes += "sundayUntil"
+    }
 
     if (missingTimes.isNotEmpty()) {
       log.info("Missing curfew time(s) for $missingTimes")

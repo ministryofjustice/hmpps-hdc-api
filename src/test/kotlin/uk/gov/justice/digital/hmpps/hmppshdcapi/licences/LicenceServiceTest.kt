@@ -526,21 +526,21 @@ class LicenceServiceTest {
     )
 
     val aCurfewTimes = CurfewHours(
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-        LocalTime.of(20, 0),
-        LocalTime.of(8, 0),
-      )
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+      LocalTime.of(20, 0),
+      LocalTime.of(8, 0),
+    )
 
     val aCas2Offer = Cas2Offer(
       "3 The Street",
