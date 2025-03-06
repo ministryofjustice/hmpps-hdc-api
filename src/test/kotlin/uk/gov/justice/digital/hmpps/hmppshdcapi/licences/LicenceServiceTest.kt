@@ -432,6 +432,29 @@ class LicenceServiceTest {
   }
 
   @Test
+  fun `checkForNullValues will return false for curfewTimes if a single curfew time is null`() {
+    val aCurfewTimesWithNull = aCurfewTimes.copy(mondayUntil = null)
+    val result = service.checkForNullValues(aCurfewTimesWithNull)
+
+    assertThat(result).isEqualTo(false)
+  }
+
+  @Test
+  fun `checkForNullValues will return false for curfewTimes if multiple curfew times are null`() {
+    val aCurfewTimesWithMultipleNulls = aCurfewTimes.copy(mondayUntil = null, wednesdayUntil = null)
+    val result = service.checkForNullValues(aCurfewTimesWithMultipleNulls)
+
+    assertThat(result).isEqualTo(false)
+  }
+
+  @Test
+  fun `checkForNullValues will true for curfewTimes if curfew time is complete`() {
+    val result = service.checkForNullValues(aCurfewTimes)
+
+    assertThat(result).isEqualTo(true)
+  }
+
+  @Test
   fun `address object is successfully created when address line 2 is not present`() {
     val curfewAddress = CurfewAddress(
       "5 The Street",
@@ -501,6 +524,23 @@ class LicenceServiceTest {
         Decision.YES,
       ),
     )
+
+    val aCurfewTimes = CurfewHours(
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+        LocalTime.of(20, 0),
+        LocalTime.of(8, 0),
+      )
 
     val aCas2Offer = Cas2Offer(
       "3 The Street",
