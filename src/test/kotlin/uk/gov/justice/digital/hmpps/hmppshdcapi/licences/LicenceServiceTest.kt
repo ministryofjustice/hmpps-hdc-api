@@ -335,6 +335,32 @@ class LicenceServiceTest {
   }
 
   @Test
+  fun `will return null for curfewTimes when a single curfew time is null`() {
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithSingleMissingCurfewHour()))
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      null,
+    )
+
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
+  }
+
+  @Test
+  fun `will return null for curfewTimes when multiple curfew times are null`() {
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithMultipleMissingCurfewHours()))
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      null,
+    )
+
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
+  }
+
+  @Test
   fun `will throw exception if no HDC licence found`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(emptyList())
 
@@ -429,29 +455,6 @@ class LicenceServiceTest {
       assertThat(result.addressTown).isEqualTo(addressTown)
       assertThat(result.postCode).isEqualTo(postCode)
     }
-  }
-
-  @Test
-  fun `checkForNullValues will return false for curfewTimes if a single curfew time is null`() {
-    val aCurfewTimesWithNull = aCurfewTimes.copy(mondayUntil = null)
-    val result = service.checkForNullValues(aCurfewTimesWithNull)
-
-    assertThat(result).isEqualTo(false)
-  }
-
-  @Test
-  fun `checkForNullValues will return false for curfewTimes if multiple curfew times are null`() {
-    val aCurfewTimesWithMultipleNulls = aCurfewTimes.copy(mondayUntil = null, wednesdayUntil = null)
-    val result = service.checkForNullValues(aCurfewTimesWithMultipleNulls)
-
-    assertThat(result).isEqualTo(false)
-  }
-
-  @Test
-  fun `checkForNullValues will true for curfewTimes if curfew time is complete`() {
-    val result = service.checkForNullValues(aCurfewTimes)
-
-    assertThat(result).isEqualTo(true)
   }
 
   @Test

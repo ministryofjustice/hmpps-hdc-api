@@ -27,66 +27,73 @@ class LicenceService(
     val cas2Referral = licenceData.bassReferral
     val curfew = licenceData.curfew
     val proposedAddress = licenceData.proposedAddress
+    val curfewHours = curfew?.curfewHours
+
+    val missingCurfewTimes = curfewHours.getNullTimes()
+    val curfewTimes = if (missingCurfewTimes.isNotEmpty()) {
+      log.info("Missing curfew time(s) for $missingCurfewTimes")
+      null
+    } else {
+      curfewHours?.let {
+        transformToModelCurfewTimes(it)
+      }
+    }
 
     return HdcLicence(
       licenceId = licence.id,
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
-      curfewTimes = if (checkForNullValues(curfew?.curfewHours)) curfew?.let { transformToModelCurfewTimes(it.curfewHours) } else null,
-    )
+      curfewTimes = curfewTimes,
+      )
   }
 
-  fun checkForNullValues(curfewHours: CurfewHours?): Boolean {
+  fun CurfewHours?.getNullTimes(): List<String> {
+    if (this == null) { return listOf("all times") }
     val missingTimes = mutableListOf<String>()
-    if (curfewHours?.mondayFrom == null) {
+    if (mondayFrom == null) {
       missingTimes += "mondayFrom"
     }
-    if (curfewHours?.mondayUntil == null) {
+    if (mondayUntil == null) {
       missingTimes += "mondayUntil"
     }
-    if (curfewHours?.tuesdayFrom == null) {
+    if (tuesdayFrom == null) {
       missingTimes += "tuesdayFrom"
     }
-    if (curfewHours?.tuesdayUntil == null) {
+    if (tuesdayUntil == null) {
       missingTimes += "tuesdayUntil"
     }
-    if (curfewHours?.wednesdayFrom == null) {
+    if (wednesdayFrom == null) {
       missingTimes += "wednesdayFrom"
     }
-    if (curfewHours?.wednesdayUntil == null) {
+    if (wednesdayUntil == null) {
       missingTimes += "wednesdayUntil"
     }
-    if (curfewHours?.thursdayFrom == null) {
+    if (thursdayFrom == null) {
       missingTimes += "thursdayFrom"
     }
-    if (curfewHours?.thursdayUntil == null) {
+    if (thursdayUntil == null) {
       missingTimes += "thursdayUntil"
     }
-    if (curfewHours?.fridayFrom == null) {
+    if (fridayFrom == null) {
       missingTimes += "fridayFrom"
     }
-    if (curfewHours?.fridayUntil == null) {
+    if (fridayUntil == null) {
       missingTimes += "fridayUntil"
     }
-    if (curfewHours?.saturdayFrom == null) {
+    if (saturdayFrom == null) {
       missingTimes += "saturdayFrom"
     }
-    if (curfewHours?.saturdayUntil == null) {
+    if (saturdayUntil == null) {
       missingTimes += "saturdayUntil"
     }
-    if (curfewHours?.sundayFrom == null) {
+    if (sundayFrom == null) {
       missingTimes += "sundayFrom"
     }
-    if (curfewHours?.sundayUntil == null) {
+    if (sundayUntil == null) {
       missingTimes += "sundayUntil"
     }
-
-    if (missingTimes.isNotEmpty()) {
-      log.info("Missing curfew time(s) for $missingTimes")
-      return false
-    }
-    return true
+    return missingTimes
   }
 
   fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): ModelCurfewAddress? {
@@ -96,9 +103,9 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.approvedPremisesAddress
-      isCas2ApprovedPremisesRequired -> cas2Referral.approvedPremisesAddress
-      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.approvedPremisesAddress
+      isCas2ApprovedPremisesRequired -> cas2Referral?.approvedPremisesAddress
+      isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
       else -> proposedAddress?.curfewAddress
     }
     return address?.let { transformToModelCurfewAddress(it) }
