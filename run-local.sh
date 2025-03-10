@@ -18,10 +18,10 @@ stop_docker () {
 restart_docker () {
   stop_docker
 
-  #Prune existing containers
-  #Comment in if you wish to perform a fresh install of all containers where all containers are removed and deleted
-  #You will be prompted to continue with the deletion in the terminal
-#  docker system prune --all
+  # Prune existing containers
+  # Comment in if you wish to perform a fresh install of all containers where all containers are removed and deleted
+  # You will be prompted to continue with the deletion in the terminal
+  # docker system prune --all
 
   echo "Pulling back end containers ..."
   docker compose pull
@@ -62,6 +62,8 @@ export HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
 export SPRING_DATASOURCE_URL='jdbc:postgresql://${DB_SERVER}/${DB_NAME}'
 
 if [[ $1 == "--connect-db" ]]; then
+  # include restart_docker line below if you need to make sure the cache is cleared when running with the local licences db
+  # restart_docker
   # connect to DB running from frontend app
   export DB_NAME=licences
   export DB_PASS=licences

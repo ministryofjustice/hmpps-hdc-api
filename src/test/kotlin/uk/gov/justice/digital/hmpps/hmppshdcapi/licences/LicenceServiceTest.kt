@@ -335,6 +335,32 @@ class LicenceServiceTest {
   }
 
   @Test
+  fun `will return null for curfewTimes when a single curfew time is null`() {
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithSingleMissingCurfewHour()))
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      null,
+    )
+
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
+  }
+
+  @Test
+  fun `will return null for curfewTimes when multiple curfew times are null`() {
+    whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithMultipleMissingCurfewHours()))
+
+    val result = service.getByBookingId(54321L)
+
+    assertThat(result?.curfewTimes).isEqualTo(
+      null,
+    )
+
+    verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
+  }
+
+  @Test
   fun `will throw exception if no HDC licence found`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(emptyList())
 

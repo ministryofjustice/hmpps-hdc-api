@@ -622,6 +622,250 @@ object TestData {
     ),
   )
 
+  fun aLicenceWithSingleMissingCurfewHour() = Licence(
+    id = 1,
+    prisonNumber = "A12345B",
+    bookingId = 54321,
+    stage = "MODIFIED",
+    version = 1,
+    transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+    varyVersion = 0,
+    additionalConditionsVersion = null,
+    standardConditionsVersion = null,
+    deletedAt = null,
+    licenceInCvl = false,
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.NO),
+        bassOffer = null,
+      ),
+      proposedAddress = ProposedAddress(
+        CurfewAddress(
+          addressLine1 = "1 The Street",
+          addressLine2 = "Area",
+          addressTown = "Town",
+          postCode = "AB1 2CD",
+        ),
+      ),
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
+        curfewHours = CurfewHours(
+          mondayFrom = LocalTime.of(20, 0),
+          mondayUntil = null,
+          tuesdayFrom = LocalTime.of(20, 0),
+          tuesdayUntil = LocalTime.of(8, 0),
+          wednesdayFrom = LocalTime.of(20, 0),
+          wednesdayUntil = LocalTime.of(8, 0),
+          thursdayFrom = LocalTime.of(20, 0),
+          thursdayUntil = LocalTime.of(8, 0),
+          fridayFrom = LocalTime.of(20, 0),
+          fridayUntil = LocalTime.of(8, 0),
+          saturdayFrom = LocalTime.of(20, 0),
+          saturdayUntil = LocalTime.of(8, 0),
+          sundayFrom = LocalTime.of(20, 0),
+          sundayUntil = LocalTime.of(8, 0),
+        ),
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation = "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        ),
+      ),
+    ),
+  )
+
+  fun aLicenceWithMultipleMissingCurfewHours() = Licence(
+    id = 1,
+    prisonNumber = "A12345B",
+    bookingId = 54321,
+    stage = "MODIFIED",
+    version = 1,
+    transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+    varyVersion = 0,
+    additionalConditionsVersion = null,
+    standardConditionsVersion = null,
+    deletedAt = null,
+    licenceInCvl = false,
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.NO),
+        bassOffer = null,
+      ),
+      proposedAddress = ProposedAddress(
+        CurfewAddress(
+          addressLine1 = "1 The Street",
+          addressLine2 = "Area",
+          addressTown = "Town",
+          postCode = "AB1 2CD",
+        ),
+      ),
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
+        curfewHours = CurfewHours(
+          mondayFrom = LocalTime.of(20, 0),
+          mondayUntil = null,
+          tuesdayFrom = LocalTime.of(20, 0),
+          tuesdayUntil = LocalTime.of(8, 0),
+          wednesdayFrom = LocalTime.of(20, 0),
+          wednesdayUntil = LocalTime.of(8, 0),
+          thursdayFrom = LocalTime.of(20, 0),
+          thursdayUntil = null,
+          fridayFrom = LocalTime.of(20, 0),
+          fridayUntil = LocalTime.of(8, 0),
+          saturdayFrom = LocalTime.of(20, 0),
+          saturdayUntil = LocalTime.of(8, 0),
+          sundayFrom = LocalTime.of(20, 0),
+          sundayUntil = LocalTime.of(8, 0),
+        ),
+      ),
+      risk = Risk(
+        riskManagement = RiskManagement(
+          version = "3",
+          emsInformation = Decision.NO,
+          pomConsultation = Decision.YES,
+          mentalHealthPlan = Decision.NO,
+          unsuitableReason = "",
+          hasConsideredChecks = Decision.YES,
+          manageInTheCommunity = Decision.YES,
+          emsInformationDetails = "",
+          riskManagementDetails = "",
+          proposedAddressSuitable = Decision.YES,
+          awaitingOtherInformation = Decision.NO,
+          nonDisclosableInformation = Decision.NO,
+          nonDisclosableInformationDetails = "",
+          manageInTheCommunityNotPossibleReason = "",
+        ),
+      ),
+      reporting = Reporting(
+        reportingInstructions = ReportingInstructions(
+          name = "sam",
+          postcode = "AA BRD",
+          telephone = "47450",
+          townOrCity = "Sheffield",
+          organisation = "crc",
+          reportingDate = "12/12/2023",
+          reportingTime = "12:12",
+          buildingAndStreet1 = "10",
+          buildingAndStreet2 = "street",
+        ),
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Tim Mccluskey",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = OnRemand(
+          decision = Decision.NO,
+        ),
+        seriousOffence = SeriousOffence(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+        ),
+      ),
+    ),
+  )
+
   fun aBooking() = Booking(
     offenderNo = "A12345B",
     bookingId = 54321,
