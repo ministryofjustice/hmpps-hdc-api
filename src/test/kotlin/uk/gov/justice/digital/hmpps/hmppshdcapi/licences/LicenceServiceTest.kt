@@ -524,13 +524,13 @@ class LicenceServiceTest {
     }
 
     @Test
-    fun `test getAddress will return null when multiple address fields are null`() {
+    fun `test getAddress will return null when multiple address fields are blank`() {
       val aCurfewWithMultipleMissingAddressLines = aCurfew.copy(
         approvedPremisesAddress = CurfewAddress(
-          addressLine1 = null,
+          addressLine1 = "",
           addressLine2 = null,
           addressTown = "Town 1",
-          postCode = null,
+          postCode = "",
         ),
       )
 
