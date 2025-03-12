@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
@@ -388,109 +389,154 @@ class LicenceServiceTest {
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
-  @Test
-  fun `test getLicence when curfew approved premise is required`() {
-    val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress)!!
+  @Nested
+  inner class GetAddress {
+    @Test
+    fun `test getAddress when curfew approved premise is required`() {
+      val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress, 1L)!!
 
-    with(aCurfew.approvedPremisesAddress!!) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
+      with(aCurfew.approvedPremisesAddress!!) {
+        assertThat(result.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.addressTown).isEqualTo(addressTown)
+        assertThat(result.postCode).isEqualTo(postCode)
+      }
     }
-  }
 
-  @Test
-  fun `test getLicence when cas2 approved premise is required`() {
-    val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.YES))
-    val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress)!!
+    @Test
+    fun `test getAddress when cas2 approved premise is required`() {
+      val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.YES))
+      val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress, 1L)!!
 
-    with(aCas2Referral.approvedPremisesAddress!!) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
+      with(aCas2Referral.approvedPremisesAddress!!) {
+        assertThat(result.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.addressTown).isEqualTo(addressTown)
+        assertThat(result.postCode).isEqualTo(postCode)
+      }
     }
-  }
 
-  @Test
-  fun `test getLicence when cas2 address is required`() {
-    val noCurfewApprovedPremisesRequired = aCurfew.copy(
-      approvedPremises = ApprovedPremises(
-        Decision.NO,
-      ),
-    )
+    @Test
+    fun `test getAddress when cas2 address is required`() {
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(
+          Decision.NO,
+        ),
+      )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, aCas2Referral, aProposedAddress)!!
+      val result = service.getAddress(noCurfewApprovedPremisesRequired, aCas2Referral, aProposedAddress, 1L)!!
 
-    with(aCas2Referral.bassOffer!!) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
+      with(aCas2Referral.bassOffer!!) {
+        assertThat(result.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.addressTown).isEqualTo(addressTown)
+        assertThat(result.postCode).isEqualTo(postCode)
+      }
     }
-  }
 
-  @Test
-  fun `test getLicence when no curfew or Cas2 address is required`() {
-    val noCurfewApprovedPremisesRequired = aCurfew.copy(
-      approvedPremises = ApprovedPremises(
-        Decision.NO,
-      ),
-    )
-    val noCas2Referral = aCas2Referral.copy(
-      bassOffer = aCas2Offer.copy(
-        bassAccepted = OfferAccepted.UNSUITABLE,
-      ),
-      bassRequest = Cas2Request(
-        Decision.NO,
-      ),
-    )
+    @Test
+    fun `test getAddress when no curfew or Cas2 address is required`() {
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(
+          Decision.NO,
+        ),
+      )
+      val noCas2Referral = aCas2Referral.copy(
+        bassOffer = aCas2Offer.copy(
+          bassAccepted = OfferAccepted.UNSUITABLE,
+        ),
+        bassRequest = Cas2Request(
+          Decision.NO,
+        ),
+      )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress)!!
+      val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress, 1L)!!
 
-    with(aProposedAddress.curfewAddress!!) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
+      with(aProposedAddress.curfewAddress!!) {
+        assertThat(result.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.addressTown).isEqualTo(addressTown)
+        assertThat(result.postCode).isEqualTo(postCode)
+      }
     }
-  }
 
-  @Test
-  fun `address object is successfully created when address line 2 is not present`() {
-    val curfewAddress = CurfewAddress(
-      "5 The Street",
-      null,
-      "Town 5",
-      "KL5 5MN",
-    )
+    @Test
+    fun `address object is successfully created when address line 2 is not present`() {
+      val curfewAddress = CurfewAddress(
+        "5 The Street",
+        null,
+        "Town 5",
+        "KL5 5MN",
+      )
 
-    val noCurfewApprovedPremisesRequired = aCurfew.copy(
-      approvedPremises = ApprovedPremises(
-        Decision.NO,
-      ),
-    )
-    val noCas2Referral = aCas2Referral.copy(
-      bassOffer = aCas2Offer.copy(
-        bassAccepted = OfferAccepted.UNAVAILABLE,
-      ),
-      bassRequest = Cas2Request(
-        Decision.NO,
-      ),
-    )
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(
+          Decision.NO,
+        ),
+      )
+      val noCas2Referral = aCas2Referral.copy(
+        bassOffer = aCas2Offer.copy(
+          bassAccepted = OfferAccepted.UNAVAILABLE,
+        ),
+        bassRequest = Cas2Request(
+          Decision.NO,
+        ),
+      )
 
-    val anotherProposedAddress = aProposedAddress.copy(
-      curfewAddress,
-    )
+      val anotherProposedAddress = aProposedAddress.copy(
+        curfewAddress,
+      )
 
-    val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress)!!
+      val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, anotherProposedAddress, 1L)!!
 
-    with(curfewAddress) {
-      assertThat(result.addressLine1).isEqualTo(addressLine1)
-      assertThat(result.addressLine2).isEqualTo(addressLine2)
-      assertThat(result.addressTown).isEqualTo(addressTown)
-      assertThat(result.postCode).isEqualTo(postCode)
+      with(curfewAddress) {
+        assertThat(result.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.addressTown).isEqualTo(addressTown)
+        assertThat(result.postCode).isEqualTo(postCode)
+      }
+    }
+
+    @Test
+    fun `test getAddress will return null when the curfew address is null`() {
+      val aCurfewWithoutAnAddress = aCurfew.copy(
+        approvedPremisesAddress = null,
+      )
+
+      val result = service.getAddress(aCurfewWithoutAnAddress, aCas2Referral, aProposedAddress, 1L)
+
+      assertThat(result).isNull()
+    }
+
+    @Test
+    fun `test getAddress will return null when a single address field is null`() {
+      val aCurfewWithAMissingAddressLine = aCurfew.copy(
+        approvedPremisesAddress = CurfewAddress(
+          addressLine1 = null,
+          addressTown = "Town 1",
+          postCode = "AB1 2CD",
+        ),
+      )
+
+      val result = service.getAddress(aCurfewWithAMissingAddressLine, aCas2Referral, aProposedAddress, 1L)
+
+      assertThat(result).isNull()
+    }
+
+    @Test
+    fun `test getAddress will return null when multiple address fields are null`() {
+      val aCurfewWithMultipleMissingAddressLines = aCurfew.copy(
+        approvedPremisesAddress = CurfewAddress(
+          addressLine1 = null,
+          addressLine2 = null,
+          addressTown = "Town 1",
+          postCode = null,
+        ),
+      )
+
+      val result = service.getAddress(aCurfewWithMultipleMissingAddressLines, aCas2Referral, aProposedAddress, 1L)
+
+      assertThat(result).isNull()
     }
   }
 

@@ -41,7 +41,7 @@ class LicenceService(
 
     return HdcLicence(
       licenceId = licence.id,
-      curfewAddress = getAddress(curfew, cas2Referral, proposedAddress),
+      curfewAddress = getAddress(curfew, cas2Referral, proposedAddress, licence.id),
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
@@ -98,7 +98,7 @@ class LicenceService(
     return missingTimes
   }
 
-  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?): ModelCurfewAddress? {
+  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): ModelCurfewAddress? {
     val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
     val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
@@ -110,7 +110,34 @@ class LicenceService(
       isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
       else -> proposedAddress?.curfewAddress
     }
-    return address?.let { transformToModelCurfewAddress(it) }
+
+    if (address == null) {
+      log.info("Missing curfew address for $licenceId")
+      return null
+    }
+
+    val missingAddressFields = address.getNullAddressFields()
+
+    return if (missingAddressFields.isNotEmpty()) {
+      log.info("Missing $missingAddressFields address field(s) for licence $licenceId")
+      null
+    } else {
+      transformToModelCurfewAddress(address)
+    }
+  }
+
+  fun Address.getNullAddressFields(): List<String> {
+    val missingFields = mutableListOf<String>()
+    if (addressLine1 == null) {
+      missingFields += "addressLine1"
+    }
+    if (addressTown == null) {
+      missingFields += "addressTown"
+    }
+    if (postCode == null) {
+      missingFields += "postCode"
+    }
+    return missingFields
   }
 
   private companion object {
