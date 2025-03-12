@@ -116,7 +116,7 @@ class LicenceService(
       return null
     }
 
-    val missingAddressFields = address.getNullAddressFields()
+    val missingAddressFields = address.getMissingAddressFields()
 
     return if (missingAddressFields.isNotEmpty()) {
       log.info("Missing $missingAddressFields address field(s) for licence $licenceId")
@@ -126,15 +126,15 @@ class LicenceService(
     }
   }
 
-  fun Address.getNullAddressFields(): List<String> {
+  fun Address.getMissingAddressFields(): List<String> {
     val missingFields = mutableListOf<String>()
-    if (addressLine1 == null) {
+    if (addressLine1.isNullOrBlank()) {
       missingFields += "addressLine1"
     }
-    if (addressTown == null) {
+    if (addressTown.isNullOrBlank()) {
       missingFields += "addressTown"
     }
-    if (postCode == null) {
+    if (postCode.isNullOrBlank()) {
       missingFields += "postCode"
     }
     return missingFields
