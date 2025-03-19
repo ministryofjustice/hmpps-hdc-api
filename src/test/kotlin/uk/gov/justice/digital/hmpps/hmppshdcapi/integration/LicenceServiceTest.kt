@@ -40,6 +40,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "1 Test Street",
         "Test Area",
         "Test Town",
+        null,
         "T33 3ST",
       ),
     )
@@ -92,6 +93,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "2 Test Road",
         null,
         "Another Town",
+        null,
         "AB1 2CD",
       ),
     )
@@ -126,6 +128,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "100 CAS2 Street",
         "The Avenue",
         "Leeds",
+        null,
         "LS3 4BB",
       ),
     )
@@ -160,6 +163,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "123 Approved Premises Street 2",
         "Off St Michaels Place",
         "Leeds",
+        null,
         "LS1 2AA",
       ),
     )

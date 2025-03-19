@@ -42,6 +42,7 @@ class LicenceServiceTest {
         "4 The Street",
         "Area 4",
         "Town 4",
+        null,
         "MN4 5OP",
       ),
     )
@@ -112,6 +113,7 @@ class LicenceServiceTest {
         "3 The Avenue",
         "Area 3",
         "Town 3",
+        null,
         "IJ3 4KL",
       ),
     )
@@ -184,6 +186,7 @@ class LicenceServiceTest {
         "2 The Street",
         "Area 2",
         "Town 2",
+        null,
         "EF3 4GH",
       ),
     )
@@ -257,6 +260,7 @@ class LicenceServiceTest {
         "1 The Street",
         "Area",
         "Town",
+        null,
         "AB1 2CD",
       ),
     )
@@ -328,6 +332,7 @@ class LicenceServiceTest {
         "2 The Street",
         null,
         "Town 2",
+        null,
         "EF3 4GH",
       ),
     )
@@ -398,8 +403,8 @@ class LicenceServiceTest {
       with(aCurfew.approvedPremisesAddress!!) {
         assertThat(result.addressLine1).isEqualTo(addressLine1)
         assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.addressTown).isEqualTo(addressTown)
-        assertThat(result.postCode).isEqualTo(postCode)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
       }
     }
 
@@ -411,8 +416,8 @@ class LicenceServiceTest {
       with(aCas2Referral.approvedPremisesAddress!!) {
         assertThat(result.addressLine1).isEqualTo(addressLine1)
         assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.addressTown).isEqualTo(addressTown)
-        assertThat(result.postCode).isEqualTo(postCode)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
       }
     }
 
@@ -429,8 +434,8 @@ class LicenceServiceTest {
       with(aCas2Referral.bassOffer!!) {
         assertThat(result.addressLine1).isEqualTo(addressLine1)
         assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.addressTown).isEqualTo(addressTown)
-        assertThat(result.postCode).isEqualTo(postCode)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
       }
     }
 
@@ -455,8 +460,8 @@ class LicenceServiceTest {
       with(aProposedAddress.curfewAddress!!) {
         assertThat(result.addressLine1).isEqualTo(addressLine1)
         assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.addressTown).isEqualTo(addressTown)
-        assertThat(result.postCode).isEqualTo(postCode)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
       }
     }
 
@@ -492,8 +497,8 @@ class LicenceServiceTest {
       with(curfewAddress) {
         assertThat(result.addressLine1).isEqualTo(addressLine1)
         assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.addressTown).isEqualTo(addressTown)
-        assertThat(result.postCode).isEqualTo(postCode)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
       }
     }
 

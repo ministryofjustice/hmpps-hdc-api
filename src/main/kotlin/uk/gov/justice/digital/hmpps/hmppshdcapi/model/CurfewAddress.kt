@@ -11,9 +11,12 @@ data class CurfewAddress(
   @Schema(description = "The second line of the curfew address", example = "Off Some Road")
   val addressLine2: String? = null,
 
-  @Schema(description = "The town associated with the curfew address", example = "Some Town")
-  val addressTown: String? = null,
+  @Schema(description = "The town or city associated with the curfew address", example = "Some Town")
+  val townOrCity: String? = null,
+
+  @Schema(description = "The county associated with the curfew address", example = "Some County")
+  val county: String? = null,
 
   @Schema(description = "The postcode for the curfew address", example = "SO30 2UH")
-  val postCode: String? = null,
+  val postcode: String? = null,
 )

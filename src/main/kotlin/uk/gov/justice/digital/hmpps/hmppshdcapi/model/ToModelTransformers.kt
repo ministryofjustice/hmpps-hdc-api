@@ -13,8 +13,9 @@ fun transformToModelCurfewAddress(
 ): ModelCurfewAddress = ModelCurfewAddress(
   addressLine1 = address.addressLine1,
   addressLine2 = address.addressLine2,
-  addressTown = address.addressTown,
-  postCode = address.postCode,
+  townOrCity = address.addressTown,
+  county = null,
+  postcode = address.postCode,
 )
 
 fun transformToModelCurfewTimes(
