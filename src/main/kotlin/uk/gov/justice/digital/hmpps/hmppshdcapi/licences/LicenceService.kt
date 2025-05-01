@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
@@ -42,6 +43,7 @@ class LicenceService(
     return HdcLicence(
       licenceId = licence.id,
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress, licence.id),
+      curfewAddressType = getAddressType(curfew, cas2Referral, proposedAddress, licence.id),
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
@@ -138,6 +140,25 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
+  }
+
+  fun getAddressType(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): AddressType? {
+    val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
+    val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
+    val isCurfewAddressProposed = proposedAddress?.addressProposed?.decision == Decision.YES
+
+    val addressType = when {
+      isCurfewApprovedPremisesRequired || isCas2Requested -> AddressType.CAS
+      isCurfewAddressProposed -> AddressType.RESIDENTIAL
+      else -> null
+    }
+
+    if (addressType == null) {
+      log.info("Missing curfew address type for $licenceId")
+      return null
+    }
+
+    return addressType
   }
 
   private companion object {

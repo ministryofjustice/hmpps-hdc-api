@@ -11,6 +11,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -46,6 +47,7 @@ class LicenceServiceTest {
         "MN4 5OP",
       ),
     )
+    assertThat(result?.curfewAddressType).isEqualTo(AddressType.CAS)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(16, 0),
@@ -117,6 +119,7 @@ class LicenceServiceTest {
         "IJ3 4KL",
       ),
     )
+    assertThat(result?.curfewAddressType).isEqualTo(AddressType.CAS)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(15, 0),
@@ -190,6 +193,7 @@ class LicenceServiceTest {
         "EF3 4GH",
       ),
     )
+    assertThat(result?.curfewAddressType).isEqualTo(AddressType.CAS)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(15, 0),
@@ -264,7 +268,7 @@ class LicenceServiceTest {
         "AB1 2CD",
       ),
     )
-
+    assertThat(result?.curfewAddressType).isEqualTo(AddressType.RESIDENTIAL)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(16, 0),
@@ -545,6 +549,67 @@ class LicenceServiceTest {
     }
   }
 
+  @Nested
+  inner class GetAddressType {
+    @Test
+    fun `test getAddressType when curfew approved premise is required`() {
+      val curfewApprovedPremisesRequired = aCurfew
+      val noCas2Referral = aCas2Referral.copy(
+        bassRequest = Cas2Request(
+          Decision.NO,
+        ),
+      )
+      val noProposedAddress = aProposedAddress.copy(
+        addressProposed = AddressProposed(Decision.NO),
+      )
+
+      val result = service.getAddressType(curfewApprovedPremisesRequired, noCas2Referral, noProposedAddress, 1L)!!
+
+      assertThat(result).isEqualTo(AddressType.CAS)
+    }
+
+    @Test
+    fun `test getAddressType when proposed curfew address is required`() {
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(
+          Decision.NO,
+        ),
+      )
+      val noCas2Referral = aCas2Referral.copy(
+        bassRequest = Cas2Request(
+          Decision.NO,
+        ),
+      )
+
+      val result = service.getAddressType(noCurfewApprovedPremisesRequired, noCas2Referral, aProposedAddress, 1L)!!
+
+      assertThat(result).isEqualTo(AddressType.RESIDENTIAL)
+    }
+
+    @Test
+    fun `test getAddressType when cas2 address is required`() {
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(
+          Decision.NO,
+        ),
+      )
+      val noProposedAddress = aProposedAddress.copy(
+        addressProposed = AddressProposed(Decision.NO),
+      )
+
+      val result = service.getAddressType(noCurfewApprovedPremisesRequired, aCas2Referral, noProposedAddress, 1L)!!
+
+      assertThat(result).isEqualTo(AddressType.CAS)
+    }
+
+    @Test
+    fun `test getAddressType will return null when the curfew address is null`() {
+      val result = service.getAddressType(null, null, null, 1L)
+
+      assertThat(result).isNull()
+    }
+  }
+
   private companion object {
 
     val aCurfew = Curfew(
@@ -610,6 +675,7 @@ class LicenceServiceTest {
         "Town 5",
         "KL5 5MN",
       ),
+      AddressProposed(Decision.YES),
     )
 
     fun anExceptionLicence() = Licence(

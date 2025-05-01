@@ -71,6 +71,7 @@ data class Cas2Referral(
 data class ProposedAddress(
   // curfewAddress only nullable as address will be either this if ProposedAddress or bassOffer if cas2
   val curfewAddress: CurfewAddress? = null,
+  val addressProposed: AddressProposed? = null,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -80,6 +81,11 @@ data class CurfewAddress(
   override val addressTown: String? = null,
   override val postCode: String? = null,
 ) : Address
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class AddressProposed(
+  val decision: Decision,
+)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2Offer(

@@ -29,12 +29,13 @@ object TestData {
         bassOffer = null,
       ),
       proposedAddress = ProposedAddress(
-        CurfewAddress(
+        curfewAddress = CurfewAddress(
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
           postCode = "AB1 2CD",
         ),
+        addressProposed = AddressProposed(Decision.YES),
       ),
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
@@ -645,12 +646,13 @@ object TestData {
         bassOffer = null,
       ),
       proposedAddress = ProposedAddress(
-        CurfewAddress(
+        curfewAddress = CurfewAddress(
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
           postCode = "AB1 2CD",
         ),
+        addressProposed = AddressProposed(Decision.YES),
       ),
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
@@ -767,12 +769,13 @@ object TestData {
         bassOffer = null,
       ),
       proposedAddress = ProposedAddress(
-        CurfewAddress(
+        curfewAddress = CurfewAddress(
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
           postCode = "AB1 2CD",
         ),
+        addressProposed = AddressProposed(Decision.YES),
       ),
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),

@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
@@ -85,6 +86,7 @@ class LicenceControllerTest {
         townOrCity = "Leeds",
         postcode = "LS1 2AA",
       ),
+      AddressType.RESIDENTIAL,
       FirstNight(
         firstNightFrom = LocalTime.of(15, 0),
         firstNightUntil = LocalTime.of(7, 0),
