@@ -85,8 +85,8 @@ class LicenceControllerTest {
         addressLine2 = "Off St Michaels Place",
         townOrCity = "Leeds",
         postcode = "LS1 2AA",
+        curfewAddressType = AddressType.RESIDENTIAL,
       ),
-      AddressType.RESIDENTIAL,
       FirstNight(
         firstNightFrom = LocalTime.of(15, 0),
         firstNightUntil = LocalTime.of(7, 0),

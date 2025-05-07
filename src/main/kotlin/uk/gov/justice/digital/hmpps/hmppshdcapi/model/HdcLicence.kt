@@ -10,9 +10,6 @@ data class HdcLicence(
   @Schema(description = "The curfew or CAS2 address for the person")
   val curfewAddress: CurfewAddress? = null,
 
-  @Schema(description = "The curfew address type for the person")
-  val curfewAddressType: AddressType? = null,
-
   @Schema(description = "The first night curfew times for the person")
   val firstNightCurfewHours: FirstNight? = null,
 

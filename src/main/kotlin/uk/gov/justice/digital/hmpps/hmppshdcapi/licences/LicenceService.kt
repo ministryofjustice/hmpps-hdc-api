@@ -43,7 +43,6 @@ class LicenceService(
     return HdcLicence(
       licenceId = licence.id,
       curfewAddress = getAddress(curfew, cas2Referral, proposedAddress, licence.id),
-      curfewAddressType = getAddressType(curfew, cas2Referral, proposedAddress, licence.id),
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
@@ -107,18 +106,18 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.approvedPremisesAddress
-      isCas2ApprovedPremisesRequired -> cas2Referral?.approvedPremisesAddress
-      isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
-      else -> proposedAddress?.curfewAddress
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2ApprovedPremisesRequired -> cas2Referral?.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2Requested && isCas2Accepted -> cas2Referral?.let { it.bassOffer to AddressType.CAS }
+      else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
 
-    if (address == null) {
+    if (address?.first == null) {
       log.info("Missing curfew address for $licenceId")
       return null
     }
 
-    val missingAddressFields = address.getMissingAddressFields()
+    val missingAddressFields = address.first!!.getMissingAddressFields()
 
     return if (missingAddressFields.isNotEmpty()) {
       log.info("Missing $missingAddressFields address field(s) for licence $licenceId")
@@ -140,25 +139,6 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
-  }
-
-  fun getAddressType(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): AddressType? {
-    val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
-    val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
-    val isCurfewAddressProposed = proposedAddress?.addressProposed?.decision == Decision.YES
-
-    val addressType = when {
-      isCurfewApprovedPremisesRequired || isCas2Requested -> AddressType.CAS
-      isCurfewAddressProposed -> AddressType.RESIDENTIAL
-      else -> null
-    }
-
-    if (addressType == null) {
-      log.info("Missing curfew address type for $licenceId")
-      return null
-    }
-
-    return addressType
   }
 
   private companion object {
