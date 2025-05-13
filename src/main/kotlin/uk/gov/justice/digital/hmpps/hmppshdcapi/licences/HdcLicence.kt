@@ -98,7 +98,7 @@ data class Cas2Offer(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Cas2Request(
-  val bassRequested: Decision,
+  val bassRequested: Decision?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
