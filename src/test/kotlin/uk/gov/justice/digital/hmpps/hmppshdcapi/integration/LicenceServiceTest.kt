@@ -10,6 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
@@ -42,6 +43,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Test Town",
         null,
         "T33 3ST",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -95,6 +97,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Another Town",
         null,
         "AB1 2CD",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -130,6 +133,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Leeds",
         null,
         "LS3 4BB",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -165,6 +169,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Leeds",
         null,
         "LS1 2AA",
+        AddressType.RESIDENTIAL,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(

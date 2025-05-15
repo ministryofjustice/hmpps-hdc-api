@@ -19,4 +19,7 @@ data class CurfewAddress(
 
   @Schema(description = "The postcode for the curfew address", example = "SO30 2UH")
   val postcode: String? = null,
+
+  @Schema(description = "The curfew address type for the person")
+  val curfewAddressType: AddressType? = null,
 )

@@ -39,6 +39,9 @@
               "addressLine2": "prisoner had requested BASS address",
               "addressTown": "Leeds",
               "postCode": "LS1 2AA"
+            },
+            "addressProposed": {
+              "decision": "Yes"
             }
           },
           "curfew": null,
@@ -92,7 +95,10 @@
             }
           },
           "proposedAddress": {
-            "curfewAddress": null
+            "curfewAddress": null,
+            "addressProposed": {
+              "decision": "No"
+            }
           },
           "curfew": {
             "firstNight": {
@@ -229,6 +235,9 @@
               "addressLine2": "",
               "addressTown": "Blackburn",
               "postCode": "AA1 1JJ"
+            },
+            "addressProposed": {
+              "decision": "Yes"
             }
           },
           "curfew": {

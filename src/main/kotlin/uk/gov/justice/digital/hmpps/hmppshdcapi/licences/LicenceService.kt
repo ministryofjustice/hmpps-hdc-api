@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
@@ -105,18 +106,18 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.approvedPremisesAddress
-      isCas2ApprovedPremisesRequired -> cas2Referral?.approvedPremisesAddress
-      isCas2Requested && isCas2Accepted -> cas2Referral?.bassOffer
-      else -> proposedAddress?.curfewAddress
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2ApprovedPremisesRequired -> cas2Referral?.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2Requested && isCas2Accepted -> cas2Referral?.let { it.bassOffer to AddressType.CAS }
+      else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
 
-    if (address == null) {
+    if (address?.first == null) {
       log.info("Missing curfew address for $licenceId")
       return null
     }
 
-    val missingAddressFields = address.getMissingAddressFields()
+    val missingAddressFields = address.first!!.getMissingAddressFields()
 
     return if (missingAddressFields.isNotEmpty()) {
       log.info("Missing $missingAddressFields address field(s) for licence $licenceId")

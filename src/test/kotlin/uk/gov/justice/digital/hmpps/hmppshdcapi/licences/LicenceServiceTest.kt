@@ -11,6 +11,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -44,6 +45,7 @@ class LicenceServiceTest {
         "Town 4",
         null,
         "MN4 5OP",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -115,6 +117,7 @@ class LicenceServiceTest {
         "Town 3",
         null,
         "IJ3 4KL",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -188,6 +191,7 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "EF3 4GH",
+        AddressType.CAS,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -262,9 +266,9 @@ class LicenceServiceTest {
         "Town",
         null,
         "AB1 2CD",
+        AddressType.RESIDENTIAL,
       ),
     )
-
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(16, 0),
@@ -334,6 +338,7 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "EF3 4GH",
+        AddressType.CAS,
       ),
     )
 
@@ -610,6 +615,7 @@ class LicenceServiceTest {
         "Town 5",
         "KL5 5MN",
       ),
+      AddressProposed(Decision.YES),
     )
 
     fun anExceptionLicence() = Licence(
