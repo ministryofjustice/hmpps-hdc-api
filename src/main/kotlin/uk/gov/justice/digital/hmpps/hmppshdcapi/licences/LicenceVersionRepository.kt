@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-interface LicenceVersionRepository : JpaRepository<LicenceVersion, Long>, JpaSpecificationExecutor<LicenceVersion> {
+interface LicenceVersionRepository :
+  JpaRepository<LicenceVersion, Long>,
+  JpaSpecificationExecutor<LicenceVersion> {
   fun findAllByPrisonNumber(prisonNumber: String): List<LicenceVersion>
   fun findAllByBookingIdAndDeletedAtIsNull(bookingId: Long): List<LicenceVersion>
 

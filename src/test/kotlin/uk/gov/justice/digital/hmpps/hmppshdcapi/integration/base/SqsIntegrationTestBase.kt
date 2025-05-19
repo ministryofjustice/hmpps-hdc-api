@@ -51,8 +51,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     } matches { it == 0 }
   }
 
-  fun getNumberOfMessagesCurrentlyOnQueue(): Int? =
-    mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
+  fun getNumberOfMessagesCurrentlyOnQueue(): Int? = mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance

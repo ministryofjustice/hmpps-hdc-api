@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface AuditEventRepository : JpaRepository<AuditEvent, Long>, JpaSpecificationExecutor<AuditEvent> {
+interface AuditEventRepository :
+  JpaRepository<AuditEvent, Long>,
+  JpaSpecificationExecutor<AuditEvent> {
 
   @Query(
     nativeQuery = true,

@@ -21,9 +21,7 @@ class WebClientConfiguration(
   @Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
 ) {
   @Bean
-  fun oauthApiHealthWebClient(): WebClient {
-    return WebClient.builder().baseUrl(oauthApiUrl).build()
-  }
+  fun oauthApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(oauthApiUrl).build()
 
   @Bean
   fun authorizedClientManager(

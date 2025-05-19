@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "6.1.2"
-  kotlin("plugin.spring") version "2.0.21"
-  kotlin("plugin.jpa") version "2.0.21"
-  id("io.gitlab.arturbosch.detekt") version "1.23.7"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.1.0"
+  kotlin("plugin.spring") version "2.1.21"
+  kotlin("plugin.jpa") version "2.1.21"
+  id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
 configurations {
@@ -20,34 +20,34 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.11.0")
-  implementation("org.springframework.security:spring-security-config:6.3.2")
+  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
+  implementation("org.springframework.security:spring-security-config:6.4.5")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.4")
+  runtimeOnly("org.postgresql:postgresql:42.7.5")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.2.2")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.4")
 
   // OpenAPI
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
 
   // Test dependencies
-  testImplementation("org.wiremock:wiremock-standalone:3.10.0")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.0")
   testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("org.awaitility:awaitility-kotlin:4.2.1")
+  testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("io.jsonwebtoken:jjwt-api:0.12.6")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.12.6")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.24")
+  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.28")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
-  testImplementation("org.testcontainers:postgresql:1.20.4")
-  testImplementation("org.testcontainers:localstack:1.20.4")
-  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.45.0")
+  testImplementation("org.testcontainers:postgresql:1.21.0")
+  testImplementation("org.testcontainers:localstack:1.21.0")
+  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.50.0")
 }
 
 kotlin {
