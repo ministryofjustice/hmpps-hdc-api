@@ -10,11 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import java.io.File
 
-private fun RequestMappingInfo.getMappings() =
-  methodsCondition.methods.map { it.name }.flatMap {
-      method ->
-    pathPatternsCondition!!.patternValues.map { "$method $it" }
-  }
+private fun RequestMappingInfo.getMappings() = methodsCondition.methods.map { it.name }.flatMap { method ->
+  pathPatternsCondition!!.patternValues.map { "$method $it" }
+}
 
 class ResourceSecurityTest : SqsIntegrationTestBase() {
   @Autowired

@@ -33,9 +33,7 @@ class LicenceVersion(
   val licence: LicenceData?,
 ) {
 
-  override fun toString(): String {
-    return "LicenceVersion(id=$id, prison_number='$prisonNumber', bookingId=$bookingId)"
-  }
+  override fun toString(): String = "LicenceVersion(id=$id, prison_number='$prisonNumber', bookingId=$bookingId)"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -46,7 +44,5 @@ class LicenceVersion(
     return true
   }
 
-  override fun hashCode(): Int {
-    return id?.hashCode() ?: 0
-  }
+  override fun hashCode(): Int = id?.hashCode() ?: 0
 }

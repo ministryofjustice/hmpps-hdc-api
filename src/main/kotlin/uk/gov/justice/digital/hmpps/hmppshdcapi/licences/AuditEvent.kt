@@ -28,9 +28,7 @@ class AuditEvent(
   val details: Map<String, Any>,
 ) {
 
-  override fun toString(): String {
-    return "Audit(id=$id, timestamp='$timestamp', user=$user, action=$action, details= $details)"
-  }
+  override fun toString(): String = "Audit(id=$id, timestamp='$timestamp', user=$user, action=$action, details= $details)"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -41,7 +39,5 @@ class AuditEvent(
     return true
   }
 
-  override fun hashCode(): Int {
-    return id?.hashCode() ?: 0
-  }
+  override fun hashCode(): Int = id?.hashCode() ?: 0
 }

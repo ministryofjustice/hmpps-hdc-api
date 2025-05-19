@@ -28,8 +28,7 @@ class ResetLicenceTest : SqsIntegrationTestBase() {
   @Autowired
   lateinit var licenceRepository: LicenceRepository
 
-  private fun jsonFromFile(name: String) =
-    this.javaClass.getResourceAsStream("/test_data/responses/$name")!!.bufferedReader(UTF_8).readText()
+  private fun jsonFromFile(name: String) = this.javaClass.getResourceAsStream("/test_data/responses/$name")!!.bufferedReader(UTF_8).readText()
 
   @Test
   @Sql(

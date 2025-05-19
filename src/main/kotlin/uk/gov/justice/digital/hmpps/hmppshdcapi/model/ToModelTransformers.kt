@@ -21,52 +21,50 @@ fun transformToModelCurfewAddress(
 
 fun transformToModelCurfewTimes(
   curfewHours: EntityCurfewTimes?,
-): List<ModelCurfewTimes> {
-  return listOf(
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.MONDAY,
-      fromTime = curfewHours?.mondayFrom,
-      untilDay = DayOfWeek.TUESDAY,
-      untilTime = curfewHours?.tuesdayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.TUESDAY,
-      fromTime = curfewHours?.tuesdayFrom,
-      untilDay = DayOfWeek.WEDNESDAY,
-      untilTime = curfewHours?.wednesdayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.WEDNESDAY,
-      fromTime = curfewHours?.wednesdayFrom,
-      untilDay = DayOfWeek.THURSDAY,
-      untilTime = curfewHours?.thursdayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.THURSDAY,
-      fromTime = curfewHours?.thursdayFrom,
-      untilDay = DayOfWeek.FRIDAY,
-      untilTime = curfewHours?.fridayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.FRIDAY,
-      fromTime = curfewHours?.fridayFrom,
-      untilDay = DayOfWeek.SATURDAY,
-      untilTime = curfewHours?.saturdayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.SATURDAY,
-      fromTime = curfewHours?.saturdayFrom,
-      untilDay = DayOfWeek.SUNDAY,
-      untilTime = curfewHours?.sundayUntil,
-    ),
-    ModelCurfewTimes(
-      fromDay = DayOfWeek.SUNDAY,
-      fromTime = curfewHours?.sundayFrom,
-      untilDay = DayOfWeek.MONDAY,
-      untilTime = curfewHours?.mondayUntil,
-    ),
-  )
-}
+): List<ModelCurfewTimes> = listOf(
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.MONDAY,
+    fromTime = curfewHours?.mondayFrom,
+    untilDay = DayOfWeek.TUESDAY,
+    untilTime = curfewHours?.tuesdayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.TUESDAY,
+    fromTime = curfewHours?.tuesdayFrom,
+    untilDay = DayOfWeek.WEDNESDAY,
+    untilTime = curfewHours?.wednesdayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.WEDNESDAY,
+    fromTime = curfewHours?.wednesdayFrom,
+    untilDay = DayOfWeek.THURSDAY,
+    untilTime = curfewHours?.thursdayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.THURSDAY,
+    fromTime = curfewHours?.thursdayFrom,
+    untilDay = DayOfWeek.FRIDAY,
+    untilTime = curfewHours?.fridayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.FRIDAY,
+    fromTime = curfewHours?.fridayFrom,
+    untilDay = DayOfWeek.SATURDAY,
+    untilTime = curfewHours?.saturdayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.SATURDAY,
+    fromTime = curfewHours?.saturdayFrom,
+    untilDay = DayOfWeek.SUNDAY,
+    untilTime = curfewHours?.sundayUntil,
+  ),
+  ModelCurfewTimes(
+    fromDay = DayOfWeek.SUNDAY,
+    fromTime = curfewHours?.sundayFrom,
+    untilDay = DayOfWeek.MONDAY,
+    untilTime = curfewHours?.mondayUntil,
+  ),
+)
 
 fun transformToModelFirstNight(
   firstNight: EntityFirstNight,

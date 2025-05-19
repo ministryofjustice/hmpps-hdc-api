@@ -52,15 +52,14 @@ class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebCl
     }
   }
 
-  private fun <API_RESPONSE_BODY_TYPE> coerce404ResponseToNull(exception: Throwable): Mono<API_RESPONSE_BODY_TYPE> =
-    with(exception) {
-      when {
-        this is WebClientResponseException && statusCode == NOT_FOUND -> {
-          log.info("No resource found when calling prisoner-api ${request?.uri?.path}")
-          Mono.empty()
-        }
-
-        else -> Mono.error(exception)
+  private fun <API_RESPONSE_BODY_TYPE> coerce404ResponseToNull(exception: Throwable): Mono<API_RESPONSE_BODY_TYPE> = with(exception) {
+    when {
+      this is WebClientResponseException && statusCode == NOT_FOUND -> {
+        log.info("No resource found when calling prisoner-api ${request?.uri?.path}")
+        Mono.empty()
       }
+
+      else -> Mono.error(exception)
     }
+  }
 }

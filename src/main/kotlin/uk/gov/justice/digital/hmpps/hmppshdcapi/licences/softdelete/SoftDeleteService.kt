@@ -169,10 +169,9 @@ class SoftDeleteService(
     val lastIdProcessed: Long?,
   )
 
-  private fun <R> runInTransaction(block: () -> R) =
-    transactionTemplate.execute {
-      block()
-      entityManager.flush()
-      entityManager.clear()
-    }
+  private fun <R> runInTransaction(block: () -> R) = transactionTemplate.execute {
+    block()
+    this.entityManager.flush()
+    entityManager.clear()
+  }
 }

@@ -10,8 +10,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 
 class SubjectAccessRequestTest : SqsIntegrationTestBase() {
 
-  private fun jsonFromFile(name: String) =
-    this.javaClass.getResourceAsStream("/test_data/responses/$name")!!.bufferedReader(UTF_8).readText()
+  private fun jsonFromFile(name: String) = this.javaClass.getResourceAsStream("/test_data/responses/$name")!!.bufferedReader(UTF_8).readText()
 
   @Test
   @Sql(
