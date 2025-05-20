@@ -37,8 +37,8 @@
             "curfewAddress": {
               "addressLine1": "123 Approved Premises Street 2",
               "addressLine2": "prisoner had requested BASS address",
-              "addressTown": "Leeds",
-              "postCode": "LS1 2AA"
+              "addressTown": "Test City",
+              "postCode": "TST1 1TS"
             },
             "addressProposed": {
               "decision": "Yes"
@@ -82,7 +82,7 @@
             "bassOffer": {
               "addressLine1": "10",
               "addressLine2": "street",
-              "addressTown": "Sheffield",
+              "addressTown": "Test town",
               "postCode": "AA AA",
               "bassAccepted": "Yes"
             },
@@ -147,7 +147,7 @@
               "name": "sam",
               "postcode": "AA BRD",
               "telephone": "47450",
-              "townOrCity": "Sheffield",
+              "townOrCity": "Test town",
               "organisation": "crc",
               "reportingDate": "12/12/2023",
               "reportingTime": "12:12",
@@ -231,9 +231,9 @@
           },
           "proposedAddress": {
             "curfewAddress": {
-              "addressLine1": "10 Blackburn Road",
+              "addressLine1": "10 Test Road",
               "addressLine2": "",
-              "addressTown": "Blackburn",
+              "addressTown": "Testvill",
               "postCode": "AA1 1JJ"
             },
             "addressProposed": {
@@ -289,11 +289,11 @@
               "name": "Bob Smith",
               "postcode": "1111 1AD",
               "telephone": "01234 123456",
-              "townOrCity": "Blackburn",
-              "organisation": "Blackburn NPS",
+              "townOrCity": "Testvill",
+              "organisation": "Testvill NPS",
               "reportingDate": "28/03/2023",
               "reportingTime": "12:00",
-              "buildingAndStreet1": "10 York Street",
+              "buildingAndStreet1": "10 NoReal Street",
               "buildingAndStreet2": ""
             }
           },
@@ -365,7 +365,7 @@
           "approval": {
             "release": {
               "decision": "Yes",
-              "decisionMaker": "Tim Mccluskey",
+              "decisionMaker": "Test McWell",
               "reasonForDecision": ""
             }
           },

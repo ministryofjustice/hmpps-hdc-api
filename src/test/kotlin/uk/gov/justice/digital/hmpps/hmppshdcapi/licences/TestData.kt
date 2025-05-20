@@ -33,7 +33,7 @@ object TestData {
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
-          postCode = "AB1 2CD",
+          postCode = "TS7 7TS",
         ),
         addressProposed = AddressProposed(Decision.YES),
       ),
@@ -79,7 +79,7 @@ object TestData {
           name = "sam",
           postcode = "AA BRD",
           telephone = "47450",
-          townOrCity = "Sheffield",
+          townOrCity = "Test town",
           organisation = "crc",
           reportingDate = "12/12/2023",
           reportingTime = "12:12",
@@ -111,7 +111,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -131,7 +131,7 @@ object TestData {
 
   fun aCas2Licence() = Licence(
     id = 2,
-    prisonNumber = "C56789D",
+    prisonNumber = "T12345D",
     bookingId = 98765,
     stage = "MODIFIED",
     version = 1,
@@ -153,7 +153,7 @@ object TestData {
           addressLine1 = "2 The Street",
           addressLine2 = "Area 2",
           addressTown = "Town 2",
-          postCode = "EF3 4GH",
+          postCode = "TS6 6TS",
           bassAccepted = OfferAccepted.YES,
         ),
       ),
@@ -200,11 +200,11 @@ object TestData {
           name = "Bob Smith",
           postcode = "1111 1AD",
           telephone = "01234 123456",
-          townOrCity = "Blackburn",
-          organisation = "Blackburn NPS",
+          townOrCity = "Testvill",
+          organisation = "Testvill NPS",
           reportingDate = "28/03/2023",
           reportingTime = "12:00",
-          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet1 = "10 NoReal Street",
           buildingAndStreet2 = "",
         ),
       ),
@@ -232,7 +232,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -252,7 +252,7 @@ object TestData {
 
   fun aCas2LicenceWithShortAddress() = Licence(
     id = 3,
-    prisonNumber = "C56789D",
+    prisonNumber = "T12345D",
     bookingId = 98765,
     stage = "MODIFIED",
     version = 1,
@@ -274,7 +274,7 @@ object TestData {
           addressLine1 = "2 The Street",
           addressLine2 = null,
           addressTown = "Town 2",
-          postCode = "EF3 4GH",
+          postCode = "TS6 6TS",
           bassAccepted = OfferAccepted.YES,
         ),
       ),
@@ -321,11 +321,11 @@ object TestData {
           name = "Bob Smith",
           postcode = "1111 1AD",
           telephone = "01234 123456",
-          townOrCity = "Blackburn",
-          organisation = "Blackburn NPS",
+          townOrCity = "Testvill",
+          organisation = "Testvill NPS",
           reportingDate = "28/03/2023",
           reportingTime = "12:00",
-          buildingAndStreet1 = "10 York Street",
+          buildingAndStreet1 = "10 NoReal Street",
           buildingAndStreet2 = "",
         ),
       ),
@@ -353,7 +353,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -373,7 +373,7 @@ object TestData {
 
   fun aCas2ApprovedPremisesLicence() = Licence(
     id = 4,
-    prisonNumber = "C56789D",
+    prisonNumber = "T12345D",
     bookingId = 98765,
     stage = "MODIFIED",
     version = 1,
@@ -396,7 +396,7 @@ object TestData {
           addressLine1 = "3 The Avenue",
           addressLine2 = "Area 3",
           addressTown = "Town 3",
-          postCode = "IJ3 4KL",
+          postCode = "TS5 5TS",
         ),
         bassAreaCheck = Cas2AreaCheck(
           approvedPremisesRequiredYesNo = Decision.YES,
@@ -445,7 +445,7 @@ object TestData {
           name = "sam",
           postcode = "AA BRD",
           telephone = "47450",
-          townOrCity = "Sheffield",
+          townOrCity = "Test town",
           organisation = "crc",
           reportingDate = "12/12/2023",
           reportingTime = "12:12",
@@ -477,7 +477,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -544,7 +544,7 @@ object TestData {
           addressLine1 = "4 The Street",
           addressLine2 = "Area 4",
           addressTown = "Town 4",
-          postCode = "MN4 5OP",
+          postCode = "TS4 4TS",
         ),
         approvedPremises = ApprovedPremises(
           required = Decision.YES,
@@ -573,7 +573,7 @@ object TestData {
           name = "sam",
           postcode = "AA BRD",
           telephone = "47450",
-          townOrCity = "Sheffield",
+          townOrCity = "Test town",
           organisation = "crc",
           reportingDate = "12/12/2023",
           reportingTime = "12:12",
@@ -605,7 +605,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -650,7 +650,7 @@ object TestData {
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
-          postCode = "AB1 2CD",
+          postCode = "TS7 7TS",
         ),
         addressProposed = AddressProposed(Decision.YES),
       ),
@@ -696,7 +696,7 @@ object TestData {
           name = "sam",
           postcode = "AA BRD",
           telephone = "47450",
-          townOrCity = "Sheffield",
+          townOrCity = "Test town",
           organisation = "crc",
           reportingDate = "12/12/2023",
           reportingTime = "12:12",
@@ -728,7 +728,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),
@@ -773,7 +773,7 @@ object TestData {
           addressLine1 = "1 The Street",
           addressLine2 = "Area",
           addressTown = "Town",
-          postCode = "AB1 2CD",
+          postCode = "TS7 7TS",
         ),
         addressProposed = AddressProposed(Decision.YES),
       ),
@@ -819,7 +819,7 @@ object TestData {
           name = "sam",
           postcode = "AA BRD",
           telephone = "47450",
-          townOrCity = "Sheffield",
+          townOrCity = "Test town",
           organisation = "crc",
           reportingDate = "12/12/2023",
           reportingTime = "12:12",
@@ -851,7 +851,7 @@ object TestData {
       approval = Approval(
         release = Release(
           decision = Decision.YES,
-          decisionMaker = "Tim Mccluskey",
+          decisionMaker = "Test McWell",
           reasonForDecision = "",
         ),
       ),

@@ -44,7 +44,7 @@ class LicenceServiceTest {
         "Area 4",
         "Town 4",
         null,
-        "MN4 5OP",
+        "TS4 4TS",
         AddressType.CAS,
       ),
     )
@@ -116,7 +116,7 @@ class LicenceServiceTest {
         "Area 3",
         "Town 3",
         null,
-        "IJ3 4KL",
+        "TS5 5TS",
         AddressType.CAS,
       ),
     )
@@ -190,7 +190,7 @@ class LicenceServiceTest {
         "Area 2",
         "Town 2",
         null,
-        "EF3 4GH",
+        "TS6 6TS",
         AddressType.CAS,
       ),
     )
@@ -265,7 +265,7 @@ class LicenceServiceTest {
         "Area",
         "Town",
         null,
-        "AB1 2CD",
+        "TS7 7TS",
         AddressType.RESIDENTIAL,
       ),
     )
@@ -337,7 +337,7 @@ class LicenceServiceTest {
         null,
         "Town 2",
         null,
-        "EF3 4GH",
+        "TS6 6TS",
         AddressType.CAS,
       ),
     )
@@ -476,7 +476,7 @@ class LicenceServiceTest {
         "5 The Street",
         null,
         "Town 5",
-        "KL5 5MN",
+        "TS8 8TS",
       )
 
       val noCurfewApprovedPremisesRequired = aCurfew.copy(
@@ -524,7 +524,7 @@ class LicenceServiceTest {
         approvedPremisesAddress = CurfewAddress(
           addressLine1 = null,
           addressTown = "Town 1",
-          postCode = "AB1 2CD",
+          postCode = "TS7 7TS",
         ),
       )
 
@@ -577,7 +577,7 @@ class LicenceServiceTest {
         "2 The Street",
         "Area 2",
         "Town 2",
-        "EF1 2GH",
+        "TS9 9TS",
       ),
       ApprovedPremises(
         Decision.YES,
@@ -588,7 +588,7 @@ class LicenceServiceTest {
       "3 The Street",
       "Area 3",
       "Town 3",
-      "GH3 3IJ",
+      "TS91 0TS",
       OfferAccepted.YES,
     )
 
@@ -601,7 +601,7 @@ class LicenceServiceTest {
         "4 The Street",
         "Area 4",
         "Town 4",
-        "IJ4 4KL",
+        "TS92 0TS",
       ),
       Cas2AreaCheck(
         Decision.NO,
@@ -613,7 +613,7 @@ class LicenceServiceTest {
         "5 The Street",
         "Area 5",
         "Town 5",
-        "KL5 5MN",
+        "TS8 8TS",
       ),
       AddressProposed(Decision.YES),
     )

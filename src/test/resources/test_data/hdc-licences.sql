@@ -31,12 +31,12 @@ VALUES (1,
                         "isOffender": "Yes",
                         "relationship": ""
                       },
-                      "postCode": "LS1 2AA",
+                      "postCode": "TST1 1TS",
                       "residents": [],
                       "telephone": "44000000000",
-                      "addressTown": "Leeds",
+                      "addressTown": "Test City",
                       "addressLine1": "123 Approved Premises Street 2",
-                      "addressLine2": "Off St Michaels Place",
+                      "addressLine2": "Off Test Place",
                       "additionalInformation": "",
                       "residentOffenceDetails": "",
                       "cautionedAgainstResident": "No"
@@ -86,10 +86,10 @@ VALUES (1,
                   },
                   "bassReferral": {
                     "bassOffer": {
-                     "bassArea": "Leeds",
-                     "postCode": "LS3 4BB",
+                     "bassArea": "Test City",
+                     "postCode": "TS12 TST",
                      "telephone": "55000000000",
-                     "addressTown": "Leeds",
+                     "addressTown": "Test City",
                      "addressLine1": "100 CAS2 Street",
                      "addressLine2": "The Avenue",
                      "bassAccepted": "Yes",
@@ -132,7 +132,7 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'C56789D', null, false),
+        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false),
 
        -- Create the data for an approved preferred premises HDC licence
        (3,
@@ -218,7 +218,7 @@ VALUES (1,
                     "approvedPremisesAddress": {
                      "addressLine1": "2 Test Road",
                      "addressTown": "Another Town",
-                     "postCode": "AB1 2CD"
+                     "postCode": "TS7 7TS"
                     },
                    "bassRequest": {
                     "specificArea": "No",
