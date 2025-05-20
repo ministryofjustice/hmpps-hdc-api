@@ -96,7 +96,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         null,
         "Another Town",
         null,
-        "AB1 2CD",
+        "TS7 7TS",
         AddressType.CAS,
       ),
     )
@@ -130,9 +130,9 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       CurfewAddress(
         "100 CAS2 Street",
         "The Avenue",
-        "Leeds",
+        "Test City",
         null,
-        "LS3 4BB",
+        "TS12 TST",
         AddressType.CAS,
       ),
     )
@@ -165,10 +165,10 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     assertThat(result?.curfewAddress).isEqualTo(
       CurfewAddress(
         "123 Approved Premises Street 2",
-        "Off St Michaels Place",
-        "Leeds",
+        "Off Test Place",
+        "Test City",
         null,
-        "LS1 2AA",
+        "TST1 1TS",
         AddressType.RESIDENTIAL,
       ),
     )

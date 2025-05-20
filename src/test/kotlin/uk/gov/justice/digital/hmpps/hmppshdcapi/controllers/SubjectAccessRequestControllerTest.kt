@@ -57,8 +57,8 @@ class SubjectAccessRequestControllerTest {
 
   @Test
   fun `get a Sar Content by id returns ok and have a response`() {
-    whenever(subjectAccessRequestService.getByPrisonNumber("G4169UO")).thenReturn(sarContentResponse)
-    val result = mvc.perform(get("/subject-access-request?prn=G4169UO").accept(MediaType.APPLICATION_JSON))
+    whenever(subjectAccessRequestService.getByPrisonNumber("T1234TS")).thenReturn(sarContentResponse)
+    val result = mvc.perform(get("/subject-access-request?prn=T1234TS").accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
       .andReturn()
 
@@ -69,38 +69,38 @@ class SubjectAccessRequestControllerTest {
   @Test
   fun `500 when pass both prn and crn`() {
     val result =
-      mvc.perform(get("/subject-access-request?prn=G4169UO&crn=Z265290").accept(MediaType.APPLICATION_JSON))
+      mvc.perform(get("/subject-access-request?prn=T1234TS&crn=T123450").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError)
         .andReturn()
 
     assertThat(result.response.contentAsString).contains("Only supports search by single identifier.")
 
-    verify(subjectAccessRequestService, times(0)).getByPrisonNumber("G4169UO")
+    verify(subjectAccessRequestService, times(0)).getByPrisonNumber("T1234TS")
   }
 
   @Test
   fun `209 when pass crn and but not prn`() {
     val result =
-      mvc.perform(get("/subject-access-request?crn=Z265290").accept(MediaType.APPLICATION_JSON))
+      mvc.perform(get("/subject-access-request?crn=T123450").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().`is`(209))
         .andReturn()
 
     assertThat(result.response.contentAsString).contains("Search by crn is not supported.")
 
-    verify(subjectAccessRequestService, times(0)).getByPrisonNumber("G4169UO")
+    verify(subjectAccessRequestService, times(0)).getByPrisonNumber("T1234TS")
   }
 
   @Test
   fun `204 when pass prn but no records found`() {
-    whenever(subjectAccessRequestService.getByPrisonNumber("G4169UO")).thenReturn(null)
+    whenever(subjectAccessRequestService.getByPrisonNumber("T1234TS")).thenReturn(null)
     val result =
-      mvc.perform(get("/subject-access-request?prn=G4169UO").accept(MediaType.APPLICATION_JSON))
+      mvc.perform(get("/subject-access-request?prn=T1234TS").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent)
         .andReturn()
 
     assertThat(result.response.contentAsString).contains("No records found for the prn.")
 
-    verify(subjectAccessRequestService, times(1)).getByPrisonNumber("G4169UO")
+    verify(subjectAccessRequestService, times(1)).getByPrisonNumber("T1234TS")
   }
 
   private companion object {
