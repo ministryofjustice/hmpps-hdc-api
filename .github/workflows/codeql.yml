@@ -9,9 +9,12 @@ on:
 jobs:
   analyze:
     name: CodeQL analyse (${{ matrix.language }})
-    runs-on: ubuntu-latest
     permissions:
+      contents: read
+      actions: read
+      packages: read
       security-events: write
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
