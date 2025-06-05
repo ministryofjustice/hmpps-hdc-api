@@ -171,7 +171,7 @@ class SoftDeleteService(
 
   private fun <R> runInTransaction(block: () -> R) = transactionTemplate.execute {
     block()
-    this.entityManager.flush()
+    entityManager.flush()
     entityManager.clear()
   }
 }
