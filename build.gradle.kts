@@ -25,7 +25,7 @@ dependencies {
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.6")
+  runtimeOnly("org.postgresql:postgresql:42.7.7")
 
   // SQS/SNS dependencies
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.5")
