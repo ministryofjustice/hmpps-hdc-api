@@ -145,12 +145,12 @@ data class Cas2AreaCheck(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Risk(
-  val riskManagement: RiskManagement?,
+  val riskManagement: RiskManagement,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class RiskManagement(
-  val version: String,
+  val version: String?,
   val emsInformation: Decision?,
   val pomConsultation: Decision?,
   val mentalHealthPlan: Decision?,
