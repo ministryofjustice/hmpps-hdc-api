@@ -150,7 +150,7 @@ data class Risk(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class RiskManagement(
-  val version: String,
+  val version: String?,
   val emsInformation: Decision?,
   val pomConsultation: Decision?,
   val mentalHealthPlan: Decision?,
