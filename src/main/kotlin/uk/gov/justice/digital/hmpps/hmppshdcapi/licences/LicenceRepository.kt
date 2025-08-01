@@ -15,7 +15,7 @@ interface LicenceRepository : JpaRepository<Licence, Long> {
   @Transactional
   @Modifying
   @Query("update Licence l set l.prisonNumber = ?2 where l.prisonNumber = ?1")
-  fun updatePrisonNumber(prisonNumber: String,newPrisonNumber: String): Int
+  fun updatePrisonNumber(prisonNumber: String, newPrisonNumber: String): Int
 
   @Query("Select l.id from Licence l where l.prisonNumber = ?1")
   fun findAllPrisonIds(prisonNumber: String): List<Long>

@@ -19,7 +19,7 @@ interface LicenceVersionRepository :
   @Transactional
   @Modifying
   @Query("update LicenceVersion l set l.prisonNumber = ?2 where l.prisonNumber = ?1")
-  fun updatePrisonNumber(prisonNumber: String,newPrisonNumber: String) : Int
+  fun updatePrisonNumber(prisonNumber: String, newPrisonNumber: String): Int
 
   fun findAllByPrisonNumber(prisonNumber: String): List<LicenceVersion>
   fun findAllByBookingIdAndDeletedAtIsNull(bookingId: Long): List<LicenceVersion>
