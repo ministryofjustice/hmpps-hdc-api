@@ -6,12 +6,21 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Repository
 interface LicenceRepository : JpaRepository<Licence, Long> {
+
+  @Transactional
+  @Modifying
+  @Query("update Licence l set l.prisonNumber = ?2 where l.prisonNumber = ?1")
+  fun updatePrisonNumber(prisonNumber: String,newPrisonNumber: String): Int
+
+  @Query("Select l.id from Licence l where l.prisonNumber = ?1")
+  fun findAllPrisonIds(prisonNumber: String): List<Long>
+
   fun findAllByPrisonNumber(prisonNumber: String): List<Licence>
-  fun findLicenceByBookingId(bookingId: Long): Licence?
 
   @Query("select new uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository\$LicenceIdentifiers(l.id, l.prisonNumber, l.bookingId) from Licence l where l.deletedAt is null and l.id > ?1 order by l.id asc")
   fun findAllByIdGreaterThanLastProcessed(lastProcessed: Long, pageable: Pageable): Page<LicenceIdentifiers>
