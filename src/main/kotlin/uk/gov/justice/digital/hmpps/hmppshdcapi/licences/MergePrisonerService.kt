@@ -27,45 +27,57 @@ class MergePrisonerService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Transactional(Transactional.TxType.NOT_SUPPORTED)
   fun mergePrisonerNumbers(
     oldPrisonerNumber: String,
     newPrisonerNumber: String,
   ) {
     log.info("Updating prisoner number $oldPrisonerNumber to $newPrisonerNumber")
 
-    val updatedLicences = licenceRepository.findAllByPrisonNumber(oldPrisonerNumber)
-      .map { licence ->
-        log.debug("Updating licence: {}", licence.id)
-        licence.prisonNumber = newPrisonerNumber
-        licence
-      }
+    val updateLicenceCount = updateLicencesPrisonerNumber(oldPrisonerNumber, newPrisonerNumber)
 
-    val updatedLicenceVersions = licenceVersionRepository.findAllByPrisonNumber(oldPrisonerNumber)
-      .map { licenceVersion ->
-        log.debug("Updating licence version: {}", licenceVersion.id)
-        licenceVersion.prisonNumber = newPrisonerNumber
-        licenceVersion
-      }
+    val updateLicenceVersionCount = updateLicenceVersionsPrisonerNumber(oldPrisonerNumber, newPrisonerNumber)
 
-    if (updatedLicences.isEmpty() && updatedLicenceVersions.isEmpty()) {
+    if (updateLicenceCount == 0 && updateLicenceVersionCount == 0) {
       log.info("No licences to update")
       return eventProcessingComplete.complete()
     }
-
-    if (updatedLicences.isNotEmpty()) licenceRepository.saveAllAndFlush(updatedLicences)
-    if (updatedLicenceVersions.isNotEmpty()) licenceVersionRepository.saveAllAndFlush(updatedLicenceVersions)
 
     telemetryClient.trackEvent(
       MERGE_EVENT_NAME,
       mapOf(
         "NOMS-MERGE-FROM" to oldPrisonerNumber,
         "NOMS-MERGE-TO" to newPrisonerNumber,
-        "UPDATED-LICENCE-RECORDS" to updatedLicences.size.toString(),
-        "UPDATED-LICENCE-VERSION-RECORDS" to updatedLicenceVersions.size.toString(),
+        "UPDATED-LICENCE-RECORDS" to updateLicenceCount.toString(),
+        "UPDATED-LICENCE-VERSION-RECORDS" to updateLicenceVersionCount.toString(),
       ),
       null,
     )
     log.info("Event processing complete")
     return eventProcessingComplete.complete()
+  }
+
+  private fun updateLicencesPrisonerNumber(
+    oldPrisonerNumber: String,
+    newPrisonerNumber: String,
+  ): Int {
+    val licenceIdsToBeUpdated = licenceRepository.findAllPrisonIds(oldPrisonerNumber)
+    val updatedCount = licenceRepository.updatePrisonNumber(oldPrisonerNumber, newPrisonerNumber)
+    licenceIdsToBeUpdated.forEach {
+      log.debug("Updating licence: {}", it)
+    }
+    return updatedCount
+  }
+
+  private fun updateLicenceVersionsPrisonerNumber(
+    oldPrisonerNumber: String,
+    newPrisonerNumber: String,
+  ): Int {
+    val licenceVersionIdsToBeUpdated = licenceVersionRepository.findAllPrisonIds(oldPrisonerNumber)
+    val updatedCount = licenceVersionRepository.updatePrisonNumber(oldPrisonerNumber, newPrisonerNumber)
+    licenceVersionIdsToBeUpdated.forEach {
+      log.debug("Updating licence version: {}", it)
+    }
+    return updatedCount
   }
 }

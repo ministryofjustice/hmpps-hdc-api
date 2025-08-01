@@ -40,9 +40,9 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
     "classpath:test_data/merge-offender.sql",
   )
   fun check() {
-    assertThat(licenceRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(3)
+    assertThat(licenceRepository.findAllPrisonIds(OLD_PRISON_NUMBER)).hasSize(3)
     assertThat(licenceRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(1)
-    assertThat(licenceVersionRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(1)
+    assertThat(licenceVersionRepository.findAllPrisonIds(OLD_PRISON_NUMBER)).hasSize(1)
     assertThat(licenceVersionRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(1)
 
     publishDomainEventMessage(
@@ -66,9 +66,9 @@ class MergeOffenderTest : SqsIntegrationTestBase() {
       null,
     )
 
-    assertThat(licenceRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(0)
+    assertThat(licenceRepository.findAllPrisonIds(OLD_PRISON_NUMBER)).hasSize(0)
     assertThat(licenceRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(4)
-    assertThat(licenceVersionRepository.findAllByPrisonNumber(OLD_PRISON_NUMBER)).hasSize(0)
+    assertThat(licenceVersionRepository.findAllPrisonIds(OLD_PRISON_NUMBER)).hasSize(0)
     assertThat(licenceVersionRepository.findAllByPrisonNumber(NEW_PRISON_NUMBER)).hasSize(2)
 
     assertThat(getNumberOfMessagesCurrentlyOnQueue()).isEqualTo(0)
