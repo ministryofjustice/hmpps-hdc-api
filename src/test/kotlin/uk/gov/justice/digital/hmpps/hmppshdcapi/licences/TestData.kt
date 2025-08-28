@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Booking
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -54,109 +52,107 @@ object TestData {
     allUntil = null,
   )
 
-  fun aPreferredAddressLicence(): Licence {
-    return Licence(
-      id = 1,
-      prisonNumber = "A12345B",
-      bookingId = 54321,
-      stage = "MODIFIED",
-      version = 1,
-      transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
-      varyVersion = 0,
-      additionalConditionsVersion = null,
-      standardConditionsVersion = null,
-      deletedAt = null,
-      licenceInCvl = false,
-      licence = LicenceData(
-        eligibility = Eligibility(
-          crdTime = DecisionMade(Decision.NO),
-          excluded = DecisionMade(Decision.NO),
-          suitability = DecisionMade(Decision.NO),
+  fun aPreferredAddressLicence(): Licence = Licence(
+    id = 1,
+    prisonNumber = "A12345B",
+    bookingId = 54321,
+    stage = "MODIFIED",
+    version = 1,
+    transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+    varyVersion = 0,
+    additionalConditionsVersion = null,
+    standardConditionsVersion = null,
+    deletedAt = null,
+    licenceInCvl = false,
+    licence = LicenceData(
+      eligibility = Eligibility(
+        crdTime = DecisionMade(Decision.NO),
+        excluded = DecisionMade(Decision.NO),
+        suitability = DecisionMade(Decision.NO),
+      ),
+      bassReferral = Cas2Referral(
+        bassRequest = Cas2Request(bassRequested = Decision.NO),
+        bassOffer = null,
+      ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = CurfewAddress(
+          addressLine1 = "1 The Street",
+          addressLine2 = "Area",
+          addressTown = "Town",
+          postCode = "TS7 7TS",
         ),
-        bassReferral = Cas2Referral(
-          bassRequest = Cas2Request(bassRequested = Decision.NO),
-          bassOffer = null,
-        ),
-        proposedAddress = ProposedAddress(
-          curfewAddress = CurfewAddress(
-            addressLine1 = "1 The Street",
-            addressLine2 = "Area",
-            addressTown = "Town",
-            postCode = "TS7 7TS",
-          ),
-          addressProposed = DecisionMade(Decision.YES),
-        ),
-        curfew = Curfew(
-          firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
-          curfewHours = CurfewHours(
-            mondayFrom = LocalTime.of(20, 0),
-            mondayUntil = LocalTime.of(8, 0),
-            tuesdayFrom = LocalTime.of(20, 0),
-            tuesdayUntil = LocalTime.of(8, 0),
-            wednesdayFrom = LocalTime.of(20, 0),
-            wednesdayUntil = LocalTime.of(8, 0),
-            thursdayFrom = LocalTime.of(20, 0),
-            thursdayUntil = LocalTime.of(8, 0),
-            fridayFrom = LocalTime.of(20, 0),
-            fridayUntil = LocalTime.of(8, 0),
-            saturdayFrom = LocalTime.of(20, 0),
-            saturdayUntil = LocalTime.of(8, 0),
-            sundayFrom = LocalTime.of(20, 0),
-            sundayUntil = LocalTime.of(8, 0),
-            allFrom = null,
-            allUntil = null,
-          ),
-        ),
-        risk = Risk(
-          riskManagement = riskManagement,
-        ),
-        reporting = Reporting(
-          reportingInstructions = reportingInstructions,
-        ),
-        victim = Victim(
-          victimLiaison = VictimLiaison(
-            decision = Decision.NO,
-          ),
-        ),
-        licenceConditions = LicenceConditions(
-          bespoke = emptyList(),
-          standard = Standard(
-            additionalConditionsRequired = Decision.NO,
-          ),
-          additional = null,
-          conditionsSummary = ConditionsSummary(
-            additionalConditionsJustification = "",
-          ),
-        ),
-        document = Document(
-          template = Template(
-            decision = "hdc_ap",
-            offenceCommittedBeforeFeb2015 = Decision.NO,
-          ),
-        ),
-        approval = Approval(
-          release = Release(
-            decision = Decision.YES,
-            decisionMaker = "Test McWell",
-            reasonForDecision = "",
-          ),
-        ),
-        finalChecks = FinalChecks(
-          onRemand = DecisionMade(
-            decision = Decision.NO,
-          ),
-          seriousOffence = DecisionMade(
-            decision = Decision.NO,
-          ),
-          confiscationOrder = ConfiscationOrder(
-            decision = Decision.NO,
-            comments = "Some comments",
-            confiscationUnitConsulted = Decision.YES,
-          ),
+        addressProposed = DecisionMade(Decision.YES),
+      ),
+      curfew = Curfew(
+        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
+        curfewHours = CurfewHours(
+          mondayFrom = LocalTime.of(20, 0),
+          mondayUntil = LocalTime.of(8, 0),
+          tuesdayFrom = LocalTime.of(20, 0),
+          tuesdayUntil = LocalTime.of(8, 0),
+          wednesdayFrom = LocalTime.of(20, 0),
+          wednesdayUntil = LocalTime.of(8, 0),
+          thursdayFrom = LocalTime.of(20, 0),
+          thursdayUntil = LocalTime.of(8, 0),
+          fridayFrom = LocalTime.of(20, 0),
+          fridayUntil = LocalTime.of(8, 0),
+          saturdayFrom = LocalTime.of(20, 0),
+          saturdayUntil = LocalTime.of(8, 0),
+          sundayFrom = LocalTime.of(20, 0),
+          sundayUntil = LocalTime.of(8, 0),
+          allFrom = null,
+          allUntil = null,
         ),
       ),
-    )
-  }
+      risk = Risk(
+        riskManagement = riskManagement,
+      ),
+      reporting = Reporting(
+        reportingInstructions = reportingInstructions,
+      ),
+      victim = Victim(
+        victimLiaison = VictimLiaison(
+          decision = Decision.NO,
+        ),
+      ),
+      licenceConditions = LicenceConditions(
+        bespoke = emptyList(),
+        standard = Standard(
+          additionalConditionsRequired = Decision.NO,
+        ),
+        additional = null,
+        conditionsSummary = ConditionsSummary(
+          additionalConditionsJustification = "",
+        ),
+      ),
+      document = Document(
+        template = Template(
+          decision = "hdc_ap",
+          offenceCommittedBeforeFeb2015 = Decision.NO,
+        ),
+      ),
+      approval = Approval(
+        release = Release(
+          decision = Decision.YES,
+          decisionMaker = "Test McWell",
+          reasonForDecision = "",
+        ),
+      ),
+      finalChecks = FinalChecks(
+        onRemand = DecisionMade(
+          decision = Decision.NO,
+        ),
+        seriousOffence = DecisionMade(
+          decision = Decision.NO,
+        ),
+        confiscationOrder = ConfiscationOrder(
+          decision = Decision.NO,
+          comments = "Some comments",
+          confiscationUnitConsulted = Decision.YES,
+        ),
+      ),
+    ),
+  )
 
   fun aCas2Licence() = Licence(
     id = 2,
@@ -252,7 +248,7 @@ object TestData {
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
           comments = null,
-          confiscationUnitConsulted = null
+          confiscationUnitConsulted = null,
         ),
       ),
     ),
@@ -292,7 +288,7 @@ object TestData {
         curfewHours = curfewHours,
       ),
       risk = Risk(
-        riskManagement = riskManagement
+        riskManagement = riskManagement,
       ),
       reporting = Reporting(
         reportingInstructions = reportingInstructions,
@@ -421,7 +417,7 @@ object TestData {
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
           comments = null,
-          confiscationUnitConsulted = null
+          confiscationUnitConsulted = null,
         ),
       ),
     ),
@@ -528,7 +524,7 @@ object TestData {
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
           comments = null,
-          confiscationUnitConsulted = null
+          confiscationUnitConsulted = null,
         ),
       ),
     ),
@@ -628,7 +624,7 @@ object TestData {
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
           comments = null,
-          confiscationUnitConsulted = null
+          confiscationUnitConsulted = null,
         ),
       ),
     ),
@@ -687,7 +683,7 @@ object TestData {
         ),
       ),
       risk = Risk(
-        riskManagement = riskManagement
+        riskManagement = riskManagement,
       ),
       reporting = Reporting(
         reportingInstructions = reportingInstructions,
@@ -730,7 +726,7 @@ object TestData {
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
           comments = null,
-          confiscationUnitConsulted = null
+          confiscationUnitConsulted = null,
         ),
       ),
     ),

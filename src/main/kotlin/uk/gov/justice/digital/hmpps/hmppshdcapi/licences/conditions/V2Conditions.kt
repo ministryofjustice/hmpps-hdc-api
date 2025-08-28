@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
 // NOTE: DO NOT EDIT DIRECTLY: This is generated via "npm run generate:kotlin-types" in https://github.com/ministryofjustice/licences
- 
+
 val V2_CONDITIONS = listOf(
   ConditionMetadata(
     id = "RESIDE_AT_SPECIFIC_PLACE",

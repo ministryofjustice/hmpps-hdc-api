@@ -11,8 +11,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 class MarshallingTest {
   private val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().addModule(JavaTimeModule()).build()
 
-  private fun jsonFromFile(name: String) =
-    this.javaClass.getResourceAsStream("/test_data/condition_mapping/$name")!!.bufferedReader(UTF_8).readText()
+  private fun jsonFromFile(name: String) = this.javaClass.getResourceAsStream("/test_data/condition_mapping/$name")!!.bufferedReader(UTF_8).readText()
 
   @ParameterizedTest
   @CsvSource(
@@ -49,7 +48,7 @@ class MarshallingTest {
     "address_review_v2.json",
     // Main occupier = true
     "address_review_v2-b.json",
-    )
+  )
   fun `check licence serialization for {0}`(fileName: String) {
     val contents = jsonFromFile(fileName)
     val tree = objectMapper.readTree(contents)

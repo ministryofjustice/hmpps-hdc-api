@@ -26,32 +26,34 @@
             }
           },
           "bassReferral": {
-            "bassOffer": null,
             "bassRequest": {
               "bassRequested": "No"
-            },
-            "approvedPremisesAddress": null,
-            "bassAreaCheck": null
+            }
           },
           "proposedAddress": {
             "curfewAddress": {
               "addressLine1": "123 Approved Premises Street 2",
               "addressLine2": "prisoner had requested BASS address",
               "addressTown": "Test City",
-              "postCode": "TST1 1TS"
+              "postCode": "TST1 1TS",
+              "occupier": {
+                "name": "Some Duty Officer",
+                "relationship": "",
+                "isOffender": "Yes"
+              },
+              "residents": [],
+              "telephone": "44000000000",
+              "additionalInformation": "",
+              "residentOffenceDetails": "",
+              "cautionedAgainstResident": "No"
             },
             "addressProposed": {
               "decision": "Yes"
+            },
+            "optOut": {
+              "decision": "No"
             }
-          },
-          "curfew": null,
-          "risk": null,
-          "reporting": null,
-          "victim": null,
-          "licenceConditions": null,
-          "document": null,
-          "approval": null,
-          "finalChecks": null
+          }
         }
       }
     ],
@@ -84,62 +86,71 @@
               "addressLine2": "street",
               "addressTown": "Test town",
               "postCode": "AA AA",
-              "bassAccepted": "Yes"
+              "bassAccepted": "Yes",
+              "telephone": "11111",
+              "bassArea": "hhh",
+              "bassOfferDetails": ""
             },
             "bassRequest": {
-              "bassRequested": "Yes"
+              "bassRequested": "Yes",
+              "specificArea": "No",
+              "additionalInformation": ""
             },
-            "approvedPremisesAddress": null,
             "bassAreaCheck": {
-              "approvedPremisesRequiredYesNo": "No"
+              "approvedPremisesRequiredYesNo": "No",
+              "bassAreaCheckSeen": "true",
+              "bassAreaReason": ""
             }
           },
           "proposedAddress": {
-            "curfewAddress": null,
             "addressProposed": {
+              "decision": "No"
+            },
+            "optOut": {
               "decision": "No"
             }
           },
           "curfew": {
             "firstNight": {
-              "firstNightFrom": "15:00:00",
-              "firstNightUntil": "07:00:00"
+              "firstNightFrom": "15:00",
+              "firstNightUntil": "07:00"
             },
             "curfewHours": {
-              "mondayFrom": "19:00:00",
-              "mondayUntil": "07:00:00",
-              "tuesdayFrom": "19:00:00",
-              "tuesdayUntil": "07:00:00",
-              "wednesdayFrom": "19:00:00",
-              "wednesdayUntil": "07:00:00",
-              "thursdayFrom": "19:00:00",
-              "thursdayUntil": "07:00:00",
-              "fridayFrom": "19:00:00",
-              "fridayUntil": "07:00:00",
-              "saturdayFrom": "19:00:00",
-              "saturdayUntil": "07:00:00",
-              "sundayFrom": "19:00:00",
-              "sundayUntil": "07:00:00"
-            },
-            "approvedPremisesAddress": null,
-            "approvedPremises": null
+              "mondayFrom": "19:00",
+              "mondayUntil": "07:00",
+              "tuesdayFrom": "19:00",
+              "tuesdayUntil": "07:00",
+              "wednesdayFrom": "19:00",
+              "wednesdayUntil": "07:00",
+              "thursdayFrom": "19:00",
+              "thursdayUntil": "07:00",
+              "fridayFrom": "19:00",
+              "fridayUntil": "07:00",
+              "saturdayFrom": "19:00",
+              "saturdayUntil": "07:00",
+              "sundayFrom": "19:00",
+              "sundayUntil": "07:00",
+              "allFrom": "19:00",
+              "allUntil": "07:00",
+              "daySpecificInputs": "No"
+            }
           },
           "risk": {
             "riskManagement": {
               "version": "3",
-              "emsInformation": "No",
-              "pomConsultation": "Yes",
-              "mentalHealthPlan": "No",
-              "manageInTheCommunity": "Yes",
-              "unsuitableReason": "",
-              "hasConsideredChecks": "Yes",
-              "emsInformationDetails": "",
-              "riskManagementDetails": "",
-              "proposedAddressSuitable": "Yes",
               "awaitingOtherInformation": "No",
+              "emsInformation": "No",
+              "emsInformationDetails": "",
+              "hasConsideredChecks": "Yes",
               "nonDisclosableInformation": "No",
               "nonDisclosableInformationDetails": "",
-              "manageInTheCommunityNotPossibleReason": ""
+              "proposedAddressSuitable": "Yes",
+              "riskManagementDetails": "",
+              "unsuitableReason": "",
+              "manageInTheCommunity": "Yes",
+              "manageInTheCommunityNotPossibleReason": "",
+              "pomConsultation": "Yes",
+              "mentalHealthPlan": "No"
             }
           },
           "reporting": {
@@ -169,9 +180,7 @@
             ],
             "standard": {
               "additionalConditionsRequired": "No"
-            },
-            "additional": null,
-            "conditionsSummary": null
+            }
           },
           "document": {
             "template": {
@@ -184,6 +193,9 @@
               "decision": "Yes",
               "decisionMaker": "AAAAA",
               "reasonForDecision": "hfdtuc"
+            },
+            "consideration": {
+              "decision": "Yes"
             }
           },
           "finalChecks": {
@@ -193,7 +205,13 @@
             "seriousOffence": {
               "decision": "No"
             },
+            "undulyLenientSentence": {
+              "decision": "No"
+            },
             "confiscationOrder": {
+              "decision": "No"
+            },
+            "segregation": {
               "decision": "No"
             }
           }
@@ -222,66 +240,80 @@
             }
           },
           "bassReferral": {
-            "bassOffer": null,
             "bassRequest": {
               "bassRequested": "No"
-            },
-            "approvedPremisesAddress": null,
-            "bassAreaCheck": null
+            }
           },
           "proposedAddress": {
             "curfewAddress": {
               "addressLine1": "10 Test Road",
               "addressLine2": "",
               "addressTown": "Testvill",
-              "postCode": "AA1 1JJ"
+              "postCode": "AA1 1JJ",
+              "occupier": {
+                "name": "Bob Bobson",
+                "relationship": "Father"
+              },
+              "residents": [],
+              "telephone": "01234 111111",
+              "additionalInformation": "",
+              "residentOffenceDetails": "",
+              "cautionedAgainstResident": "No"
             },
             "addressProposed": {
               "decision": "Yes"
+            },
+            "optOut": {
+              "decision": "No"
             }
           },
           "curfew": {
             "firstNight": {
-              "firstNightFrom": "15:00:00",
-              "firstNightUntil": "07:00:00"
+              "firstNightFrom": "15:00",
+              "firstNightUntil": "07:00"
             },
             "curfewHours": {
-              "mondayFrom": "19:00:00",
-              "mondayUntil": "07:00:00",
-              "tuesdayFrom": "19:00:00",
-              "tuesdayUntil": "07:00:00",
-              "wednesdayFrom": "19:00:00",
-              "wednesdayUntil": "07:00:00",
-              "thursdayFrom": "19:00:00",
-              "thursdayUntil": "07:00:00",
-              "fridayFrom": "19:00:00",
-              "fridayUntil": "07:00:00",
-              "saturdayFrom": "19:00:00",
-              "saturdayUntil": "07:00:00",
-              "sundayFrom": "19:00:00",
-              "sundayUntil": "07:00:00"
+              "mondayFrom": "19:00",
+              "mondayUntil": "07:00",
+              "tuesdayFrom": "19:00",
+              "tuesdayUntil": "07:00",
+              "wednesdayFrom": "19:00",
+              "wednesdayUntil": "07:00",
+              "thursdayFrom": "19:00",
+              "thursdayUntil": "07:00",
+              "fridayFrom": "19:00",
+              "fridayUntil": "07:00",
+              "saturdayFrom": "19:00",
+              "saturdayUntil": "07:00",
+              "sundayFrom": "19:00",
+              "sundayUntil": "07:00",
+              "allFrom": "19:00",
+              "allUntil": "07:00",
+              "daySpecificInputs": "No"
             },
-            "approvedPremisesAddress": null,
             "approvedPremises": {
               "required": "No"
+            },
+            "curfewAddressReview": {
+              "version": "1",
+              "addressReviewComments": "Test.",
+              "consent": "Yes",
+              "electricity": "Yes",
+              "homeVisitConducted": "Yes"
             }
           },
           "risk": {
             "riskManagement": {
               "version": "2",
-              "emsInformation": "Yes",
-              "pomConsultation": null,
-              "mentalHealthPlan": null,
-              "manageInTheCommunity": null,
-              "unsuitableReason": "",
-              "hasConsideredChecks": "Yes",
-              "emsInformationDetails": "Test.",
-              "riskManagementDetails": "",
-              "proposedAddressSuitable": "Yes",
               "awaitingOtherInformation": "No",
+              "emsInformation": "Yes",
+              "emsInformationDetails": "Test.",
+              "hasConsideredChecks": "Yes",
               "nonDisclosableInformation": "No",
               "nonDisclosableInformationDetails": "",
-              "manageInTheCommunityNotPossibleReason": null
+              "proposedAddressSuitable": "Yes",
+              "riskManagementDetails": "",
+              "unsuitableReason": ""
             }
           },
           "reporting": {
@@ -307,51 +339,7 @@
             "standard": {
               "additionalConditionsRequired": "Yes"
             },
-            "additional": {
-              "ALCOHOL_MONITORING": null,
-              "ALLOW_POLICE_SEARCH": null,
-              "attendAll": null,
-              "ATTENDDEPENDENCY": null,
-              "attendDependencyInDrugsSection": null,
-              "ATTEND_SAMPLE": null,
-              "CAMERA_APPROVAL": {},
-              "complyRequirements": null,
-              "confineAddress": null,
-              "CURFEW_UNTIL_INSTALLATION": null,
-              "DONT_HAMPER_DRUG_TESTING": null,
-              "DRUG_TESTING": null,
-              "ELECTRONIC_MONITORING_INSTALLATION": null,
-              "ELECTRONIC_MONITORING_TRAIL": null,
-              "exclusionAddress": null,
-              "exclusionArea": null,
-              "homeVisits": null,
-              "intimateRelationship": null,
-              "NO_CAMERA": null,
-              "noCameraPhone": null,
-              "noChildrenArea": null,
-              "noCommunicateVictim": null,
-              "NO_CONTACT_ASSOCIATE": null,
-              "noContactNamed": null,
-              "noContactPrisoner": null,
-              "NO_CONTACT_SEX_OFFENDER": null,
-              "noInternet": null,
-              "noReside": null,
-              "notifyPassport": null,
-              "notifyRelationship": null,
-              "noUnsupervisedContact": null,
-              "noWorkWithAge": null,
-              "onePhone": null,
-              "POLICE_ESCORT": null,
-              "POLYGRAPH": null,
-              "remainAddress": null,
-              "reportTo": null,
-              "RESIDE_AT_SPECIFIC_PLACE": null,
-              "RETURN_TO_UK": null,
-              "SPECIFIC_ITEM": null,
-              "surrenderPassport": null,
-              "usageHistory": null,
-              "vehicleDetails": null
-            },
+            "additional": {},
             "conditionsSummary": {
               "additionalConditionsJustification": "Why they added additional condition here."
             }

@@ -93,11 +93,11 @@ data class AddressReviewWrapper(
   val curfewAddressReview: AddressReview? = null,
 )
 
-
 @JsonTypeInfo(
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
-  property = "version"
+  property = "version",
+  defaultImpl = AddressReviewV1::class,
 )
 sealed interface AddressReview
 
@@ -242,11 +242,10 @@ data class Risk(
   val riskManagement: RiskManagement,
 )
 
-
 @JsonTypeInfo(
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
-  property = "version"
+  property = "version",
 )
 sealed interface RiskManagement
 
@@ -298,7 +297,7 @@ data class RiskManagementV3(
   val pomConsultation: String? = null,
   val mentalHealthPlan: String? = null,
   val prisonHealthcareConsultation: String? = null,
-  ) : RiskManagement
+) : RiskManagement
 
 @JsonInclude(NON_NULL)
 data class Victim(

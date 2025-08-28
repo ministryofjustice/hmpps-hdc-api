@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
 // NOTE: DO NOT EDIT DIRECTLY: This is generated via "npm run generate:kotlin-types" in https://github.com/ministryofjustice/licences
- 
+
 val V1_CONDITIONS = listOf(
   ConditionMetadata(
     id = "NOCONTACTPRISONER",
