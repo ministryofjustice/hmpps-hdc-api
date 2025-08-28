@@ -1,0 +1,178 @@
+{
+  "risk": {
+    "riskManagement": {
+      "version": "3",
+      "emsInformation": "Yes",
+      "pomConsultation": "Yes",
+      "mentalHealthPlan": "Yes",
+      "unsuitableReason": "",
+      "hasConsideredChecks": "Yes",
+      "manageInTheCommunity": "No",
+      "emsInformationDetails": "dfsdfdsf",
+      "riskManagementDetails": "fdfdsf",
+      "proposedAddressSuitable": "Yes",
+      "awaitingOtherInformation": "Yes",
+      "nonDisclosableInformation": "",
+      "prisonHealthcareConsultation": "Yes",
+      "nonDisclosableInformationDetails": "",
+      "manageInTheCommunityNotPossibleReason": "cdsfsdfdsf"
+    }
+  },
+  "curfew": {
+    "firstNight": {
+      "firstNightFrom": "15:00",
+      "firstNightUntil": "07:00"
+    },
+    "curfewHours": {
+      "allFrom": "19:00",
+      "allUntil": "07:00",
+      "fridayFrom": "19:00",
+      "mondayFrom": "19:00",
+      "sundayFrom": "19:00",
+      "fridayUntil": "07:00",
+      "mondayUntil": "07:00",
+      "sundayUntil": "07:00",
+      "tuesdayFrom": "19:00",
+      "saturdayFrom": "19:00",
+      "thursdayFrom": "19:00",
+      "tuesdayUntil": "07:00",
+      "saturdayUntil": "07:00",
+      "thursdayUntil": "07:00",
+      "wednesdayFrom": "19:00",
+      "wednesdayUntil": "07:00",
+      "daySpecificInputs": "No"
+    }
+  },
+  "victim": {
+    "victimLiaison": {
+      "decision": "No"
+    }
+  },
+  "approval": {
+    "release": {
+      "decision": "Yes",
+      "decisionMaker": "Louise Norris",
+      "reasonForDecision": ""
+    },
+    "consideration": {
+      "decision": "Yes"
+    }
+  },
+  "document": {
+    "template": {
+      "decision": "hdc_ap",
+      "offenceCommittedBeforeFeb2015": "No"
+    }
+  },
+  "reporting": {
+    "reportingInstructions": {
+      "name": "Sam",
+      "postcode": "C1 1RC",
+      "telephone": "00000000000",
+      "townOrCity": "CRC Town",
+      "organisation": "CRC",
+      "reportingDate": "12/12/2025",
+      "reportingTime": "11:12",
+      "buildingAndStreet1": "CRC Street",
+      "buildingAndStreet2": ""
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "finalChecks": {
+    "onRemand": {
+      "decision": "No"
+    },
+    "segregation": {
+      "decision": "No"
+    },
+    "seriousOffence": {
+      "decision": "No"
+    },
+    "confiscationOrder": {
+      "decision": "No"
+    },
+    "undulyLenientSentence": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassOffer": {
+      "bassArea": "Reading",
+      "postCode": "C1 1RC",
+      "telephone": "",
+      "addressTown": "Test Town",
+      "addressLine1": "Test Street",
+      "addressLine2": "",
+      "bassAccepted": "Yes",
+      "bassOfferDetails": ""
+    },
+    "bassRequest": {
+      "specificArea": "No",
+      "bassRequested": "Yes",
+      "additionalInformation": ""
+    },
+    "bassAreaCheck": {
+      "bassAreaReason": "",
+      "bassAreaCheckSeen": "true",
+      "approvedPremisesRequiredYesNo": "No"
+    }
+  },
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "addressProposed": {
+      "decision": "No"
+    }
+  },
+  "licenceConditions": {
+    "bespoke": [],
+    "standard": {
+      "additionalConditionsRequired": "Yes"
+    },
+    "additional": {
+      "NOCAMERA": {},
+      "ONEPHONE": {},
+      "NOINTERNET": {},
+      "USAGEHISTORY": {},
+      "NOCAMERAPHONE": {},
+      "NOWORKWITHAGE": {
+        "noWorkWithAge": "20"
+      },
+      "CAMERAAPPROVAL": {},
+      "NOTIFYPASSPORT": {},
+      "ATTENDDEPENDENCY": {
+        "appointmentDate": "12/12/2026",
+        "appointmentTime": "12:32",
+        "appointmentAddress": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "EXCLUSIONADDRESS": {
+        "noEnterPlace": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "NOCONTACTPRISONER": {},
+      "NOTIFYRELATIONSHIP": {},
+      "INTIMATERELATIONSHIP": {
+        "intimateGender": "Women or men"
+      },
+      "NOCONTACTSEXOFFENDER": {},
+      "NOUNSUPERVISEDCONTACT": {
+        "unsupervisedContactAge": "20",
+        "unsupervisedContactGender": "any male",
+        "unsupervisedContactSocial": "Harrow Street"
+      }
+    },
+    "conditionsSummary": {
+      "additionalConditionsJustification": "adsas"
+    }
+  }
+}

@@ -572,6 +572,8 @@ class LicenceServiceTest {
         LocalTime.of(8, 0),
         LocalTime.of(20, 0),
         LocalTime.of(8, 0),
+        null,
+        null,
       ),
       CurfewAddress(
         "2 The Street",
@@ -615,7 +617,7 @@ class LicenceServiceTest {
         "Town 5",
         "TS8 8TS",
       ),
-      AddressProposed(Decision.YES),
+      addressProposed = DecisionMade(Decision.YES),
     )
 
     fun anExceptionLicence() = Licence(
