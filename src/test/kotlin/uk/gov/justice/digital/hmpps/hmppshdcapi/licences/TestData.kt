@@ -52,6 +52,12 @@ object TestData {
     allUntil = null,
   )
 
+  val eligibility = Eligibility(
+    crdTime = CrdTime(Decision.NO),
+    excluded = Excluded(Decision.NO),
+    suitability = Suitability(Decision.NO),
+  )
+
   fun aPreferredAddressLicence(): Licence = Licence(
     id = 1,
     prisonNumber = "A12345B",
@@ -65,11 +71,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
@@ -167,11 +169,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
@@ -267,11 +265,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
@@ -350,11 +344,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = null,
@@ -436,11 +426,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
@@ -543,11 +529,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
@@ -643,11 +625,7 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
+      eligibility = eligibility,
       bassReferral = Cas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.subjectaccessrequests
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.toSAR
 
 @Service
 class SubjectAccessRequestService(
@@ -18,8 +19,8 @@ class SubjectAccessRequestService(
     } else {
       SarContent(
         content = Content(
-          licences = licences,
-          licenceVersions = licenceVersions,
+          licences = licences.map { it.toSAR() },
+          licenceVersions = licenceVersions.map { it.toSAR() },
         ),
       )
     }

@@ -15,6 +15,9 @@ class MarshallingTest {
 
   @ParameterizedTest
   @CsvSource(
+    // unsuitable
+    "eligibility-unsuitability.json",
+
     // abuseAndBehaviours is array
     "full_conditions_v1.json",
     // abuseAndBehaviours is string
