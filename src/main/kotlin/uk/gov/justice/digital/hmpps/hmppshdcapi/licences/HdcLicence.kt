@@ -1,8 +1,12 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
-import com.fasterxml.jackson.annotation.JsonAlias
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import java.time.LocalTime
 
 enum class Decision {
@@ -31,7 +35,7 @@ interface Address {
   val postCode: String?
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class LicenceData(
   val eligibility: Eligibility?,
   val bassReferral: Cas2Referral?,
@@ -46,19 +50,19 @@ data class LicenceData(
   val finalChecks: FinalChecks?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Eligibility(
   val crdTime: DecisionMade?,
   val excluded: DecisionMade?,
   val suitability: DecisionMade?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class DecisionMade(
   val decision: Decision?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Cas2Referral(
   // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
   val bassOffer: Cas2Offer? = null,
@@ -67,144 +71,275 @@ data class Cas2Referral(
   val bassAreaCheck: Cas2AreaCheck? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class ProposedAddress(
   // curfewAddress only nullable as address will be either this if ProposedAddress or bassOffer if cas2
   val curfewAddress: CurfewAddress? = null,
-  val addressProposed: AddressProposed? = null,
+  val addressProposed: DecisionMade? = null,
+  val optOut: DecisionMade? = null,
+  val rejections: List<Rejection>? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
+data class Rejection(
+  val address: CurfewAddress?,
+  val addressReview: AddressReviewWrapper? = null,
+  val riskManagement: RiskManagement? = null,
+  val withdrawalReason: String? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class AddressReviewWrapper(
+  val curfewAddressReview: AddressReview? = null,
+)
+
+
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "version"
+)
+sealed interface AddressReview
+
+@JsonInclude(NON_NULL)
+@JsonTypeName("1")
+data class AddressReviewV1(
+  val version: String? = null,
+  val addressReviewComments: String? = null,
+  val consent: String? = null,
+  val electricity: String? = null,
+  val homeVisitConducted: String? = null,
+) : AddressReview
+
+@JsonInclude(NON_NULL)
+@JsonTypeName("2")
+data class AddressReviewV2(
+  val version: String? = null,
+  val addressReviewComments: String? = null,
+  val consentHavingSpoken: String? = null,
+  val electricity: String? = null,
+  val homeVisitConducted: String? = null,
+) : AddressReview
+
+@JsonInclude(NON_NULL)
+data class Occupier(
+  val name: String? = null,
+  val relationship: String? = null,
+  val isOffender: String? = null,
+)
+
+@JsonInclude(NON_NULL)
 data class CurfewAddress(
   override val addressLine1: String? = null,
   override val addressLine2: String? = null,
   override val addressTown: String? = null,
   override val postCode: String? = null,
+  val occupier: Occupier? = null,
+  val residents: List<Resident>? = null,
+  val telephone: String? = null,
+  val additionalInformation: String? = null,
+  val residentOffenceDetails: String? = null,
+  val cautionedAgainstResident: Decision? = null,
 ) : Address
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class AddressProposed(
-  val decision: Decision,
+@JsonInclude(NON_NULL)
+data class Resident(
+  val age: String? = null,
+  val name: String? = null,
+  val relationship: String? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Cas2Offer(
   override val addressLine1: String? = null,
   override val addressLine2: String? = null,
   override val addressTown: String? = null,
   override val postCode: String? = null,
   val bassAccepted: OfferAccepted?,
+  val telephone: String? = null,
+  val bassArea: String? = null,
+  val bassOfferDetails: String? = null,
 ) : Address
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Cas2Request(
   val bassRequested: Decision?,
+  val specificArea: Decision? = null,
+  val additionalInformation: String? = null,
+  val proposedCounty: String? = null,
+  val proposedTown: String? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Curfew(
   val firstNight: FirstNight?,
   val curfewHours: CurfewHours?,
   val approvedPremisesAddress: CurfewAddress? = null,
   val approvedPremises: ApprovedPremises? = null,
+  val curfewAddressReview: AddressReview? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class FirstNight(
+  @field:JsonFormat(pattern = "HH:mm")
   val firstNightFrom: LocalTime,
+  @field:JsonFormat(pattern = "HH:mm")
   val firstNightUntil: LocalTime,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class CurfewHours(
+  @field:JsonFormat(pattern = "HH:mm")
   val mondayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val mondayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val tuesdayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val tuesdayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val wednesdayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val wednesdayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val thursdayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val thursdayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val fridayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val fridayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val saturdayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val saturdayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val sundayFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
   val sundayUntil: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
+  val allFrom: LocalTime?,
+  @field:JsonFormat(pattern = "HH:mm")
+  val allUntil: LocalTime?,
+  val daySpecificInputs: Decision? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class ApprovedPremises(
   val required: Decision,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Cas2AreaCheck(
   val approvedPremisesRequiredYesNo: Decision,
+  val bassAreaCheck: String? = null,
+  val bassAreaCheckSeen: String? = null,
+  val bassAreaReason: String? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Risk(
   val riskManagement: RiskManagement,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class RiskManagement(
-  val version: String?,
-  val emsInformation: Decision?,
-  val pomConsultation: Decision?,
-  val mentalHealthPlan: Decision?,
-  val manageInTheCommunity: Decision?,
-  val unsuitableReason: String?,
-  val hasConsideredChecks: Decision?,
-  val emsInformationDetails: String?,
-  val riskManagementDetails: String?,
-  val proposedAddressSuitable: Decision?,
-  val awaitingOtherInformation: Decision?,
-  val nonDisclosableInformation: Decision?,
-  val nonDisclosableInformationDetails: String?,
-  val manageInTheCommunityNotPossibleReason: String?,
-)
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "version"
+)
+sealed interface RiskManagement
+
+@JsonTypeName("1")
+@JsonInclude(NON_NULL)
+data class RiskManagementV1(
+  val version: String? = "1",
+  val awaitingInformation: String? = null,
+  val emsInformation: String? = null,
+  val emsInformationDetails: String? = null,
+  val nonDisclosableInformation: String? = null,
+  val nonDisclosableInformationDetails: String? = null,
+  val planningActions: String? = null,
+  val proposedAddressSuitable: String? = null,
+  val riskManagementDetails: String? = null,
+  val unsuitableReason: String? = null,
+) : RiskManagement
+
+@JsonTypeName("2")
+@JsonInclude(NON_NULL)
+data class RiskManagementV2(
+  val version: String?,
+  val awaitingOtherInformation: String? = null,
+  val emsInformation: String? = null,
+  val emsInformationDetails: String? = null,
+  val hasConsideredChecks: String? = null,
+  val nonDisclosableInformation: String? = null,
+  val nonDisclosableInformationDetails: String? = null,
+  val proposedAddressSuitable: String? = null,
+  val riskManagementDetails: String? = null,
+  val unsuitableReason: String? = null,
+) : RiskManagement
+
+@JsonTypeName("3")
+@JsonInclude(NON_NULL)
+data class RiskManagementV3(
+  val version: String?,
+  val awaitingOtherInformation: String? = null,
+  val emsInformation: String? = null,
+  val emsInformationDetails: String? = null,
+  val hasConsideredChecks: String? = null,
+  val nonDisclosableInformation: String? = null,
+  val nonDisclosableInformationDetails: String? = null,
+  val proposedAddressSuitable: String? = null,
+  val riskManagementDetails: String? = null,
+  val unsuitableReason: String? = null,
+  val manageInTheCommunity: String? = null,
+  val manageInTheCommunityNotPossibleReason: String? = null,
+  val pomConsultation: String? = null,
+  val mentalHealthPlan: String? = null,
+  val prisonHealthcareConsultation: String? = null,
+  ) : RiskManagement
+
+@JsonInclude(NON_NULL)
 data class Victim(
   val victimLiaison: VictimLiaison?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class VictimLiaison(
   val decision: Decision?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Approval(
   val release: Release,
+  val consideration: DecisionMade? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Release(
   val decision: Decision?,
   val decisionMaker: String?,
   val reasonForDecision: String?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Document(
   val template: Template,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Template(
   val decision: String?,
   val offenceCommittedBeforeFeb2015: Decision?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Reporting(
   val reportingInstructions: ReportingInstructions,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class ReportingInstructions(
   val name: String?,
   val postcode: String?,
@@ -217,180 +352,61 @@ data class ReportingInstructions(
   val buildingAndStreet2: String?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class FinalChecks(
-  val onRemand: OnRemand?,
-  val seriousOffence: SeriousOffence?,
-  val confiscationOrder: ConfiscationOrder?,
+  val onRemand: DecisionMade? = null,
+  val seriousOffence: DecisionMade? = null,
+  val undulyLenientSentence: DecisionMade? = null,
+  val confiscationOrder: ConfiscationOrder? = null,
+  val segregation: DecisionMade? = null,
+  val refund: Refusal? = null,
+  val postpone: Postpone? = null,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class OnRemand(
-  val decision: Decision,
+@JsonInclude(NON_NULL)
+data class Postpone(
+  val version: String?,
+  val decision: Decision?,
+  val postponeReason: String?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class SeriousOffence(
-  val decision: Decision,
+@JsonInclude(NON_NULL)
+data class Refusal(
+  val decision: Decision?,
+  val outOfTimeReasons: String?,
+  val reason: String?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class ConfiscationOrder(
-  val decision: Decision,
+  val comments: String?,
+  val decision: Decision?,
+  val confiscationUnitConsulted: Decision?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class BespokeCondition(
   val approved: String?,
   val text: String?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+interface AdditionalConditions
+
+@JsonInclude(NON_NULL)
 data class LicenceConditions(
   val bespoke: List<BespokeCondition>?,
   val standard: Standard?,
-  val additional: Additional?,
+  @field:JsonDeserialize(using = AdditionalConditionsDeserializer::class)
+  val additional: AdditionalConditions?,
   val conditionsSummary: ConditionsSummary?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class Standard(
   val additionalConditionsRequired: Decision?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class Additional(
-  @JsonProperty("ALCOHOL_MONITORING")
-  val alcoholMonitoring: Any?,
-
-  @JsonProperty("ALLOW_POLICE_SEARCH")
-  val allowPoliceSearch: Any?,
-
-  @JsonAlias("ATTEND_ALL", "ATTENDALL")
-  val attendAll: Any?,
-
-  @JsonProperty("ATTENDDEPENDENCY")
-  val attendingDependency: Any?,
-
-  @JsonAlias("ATTEND_DEPENDENCY_IN_DRUGS_SECTION", "ATTENDDEPENDENCYINDRUGSSECTION")
-  val attendDependencyInDrugsSection: Any?,
-
-  @JsonProperty("ATTEND_SAMPLE")
-  val attendSample: Any?,
-
-  @JsonProperty("CAMERA_APPROVAL")
-  val cameraApproval: Any?,
-
-  @JsonAlias("COMPLY_REQUIREMENTS", "COMPLYREQUIREMENTS")
-  val complyRequirements: Any?,
-
-  @JsonAlias("CONFINE_ADDRESS", "CONFINEADDRESS")
-  val confineAddress: Any?,
-
-  @JsonProperty("CURFEW_UNTIL_INSTALLATION")
-  val curfewUntilInstallation: Any?,
-
-  @JsonProperty("DONT_HAMPER_DRUG_TESTING")
-  val dontHamperDrugTesting: Any?,
-
-  @JsonProperty("DRUG_TESTING")
-  val drugTesting: Any?,
-
-  @JsonProperty("ELECTRONIC_MONITORING_INSTALLATION")
-  val electronMonitoringInstallation: Any?,
-
-  @JsonProperty("ELECTRONIC_MONITORING_TRAIL")
-  val electronMonitoringTrail: Any?,
-
-  @JsonAlias("EXCLUSION_ADDRESS", "EXCLUSIONADDRESS")
-  val exclusionAddress: Any?,
-
-  @JsonAlias("EXCLUSION_AREA", "EXCLUSIONAREA")
-  val exclusionArea: Any?,
-
-  @JsonAlias("HOME_VISITS", "HOMEVISITS")
-  val homeVisits: Any?,
-
-  @JsonAlias("INTIMATE_RELATIONSHIP", "INTIMATERELATIONSHIP")
-  val intimateRelationship: Any?,
-
-  @JsonProperty("NO_CAMERA")
-  val noCamera: Any?,
-
-  @JsonAlias("NO_CAMERA_PHONE", "NOCAMERAPHONE")
-  val noCameraPhone: Any?,
-
-  @JsonAlias("NO_CHILDRENS_AREA", "NOCHILDRENSAREA")
-  val noChildrenArea: Any?,
-
-  @JsonAlias("NO_COMMUNICATE_VICTIM", "NOCOMMUNICATEVICTIM")
-  val noCommunicateVictim: Any?,
-
-  @JsonProperty("NO_CONTACT_ASSOCIATE")
-  val noContactAssociate: Any?,
-
-  @JsonAlias("NO_CONTACT_NAMED", "NOCONTACTNAMED")
-  val noContactNamed: Any?,
-
-  @JsonAlias("NO_CONTACT_PRISONER", "NOCONTACTPRISONER")
-  val noContactPrisoner: Any?,
-
-  @JsonProperty("NO_CONTACT_SEX_OFFENDER")
-  val noContactSexOffender: Any?,
-
-  @JsonAlias("NO_INTERNET", "NOINTERNET")
-  val noInternet: Any?,
-
-  @JsonAlias("NO_RESIDE", "NORESIDE")
-  val noReside: Any?,
-
-  @JsonAlias("NOTIFY_PASSPORT", "NOTIFYPASSPORT")
-  val notifyPassport: Any?,
-
-  @JsonAlias("NOTIFY_RELATIONSHIP", "NOTIFYRELATIONSHIP")
-  val notifyRelationship: Any?,
-
-  @JsonAlias("NO_UNSUPERVISED_CONTACT", "NOUNSUPERVISEDCONTACT")
-  val noUnsupervisedContact: Any?,
-
-  @JsonAlias("NO_WORK_WITH_AGE", "NOWORKWITHAGE")
-  val noWorkWithAge: Any?,
-
-  @JsonAlias("ONE_PHONE", "ONEPHONE")
-  val onePhone: Any?,
-
-  @JsonProperty("POLICE_ESCORT")
-  val policeEscort: Any?,
-
-  @JsonProperty("POLYGRAPH")
-  val polygraph: Any?,
-
-  @JsonAlias("REMAIN_ADDRESS", "REMAINADDRESS")
-  val remainAddress: Any?,
-
-  @JsonAlias("REPORT_TO", "REPORTTO")
-  val reportTo: Any?,
-
-  @JsonProperty("RESIDE_AT_SPECIFIC_PLACE")
-  val resideAtSpecificPlace: Any?,
-
-  @JsonProperty("RETURN_TO_UK")
-  val returnToUk: Any?,
-
-  @JsonProperty("SPECIFIC_ITEM")
-  val specificItem: Any?,
-
-  @JsonAlias("SURRENDER_PASSPORT", "SURRENDERPASSPORT")
-  val surrenderPassport: Any?,
-
-  @JsonAlias("USAGE_HISTORY", "USAGEHISTORY")
-  val usageHistory: Any?,
-
-  @JsonAlias("VEHICLE_DETAILS", "VEHICLEDETAILS")
-  val vehicleDetails: Any?,
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 data class ConditionsSummary(
   val additionalConditionsJustification: String?,
 )

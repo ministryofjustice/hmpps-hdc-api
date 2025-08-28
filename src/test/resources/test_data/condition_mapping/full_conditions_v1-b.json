@@ -1,0 +1,243 @@
+{
+  "risk": {
+    "riskManagement": {
+      "version": "3",
+      "emsInformation": "No",
+      "pomConsultation": "Yes",
+      "mentalHealthPlan": "No",
+      "unsuitableReason": "",
+      "hasConsideredChecks": "Yes",
+      "manageInTheCommunity": "Yes",
+      "emsInformationDetails": "",
+      "riskManagementDetails": "",
+      "proposedAddressSuitable": "Yes",
+      "awaitingOtherInformation": "No",
+      "nonDisclosableInformation": "No",
+      "nonDisclosableInformationDetails": "",
+      "manageInTheCommunityNotPossibleReason": ""
+    }
+  },
+  "curfew": {
+    "firstNight": {
+      "firstNightFrom": "15:00",
+      "firstNightUntil": "07:00"
+    },
+    "curfewHours": {
+      "allFrom": "19:00",
+      "allUntil": "07:00",
+      "fridayFrom": "19:00",
+      "mondayFrom": "19:00",
+      "sundayFrom": "19:00",
+      "fridayUntil": "07:00",
+      "mondayUntil": "07:00",
+      "sundayUntil": "07:00",
+      "tuesdayFrom": "19:00",
+      "saturdayFrom": "19:00",
+      "thursdayFrom": "19:00",
+      "tuesdayUntil": "07:00",
+      "saturdayUntil": "07:00",
+      "thursdayUntil": "07:00",
+      "wednesdayFrom": "19:00",
+      "wednesdayUntil": "07:00",
+      "daySpecificInputs": "No"
+    }
+  },
+  "victim": {
+    "victimLiaison": {
+      "decision": "No"
+    }
+  },
+  "approval": {
+    "release": {
+      "decision": "Yes",
+      "decisionMaker": "Sam Smith",
+      "reasonForDecision": ""
+    },
+    "consideration": {
+      "decision": "Yes"
+    }
+  },
+  "document": {
+    "template": {
+      "decision": "hdc_ap",
+      "offenceCommittedBeforeFeb2015": "No"
+    }
+  },
+  "reporting": {
+    "reportingInstructions": {
+      "name": "Sam",
+      "postcode": "A1 1AA",
+      "telephone": "00000000000",
+      "townOrCity": "CRC Town",
+      "organisation": "CRC",
+      "reportingDate": "12/12/2025",
+      "reportingTime": "11:12",
+      "buildingAndStreet1": "CRC Street",
+      "buildingAndStreet2": ""
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "finalChecks": {
+    "onRemand": {
+      "decision": "No"
+    },
+    "segregation": {
+      "decision": "No"
+    },
+    "seriousOffence": {
+      "decision": "No"
+    },
+    "confiscationOrder": {
+      "decision": "No"
+    },
+    "undulyLenientSentence": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassOffer": {
+      "bassArea": "Reading",
+      "postCode": "C1 1RC",
+      "telephone": "",
+      "addressTown": "Test Town",
+      "addressLine1": "Test Street",
+      "addressLine2": "",
+      "bassAccepted": "Yes",
+      "bassOfferDetails": ""
+    },
+    "bassRequest": {
+      "specificArea": "No",
+      "bassRequested": "Yes",
+      "additionalInformation": ""
+    },
+    "bassAreaCheck": {
+      "bassAreaReason": "",
+      "bassAreaCheckSeen": "true",
+      "approvedPremisesRequiredYesNo": "No"
+    }
+  },
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "addressProposed": {
+      "decision": "No"
+    }
+  },
+  "licenceConditions": {
+    "bespoke": [],
+    "standard": {
+      "additionalConditionsRequired": "Yes"
+    },
+    "additional": {
+      "NOCAMERA": {},
+      "NORESIDE": {
+        "notResideWithAge": "20",
+        "notResideWithGender": "any male"
+      },
+      "ONEPHONE": {},
+      "REPORTTO": {
+        "reportingTime": "12:30",
+        "reportingAddress": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA",
+        "reportingFrequency": "Monthly"
+      },
+      "ATTENDALL": {
+        "appointmentName": "Jim Smith",
+        "appointmentProfession": "psychologist"
+      },
+      "POLYGRAPH": {},
+      "HOMEVISITS": {
+        "mentalHealthName": "John Smith"
+      },
+      "NOINTERNET": {},
+      "RETURNTOUK": {},
+      "ATTENDSAMPLE": {
+        "attendSampleDetailsName": "Sam Smith",
+        "attendSampleDetailsAddress": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "DRUG_TESTING": {
+        "drug_testing_name": "Bobby",
+        "drug_testing_address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "USAGEHISTORY": {},
+      "EXCLUSIONAREA": {
+        "exclusionArea": "Supermarket"
+      },
+      "NOCAMERAPHONE": {},
+      "NOWORKWITHAGE": {
+        "noWorkWithAge": "20"
+      },
+      "REMAINADDRESS": {
+        "curfewTo": "16:30",
+        "curfewFrom": "12:30",
+        "curfewAddress": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA",
+        "curfewTagRequired": "yes"
+      },
+      "CAMERAAPPROVAL": {},
+      "CONFINEADDRESS": {
+        "confinedTo": "12:20",
+        "confinedFrom": "16:30",
+        "confinedReviewFrequency": "Other"
+      },
+      "NOCONTACTNAMED": {
+        "noContactOffenders": "John Smith"
+      },
+      "NOTIFYPASSPORT": {},
+      "VEHICLEDETAILS": {
+        "vehicleDetails": "Silver Car"
+      },
+      "NOCHILDRENSAREA": {
+        "notInSightOf": "Swimming Pool"
+      },
+      "ATTENDDEPENDENCY": {
+        "appointmentDate": "12/12/2026",
+        "appointmentTime": "12:32",
+        "appointmentAddress": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "EXCLUSIONADDRESS": {
+        "noEnterPlace": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
+      },
+      "NOCONTACTPRISONER": {},
+      "SURRENDERPASSPORT": {},
+      "COMPLYREQUIREMENTS": {
+        "courseOrCentre": "Harrow Street",
+        "abuseAndBehaviours": "alcohol abuse"
+      },
+      "NOCONTACTASSOCIATE": {
+        "groupsOrOrganisation": "The Tables"
+      },
+      "NOTIFYRELATIONSHIP": {},
+      "NOCOMMUNICATEVICTIM": {
+        "socialServicesDept": "Harrow Street",
+        "victimFamilyMembers": "Sam Smith"
+      },
+      "INTIMATERELATIONSHIP": {
+        "intimateGender": "Women or men"
+      },
+      "NOCONTACTSEXOFFENDER": {},
+      "NOUNSUPERVISEDCONTACT": {
+        "unsupervisedContactAge": "20",
+        "unsupervisedContactGender": "any male",
+        "unsupervisedContactSocial": "Harrow Street"
+      },
+      "ATTENDDEPENDENCYINDRUGSSECTION": {
+        "appointmentDateInDrugsSection": "12/12/2026",
+        "appointmentTimeInDrugsSection": "12:32",
+        "appointmentAddressInDrugsSection": "Smith Street Center"
+      }
+    },
+    "conditionsSummary": {
+      "additionalConditionsJustification": "adsas"
+    }
+  }
+}

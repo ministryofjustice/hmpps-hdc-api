@@ -6,128 +6,157 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 object TestData {
-  fun aPreferredAddressLicence() = Licence(
-    id = 1,
-    prisonNumber = "A12345B",
-    bookingId = 54321,
-    stage = "MODIFIED",
-    version = 1,
-    transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
-    varyVersion = 0,
-    additionalConditionsVersion = null,
-    standardConditionsVersion = null,
-    deletedAt = null,
-    licenceInCvl = false,
-    licence = LicenceData(
-      eligibility = Eligibility(
-        crdTime = DecisionMade(Decision.NO),
-        excluded = DecisionMade(Decision.NO),
-        suitability = DecisionMade(Decision.NO),
-      ),
-      bassReferral = Cas2Referral(
-        bassRequest = Cas2Request(bassRequested = Decision.NO),
-        bassOffer = null,
-      ),
-      proposedAddress = ProposedAddress(
-        curfewAddress = CurfewAddress(
-          addressLine1 = "1 The Street",
-          addressLine2 = "Area",
-          addressTown = "Town",
-          postCode = "TS7 7TS",
-        ),
-        addressProposed = AddressProposed(Decision.YES),
-      ),
-      curfew = Curfew(
-        firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
-        curfewHours = CurfewHours(
-          mondayFrom = LocalTime.of(20, 0),
-          mondayUntil = LocalTime.of(8, 0),
-          tuesdayFrom = LocalTime.of(20, 0),
-          tuesdayUntil = LocalTime.of(8, 0),
-          wednesdayFrom = LocalTime.of(20, 0),
-          wednesdayUntil = LocalTime.of(8, 0),
-          thursdayFrom = LocalTime.of(20, 0),
-          thursdayUntil = LocalTime.of(8, 0),
-          fridayFrom = LocalTime.of(20, 0),
-          fridayUntil = LocalTime.of(8, 0),
-          saturdayFrom = LocalTime.of(20, 0),
-          saturdayUntil = LocalTime.of(8, 0),
-          sundayFrom = LocalTime.of(20, 0),
-          sundayUntil = LocalTime.of(8, 0),
-        ),
-      ),
-      risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
-      ),
-      reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "sam",
-          postcode = "AA BRD",
-          telephone = "47450",
-          townOrCity = "Test town",
-          organisation = "crc",
-          reportingDate = "12/12/2023",
-          reportingTime = "12:12",
-          buildingAndStreet1 = "10",
-          buildingAndStreet2 = "street",
-        ),
-      ),
-      victim = Victim(
-        victimLiaison = VictimLiaison(
-          decision = Decision.NO,
-        ),
-      ),
-      licenceConditions = LicenceConditions(
-        bespoke = emptyList(),
-        standard = Standard(
-          additionalConditionsRequired = Decision.NO,
-        ),
-        additional = null,
-        conditionsSummary = ConditionsSummary(
-          additionalConditionsJustification = "",
-        ),
-      ),
-      document = Document(
-        template = Template(
-          decision = "hdc_ap",
-          offenceCommittedBeforeFeb2015 = Decision.NO,
-        ),
-      ),
-      approval = Approval(
-        release = Release(
-          decision = Decision.YES,
-          decisionMaker = "Test McWell",
-          reasonForDecision = "",
-        ),
-      ),
-      finalChecks = FinalChecks(
-        onRemand = OnRemand(
-          decision = Decision.NO,
-        ),
-        seriousOffence = SeriousOffence(
-          decision = Decision.NO,
-        ),
-        confiscationOrder = ConfiscationOrder(
-          decision = Decision.NO,
-        ),
-      ),
-    ),
+  val riskManagement = RiskManagementV3(
+    version = "3",
+    emsInformation = "No",
+    pomConsultation = "Yes",
+    mentalHealthPlan = "No",
+    unsuitableReason = "",
+    hasConsideredChecks = "Yes",
+    manageInTheCommunity = "Yes",
+    emsInformationDetails = "",
+    riskManagementDetails = "",
+    proposedAddressSuitable = "Yes",
+    awaitingOtherInformation = "No",
+    nonDisclosableInformation = "No",
+    nonDisclosableInformationDetails = "",
+    manageInTheCommunityNotPossibleReason = "",
   )
+
+  val reportingInstructions = ReportingInstructions(
+    name = "sam",
+    postcode = "AA BRD",
+    telephone = "47450",
+    townOrCity = "Test town",
+    organisation = "crc",
+    reportingDate = "12/12/2023",
+    reportingTime = "12:12",
+    buildingAndStreet1 = "10",
+    buildingAndStreet2 = "street",
+  )
+
+  val curfewHours = CurfewHours(
+    mondayFrom = LocalTime.of(19, 0),
+    mondayUntil = LocalTime.of(7, 0),
+    tuesdayFrom = LocalTime.of(19, 0),
+    tuesdayUntil = LocalTime.of(7, 0),
+    wednesdayFrom = LocalTime.of(19, 0),
+    wednesdayUntil = LocalTime.of(7, 0),
+    thursdayFrom = LocalTime.of(19, 0),
+    thursdayUntil = LocalTime.of(7, 0),
+    fridayFrom = LocalTime.of(19, 0),
+    fridayUntil = LocalTime.of(7, 0),
+    saturdayFrom = LocalTime.of(19, 0),
+    saturdayUntil = LocalTime.of(7, 0),
+    sundayFrom = LocalTime.of(19, 0),
+    sundayUntil = LocalTime.of(7, 0),
+    allFrom = null,
+    allUntil = null,
+  )
+
+  fun aPreferredAddressLicence(): Licence {
+    return Licence(
+      id = 1,
+      prisonNumber = "A12345B",
+      bookingId = 54321,
+      stage = "MODIFIED",
+      version = 1,
+      transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
+      varyVersion = 0,
+      additionalConditionsVersion = null,
+      standardConditionsVersion = null,
+      deletedAt = null,
+      licenceInCvl = false,
+      licence = LicenceData(
+        eligibility = Eligibility(
+          crdTime = DecisionMade(Decision.NO),
+          excluded = DecisionMade(Decision.NO),
+          suitability = DecisionMade(Decision.NO),
+        ),
+        bassReferral = Cas2Referral(
+          bassRequest = Cas2Request(bassRequested = Decision.NO),
+          bassOffer = null,
+        ),
+        proposedAddress = ProposedAddress(
+          curfewAddress = CurfewAddress(
+            addressLine1 = "1 The Street",
+            addressLine2 = "Area",
+            addressTown = "Town",
+            postCode = "TS7 7TS",
+          ),
+          addressProposed = DecisionMade(Decision.YES),
+        ),
+        curfew = Curfew(
+          firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
+          curfewHours = CurfewHours(
+            mondayFrom = LocalTime.of(20, 0),
+            mondayUntil = LocalTime.of(8, 0),
+            tuesdayFrom = LocalTime.of(20, 0),
+            tuesdayUntil = LocalTime.of(8, 0),
+            wednesdayFrom = LocalTime.of(20, 0),
+            wednesdayUntil = LocalTime.of(8, 0),
+            thursdayFrom = LocalTime.of(20, 0),
+            thursdayUntil = LocalTime.of(8, 0),
+            fridayFrom = LocalTime.of(20, 0),
+            fridayUntil = LocalTime.of(8, 0),
+            saturdayFrom = LocalTime.of(20, 0),
+            saturdayUntil = LocalTime.of(8, 0),
+            sundayFrom = LocalTime.of(20, 0),
+            sundayUntil = LocalTime.of(8, 0),
+            allFrom = null,
+            allUntil = null,
+          ),
+        ),
+        risk = Risk(
+          riskManagement = riskManagement,
+        ),
+        reporting = Reporting(
+          reportingInstructions = reportingInstructions,
+        ),
+        victim = Victim(
+          victimLiaison = VictimLiaison(
+            decision = Decision.NO,
+          ),
+        ),
+        licenceConditions = LicenceConditions(
+          bespoke = emptyList(),
+          standard = Standard(
+            additionalConditionsRequired = Decision.NO,
+          ),
+          additional = null,
+          conditionsSummary = ConditionsSummary(
+            additionalConditionsJustification = "",
+          ),
+        ),
+        document = Document(
+          template = Template(
+            decision = "hdc_ap",
+            offenceCommittedBeforeFeb2015 = Decision.NO,
+          ),
+        ),
+        approval = Approval(
+          release = Release(
+            decision = Decision.YES,
+            decisionMaker = "Test McWell",
+            reasonForDecision = "",
+          ),
+        ),
+        finalChecks = FinalChecks(
+          onRemand = DecisionMade(
+            decision = Decision.NO,
+          ),
+          seriousOffence = DecisionMade(
+            decision = Decision.NO,
+          ),
+          confiscationOrder = ConfiscationOrder(
+            decision = Decision.NO,
+            comments = "Some comments",
+            confiscationUnitConsulted = Decision.YES,
+          ),
+        ),
+      ),
+    )
+  }
 
   fun aCas2Licence() = Licence(
     id = 2,
@@ -175,38 +204,15 @@ object TestData {
           saturdayUntil = LocalTime.of(7, 0),
           sundayFrom = LocalTime.of(19, 0),
           sundayUntil = LocalTime.of(7, 0),
+          allFrom = null,
+          allUntil = null,
         ),
       ),
       risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
+        riskManagement = riskManagement,
       ),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "Bob Smith",
-          postcode = "1111 1AD",
-          telephone = "01234 123456",
-          townOrCity = "Testvill",
-          organisation = "Testvill NPS",
-          reportingDate = "28/03/2023",
-          reportingTime = "12:00",
-          buildingAndStreet1 = "10 NoReal Street",
-          buildingAndStreet2 = "",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -237,14 +243,16 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          comments = null,
+          confiscationUnitConsulted = null
         ),
       ),
     ),
@@ -281,53 +289,13 @@ object TestData {
       proposedAddress = null,
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(15, 0), firstNightUntil = LocalTime.of(7, 0)),
-        curfewHours = CurfewHours(
-          mondayFrom = LocalTime.of(19, 0),
-          mondayUntil = LocalTime.of(7, 0),
-          tuesdayFrom = LocalTime.of(19, 0),
-          tuesdayUntil = LocalTime.of(7, 0),
-          wednesdayFrom = LocalTime.of(19, 0),
-          wednesdayUntil = LocalTime.of(7, 0),
-          thursdayFrom = LocalTime.of(19, 0),
-          thursdayUntil = LocalTime.of(7, 0),
-          fridayFrom = LocalTime.of(19, 0),
-          fridayUntil = LocalTime.of(7, 0),
-          saturdayFrom = LocalTime.of(19, 0),
-          saturdayUntil = LocalTime.of(7, 0),
-          sundayFrom = LocalTime.of(19, 0),
-          sundayUntil = LocalTime.of(7, 0),
-        ),
+        curfewHours = curfewHours,
       ),
       risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
+        riskManagement = riskManagement
       ),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "Bob Smith",
-          postcode = "1111 1AD",
-          telephone = "01234 123456",
-          townOrCity = "Testvill",
-          organisation = "Testvill NPS",
-          reportingDate = "28/03/2023",
-          reportingTime = "12:00",
-          buildingAndStreet1 = "10 NoReal Street",
-          buildingAndStreet2 = "",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -358,14 +326,16 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          confiscationUnitConsulted = null,
+          comments = null,
         ),
       ),
     ),
@@ -405,53 +375,13 @@ object TestData {
       proposedAddress = null,
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(15, 0), firstNightUntil = LocalTime.of(7, 0)),
-        curfewHours = CurfewHours(
-          mondayFrom = LocalTime.of(19, 0),
-          mondayUntil = LocalTime.of(7, 0),
-          tuesdayFrom = LocalTime.of(19, 0),
-          tuesdayUntil = LocalTime.of(7, 0),
-          wednesdayFrom = LocalTime.of(19, 0),
-          wednesdayUntil = LocalTime.of(7, 0),
-          thursdayFrom = LocalTime.of(19, 0),
-          thursdayUntil = LocalTime.of(7, 0),
-          fridayFrom = LocalTime.of(19, 0),
-          fridayUntil = LocalTime.of(7, 0),
-          saturdayFrom = LocalTime.of(19, 0),
-          saturdayUntil = LocalTime.of(7, 0),
-          sundayFrom = LocalTime.of(19, 0),
-          sundayUntil = LocalTime.of(7, 0),
-        ),
+        curfewHours = curfewHours,
       ),
       risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
+        riskManagement = riskManagement,
       ),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "sam",
-          postcode = "AA BRD",
-          telephone = "47450",
-          townOrCity = "Test town",
-          organisation = "crc",
-          reportingDate = "12/12/2023",
-          reportingTime = "12:12",
-          buildingAndStreet1 = "10",
-          buildingAndStreet2 = "street",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -482,14 +412,16 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          comments = null,
+          confiscationUnitConsulted = null
         ),
       ),
     ),
@@ -539,6 +471,8 @@ object TestData {
           saturdayUntil = LocalTime.of(8, 0),
           sundayFrom = LocalTime.of(20, 0),
           sundayUntil = LocalTime.of(8, 0),
+          allFrom = null,
+          allUntil = null,
         ),
         approvedPremisesAddress = CurfewAddress(
           addressLine1 = "4 The Street",
@@ -551,35 +485,10 @@ object TestData {
         ),
       ),
       risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
+        riskManagement = riskManagement,
       ),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "sam",
-          postcode = "AA BRD",
-          telephone = "47450",
-          townOrCity = "Test town",
-          organisation = "crc",
-          reportingDate = "12/12/2023",
-          reportingTime = "12:12",
-          buildingAndStreet1 = "10",
-          buildingAndStreet2 = "street",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -610,14 +519,16 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          comments = null,
+          confiscationUnitConsulted = null
         ),
       ),
     ),
@@ -652,7 +563,7 @@ object TestData {
           addressTown = "Town",
           postCode = "TS7 7TS",
         ),
-        addressProposed = AddressProposed(Decision.YES),
+        addressProposed = DecisionMade(Decision.YES),
       ),
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
@@ -671,38 +582,13 @@ object TestData {
           saturdayUntil = LocalTime.of(8, 0),
           sundayFrom = LocalTime.of(20, 0),
           sundayUntil = LocalTime.of(8, 0),
+          allFrom = null,
+          allUntil = null,
         ),
       ),
-      risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
-      ),
+      risk = Risk(riskManagement = riskManagement),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "sam",
-          postcode = "AA BRD",
-          telephone = "47450",
-          townOrCity = "Test town",
-          organisation = "crc",
-          reportingDate = "12/12/2023",
-          reportingTime = "12:12",
-          buildingAndStreet1 = "10",
-          buildingAndStreet2 = "street",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -733,14 +619,16 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          comments = null,
+          confiscationUnitConsulted = null
         ),
       ),
     ),
@@ -775,7 +663,7 @@ object TestData {
           addressTown = "Town",
           postCode = "TS7 7TS",
         ),
-        addressProposed = AddressProposed(Decision.YES),
+        addressProposed = DecisionMade(Decision.YES),
       ),
       curfew = Curfew(
         firstNight = FirstNight(firstNightFrom = LocalTime.of(16, 0), firstNightUntil = LocalTime.of(8, 0)),
@@ -794,38 +682,15 @@ object TestData {
           saturdayUntil = LocalTime.of(8, 0),
           sundayFrom = LocalTime.of(20, 0),
           sundayUntil = LocalTime.of(8, 0),
+          allFrom = null,
+          allUntil = null,
         ),
       ),
       risk = Risk(
-        riskManagement = RiskManagement(
-          version = "3",
-          emsInformation = Decision.NO,
-          pomConsultation = Decision.YES,
-          mentalHealthPlan = Decision.NO,
-          unsuitableReason = "",
-          hasConsideredChecks = Decision.YES,
-          manageInTheCommunity = Decision.YES,
-          emsInformationDetails = "",
-          riskManagementDetails = "",
-          proposedAddressSuitable = Decision.YES,
-          awaitingOtherInformation = Decision.NO,
-          nonDisclosableInformation = Decision.NO,
-          nonDisclosableInformationDetails = "",
-          manageInTheCommunityNotPossibleReason = "",
-        ),
+        riskManagement = riskManagement
       ),
       reporting = Reporting(
-        reportingInstructions = ReportingInstructions(
-          name = "sam",
-          postcode = "AA BRD",
-          telephone = "47450",
-          townOrCity = "Test town",
-          organisation = "crc",
-          reportingDate = "12/12/2023",
-          reportingTime = "12:12",
-          buildingAndStreet1 = "10",
-          buildingAndStreet2 = "street",
-        ),
+        reportingInstructions = reportingInstructions,
       ),
       victim = Victim(
         victimLiaison = VictimLiaison(
@@ -856,24 +721,18 @@ object TestData {
         ),
       ),
       finalChecks = FinalChecks(
-        onRemand = OnRemand(
+        onRemand = DecisionMade(
           decision = Decision.NO,
         ),
-        seriousOffence = SeriousOffence(
+        seriousOffence = DecisionMade(
           decision = Decision.NO,
         ),
         confiscationOrder = ConfiscationOrder(
           decision = Decision.NO,
+          comments = null,
+          confiscationUnitConsulted = null
         ),
       ),
     ),
-  )
-
-  fun aBooking() = Booking(
-    offenderNo = "A12345B",
-    bookingId = 54321,
-    agencyId = "MDI",
-    topupSupervisionExpiryDate = LocalDate.of(2024, 8, 14),
-    licenceExpiryDate = LocalDate.of(2024, 8, 14),
   )
 }

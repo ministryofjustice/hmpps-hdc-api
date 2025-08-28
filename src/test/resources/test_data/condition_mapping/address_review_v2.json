@@ -1,0 +1,53 @@
+{
+  "curfew": {
+    "approvedPremises": {
+      "required": "No"
+    },
+    "curfewAddressReview": {
+      "version": "2",
+      "electricity": "No",
+      "homeVisitConducted": "No",
+      "consentHavingSpoken": "Yes",
+      "addressReviewComments": "sassdsddsa"
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassRequest": {
+      "bassRequested": "No"
+    }
+  },
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "curfewAddress": {
+      "occupier": {
+        "name": "aaaaaa",
+        "relationship": "sdsds"
+      },
+      "postCode": "YO15 3AA",
+      "residents": [],
+      "telephone": "0123534343",
+      "addressTown": "aaaaa",
+      "addressLine1": "12 Mogword",
+      "addressLine2": "",
+      "additionalInformation": "",
+      "residentOffenceDetails": "",
+      "cautionedAgainstResident": "No"
+    },
+    "addressProposed": {
+      "decision": "Yes"
+    }
+  }
+}

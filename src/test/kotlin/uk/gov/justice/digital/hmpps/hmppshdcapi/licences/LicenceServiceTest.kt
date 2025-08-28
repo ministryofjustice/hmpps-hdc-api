@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import com.fasterxml.jackson.annotation.JsonTypeName
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -572,6 +573,8 @@ class LicenceServiceTest {
         LocalTime.of(8, 0),
         LocalTime.of(20, 0),
         LocalTime.of(8, 0),
+        null,
+        null,
       ),
       CurfewAddress(
         "2 The Street",
@@ -615,7 +618,7 @@ class LicenceServiceTest {
         "Town 5",
         "TS8 8TS",
       ),
-      AddressProposed(Decision.YES),
+      addressProposed = DecisionMade(Decision.YES),
     )
 
     fun anExceptionLicence() = Licence(
