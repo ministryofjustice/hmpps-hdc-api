@@ -95,7 +95,7 @@ fun Licence.toSAR() = SARLicence(
   licence = this.licence?.toSAR(additionalConditionsVersion),
 )
 
-fun LicenceVersion.toSAR(): SARLicenceVersion = SARLicenceVersion(
+fun LicenceVersion.toSAR() = SARLicenceVersion(
   id = this.id,
   prisonNumber = this.prisonNumber,
   bookingId = this.bookingId,
