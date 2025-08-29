@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import java.time.LocalTime
 
 enum class Decision {
@@ -389,14 +388,11 @@ data class BespokeCondition(
   val text: String?,
 )
 
-interface AdditionalConditions
-
 @JsonInclude(NON_NULL)
 data class LicenceConditions(
   val bespoke: List<BespokeCondition>?,
   val standard: Standard?,
-  @field:JsonDeserialize(using = AdditionalConditionsDeserializer::class)
-  val additional: AdditionalConditions?,
+  val additional: Map<String, Any>? = null,
   val conditionsSummary: ConditionsSummary?,
 )
 

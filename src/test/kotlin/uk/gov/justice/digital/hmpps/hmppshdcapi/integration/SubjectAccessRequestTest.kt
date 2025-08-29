@@ -30,6 +30,36 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
   @Test
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/subject-access-request-with-conditions-v1.sql",
+  )
+  fun `Check response of subject access request with V1 of the additional conditions`() {
+    webTestClient.get()
+      .uri("/subject-access-request?prn=A1234AA")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_SAR_DATA_ACCESS")))
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody().json(jsonFromFile("subject-access-request-with-conditions-v1.json"), STRICT)
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/subject-access-request-with-conditions-v2.sql",
+  )
+  fun `Check response of subject access request with V2 of the additional conditions`() {
+    webTestClient.get()
+      .uri("/subject-access-request?prn=A1234AA")
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_$ROLE_SAR_DATA_ACCESS")))
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody().json(jsonFromFile("subject-access-request-with-conditions-v2.json"), STRICT)
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/subject-access-request.sql",
   )
   fun `Check response of subject access request when no result`() {
