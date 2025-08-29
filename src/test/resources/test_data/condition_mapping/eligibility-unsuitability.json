@@ -1,0 +1,16 @@
+{
+  "eligibility": {
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "reason": [
+        "sexOffender"
+      ],
+      "decision": "Yes"
+    },
+    "exceptionalCircumstances": {
+      "decision": "No"
+    }
+  }
+}

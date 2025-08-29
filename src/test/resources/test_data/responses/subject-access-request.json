@@ -11,7 +11,6 @@
         "varyVersion": 0,
         "additionalConditionsVersion": 1,
         "standardConditionsVersion": 2,
-        "deletedAt": null,
         "licenceInCvl": false,
         "licence": {
           "eligibility": {
@@ -66,7 +65,6 @@
         "version": 29,
         "template": "hdc_ap",
         "varyVersion": 0,
-        "deletedAt": null,
         "licenceInCvl": false,
         "licence": {
           "eligibility": {
@@ -172,15 +170,12 @@
             }
           },
           "licenceConditions": {
-            "bespoke": [
+            "bespokeConditions": [
               {
                 "approved": "Yes",
                 "text": "Some other condition"
               }
-            ],
-            "standard": {
-              "additionalConditionsRequired": "No"
-            }
+            ]
           },
           "document": {
             "template": {
@@ -225,7 +220,6 @@
         "version": 3,
         "template": "hdc_ap",
         "varyVersion": 0,
-        "deletedAt": null,
         "licenceInCvl": false,
         "licence": {
           "eligibility": {
@@ -335,16 +329,13 @@
             }
           },
           "licenceConditions": {
-            "bespoke": [],
-            "standard": {
-              "additionalConditionsRequired": "Yes"
-            },
-            "additional": {
-              "CAMERA_APPROVAL": {}
-            },
-            "conditionsSummary": {
-              "additionalConditionsJustification": "Why they added additional condition here."
-            }
+            "bespokeConditions": [],
+            "additionalConditions": [
+              {
+                "text": "Not to own or use a camera without the prior approval of your supervising officer."
+              }
+            ],
+            "additionalConditionsJustification": "Why they added additional condition here."
           },
           "document": {
             "template": {

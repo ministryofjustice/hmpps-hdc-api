@@ -51,14 +51,33 @@ data class LicenceData(
 
 @JsonInclude(NON_NULL)
 data class Eligibility(
-  val crdTime: DecisionMade?,
-  val excluded: DecisionMade?,
-  val suitability: DecisionMade?,
+  val crdTime: CrdTime? = null,
+  val exceptionalCircumstances: DecisionMade? = null,
+  val excluded: Excluded? = null,
+  val suitability: Suitability? = null,
 )
 
 @JsonInclude(NON_NULL)
 data class DecisionMade(
   val decision: Decision?,
+)
+
+@JsonInclude(NON_NULL)
+data class CrdTime(
+  val decision: Decision?,
+  val dmApproval: Decision? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class Excluded(
+  val decision: Decision?,
+  val reason: List<String>? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class Suitability(
+  val decision: Decision?,
+  val reason: List<String>? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -392,7 +411,7 @@ data class BespokeCondition(
 data class LicenceConditions(
   val bespoke: List<BespokeCondition>?,
   val standard: Standard?,
-  val additional: Map<String, Any>? = null,
+  var additional: Map<String, Map<String, Any>>? = null,
   val conditionsSummary: ConditionsSummary?,
 )
 
