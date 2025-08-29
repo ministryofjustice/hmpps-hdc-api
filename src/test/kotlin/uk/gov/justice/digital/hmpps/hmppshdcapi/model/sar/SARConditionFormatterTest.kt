@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.camelToSentenceCase
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.convertToSentenceCase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionText
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionValues
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getPolicyVersion
@@ -12,43 +12,43 @@ class SARConditionFormatterTest {
 
   @Test
   fun `camelCase is converted to sentence case`() {
-    assertThat("licenceInCvl".camelToSentenceCase()).isEqualTo("Licence in cvl")
+    assertThat("licenceInCvl".convertToSentenceCase()).isEqualTo("Licence in cvl")
   }
 
   @Test
   fun `snake_case is converted to sentence case`() {
-    assertThat("licence_in_cvl".camelToSentenceCase()).isEqualTo("Licence in cvl")
+    assertThat("licence_in_cvl".convertToSentenceCase()).isEqualTo("Licence in cvl")
   }
 
   @Test
   fun `acronyms are handled correctly`() {
-    assertThat("JSONDataVersion".camelToSentenceCase()).isEqualTo("Json data version")
+    assertThat("JSONDataVersion".convertToSentenceCase()).isEqualTo("Json data version")
   }
 
   @Test
   fun `numbers are separated correctly`() {
-    assertThat("version2".camelToSentenceCase()).isEqualTo("Version 2")
-    assertThat("JSONDataVersion2".camelToSentenceCase()).isEqualTo("Json data version 2")
+    assertThat("version2".convertToSentenceCase()).isEqualTo("Version 2")
+    assertThat("JSONDataVersion2".convertToSentenceCase()).isEqualTo("Json data version 2")
   }
 
   @Test
   fun `already spaced string is normalized`() {
-    assertThat("Licence in cvl".camelToSentenceCase()).isEqualTo("Licence in cvl")
+    assertThat("Licence in cvl".convertToSentenceCase()).isEqualTo("Licence in cvl")
   }
 
   @Test
   fun `empty string returns empty`() {
-    assertThat("".camelToSentenceCase()).isEqualTo("")
+    assertThat("".convertToSentenceCase()).isEqualTo("")
   }
 
   @Test
   fun `single word is capitalized`() {
-    assertThat("licence".camelToSentenceCase()).isEqualTo("Licence")
+    assertThat("licence".convertToSentenceCase()).isEqualTo("Licence")
   }
 
   @Test
   fun `mixed camel and snake case is handled`() {
-    assertThat("licence_inCvlData".camelToSentenceCase()).isEqualTo("Licence in cvl data")
+    assertThat("licence_inCvlData".convertToSentenceCase()).isEqualTo("Licence in cvl data")
   }
 
   @Test
@@ -85,6 +85,12 @@ class SARConditionFormatterTest {
   fun `getConditionText with version returns fallback if not found`() {
     val (version) = policyVersions.entries.first()
     val result = policyVersions.getConditionText(version, "nonexistent-id")
+    assertThat(result).isEqualTo("nonexistent-id")
+  }
+
+  @Test
+  fun `getConditionText with no version returns fallback if not found`() {
+    val result = policyVersions.getConditionText(null, "nonexistent-id")
     assertThat(result).isEqualTo("nonexistent-id")
   }
 

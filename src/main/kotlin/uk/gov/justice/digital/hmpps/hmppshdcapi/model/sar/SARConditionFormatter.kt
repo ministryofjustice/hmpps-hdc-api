@@ -21,13 +21,13 @@ object SARConditionFormatter {
 
   fun ConditionPolicies.getConditionText(conditionVersion: Int?, id: String): String = policyVersions[conditionVersion]?.find { it.id == id }?.text ?: id
 
-  fun ConditionPolicies.getConditionValues(values: Map<String, Any>): Map<String, Any>? = values.takeIf { it.isNotEmpty() }?.mapKeys { it.key.camelToSentenceCase() }
+  fun ConditionPolicies.getConditionValues(values: Map<String, Any>): Map<String, Any>? = values.takeIf { it.isNotEmpty() }?.mapKeys { it.key.convertToSentenceCase() }
 
   fun ConditionPolicies.getPolicyVersion(conditionIds: Collection<String>) = conditionIds.mapNotNull { conditionToPolicyVersion[it] }.distinct().singleOrNull()
 
   private fun ConditionPolicies.findVersion(id: String) = entries.find { (_, conditions) -> conditions.any { it.id == id } }?.key
 
-  fun String.camelToSentenceCase(): String {
+  fun String.convertToSentenceCase(): String {
     return this
       .replace("_", " ") // Handle snake_case
       .replace(Regex("(?<=[a-z])(?=[A-Z])"), " ") // camelCase → space before capital
