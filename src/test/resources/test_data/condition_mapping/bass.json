@@ -1,0 +1,48 @@
+{
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassRequest": {
+      "proposedTown": "sdfdsds",
+      "specificArea": "Yes",
+      "bassRequested": "Yes",
+      "proposedCounty": "dsdsdssd",
+      "additionalInformation": "dcsfdsf"
+    }
+  },
+  "bassRejections": [
+    {
+      "bassRequest": {
+        "proposedTown": "dasdsa",
+        "specificArea": "Yes",
+        "bassRequested": "Yes",
+        "proposedCounty": "dsdasd",
+        "additionalInformation": "sadfsdfsdfs"
+      },
+      "bassAreaCheck": {
+        "bassAreaReason": "sdadasd",
+        "bassAreaSuitable": "No",
+        "bassAreaCheckSeen": "true",
+        "approvedPremisesRequiredYesNo": "No"
+      },
+      "rejectionReason": "area"
+    }
+  ],
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "addressProposed": {
+      "decision": "No"
+    }
+  }
+}

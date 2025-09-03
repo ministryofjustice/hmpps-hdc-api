@@ -99,7 +99,7 @@ class LicenceService(
     return missingTimes
   }
 
-  fun getAddress(curfew: Curfew?, cas2Referral: Cas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): ModelCurfewAddress? {
+  fun getAddress(curfew: Curfew?, cas2Referral: CurrentCas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): ModelCurfewAddress? {
     val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
     val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES

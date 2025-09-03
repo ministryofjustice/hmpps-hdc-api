@@ -1,0 +1,138 @@
+{
+  "curfew": {
+    "curfewHours": {
+      "allFrom": "19:00",
+      "allUntil": "07:00",
+      "fridayFrom": "19:00",
+      "mondayFrom": "19:00",
+      "sundayFrom": "19:00",
+      "fridayUntil": "07:00",
+      "mondayUntil": "07:00",
+      "sundayUntil": "07:00",
+      "tuesdayFrom": "19:00",
+      "saturdayFrom": "19:00",
+      "thursdayFrom": "19:00",
+      "tuesdayUntil": "07:00",
+      "saturdayUntil": "07:00",
+      "thursdayUntil": "07:00",
+      "wednesdayFrom": "19:00",
+      "wednesdayUntil": "07:00",
+      "daySpecificInputs": "No"
+    }
+  },
+  "victim": {
+    "victimLiaison": {
+      "decision": "Yes",
+      "victimLiaisonDetails": "gghhgghh"
+    }
+  },
+  "approval": {
+    "release": {
+      "decision": "Yes",
+      "decisionMaker": "Andrew Lee",
+      "reasonForDecision": "fgtfhgfgfhgfhg"
+    },
+    "consideration": {
+      "decision": "Yes"
+    }
+  },
+  "document": {
+    "template": {
+      "decision": "hdc_ap",
+      "offenceCommittedBeforeFeb2015": "No"
+    }
+  },
+  "reporting": {
+    "reportingInstructions": {
+      "name": "aaaaaa",
+      "postcode": "YO15 4AA",
+      "telephone": "000000000000",
+      "townOrCity": "aaaaa",
+      "organisation": "sadadas",
+      "reportingDate": "12/09/2025",
+      "reportingTime": "21:00",
+      "buildingAndStreet1": "12 Mayfield",
+      "buildingAndStreet2": ""
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "finalChecks": {
+    "onRemand": {
+      "decision": "No"
+    },
+    "segregation": {
+      "decision": "No"
+    },
+    "seriousOffence": {
+      "decision": "No"
+    },
+    "confiscationOrder": {
+      "decision": "No"
+    },
+    "undulyLenientSentence": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassRequest": {
+      "proposedTown": "sdfdsds",
+      "specificArea": "Yes",
+      "bassRequested": "Yes",
+      "proposedCounty": "dsdsdssd",
+      "additionalInformation": "dcsfdsf"
+    },
+    "bassAreaCheck": {
+      "bassAreaReason": "",
+      "bassAreaCheckSeen": "true",
+      "approvedPremisesRequiredYesNo": "Yes"
+    },
+    "approvedPremisesAddress": {
+      "postCode": "YO15 3LE",
+      "telephone": "00000000066",
+      "addressTown": "aaaaa",
+      "addressLine1": "12 Mayfield",
+      "addressLine2": ""
+    }
+  },
+  "bassRejections": [
+    {
+      "bassRequest": {
+        "proposedTown": "dasdsa",
+        "specificArea": "Yes",
+        "bassRequested": "Yes",
+        "proposedCounty": "dsdasd",
+        "additionalInformation": "sadfsdfsdfs"
+      },
+      "bassAreaCheck": {
+        "bassAreaReason": "sdadasd",
+        "bassAreaSuitable": "No",
+        "bassAreaCheckSeen": "true",
+        "approvedPremisesRequiredYesNo": "No"
+      },
+      "rejectionReason": "area"
+    }
+  ],
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "addressProposed": {
+      "decision": "No"
+    }
+  },
+  "licenceConditions": {
+    "standard": {
+      "additionalConditionsRequired": "No"
+    }
+  }
+}

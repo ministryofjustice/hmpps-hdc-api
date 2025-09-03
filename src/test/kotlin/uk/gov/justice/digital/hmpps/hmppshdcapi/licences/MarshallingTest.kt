@@ -51,6 +51,19 @@ class MarshallingTest {
     "address_review_v2.json",
     // Main occupier = true
     "address_review_v2-b.json",
+
+    // single approval reason
+    "release-v1.json",
+    // multiple approval reasons
+    "release-v2.json",
+
+    // bass with rejection
+    "bass.json",
+
+    // approve
+    "approve_premises.json",
+    // approval with final checks
+    "approve_premises_v2.json",
   )
   fun `check licence serialization for {0}`(fileName: String) {
     val contents = jsonFromFile(fileName)

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.StringListHolder
 import java.time.LocalTime
 
 enum class Decision {
@@ -27,6 +28,22 @@ enum class OfferAccepted {
   UNSUITABLE,
 }
 
+enum class CasRejectionReason {
+  @JsonProperty("offender")
+  OFFENDER,
+
+  @JsonProperty("area")
+  AREA,
+}
+
+enum class Withdrawal {
+  @JsonProperty("offer")
+  OFFER,
+
+  @JsonProperty("request")
+  REQUEST,
+}
+
 interface Address {
   val addressLine1: String?
   val addressLine2: String?
@@ -37,7 +54,7 @@ interface Address {
 @JsonInclude(NON_NULL)
 data class LicenceData(
   val eligibility: Eligibility?,
-  val bassReferral: Cas2Referral?,
+  val bassReferral: CurrentCas2Referral?,
   val proposedAddress: ProposedAddress?,
   val curfew: Curfew?,
   val risk: Risk?,
@@ -47,6 +64,26 @@ data class LicenceData(
   val document: Document?,
   val approval: Approval?,
   val finalChecks: FinalChecks?,
+  val variedFromLicenceNotInSystem: Boolean? = null,
+  val vary: Vary? = null,
+  val bassRejections: List<RejectedCas2Referral>? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class Vary(
+  val approval: VaryApproval? = null,
+  val evidence: Evidence? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class Evidence(
+  val evidence: String? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class VaryApproval(
+  val jobTitle: String? = null,
+  val name: String? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -81,12 +118,25 @@ data class Suitability(
 )
 
 @JsonInclude(NON_NULL)
-data class Cas2Referral(
+data class CurrentCas2Referral(
   // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
   val bassOffer: Cas2Offer? = null,
   val bassRequest: Cas2Request? = null,
-  val approvedPremisesAddress: CurfewAddress? = null,
+  val approvedPremisesAddress: AddressAndPhone? = null,
   val bassAreaCheck: Cas2AreaCheck? = null,
+  val approvedPremises: ApprovedPremises? = null,
+  val bassWithdrawn: DecisionMade? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class RejectedCas2Referral(
+  // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
+  val bassOffer: Cas2Offer? = null,
+  val bassRequest: Cas2Request? = null,
+  val approvedPremisesAddress: AddressAndPhone? = null,
+  val bassAreaCheck: Cas2AreaCheck? = null,
+  val rejectionReason: CasRejectionReason? = null,
+  val withdrawal: Withdrawal? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -97,6 +147,15 @@ data class ProposedAddress(
   val optOut: DecisionMade? = null,
   val rejections: List<Rejection>? = null,
 )
+
+@JsonInclude(NON_NULL)
+data class AddressAndPhone(
+  override val addressLine1: String? = null,
+  override val addressLine2: String? = null,
+  override val addressTown: String? = null,
+  override val postCode: String? = null,
+  val telephone: String? = null,
+) : Address
 
 @JsonInclude(NON_NULL)
 data class Rejection(
@@ -192,7 +251,7 @@ data class Cas2Request(
 data class Curfew(
   val firstNight: FirstNight?,
   val curfewHours: CurfewHours?,
-  val approvedPremisesAddress: CurfewAddress? = null,
+  val approvedPremisesAddress: AddressAndPhone? = null,
   val approvedPremises: ApprovedPremises? = null,
   val curfewAddressReview: AddressReview? = null,
 )
@@ -250,9 +309,9 @@ data class ApprovedPremises(
 @JsonInclude(NON_NULL)
 data class Cas2AreaCheck(
   val approvedPremisesRequiredYesNo: Decision,
-  val bassAreaCheck: String? = null,
   val bassAreaCheckSeen: String? = null,
   val bassAreaReason: String? = null,
+  val bassAreaSuitable: Decision? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -325,6 +384,7 @@ data class Victim(
 @JsonInclude(NON_NULL)
 data class VictimLiaison(
   val decision: Decision?,
+  val victimLiaisonDetails: String? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -338,6 +398,9 @@ data class Release(
   val decision: Decision?,
   val decisionMaker: String?,
   val reasonForDecision: String?,
+  val notedComments: String? = null,
+  // Can be a single value or an array
+  val reason: StringListHolder? = null,
 )
 
 @JsonInclude(NON_NULL)

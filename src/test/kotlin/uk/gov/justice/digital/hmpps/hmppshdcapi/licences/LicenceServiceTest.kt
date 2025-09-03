@@ -521,7 +521,7 @@ class LicenceServiceTest {
     @Test
     fun `test getAddress will return null when a single address field is null`() {
       val aCurfewWithAMissingAddressLine = aCurfew.copy(
-        approvedPremisesAddress = CurfewAddress(
+        approvedPremisesAddress = AddressAndPhone(
           addressLine1 = null,
           addressTown = "Town 1",
           postCode = "TS7 7TS",
@@ -536,7 +536,7 @@ class LicenceServiceTest {
     @Test
     fun `test getAddress will return null when multiple address fields are blank`() {
       val aCurfewWithMultipleMissingAddressLines = aCurfew.copy(
-        approvedPremisesAddress = CurfewAddress(
+        approvedPremisesAddress = AddressAndPhone(
           addressLine1 = "",
           addressLine2 = null,
           addressTown = "Town 1",
@@ -575,7 +575,7 @@ class LicenceServiceTest {
         null,
         null,
       ),
-      CurfewAddress(
+      AddressAndPhone(
         "2 The Street",
         "Area 2",
         "Town 2",
@@ -594,12 +594,12 @@ class LicenceServiceTest {
       OfferAccepted.YES,
     )
 
-    val aCas2Referral = Cas2Referral(
+    val aCas2Referral = CurrentCas2Referral(
       aCas2Offer,
       Cas2Request(
         Decision.YES,
       ),
-      CurfewAddress(
+      AddressAndPhone(
         "4 The Street",
         "Area 4",
         "Town 4",
