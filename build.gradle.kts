@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.6"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.0.0"
   id("org.owasp.dependencycheck") version "12.1.3"
   kotlin("plugin.spring") version "2.2.10"
   kotlin("plugin.jpa") version "2.2.10"
@@ -22,7 +22,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
-  implementation("org.springframework.security:spring-security-config:6.4.5")
+  implementation("org.springframework.security:spring-security-config:6.5.3")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
@@ -32,7 +32,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.10")
 
   // OpenAPI
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 
   // Test dependencies
   testImplementation("org.wiremock:wiremock-standalone:3.13.1")
@@ -42,7 +42,7 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.13.0")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.1")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.29")
+  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.33")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
