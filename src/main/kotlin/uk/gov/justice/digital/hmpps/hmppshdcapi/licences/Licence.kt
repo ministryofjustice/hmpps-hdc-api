@@ -19,12 +19,12 @@ class Licence(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   val id: Long? = null,
-  var prisonNumber: String?,
+  var prisonNumber: String,
   val bookingId: Long,
 
   val stage: String,
   val version: Int,
-  val transitionDate: LocalDateTime,
+  val transitionDate: LocalDateTime?,
   val varyVersion: Int,
   val additionalConditionsVersion: Int?,
   val standardConditionsVersion: Int?,
