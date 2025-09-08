@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Approval
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.BespokeCondition
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Cas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Curfew
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurrentCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Document
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Eligibility
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FinalChecks
@@ -13,14 +13,17 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProposedAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.RejectedCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Reporting
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Risk
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Vary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Victim
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionText
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionValues
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getPolicyVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.policyVersions
 import java.time.LocalDateTime
+import kotlin.Boolean
 
 @JsonInclude(NON_NULL)
 data class SARLicence(
@@ -55,7 +58,7 @@ class SARLicenceVersion(
 @JsonInclude(NON_NULL)
 data class SARLicenceData(
   val eligibility: Eligibility?,
-  val bassReferral: Cas2Referral?,
+  val bassReferral: CurrentCas2Referral?,
   val proposedAddress: ProposedAddress?,
   val curfew: Curfew?,
   val risk: Risk?,
@@ -65,6 +68,9 @@ data class SARLicenceData(
   val document: Document?,
   val approval: Approval?,
   val finalChecks: FinalChecks?,
+  val variedFromLicenceNotInSystem: Boolean? = null,
+  val vary: Vary? = null,
+  val bassRejections: List<RejectedCas2Referral>? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -132,6 +138,9 @@ fun LicenceData.toSAR(conditionVersion: Int? = null) = SARLicenceData(
   document = this.document,
   approval = this.approval,
   finalChecks = this.finalChecks,
+  variedFromLicenceNotInSystem = this.variedFromLicenceNotInSystem,
+  vary = this.vary,
+  bassRejections = this.bassRejections,
 )
 
 private fun attemptToGuessVersion(additional: Map<String, Map<String, Any>>?): Int? = policyVersions.getPolicyVersion(additional?.map { condition -> condition.key } ?: emptyList())

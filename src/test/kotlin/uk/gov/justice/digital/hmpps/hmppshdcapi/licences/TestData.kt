@@ -72,7 +72,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
       ),
@@ -170,7 +170,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
           addressLine1 = "2 The Street",
@@ -266,7 +266,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = Cas2Offer(
           addressLine1 = "2 The Street",
@@ -345,10 +345,10 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.YES),
         bassOffer = null,
-        approvedPremisesAddress = CurfewAddress(
+        approvedPremisesAddress = AddressAndPhone(
           addressLine1 = "3 The Avenue",
           addressLine2 = "Area 3",
           addressTown = "Town 3",
@@ -427,7 +427,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
         approvedPremisesAddress = null,
@@ -456,7 +456,7 @@ object TestData {
           allFrom = null,
           allUntil = null,
         ),
-        approvedPremisesAddress = CurfewAddress(
+        approvedPremisesAddress = AddressAndPhone(
           addressLine1 = "4 The Street",
           addressLine2 = "Area 4",
           addressTown = "Town 4",
@@ -530,7 +530,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
       ),
@@ -626,7 +626,7 @@ object TestData {
     licenceInCvl = false,
     licence = LicenceData(
       eligibility = eligibility,
-      bassReferral = Cas2Referral(
+      bassReferral = CurrentCas2Referral(
         bassRequest = Cas2Request(bassRequested = Decision.NO),
         bassOffer = null,
       ),
