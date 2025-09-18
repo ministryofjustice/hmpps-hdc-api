@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono
 
 @Service
-class PrisonApiClient(@Qualifier("oauthPrisonClient") val prisonerSearchApiWebClient: WebClient) {
+class PrisonApiClient(@param:Qualifier("oauthPrisonClient") val prisonerSearchApiWebClient: WebClient) {
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
