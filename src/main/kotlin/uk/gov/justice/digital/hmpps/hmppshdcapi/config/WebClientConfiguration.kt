@@ -16,9 +16,9 @@ private const val HMPPS_AUTH = "hmpps-auth"
 
 @Configuration
 class WebClientConfiguration(
-  @Value("\${hmpps.auth.url}") private val oauthApiUrl: String,
-  @Value("\${hmpps.prison.api.url}") private val prisonApiUrl: String,
-  @Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
+  @param:Value("\${hmpps.auth.url}") private val oauthApiUrl: String,
+  @param:Value("\${hmpps.prison.api.url}") private val prisonApiUrl: String,
+  @param:Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
 ) {
   @Bean
   fun oauthApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(oauthApiUrl).build()

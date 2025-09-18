@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.typeReference
 
 @Service
-class PrisonSearchApiClient(@Qualifier("oauthPrisonerSearchClient") val prisonerSearchApiWebClient: WebClient) {
+class PrisonSearchApiClient(@param:Qualifier("oauthPrisonerSearchClient") val prisonerSearchApiWebClient: WebClient) {
 
   fun getPrisonersByBookingIds(bookingIds: Collection<Long>): List<Prisoner> {
     if (bookingIds.isEmpty()) return emptyList()

@@ -260,133 +260,133 @@ data class Standard(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Additional(
-  @JsonProperty("ALCOHOL_MONITORING")
+  @param:JsonProperty("ALCOHOL_MONITORING")
   val alcoholMonitoring: Any?,
 
-  @JsonProperty("ALLOW_POLICE_SEARCH")
+  @param:JsonProperty("ALLOW_POLICE_SEARCH")
   val allowPoliceSearch: Any?,
 
-  @JsonAlias("ATTEND_ALL", "ATTENDALL")
+  @param:JsonAlias("ATTEND_ALL", "ATTENDALL")
   val attendAll: Any?,
 
-  @JsonProperty("ATTENDDEPENDENCY")
+  @param:JsonProperty("ATTENDDEPENDENCY")
   val attendingDependency: Any?,
 
-  @JsonAlias("ATTEND_DEPENDENCY_IN_DRUGS_SECTION", "ATTENDDEPENDENCYINDRUGSSECTION")
+  @param:JsonAlias("ATTEND_DEPENDENCY_IN_DRUGS_SECTION", "ATTENDDEPENDENCYINDRUGSSECTION")
   val attendDependencyInDrugsSection: Any?,
 
-  @JsonProperty("ATTEND_SAMPLE")
+  @param:JsonProperty("ATTEND_SAMPLE")
   val attendSample: Any?,
 
-  @JsonProperty("CAMERA_APPROVAL")
+  @param:JsonProperty("CAMERA_APPROVAL")
   val cameraApproval: Any?,
 
-  @JsonAlias("COMPLY_REQUIREMENTS", "COMPLYREQUIREMENTS")
+  @param:JsonAlias("COMPLY_REQUIREMENTS", "COMPLYREQUIREMENTS")
   val complyRequirements: Any?,
 
-  @JsonAlias("CONFINE_ADDRESS", "CONFINEADDRESS")
+  @param:JsonAlias("CONFINE_ADDRESS", "CONFINEADDRESS")
   val confineAddress: Any?,
 
-  @JsonProperty("CURFEW_UNTIL_INSTALLATION")
+  @param:JsonProperty("CURFEW_UNTIL_INSTALLATION")
   val curfewUntilInstallation: Any?,
 
-  @JsonProperty("DONT_HAMPER_DRUG_TESTING")
+  @param:JsonProperty("DONT_HAMPER_DRUG_TESTING")
   val dontHamperDrugTesting: Any?,
 
-  @JsonProperty("DRUG_TESTING")
+  @param:JsonProperty("DRUG_TESTING")
   val drugTesting: Any?,
 
-  @JsonProperty("ELECTRONIC_MONITORING_INSTALLATION")
+  @param:JsonProperty("ELECTRONIC_MONITORING_INSTALLATION")
   val electronMonitoringInstallation: Any?,
 
-  @JsonProperty("ELECTRONIC_MONITORING_TRAIL")
+  @param:JsonProperty("ELECTRONIC_MONITORING_TRAIL")
   val electronMonitoringTrail: Any?,
 
-  @JsonAlias("EXCLUSION_ADDRESS", "EXCLUSIONADDRESS")
+  @param:JsonAlias("EXCLUSION_ADDRESS", "EXCLUSIONADDRESS")
   val exclusionAddress: Any?,
 
-  @JsonAlias("EXCLUSION_AREA", "EXCLUSIONAREA")
+  @param:JsonAlias("EXCLUSION_AREA", "EXCLUSIONAREA")
   val exclusionArea: Any?,
 
-  @JsonAlias("HOME_VISITS", "HOMEVISITS")
+  @param:JsonAlias("HOME_VISITS", "HOMEVISITS")
   val homeVisits: Any?,
 
-  @JsonAlias("INTIMATE_RELATIONSHIP", "INTIMATERELATIONSHIP")
+  @param:JsonAlias("INTIMATE_RELATIONSHIP", "INTIMATERELATIONSHIP")
   val intimateRelationship: Any?,
 
-  @JsonProperty("NO_CAMERA")
+  @param:JsonProperty("NO_CAMERA")
   val noCamera: Any?,
 
-  @JsonAlias("NO_CAMERA_PHONE", "NOCAMERAPHONE")
+  @param:JsonAlias("NO_CAMERA_PHONE", "NOCAMERAPHONE")
   val noCameraPhone: Any?,
 
-  @JsonAlias("NO_CHILDRENS_AREA", "NOCHILDRENSAREA")
+  @param:JsonAlias("NO_CHILDRENS_AREA", "NOCHILDRENSAREA")
   val noChildrenArea: Any?,
 
-  @JsonAlias("NO_COMMUNICATE_VICTIM", "NOCOMMUNICATEVICTIM")
+  @param:JsonAlias("NO_COMMUNICATE_VICTIM", "NOCOMMUNICATEVICTIM")
   val noCommunicateVictim: Any?,
 
-  @JsonProperty("NO_CONTACT_ASSOCIATE")
+  @param:JsonProperty("NO_CONTACT_ASSOCIATE")
   val noContactAssociate: Any?,
 
-  @JsonAlias("NO_CONTACT_NAMED", "NOCONTACTNAMED")
+  @param:JsonAlias("NO_CONTACT_NAMED", "NOCONTACTNAMED")
   val noContactNamed: Any?,
 
-  @JsonAlias("NO_CONTACT_PRISONER", "NOCONTACTPRISONER")
+  @param:JsonAlias("NO_CONTACT_PRISONER", "NOCONTACTPRISONER")
   val noContactPrisoner: Any?,
 
-  @JsonProperty("NO_CONTACT_SEX_OFFENDER")
+  @param:JsonProperty("NO_CONTACT_SEX_OFFENDER")
   val noContactSexOffender: Any?,
 
-  @JsonAlias("NO_INTERNET", "NOINTERNET")
+  @param:JsonAlias("NO_INTERNET", "NOINTERNET")
   val noInternet: Any?,
 
-  @JsonAlias("NO_RESIDE", "NORESIDE")
+  @param:JsonAlias("NO_RESIDE", "NORESIDE")
   val noReside: Any?,
 
-  @JsonAlias("NOTIFY_PASSPORT", "NOTIFYPASSPORT")
+  @param:JsonAlias("NOTIFY_PASSPORT", "NOTIFYPASSPORT")
   val notifyPassport: Any?,
 
-  @JsonAlias("NOTIFY_RELATIONSHIP", "NOTIFYRELATIONSHIP")
+  @param:JsonAlias("NOTIFY_RELATIONSHIP", "NOTIFYRELATIONSHIP")
   val notifyRelationship: Any?,
 
-  @JsonAlias("NO_UNSUPERVISED_CONTACT", "NOUNSUPERVISEDCONTACT")
+  @param:JsonAlias("NO_UNSUPERVISED_CONTACT", "NOUNSUPERVISEDCONTACT")
   val noUnsupervisedContact: Any?,
 
-  @JsonAlias("NO_WORK_WITH_AGE", "NOWORKWITHAGE")
+  @param:JsonAlias("NO_WORK_WITH_AGE", "NOWORKWITHAGE")
   val noWorkWithAge: Any?,
 
-  @JsonAlias("ONE_PHONE", "ONEPHONE")
+  @param:JsonAlias("ONE_PHONE", "ONEPHONE")
   val onePhone: Any?,
 
-  @JsonProperty("POLICE_ESCORT")
+  @param:JsonProperty("POLICE_ESCORT")
   val policeEscort: Any?,
 
-  @JsonProperty("POLYGRAPH")
+  @param:JsonProperty("POLYGRAPH")
   val polygraph: Any?,
 
-  @JsonAlias("REMAIN_ADDRESS", "REMAINADDRESS")
+  @param:JsonAlias("REMAIN_ADDRESS", "REMAINADDRESS")
   val remainAddress: Any?,
 
-  @JsonAlias("REPORT_TO", "REPORTTO")
+  @param:JsonAlias("REPORT_TO", "REPORTTO")
   val reportTo: Any?,
 
-  @JsonProperty("RESIDE_AT_SPECIFIC_PLACE")
+  @param:JsonProperty("RESIDE_AT_SPECIFIC_PLACE")
   val resideAtSpecificPlace: Any?,
 
-  @JsonProperty("RETURN_TO_UK")
+  @param:JsonProperty("RETURN_TO_UK")
   val returnToUk: Any?,
 
-  @JsonProperty("SPECIFIC_ITEM")
+  @param:JsonProperty("SPECIFIC_ITEM")
   val specificItem: Any?,
 
-  @JsonAlias("SURRENDER_PASSPORT", "SURRENDERPASSPORT")
+  @param:JsonAlias("SURRENDER_PASSPORT", "SURRENDERPASSPORT")
   val surrenderPassport: Any?,
 
-  @JsonAlias("USAGE_HISTORY", "USAGEHISTORY")
+  @param:JsonAlias("USAGE_HISTORY", "USAGEHISTORY")
   val usageHistory: Any?,
 
-  @JsonAlias("VEHICLE_DETAILS", "VEHICLEDETAILS")
+  @param:JsonAlias("VEHICLE_DETAILS", "VEHICLEDETAILS")
   val vehicleDetails: Any?,
 )
 

@@ -1,5 +1,6 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.7"
+  id("org.owasp.dependencycheck") version "12.1.3"
   kotlin("plugin.spring") version "2.2.10"
   kotlin("plugin.jpa") version "2.2.10"
   id("io.gitlab.arturbosch.detekt") version "1.23.8"
@@ -117,4 +118,8 @@ configurations.matching { it.name == "detekt" }.all {
       useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
     }
   }
+}
+
+dependencyCheck {
+  nvd.datafeedUrl = "file:///opt/vulnz/cache"
 }

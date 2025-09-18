@@ -30,7 +30,7 @@ const val SCHEME_HDC_ADMIN = "hdc-admin"
 @Configuration
 class OpenApiConfiguration(
   buildProperties: BuildProperties,
-  @Value("\${hmpps.auth.url}") val oauthUrl: String,
+  @param:Value("\${hmpps.auth.url}") val oauthUrl: String,
 ) {
   private val version: String = buildProperties.version
 

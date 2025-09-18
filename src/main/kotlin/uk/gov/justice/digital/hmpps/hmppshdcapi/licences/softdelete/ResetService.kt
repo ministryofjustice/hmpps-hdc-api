@@ -56,11 +56,11 @@ class ResetService(
   }
 
   data class ResetResponse(
-    @Schema(description = "Number of licences reset in hdc")
+    @param:Schema(description = "Number of licences reset in hdc")
     val numberOfResetRecordsInHdc: Int,
-    @Schema(description = "Number of licences reset in NOMIS")
+    @param:Schema(description = "Number of licences reset in NOMIS")
     val numberOfResetRecordsInNomis: Int,
-    @Schema(description = "Number of resets requested")
+    @param:Schema(description = "Number of resets requested")
     val numberOfResetsRequested: Int,
   )
 }

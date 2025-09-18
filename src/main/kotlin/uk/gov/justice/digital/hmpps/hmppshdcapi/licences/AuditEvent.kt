@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 @Table(name = "audit")
 class AuditEvent(
   @Id
-  @NotNull
+  @param:NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   val id: Long? = null,
