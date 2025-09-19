@@ -7,11 +7,11 @@ import java.time.LocalTime
 @Schema(description = "Describes the first night curfew times on a HDC Licence")
 data class FirstNight(
 
-  @param:Schema(description = "The starting time for the curfew on the first night", example = "19:00")
-  @param:JsonFormat(pattern = "HH:mm")
+  @field:Schema(description = "The starting time for the curfew on the first night", example = "19:00")
+  @field:JsonFormat(pattern = "HH:mm")
   val firstNightFrom: LocalTime? = null,
 
-  @param:Schema(description = "The ending time for the curfew on the first night", example = "08:00")
-  @param:JsonFormat(pattern = "HH:mm")
+  @field:Schema(description = "The ending time for the curfew on the first night", example = "08:00")
+  @field:JsonFormat(pattern = "HH:mm")
   val firstNightUntil: LocalTime? = null,
 )
