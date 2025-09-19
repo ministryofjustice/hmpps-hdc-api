@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 @Table(name = "licence_versions")
 class LicenceVersion(
   @Id
-  @NotNull
+  @param:NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   val id: Long? = null,
