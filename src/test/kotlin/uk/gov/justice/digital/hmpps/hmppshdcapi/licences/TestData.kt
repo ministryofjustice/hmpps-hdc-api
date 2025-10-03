@@ -709,4 +709,17 @@ object TestData {
       ),
     ),
   )
+
+  fun aLicenceVersion() = LicenceVersion(
+    id = 1,
+    prisonNumber = "A12345B",
+    bookingId = 54321,
+    timestamp = LocalDateTime.of(2023, 10, 22, 10, 15),
+    version = 1,
+    template = "hdc_ap",
+    varyVersion = 0,
+    deletedAt = null,
+    licenceInCvl = false,
+    licence = aCas2Licence().licence,
+  )
 }
