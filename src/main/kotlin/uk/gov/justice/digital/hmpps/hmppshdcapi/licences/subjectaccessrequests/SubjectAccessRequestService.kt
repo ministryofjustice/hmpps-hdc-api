@@ -14,7 +14,7 @@ import java.time.LocalDate
 class SubjectAccessRequestService(
   val licenceRepository: LicenceRepository,
   val licenceVersionRepository: LicenceVersionRepository,
-): HmppsPrisonSubjectAccessRequestService {
+) : HmppsPrisonSubjectAccessRequestService {
   override fun getPrisonContentFor(prn: String, fromDate: LocalDate?, toDate: LocalDate?): HmppsSubjectAccessRequestContent? {
     val licences = licenceRepository.findAllByPrisonNumber(prn)
     val licenceVersions = licenceVersionRepository.findAllByPrisonNumber(prn)

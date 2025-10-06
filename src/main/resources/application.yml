@@ -99,3 +99,5 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+
+hmpps.sar.additionalAccessRole: HDC_ADMIN

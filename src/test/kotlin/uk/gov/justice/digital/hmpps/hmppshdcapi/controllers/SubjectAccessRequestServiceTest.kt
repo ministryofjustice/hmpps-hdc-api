@@ -15,16 +15,12 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.subjectaccessrequests.S
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.toSAR
 import uk.gov.justice.hmpps.kotlin.sar.HmppsSubjectAccessRequestContent
 
-
 class SubjectAccessRequestServiceTest {
   private val licenceRepository: LicenceRepository = mock()
   private val licenceVersionRepository: LicenceVersionRepository = mock()
 
   private val service = SubjectAccessRequestService(licenceRepository, licenceVersionRepository)
   private val mapper = ObjectMapper()
-
-//  @Autowired
-//  private lateinit var mapper: ObjectMapper
 
   @Test
   fun `throws entity not found`() {
