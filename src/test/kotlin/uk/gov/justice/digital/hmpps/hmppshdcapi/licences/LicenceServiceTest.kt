@@ -553,11 +553,11 @@ class LicenceServiceTest {
   private companion object {
 
     val aCurfew = Curfew(
-      FirstNight(
+      firstNight = FirstNight(
         LocalTime.of(16, 0),
         LocalTime.of(8, 0),
       ),
-      CurfewHours(
+      curfewHours = CurfewHours(
         LocalTime.of(20, 0),
         LocalTime.of(8, 0),
         LocalTime.of(20, 0),
@@ -575,13 +575,13 @@ class LicenceServiceTest {
         null,
         null,
       ),
-      AddressAndPhone(
+      approvedPremisesAddress = AddressAndPhone(
         "2 The Street",
         "Area 2",
         "Town 2",
         "TS9 9TS",
       ),
-      ApprovedPremises(
+      approvedPremises = ApprovedPremises(
         Decision.YES,
       ),
     )

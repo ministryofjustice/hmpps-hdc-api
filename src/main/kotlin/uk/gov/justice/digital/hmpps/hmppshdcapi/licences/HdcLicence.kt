@@ -161,8 +161,17 @@ data class AddressAndPhone(
 data class Rejection(
   val address: CurfewAddress?,
   val addressReview: AddressReviewWrapper? = null,
-  val riskManagement: RiskManagement? = null,
+  val riskManagement: RejectedRiskManagement? = null,
   val withdrawalReason: String? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class RejectedRiskManagement(
+  val proposedAddressSuitable: String? = null,
+  val unsuitableReason: String? = null,
+  val manageInTheCommunity: String? = null,
+  val manageInTheCommunityNotPossibleReason: String? = null,
+  val hasConsideredChecks: String? = null,
 )
 
 @JsonInclude(NON_NULL)
@@ -248,7 +257,14 @@ data class Cas2Request(
 )
 
 @JsonInclude(NON_NULL)
+data class EnterNewAddress(
+  val enterNewAddress: String? = null,
+)
+
+@JsonInclude(NON_NULL)
 data class Curfew(
+  val addressWithdrawn: EnterNewAddress? = null,
+  val consentWithdrawn: EnterNewAddress? = null,
   val firstNight: FirstNight?,
   val curfewHours: CurfewHours?,
   val approvedPremisesAddress: AddressAndPhone? = null,
@@ -323,13 +339,14 @@ data class Risk(
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
   property = "version",
+  defaultImpl = RiskManagementV1::class,
 )
 sealed interface RiskManagement
 
 @JsonTypeName("1")
 @JsonInclude(NON_NULL)
 data class RiskManagementV1(
-  val version: String? = "1",
+  val version: String?,
   val awaitingInformation: String? = null,
   val emsInformation: String? = null,
   val emsInformationDetails: String? = null,
