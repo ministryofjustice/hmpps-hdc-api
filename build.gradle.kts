@@ -50,7 +50,6 @@ dependencies {
   testImplementation("org.testcontainers:postgresql:1.21.3")
   testImplementation("org.testcontainers:localstack:1.21.3")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.54.1")
-  testImplementation(kotlin("test"))
 }
 
 kotlin {
