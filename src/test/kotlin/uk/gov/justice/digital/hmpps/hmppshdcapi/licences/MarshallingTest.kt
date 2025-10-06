@@ -6,12 +6,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.MethodSource
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.stream.Stream
 
 class MarshallingTest {
   private val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().addModule(JavaTimeModule()).build()
 
-  private fun jsonFromFile(name: String) = this.javaClass.getResourceAsStream("/test_data/condition_mapping/$name")!!.bufferedReader(UTF_8).readText()
+  val ignoredFields = mapOf(
+    // Version is added automatically when not present, which makes the deserialized and non-deserialized mismatch
+    "risk_management_v1-c.json" to listOf("risk.riskManagement.version"),
+  )
 
   @ParameterizedTest
   @CsvSource(
@@ -34,6 +39,8 @@ class MarshallingTest {
     "risk_management_v1.json",
     // Without EMS info
     "risk_management_v1-b.json",
+    // No version
+    "risk_management_v1-c.json",
     // With EMS info
     "risk_management_v2.json",
     // Without EMS info
@@ -73,6 +80,31 @@ class MarshallingTest {
     val licenceDataAsMap = objectMapper.convertValue(tree, Map::class.java)
     val licenceDataToMap = objectMapper.convertValue(licenceData, Map::class.java)
 
-    assertThat(licenceDataAsMap).isEqualTo(licenceDataToMap)
+    assertThat(licenceDataAsMap)
+      .usingRecursiveComparison()
+      .ignoringFields(*(ignoredFields[fileName] ?: emptyList()).toTypedArray())
+      .isEqualTo(licenceDataToMap)
+  }
+
+  @ParameterizedTest(name = "Case {index}")
+  @MethodSource("jsonLines")
+  fun `check others`(line: String) {
+    val tree = objectMapper.readTree(line)
+    val licenceData = objectMapper.convertValue(tree, LicenceData::class.java)
+
+    val licenceDataAsMap = objectMapper.convertValue(tree, Map::class.java)
+    val licenceDataToMap = objectMapper.convertValue(licenceData, Map::class.java)
+
+    assertThat(licenceDataAsMap)
+      .usingRecursiveComparison()
+      .isEqualTo(licenceDataToMap)
+  }
+
+  companion object {
+    private fun jsonFromFile(name: String) = MarshallingTest::class.java.getResourceAsStream("/test_data/condition_mapping/$name")!!.bufferedReader(UTF_8)
+      .readText()
+
+    @JvmStatic
+    fun jsonLines(): Stream<String> = jsonFromFile("others.jsonl").split("\n").filter { it.isNotBlank() }.stream()
   }
 }
