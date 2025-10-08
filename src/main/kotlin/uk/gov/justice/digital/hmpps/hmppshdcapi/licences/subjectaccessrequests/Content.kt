@@ -11,11 +11,4 @@ data class Content(
 
   @field:Schema(description = "The list of licence versions")
   val licenceVersions: List<SARLicenceVersion>,
-
-)
-
-@Schema(description = "The Sar Content holds the prisoner details")
-data class SarContent(
-  @field:Schema(description = "SAR content")
-  val content: Content,
 )
