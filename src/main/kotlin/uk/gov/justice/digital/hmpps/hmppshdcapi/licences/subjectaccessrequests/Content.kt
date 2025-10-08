@@ -12,3 +12,4 @@ data class Content(
   @field:Schema(description = "The list of licence versions")
   val licenceVersions: List<SARLicenceVersion>,
 )
+
