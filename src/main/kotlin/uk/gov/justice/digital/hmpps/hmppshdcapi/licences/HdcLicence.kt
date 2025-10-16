@@ -324,7 +324,7 @@ data class ApprovedPremises(
 
 @JsonInclude(NON_NULL)
 data class Cas2AreaCheck(
-  val approvedPremisesRequiredYesNo: Decision,
+  val approvedPremisesRequiredYesNo: Decision?,
   val bassAreaCheckSeen: String? = null,
   val bassAreaReason: String? = null,
   val bassAreaSuitable: Decision? = null,
@@ -456,7 +456,7 @@ data class FinalChecks(
   val undulyLenientSentence: DecisionMade? = null,
   val confiscationOrder: ConfiscationOrder? = null,
   val segregation: DecisionMade? = null,
-  val refund: Refusal? = null,
+  val refusal: Refusal? = null,
   val postpone: Postpone? = null,
 )
 

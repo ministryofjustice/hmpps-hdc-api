@@ -71,6 +71,10 @@ class MarshallingTest {
     "approve_premises.json",
     // approval with final checks
     "approve_premises_v2.json",
+
+    // regression test cases
+    "missing-approved-address-decision.json",
+    "with-refusal.json",
   )
   fun `check licence serialization for {0}`(fileName: String) {
     val contents = jsonFromFile(fileName)
