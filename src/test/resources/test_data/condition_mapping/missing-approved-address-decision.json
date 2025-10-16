@@ -1,0 +1,42 @@
+{
+  "approval": {
+    "release": {
+      "reason": "noAvailableAddress",
+      "decision": "No",
+      "decisionMaker": "",
+      "reasonForDecision": "aaaaa "
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassRequest": {
+      "proposedTown": "aaaa",
+      "specificArea": "Yes",
+      "bassRequested": "Yes",
+      "proposedCounty": "aaaa"
+    },
+    "bassAreaCheck": {
+      "bassAreaReason": "aaaaa",
+      "bassAreaSuitable": "No",
+      "bassAreaCheckSeen": "true"
+    }
+  },
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "addressProposed": {
+      "decision": "No"
+    }
+  }
+}
