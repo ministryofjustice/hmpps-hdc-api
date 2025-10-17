@@ -319,7 +319,7 @@ data class CurfewHours(
 
 @JsonInclude(NON_NULL)
 data class ApprovedPremises(
-  val required: Decision,
+  val required: Decision?,
 )
 
 @JsonInclude(NON_NULL)
@@ -470,7 +470,8 @@ data class Postpone(
 @JsonInclude(NON_NULL)
 data class Refusal(
   val decision: Decision?,
-  val outOfTimeReasons: String?,
+  // Can be a single value or an array
+  val outOfTimeReasons: StringListHolder? = null,
   val reason: String?,
 )
 
