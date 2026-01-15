@@ -1,10 +1,13 @@
 name: CodeQL analysis
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# This is disabled for now, as it's not working properly yet with this version of CodeQL.'
+# see https://mojdt.slack.com/archives/C69NWE339/p1767612401461359
+# in feb we should have an updated version of CodeQL that can work with the later versions of Kotlin 23+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
 jobs:
   analyze:
@@ -20,28 +23,28 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: actions
-          build-mode: none
-        - language: java-kotlin
-          build-mode: autobuild
+          - language: actions
+            build-mode: none
+          - language: java-kotlin
+            build-mode: autobuild
 
     steps:
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 21
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
 
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
