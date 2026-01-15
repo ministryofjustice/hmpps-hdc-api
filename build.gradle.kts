@@ -1,8 +1,8 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.1.4"
-  id("org.owasp.dependencycheck") version "12.1.6"
-  kotlin("plugin.spring") version "2.2.20"
-  kotlin("plugin.jpa") version "2.2.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.3.0"
+  id("org.owasp.dependencycheck") version "12.2.0"
+  kotlin("plugin.spring") version "2.3.0"
+  kotlin("plugin.jpa") version "2.3.0"
   id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
@@ -14,7 +14,24 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   // Spring boot dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.1")
+  constraints {
+    implementation("org.apache.commons:commons-compress:1.26.0") {
+      because("1.24.0 has CVE-2024-25710 and CVE-2024-26308 vulnerabilities")
+    }
+  }
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
+
+  // CVE-2025-67735 - it does not fix all occurrences
+  implementation(enforcedPlatform("io.netty:netty-bom:4.2.8.Final"))
+  implementation("io.netty:netty-buffer")
+  implementation("io.netty:netty-codec-http")
+  implementation("io.netty:netty-handler")
+  implementation("io.netty:netty-transport")
+  // END of CVE-2025-67735 - Remove when fixed
+  // Fix for CVE-2025-48924
+  implementation("org.apache.commons:commons-lang3:3.18.0")
+
+  // Spring boot dependencies
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -30,7 +47,7 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql:42.7.8")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.11")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
 
   // OpenAPI
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
@@ -43,13 +60,19 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.13.0")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.1")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.34")
+  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.37")
   testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2:2.4.240")
   testImplementation("org.testcontainers:postgresql:1.21.3")
   testImplementation("org.testcontainers:localstack:1.21.3")
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.54.1")
+}
+
+configurations {
+  testImplementation {
+    exclude(group = "org.mozilla:rhino")
+  }
 }
 
 kotlin {
