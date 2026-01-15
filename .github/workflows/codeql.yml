@@ -6,7 +6,7 @@ on:
 
 jobs:
   analyze:
-    name: CodeQL analyse
+    name: CodeQL analyse (${{ matrix.language }})
     permissions:
       contents: read
       actions: read
@@ -33,13 +33,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialise CodeQL
+      - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 
-      - name: Perform CodeQL analysis
+      - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
