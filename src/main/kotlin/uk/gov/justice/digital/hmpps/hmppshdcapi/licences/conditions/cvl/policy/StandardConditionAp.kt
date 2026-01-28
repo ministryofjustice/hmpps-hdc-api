@@ -1,0 +1,14 @@
+package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.cvl.policy
+
+import io.swagger.v3.oas.annotations.media.Schema
+
+data class StandardConditionAp(
+  @field:Schema(
+    description = "The unique code for this standard AP condition",
+    example = "9ce9d594-e346-4785-9642-c87e764bee37",
+  )
+  override var code: String,
+  @field:Schema(description = "The text of this standard AP condition", example = "Be of generally good behaviour")
+  override val text: String,
+  override val tpl: String? = null,
+) : ILicenceCondition
