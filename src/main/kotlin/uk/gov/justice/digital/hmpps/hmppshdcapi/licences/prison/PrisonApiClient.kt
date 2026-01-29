@@ -8,29 +8,20 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.typeReference
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.Batching.batchRequests
+
+private const val HDC_BATCH_SIZE = 500
 
 @Service
-class PrisonApiClient(@param:Qualifier("oauthPrisonClient") val prisonerSearchApiWebClient: WebClient) {
+class PrisonApiClient(@param:Qualifier("oauthPrisonClient") val prisonApiWebClient: WebClient) {
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun getBooking(bookingId: Long): Booking? {
-    val booking = prisonerSearchApiWebClient
-      .get()
-      .uri("/bookings/{bookingId}", bookingId)
-      .accept(MediaType.APPLICATION_JSON)
-      .retrieve()
-      .bodyToMono(Booking::class.java)
-      .onErrorResume(::coerce404ResponseToNull)
-      .block()
-
-    return booking
-  }
-
   fun resetHdcChecks(bookingId: Long): Boolean {
-    val response = prisonerSearchApiWebClient
+    val response = prisonApiWebClient
       .delete()
       .uri("/offender-sentences/booking/{bookingId}/home-detention-curfews/latest/checks-passed", bookingId)
       .accept(MediaType.APPLICATION_JSON)
@@ -50,6 +41,25 @@ class PrisonApiClient(@param:Qualifier("oauthPrisonClient") val prisonerSearchAp
       )
       false
     }
+  }
+
+  fun getHdcStatus(bookingId: Long): PrisonerHdcStatus? = prisonApiWebClient
+    .get()
+    .uri("/offender-sentences/booking/{bookingId}/home-detention-curfews/latest", bookingId)
+    .accept(MediaType.APPLICATION_JSON)
+    .retrieve()
+    .bodyToMono(PrisonerHdcStatus::class.java)
+    .block()
+
+  fun getHdcStatuses(bookingIds: List<Long>, batchSize: Int = HDC_BATCH_SIZE) = batchRequests(batchSize, bookingIds) { batch ->
+    prisonApiWebClient
+      .post()
+      .uri("/offender-sentences/home-detention-curfews/latest")
+      .accept(MediaType.APPLICATION_JSON)
+      .bodyValue(batch)
+      .retrieve()
+      .bodyToMono(typeReference<List<PrisonerHdcStatus>>())
+      .block()
   }
 
   private fun <API_RESPONSE_BODY_TYPE> coerce404ResponseToNull(exception: Throwable): Mono<API_RESPONSE_BODY_TYPE> = with(exception) {

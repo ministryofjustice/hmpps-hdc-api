@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -721,5 +722,11 @@ object TestData {
     deletedAt = null,
     licenceInCvl = false,
     licence = aCas2Licence().licence,
+  )
+
+  fun hdcPrisonerStatus() = PrisonerHdcStatus(
+    approvalStatus = "REJECTED",
+    bookingId = 1,
+    passed = true,
   )
 }
