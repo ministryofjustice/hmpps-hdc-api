@@ -2,11 +2,9 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.typeReference
 import uk.gov.justice.digital.hmpps.hmppshdcapi.util.Batching.batchRequests
