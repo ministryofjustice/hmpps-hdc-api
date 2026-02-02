@@ -2,9 +2,7 @@
   "content": {
     "licences": [
       {
-        "id": 1530,
         "prisonNumber": "A1234AA",
-        "bookingId": 10,
         "stage": "PROCESSING_RO",
         "version": 1,
         "transitionDate": "2021-08-06T15:06:37.188",
@@ -346,9 +344,7 @@
     ],
     "licenceVersions": [
       {
-        "id": 422,
         "prisonNumber": "A1234AA",
-        "bookingId": 10,
         "timestamp": "2023-10-03T11:01:35.913",
         "version": 29,
         "template": "hdc_ap",
@@ -501,9 +497,7 @@
         }
       },
       {
-        "id": 396,
         "prisonNumber": "A1234AA",
-        "bookingId": 20,
         "timestamp": "2023-03-08T11:27:45.257",
         "version": 3,
         "template": "hdc_ap",
