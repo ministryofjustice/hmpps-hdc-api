@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurrentCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Document
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Eligibility
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FinalChecks
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStage
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
@@ -28,7 +29,7 @@ import kotlin.Boolean
 @JsonInclude(NON_NULL)
 data class SARLicence(
   var prisonNumber: String,
-  val stage: String,
+  val stage: HdcStage,
   val version: Int,
   val transitionDate: LocalDateTime?,
   val varyVersion: Int,
