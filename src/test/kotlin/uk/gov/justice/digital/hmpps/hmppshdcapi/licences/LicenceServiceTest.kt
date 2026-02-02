@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
-import junit.framework.TestCase.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -563,9 +562,9 @@ class LicenceServiceTest {
     )
     fun `should return APPROVED when nomis approved and hdced present`(approvalStatus: String) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
       val result = service.determineHdcStatus(hdced, nomis, null)
-      assertEquals(HdcStatus.APPROVED, result)
+      assertThat(HdcStatus.APPROVED).isEqualTo(result)
     }
 
     @ParameterizedTest
@@ -576,9 +575,9 @@ class LicenceServiceTest {
       "ANYTHING",
     )
     fun `should return NOT_A_HDC_RELEASE when hdced is null`(approvalStatus: String) {
-      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
       val result = service.determineHdcStatus(null, nomis, null)
-      assertEquals(HdcStatus.NOT_A_HDC_RELEASE, result)
+      assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
     }
 
     @ParameterizedTest
@@ -591,9 +590,9 @@ class LicenceServiceTest {
     )
     fun `should return NOT_A_HDC_RELEASE for explicit non release statuses`(approvalStatus: String) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
       val result = service.determineHdcStatus(hdced, nomis, HdcStage.PROCESSING_RO)
-      assertEquals(HdcStatus.NOT_A_HDC_RELEASE, result)
+      assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
     }
 
     @ParameterizedTest
@@ -605,10 +604,10 @@ class LicenceServiceTest {
       hdcStageName: String?,
     ) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy("PP INVEST")
+      val nomis = hdcPrisonerStatus().copy(approvalStatus ="PP INVEST")
       val stage = hdcStageName?.takeIf { it.isNotEmpty() }?.let { HdcStage.valueOf(it) }
       val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertEquals(HdcStatus.NOT_STARTED, result)
+      assertThat(HdcStatus.NOT_STARTED).isEqualTo(result)
     }
 
     @ParameterizedTest
@@ -617,10 +616,10 @@ class LicenceServiceTest {
     )
     fun `should return ELIGIBILITY_CHECKS_COMPLETE when processing ro`(hdcStageName: String) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy("ANY_OTHER_STATUS")
+      val nomis = hdcPrisonerStatus().copy(approvalStatus ="ANY_OTHER_STATUS")
       val stage = HdcStage.valueOf(hdcStageName)
       val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertEquals(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE, result)
+      assertThat(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE).isEqualTo(result)
     }
 
     @ParameterizedTest
@@ -633,10 +632,10 @@ class LicenceServiceTest {
       hdcStageName: String,
     ) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy("OTHER")
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = "OTHER")
       val stage = HdcStage.valueOf(hdcStageName)
       val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertEquals(HdcStatus.RISK_CHECKS_COMPLETE, result)
+      assertThat(HdcStatus.RISK_CHECKS_COMPLETE).isEqualTo(result)
     }
   }
 
