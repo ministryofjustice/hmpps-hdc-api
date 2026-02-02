@@ -28,7 +28,6 @@ import kotlin.Boolean
 
 @JsonInclude(NON_NULL)
 data class SARLicence(
-  val id: Long? = null,
   var prisonNumber: String,
   val bookingId: Long,
   val stage: HdcStage,
@@ -44,9 +43,7 @@ data class SARLicence(
 
 @JsonInclude(NON_NULL)
 class SARLicenceVersion(
-  val id: Long? = null,
   var prisonNumber: String?,
-  val bookingId: Long,
   val timestamp: LocalDateTime,
   val version: Int,
   val template: String,
@@ -88,9 +85,7 @@ data class SARAdditionalCondition(
 )
 
 fun Licence.toSAR() = SARLicence(
-  id = this.id,
   prisonNumber = this.prisonNumber,
-  bookingId = this.bookingId,
   stage = this.stage,
   version = this.version,
   transitionDate = this.transitionDate,
@@ -103,9 +98,7 @@ fun Licence.toSAR() = SARLicence(
 )
 
 fun LicenceVersion.toSAR() = SARLicenceVersion(
-  id = this.id,
   prisonNumber = this.prisonNumber,
-  bookingId = this.bookingId,
   timestamp = this.timestamp,
   version = this.version,
   template = this.template,
