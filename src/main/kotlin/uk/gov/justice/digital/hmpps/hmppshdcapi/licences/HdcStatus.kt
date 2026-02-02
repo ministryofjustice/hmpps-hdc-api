@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
-enum class CurrentHdcStatus {
+enum class HdcStatus {
   APPROVED,
   NOT_A_HDC_RELEASE,
   NOT_STARTED,

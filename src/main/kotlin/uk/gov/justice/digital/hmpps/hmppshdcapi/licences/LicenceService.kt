@@ -153,19 +153,19 @@ class LicenceService(
 
   private fun String?.toNormalizedStatus(): String? = this?.trim()?.uppercase()
 
-  fun determineCurrentHdcStatus(
+  fun determineHdcStatus(
     hdced: LocalDate?,
     nomis: PrisonerHdcStatus?,
     hdcStage: HdcStage?,
-  ): CurrentHdcStatus {
+  ): HdcStatus {
     val nomisApprovalStatus = nomis?.approvalStatus.toNormalizedStatus()
     return when {
-      hdced == null -> CurrentHdcStatus.NOT_A_HDC_RELEASE
-      nomisApprovalStatus == "APPROVED" -> CurrentHdcStatus.APPROVED
-      nomisApprovalStatus.isNonReleaseStatus() -> CurrentHdcStatus.NOT_A_HDC_RELEASE
-      hdcStage == null || hdcStage == HdcStage.ELIGIBILITY -> CurrentHdcStatus.NOT_STARTED
-      hdcStage == HdcStage.PROCESSING_RO -> CurrentHdcStatus.ELIGIBILITY_CHECKS_COMPLETE
-      else -> CurrentHdcStatus.RISK_CHECKS_COMPLETE
+      hdced == null -> HdcStatus.NOT_A_HDC_RELEASE
+      nomisApprovalStatus == "APPROVED" -> HdcStatus.APPROVED
+      nomisApprovalStatus.isNonReleaseStatus() -> HdcStatus.NOT_A_HDC_RELEASE
+      hdcStage == null || hdcStage == HdcStage.ELIGIBILITY -> HdcStatus.NOT_STARTED
+      hdcStage == HdcStage.PROCESSING_RO -> HdcStatus.ELIGIBILITY_CHECKS_COMPLETE
+      else -> HdcStatus.RISK_CHECKS_COMPLETE
     }
   }
 
