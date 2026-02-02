@@ -29,7 +29,6 @@ import kotlin.Boolean
 @JsonInclude(NON_NULL)
 data class SARLicence(
   var prisonNumber: String,
-  val bookingId: Long,
   val stage: HdcStage,
   val version: Int,
   val transitionDate: LocalDateTime?,
