@@ -1,18 +1,23 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import junit.framework.TestCase.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.TestData.hdcPrisonerStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
@@ -550,6 +555,91 @@ class LicenceServiceTest {
     }
   }
 
+  @Nested
+  inner class DetermineCurrentHdcStatus {
+    @ParameterizedTest
+    @CsvSource(
+      "APPROVED",
+    )
+    fun `should return APPROVED when nomis approved and hdced present`(approvalStatus: String) {
+      val hdced = LocalDate.now()
+      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val result = service.determineCurrentHdcStatus(hdced, nomis, null)
+      assertEquals(CurrentHdcStatus.APPROVED, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+      "APPROVED",
+      "REJECTED",
+      "INELIGIBLE",
+      "ANYTHING",
+    )
+    fun `should return NOT_A_HDC_RELEASE when hdced is null`(approvalStatus: String) {
+      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val result = service.determineCurrentHdcStatus(null, nomis, null)
+      assertEquals(CurrentHdcStatus.NOT_A_HDC_RELEASE, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+      "REJECTED",
+      "OPT_OUT ACCO",
+      "OPT_OUT OTH",
+      "INELIGIBLE",
+      "PRES UNSUIT",
+    )
+    fun `should return NOT_A_HDC_RELEASE for explicit non release statuses`(approvalStatus: String) {
+      val hdced = LocalDate.now()
+      val nomis = hdcPrisonerStatus().copy(approvalStatus)
+      val result = service.determineCurrentHdcStatus(hdced, nomis, HdcStage.PROCESSING_RO)
+      assertEquals(CurrentHdcStatus.NOT_A_HDC_RELEASE, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+      ", ",
+      "ELIGIBILITY, ",
+    )
+    fun `should return NOT_STARTED when stage is null or eligibility`(
+      hdcStageName: String?,
+    ) {
+      val hdced = LocalDate.now()
+      val nomis = hdcPrisonerStatus().copy("PP INVEST")
+      val stage = hdcStageName?.takeIf { it.isNotEmpty() }?.let { HdcStage.valueOf(it) }
+      val result = service.determineCurrentHdcStatus(hdced, nomis, stage)
+      assertEquals(CurrentHdcStatus.NOT_STARTED, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+      "PROCESSING_RO",
+    )
+    fun `should return ELIGIBILITY_CHECKS_COMPLETE when processing ro`(hdcStageName: String) {
+      val hdced = LocalDate.now()
+      val nomis = hdcPrisonerStatus().copy("ANY_OTHER_STATUS")
+      val stage = HdcStage.valueOf(hdcStageName)
+      val result = service.determineCurrentHdcStatus(hdced, nomis, stage)
+      assertEquals(CurrentHdcStatus.ELIGIBILITY_CHECKS_COMPLETE, result)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+      "PROCESSING_CA, ",
+      "APPROVAL, ",
+      "MODIFIED, ",
+    )
+    fun `should return RISK_CHECKS_COMPLETE for remaining stages`(
+      hdcStageName: String,
+    ) {
+      val hdced = LocalDate.now()
+      val nomis = hdcPrisonerStatus().copy("OTHER")
+      val stage = HdcStage.valueOf(hdcStageName)
+      val result = service.determineCurrentHdcStatus(hdced, nomis, stage)
+      assertEquals(CurrentHdcStatus.RISK_CHECKS_COMPLETE, result)
+    }
+  }
+
   private companion object {
 
     val aCurfew = Curfew(
@@ -624,7 +714,7 @@ class LicenceServiceTest {
       id = 1,
       prisonNumber = "A12345B",
       bookingId = 54321,
-      stage = "MODIFIED",
+      stage = HdcStage.MODIFIED,
       version = 1,
       transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
       varyVersion = 0,

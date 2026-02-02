@@ -22,7 +22,7 @@ class Licence(
   var prisonNumber: String,
   val bookingId: Long,
 
-  val stage: String,
+  val stage: HdcStage,
   val version: Int,
   val transitionDate: LocalDateTime?,
   val varyVersion: Int,

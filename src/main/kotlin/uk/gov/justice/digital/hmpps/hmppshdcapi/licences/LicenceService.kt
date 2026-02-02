@@ -3,11 +3,13 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelFirstNight
+import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
 
 @Service
@@ -106,9 +108,9 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew?.let { it.approvedPremisesAddress to AddressType.CAS }
-      isCas2ApprovedPremisesRequired -> cas2Referral?.let { it.approvedPremisesAddress to AddressType.CAS }
-      isCas2Requested && isCas2Accepted -> cas2Referral?.let { it.bassOffer to AddressType.CAS }
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2ApprovedPremisesRequired -> cas2Referral.let { it.approvedPremisesAddress to AddressType.CAS }
+      isCas2Requested && isCas2Accepted -> cas2Referral.let { it.bassOffer to AddressType.CAS }
       else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
 
@@ -139,6 +141,32 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
+  }
+
+  private val nonReleaseStatuses: Set<String> = setOf(
+    "REJECTED",
+    "INELIGIBLE",
+    "PRES UNSUIT",
+  ).mapTo(mutableSetOf()) { it.uppercase() }
+
+  private fun String?.isNonReleaseStatus(): Boolean = this != null && (this in nonReleaseStatuses || this.startsWith("OPT_OUT"))
+
+  private fun String?.toNormalizedStatus(): String? = this?.trim()?.uppercase()
+
+  fun determineCurrentHdcStatus(
+    hdced: LocalDate?,
+    nomis: PrisonerHdcStatus?,
+    hdcStage: HdcStage?,
+  ): CurrentHdcStatus {
+    val nomisApprovalStatus = nomis?.approvalStatus.toNormalizedStatus()
+    return when {
+      hdced == null -> CurrentHdcStatus.NOT_A_HDC_RELEASE
+      nomisApprovalStatus == "APPROVED" -> CurrentHdcStatus.APPROVED
+      nomisApprovalStatus.isNonReleaseStatus() -> CurrentHdcStatus.NOT_A_HDC_RELEASE
+      hdcStage == null || hdcStage == HdcStage.ELIGIBILITY -> CurrentHdcStatus.NOT_STARTED
+      hdcStage == HdcStage.PROCESSING_RO -> CurrentHdcStatus.ELIGIBILITY_CHECKS_COMPLETE
+      else -> CurrentHdcStatus.RISK_CHECKS_COMPLETE
+    }
   }
 
   private companion object {
