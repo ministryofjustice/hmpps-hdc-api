@@ -604,7 +604,7 @@ class LicenceServiceTest {
       hdcStageName: String?,
     ) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus ="PP INVEST")
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = "PP INVEST")
       val stage = hdcStageName?.takeIf { it.isNotEmpty() }?.let { HdcStage.valueOf(it) }
       val result = service.determineHdcStatus(hdced, nomis, stage)
       assertThat(HdcStatus.NOT_STARTED).isEqualTo(result)
@@ -616,7 +616,7 @@ class LicenceServiceTest {
     )
     fun `should return ELIGIBILITY_CHECKS_COMPLETE when processing ro`(hdcStageName: String) {
       val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus ="ANY_OTHER_STATUS")
+      val nomis = hdcPrisonerStatus().copy(approvalStatus = "ANY_OTHER_STATUS")
       val stage = HdcStage.valueOf(hdcStageName)
       val result = service.determineHdcStatus(hdced, nomis, stage)
       assertThat(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE).isEqualTo(result)
