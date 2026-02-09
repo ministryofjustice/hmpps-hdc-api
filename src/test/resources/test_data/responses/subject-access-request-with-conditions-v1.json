@@ -117,17 +117,23 @@
             "bespokeConditions": [],
             "additionalConditions": [
               {
-                "text": "To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer."
+                "text": "To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.",
+                "renderedText": "To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.",
+                "conditionCode": "NOCAMERA"
               },
               {
                 "text": "Not to reside (not even to stay for one night) in the same household as [ANY / ANY FEMALE / ANY MALE] child under the age of [INSERT AGE] without the prior approval of your supervising officer.",
                 "fields": {
                   "Not reside with age": "20",
                   "Not reside with gender": "any male"
-                }
+                },
+                "renderedText": "Not to reside (not even to stay for one night) in the same household as any male child under the age of 20 without the prior approval of your supervising officer.",
+                "conditionCode": "NORESIDE"
               },
               {
-                "text": "Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess."
+                "text": "Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.",
+                "renderedText": "Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.",
+                "conditionCode": "ONEPHONE"
               },
               {
                 "text": "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
@@ -135,61 +141,85 @@
                   "Reporting time": "12:30",
                   "Reporting address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA",
                   "Reporting frequency": "Monthly"
-                }
+                },
+                "renderedText": "Report to staff at 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA at 12:30, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a Monthly basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+                "conditionCode": "REPORTTO"
               },
               {
                 "text": "Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.",
                 "fields": {
                   "Appointment name": "Jim Smith",
                   "Appointment profession": "psychologist"
-                }
+                },
+                "renderedText": "Attend all appointments arranged for you with Jim Smith, a psychologist and co-operate fully with any care or treatment they recommend.",
+                "conditionCode": "ATTENDALL"
               },
               {
-                "text": "To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph."
+                "text": "To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.",
+                "renderedText": "To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.",
+                "conditionCode": "POLYGRAPH"
               },
               {
                 "text": "Receive home visits from [INSERT NAME] Mental Health Worker.",
                 "fields": {
                   "Mental health name": "John Smith"
-                }
+                },
+                "renderedText": "Receive home visits from John Smith Mental Health Worker.",
+                "conditionCode": "HOMEVISITS"
               },
               {
-                "text": "Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer."
+                "text": "Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer.",
+                "renderedText": "Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer.",
+                "conditionCode": "NOINTERNET"
               },
               {
-                "text": "Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer."
+                "text": "Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer.",
+                "renderedText": "Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer.",
+                "conditionCode": "RETURNTOUK"
               },
               {
                 "text": "Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.",
                 "fields": {
                   "Attend sample details name": "Sam Smith",
                   "Attend sample details address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
-                }
+                },
+                "renderedText": "Attend Sam Smith, 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.",
+                "conditionCode": "ATTENDSAMPLE"
               },
               {
                 "text": "Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.",
                 "fields": {
                   "Drug testing name": "Bobby",
                   "Drug testing address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
-                }
+                },
+                "renderedText": "Attend Bobby, 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.",
+                "conditionCode": "DRUG_TESTING"
               },
               {
-                "text": "Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software."
+                "text": "Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software.",
+                "renderedText": "Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software.",
+                "conditionCode": "USAGEHISTORY"
               },
               {
                 "text": "Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer.",
                 "fields": {
                   "Exclusion area": "Supermarket"
-                }
+                },
+                "renderedText": "Not to enter the area of Supermarket, as defined by the attached map without the prior approval of your supervising officer.",
+                "conditionCode": "EXCLUSIONAREA"
               },
               {
-                "text": "Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer."
+                "text": "Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer.",
+                "renderedText": "Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer.",
+                "conditionCode": "NOCAMERAPHONE"
               },
               {
                 "text": "Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer.",
                 "fields": {
                   "No work with age": "20"
-                }
+                },
+                "renderedText": "Not to undertake work or other organised activity which will involve a person under the age of 20, either on a paid or unpaid basis without the prior approval of your supervising officer.",
+                "conditionCode": "NOWORKWITHAGE"
               },
               {
                 "text": "Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE].",
@@ -198,10 +228,14 @@
                   "Curfew from": "12:30",
                   "Curfew address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA",
                   "Curfew tag required": "yes"
-                }
+                },
+                "renderedText": "Confine yourself to remain at 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA initially from 12:30 until 16:30 each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored yes.",
+                "conditionCode": "REMAINADDRESS"
               },
               {
-                "text": "Not to own or use a camera without the prior approval of your supervising officer."
+                "text": "Not to own or use a camera without the prior approval of your supervising officer.",
+                "renderedText": "Not to own or use a camera without the prior approval of your supervising officer.",
+                "conditionCode": "CAMERAAPPROVAL"
               },
               {
                 "text": "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
@@ -209,28 +243,38 @@
                   "Confined to": "12:20",
                   "Confined from": "16:30",
                   "Confined review frequency": "Other"
-                }
+                },
+                "renderedText": "Confine yourself to an address approved by your supervising officer between the hours of 12:20 and 16:30 daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a Other basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
+                "conditionCode": "CONFINEADDRESS"
               },
               {
                 "text": "Not to contact or associate with [NAMED OFFENDER(S) / NAMED INDIVIDUAL(S)] without the prior approval of your supervising officer.",
                 "fields": {
                   "No contact offenders": "John Smith"
-                }
+                },
+                "renderedText": "Not to contact or associate with John Smith without the prior approval of your supervising officer.",
+                "conditionCode": "NOCONTACTNAMED"
               },
               {
-                "text": "To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport."
+                "text": "To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.",
+                "renderedText": "To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.",
+                "conditionCode": "NOTIFYPASSPORT"
               },
               {
                 "text": "Provide your supervising officer with details [SUCH AS MAKE, MODEL, COLOUR, REGISTRATION] of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.",
                 "fields": {
                   "Vehicle details": "Silver Car"
-                }
+                },
+                "renderedText": "Provide your supervising officer with details Silver Car of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.",
+                "conditionCode": "VEHICLEDETAILS"
               },
               {
                 "text": "Not to enter or remain in sight of any [CHILDREN’S PLAY AREA, SWIMMING BATHS, SCHOOL ETC] without the prior approval of your supervising officer.",
                 "fields": {
                   "Not in sight of": "Swimming Pool"
-                }
+                },
+                "renderedText": "Not to enter or remain in sight of any Swimming Pool without the prior approval of your supervising officer.",
+                "conditionCode": "NOCHILDRENSAREA"
               },
               {
                 "text": "Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
@@ -238,19 +282,27 @@
                   "Appointment date": "12/12/2026",
                   "Appointment time": "12:32",
                   "Appointment address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
-                }
+                },
+                "renderedText": "Attend 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA on 12/12/2026 at 12:32, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
+                "conditionCode": "ATTENDDEPENDENCY"
               },
               {
                 "text": "Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer.",
                 "fields": {
                   "No enter place": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
-                }
+                },
+                "renderedText": "Not to enter 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA without the prior approval of your supervising officer.",
+                "conditionCode": "EXCLUSIONADDRESS"
               },
               {
-                "text": "Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer."
+                "text": "Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.",
+                "renderedText": "Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.",
+                "conditionCode": "NOCONTACTPRISONER"
               },
               {
-                "text": "To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport."
+                "text": "To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport.",
+                "renderedText": "To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport.",
+                "conditionCode": "SURRENDERPASSPORT"
               },
               {
                 "text": "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].",
@@ -260,32 +312,44 @@
                     "alcohol abuse",
                     "drug abuse"
                   ]
-                }
+                },
+                "renderedText": "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol abuse, drug abuse problems at the Harrow Street.",
+                "conditionCode": "COMPLYREQUIREMENTS"
               },
               {
                 "text": "Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.",
                 "fields": {
                   "Groups or organisation": "The Tables"
-                }
+                },
+                "renderedText": "Not to associate with any person currently or formerly associated with The Tables without the prior approval of your supervising officer.",
+                "conditionCode": "NOCONTACTASSOCIATE"
               },
               {
-                "text": "Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with."
+                "text": "Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.",
+                "renderedText": "Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.",
+                "conditionCode": "NOTIFYRELATIONSHIP"
               },
               {
                 "text": "Not to seek to approach or communicate with [INSERT NAME OF VICTIM AND / OR FAMILY MEMBERS] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT].",
                 "fields": {
                   "Social services dept": "Harrow Street",
                   "Victim family members": "Sam Smith"
-                }
+                },
+                "renderedText": "Not to seek to approach or communicate with Sam Smith without the prior approval of your supervising officer and / or Harrow Street.",
+                "conditionCode": "NOCOMMUNICATEVICTIM"
               },
               {
                 "text": "Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].",
                 "fields": {
                   "Intimate gender": "Women or men"
-                }
+                },
+                "renderedText": "Notify your supervising officer of any developing intimate relationships with Women or men.",
+                "conditionCode": "INTIMATERELATIONSHIP"
               },
               {
-                "text": "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer."
+                "text": "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.",
+                "renderedText": "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.",
+                "conditionCode": "NOCONTACTSEXOFFENDER"
               },
               {
                 "text": "Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
@@ -293,7 +357,9 @@
                   "Unsupervised contact age": "20",
                   "Unsupervised contact gender": "any male",
                   "Unsupervised contact social": "Harrow Street"
-                }
+                },
+                "renderedText": "Not to have unsupervised contact with  any male children under the age of 20 without the prior approval of your supervising officer and / or Harrow Street except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+                "conditionCode": "NOUNSUPERVISEDCONTACT"
               },
               {
                 "text": "Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
@@ -301,7 +367,9 @@
                   "Appointment date in drugs section": "12/12/2026",
                   "Appointment time in drugs section": "12:32",
                   "Appointment address in drugs section": "Smith Street Center"
-                }
+                },
+                "renderedText": "Attend Smith Street Center on 12/12/2026 at 12:32, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
+                "conditionCode": "ATTENDDEPENDENCYINDRUGSSECTION"
               }
             ],
             "additionalConditionsJustification": "adsas"
@@ -618,10 +686,14 @@
                 "fields": {
                   "Drug testing name": "Bobby",
                   "Drug testing address": "21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA"
-                }
+                },
+                "renderedText": "Attend Bobby, 21 Smith Street\r\nSmith Town\r\nSmithShire\r\nS12 1AA, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.",
+                "conditionCode": "DRUG_TESTING"
               },
               {
-                "text": "Not to own or use a camera without the prior approval of your supervising officer."
+                "text": "Not to own or use a camera without the prior approval of your supervising officer.",
+                "renderedText": "Not to own or use a camera without the prior approval of your supervising officer.",
+                "conditionCode": "CAMERAAPPROVAL"
               }
             ],
             "additionalConditionsJustification": "Why they added additional condition here."

@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Reporting
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Risk
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Vary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Victim
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionText
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getConditionValues
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getPolicyVersion
@@ -80,6 +81,8 @@ data class SARConditions(
 data class SARAdditionalCondition(
   val text: String? = null,
   val fields: Map<String, Any>? = null,
+  val conditionCode: String,
+  val renderedText: String? = null,
 )
 
 fun Licence.toSAR() = SARLicence(
@@ -135,9 +138,16 @@ fun LicenceData.toSAR(conditionVersion: Int? = null) = SARLicenceData(
   bassRejections = this.bassRejections,
 )
 
-private fun attemptToGuessVersion(additional: Map<String, Map<String, Any>>?): Int? = policyVersions.getPolicyVersion(additional?.map { condition -> condition.key } ?: emptyList())
+fun attemptToGuessVersion(additional: Map<String, Map<String, Any>>?): Int? = policyVersions.getPolicyVersion(additional?.map { condition -> condition.key } ?: emptyList())
 
-private fun LicenceData.toAdditionalCondition(conditionVersion: Int?, code: String, values: Map<String, Any>) = SARAdditionalCondition(
-  text = policyVersions.getConditionText(conditionVersion, code),
-  fields = policyVersions.getConditionValues(values),
-)
+private fun toAdditionalCondition(conditionVersion: Int?, code: String, values: Map<String, Any>): SARAdditionalCondition {
+  val conditionVersionData = LicenceConditionRenderer.getConditionTemplateVersion(conditionVersion)[code]!!
+  val renderedTextData = LicenceConditionRenderer.renderCondition(conditionVersionData, values)
+
+  return SARAdditionalCondition(
+    text = policyVersions.getConditionText(conditionVersion, code),
+    fields = policyVersions.getConditionValues(values),
+    renderedText = renderedTextData,
+    conditionCode = code,
+  )
+}
