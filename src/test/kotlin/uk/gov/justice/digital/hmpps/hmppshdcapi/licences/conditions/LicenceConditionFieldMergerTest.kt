@@ -177,7 +177,7 @@ class LicenceConditionFieldMergerTest {
   @Test
   fun `should update first field based on lowest fieldPosition, not rule order`() {
     // Given
-    val conditionMetaData = V2_CONDITIONS.find{ it.id == "ATTEND_DEPENDENCY_IN_DRUGS_SECTION"}
+    val conditionMetaData = V2_CONDITIONS.find { it.id == "ATTEND_DEPENDENCY_IN_DRUGS_SECTION" }
     val additionalFields = mapOf(
       "appointmentDateInDrugsSection" to "2026-02-15",
       "appointmentAddressInDrugsSection" to "HMP Leeds",
@@ -190,7 +190,7 @@ class LicenceConditionFieldMergerTest {
     // Then
     // appointmentAddress has the lowest position (0) so merged value stored under it
     assertThat(result).containsExactly(
-      entry("appointmentDateInDrugsSection", "HMP Leeds on 2026-02-15 at 09:30")
+      entry("appointmentDateInDrugsSection", "HMP Leeds on 2026-02-15 at 09:30"),
     )
   }
 
@@ -209,7 +209,7 @@ class LicenceConditionFieldMergerTest {
 
     // Then
     assertThat(result).containsExactly(
-      entry("appointmentAddress", "HMP Durham at 11:00")
+      entry("appointmentAddress", "HMP Durham at 11:00"),
     )
   }
 
