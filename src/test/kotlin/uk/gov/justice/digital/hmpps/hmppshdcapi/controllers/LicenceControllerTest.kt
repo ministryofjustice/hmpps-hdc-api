@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
@@ -135,6 +136,7 @@ class LicenceControllerTest {
           LocalTime.of(7, 0),
         ),
       ),
+      status = HdcStatus.APPROVED,
     )
   }
 }

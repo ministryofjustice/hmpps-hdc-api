@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "licences")
-class Licence(
+data class Licence(
   @Id
   @param:NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)

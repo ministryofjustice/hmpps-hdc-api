@@ -42,4 +42,18 @@ class PrisonApiMockServer : WireMockServer(8091) {
   fun checkHdcResetCalled(bookingId: Long) {
     verify(1, deleteRequestedFor(urlEqualTo("/api/offender-sentences/booking/$bookingId/home-detention-curfews/latest/checks-passed")))
   }
+
+  fun stubGetHdcLatest(bookingId: Long = 12345, approvalStatus: String = "REJECTED", passed: Boolean = true) {
+    stubFor(
+      get(urlEqualTo("/api/offender-sentences/booking/$bookingId/home-detention-curfews/latest")).willReturn(
+        aResponse().withHeader("Content-Type", "application/json").withBody(
+          """{
+                "approvalStatus": "$approvalStatus",
+                "passed": $passed,
+                "bookingId": $bookingId
+               }""",
+        ).withStatus(200),
+      ),
+    )
+  }
 }

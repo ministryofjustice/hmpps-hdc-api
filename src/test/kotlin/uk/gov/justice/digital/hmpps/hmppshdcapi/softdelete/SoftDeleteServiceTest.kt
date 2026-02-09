@@ -154,6 +154,7 @@ class SoftDeleteServiceTest {
       prisonId = "MDI",
       topupSupervisionExpiryDate = null,
       licenceExpiryDate = null,
+      homeDetentionCurfewEligibilityDate = null,
     )
 
     val newLicence = { bookingId: Long ->

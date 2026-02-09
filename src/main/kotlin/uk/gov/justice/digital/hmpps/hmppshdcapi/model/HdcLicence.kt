@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 
 @Schema(description = "Describes a HDC Licence")
 data class HdcLicence(
@@ -15,4 +16,7 @@ data class HdcLicence(
 
   @field:Schema(description = "The curfew times for the person following the first night")
   val curfewTimes: List<CurfewTimes>? = null,
+
+  @field:Schema(description = "The HDC status for the person")
+  val status: HdcStatus,
 )

@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -728,5 +730,14 @@ object TestData {
     approvalStatus = "REJECTED",
     bookingId = 1,
     passed = true,
+  )
+
+  fun prisoner() = Prisoner(
+    "A1234AA",
+    "10",
+    "MDI",
+    topupSupervisionExpiryDate = LocalDate.now(),
+    licenceExpiryDate = LocalDate.now().minusDays(1),
+    homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2),
   )
 }

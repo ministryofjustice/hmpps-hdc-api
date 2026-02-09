@@ -5,18 +5,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.TestData.hdcPrisonerStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
@@ -25,9 +21,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight as ModelFirstNi
 
 class LicenceServiceTest {
   private val licenceRepository = mock<LicenceRepository>()
+  private val hdcStatusService = mock<HdcStatusService>()
 
   private val service = LicenceService(
     licenceRepository = licenceRepository,
+    hdcStatusService = hdcStatusService,
   )
 
   @BeforeEach
@@ -38,6 +36,7 @@ class LicenceServiceTest {
   @Test
   fun `will retrieve HDC licence with an approved preferred address`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCurfewApprovedPremisesRequiredLicence()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aCurfewApprovedPremisesRequiredLicence())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -110,6 +109,7 @@ class LicenceServiceTest {
   @Test
   fun `will retrieve HDC licence with an approved Cas2 address`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2ApprovedPremisesLicence()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aCas2ApprovedPremisesLicence())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -184,6 +184,7 @@ class LicenceServiceTest {
   @Test
   fun `will retrieve HDC licence with a Cas2 address`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2Licence()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aCas2Licence())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -252,12 +253,15 @@ class LicenceServiceTest {
       ),
     )
 
+    assertThat(result?.status).isEqualTo(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
+
     verify(licenceRepository, times(1)).findByBookingIds(listOf(54321L))
   }
 
   @Test
   fun `will retrieve HDC licence with a preferred address`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aPreferredAddressLicence()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aPreferredAddressLicence())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -332,6 +336,7 @@ class LicenceServiceTest {
   @Test
   fun `will correctly format a short Cas2 address`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aCas2LicenceWithShortAddress()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aCas2LicenceWithShortAddress())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -352,6 +357,7 @@ class LicenceServiceTest {
   @Test
   fun `will return null for curfewTimes when a single curfew time is null`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithSingleMissingCurfewHour()))
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aLicenceWithSingleMissingCurfewHour())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
 
     val result = service.getByBookingId(54321L)
 
@@ -365,7 +371,7 @@ class LicenceServiceTest {
   @Test
   fun `will return null for curfewTimes when multiple curfew times are null`() {
     whenever(licenceRepository.findByBookingIds(listOf(54321L))).thenReturn(listOf(TestData.aLicenceWithMultipleMissingCurfewHours()))
-
+    whenever(hdcStatusService.getForBooking(54321L, TestData.aLicenceWithMultipleMissingCurfewHours())).thenReturn(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
     val result = service.getByBookingId(54321L)
 
     assertThat(result?.curfewTimes).isEqualTo(
@@ -551,91 +557,6 @@ class LicenceServiceTest {
       val result = service.getAddress(aCurfewWithMultipleMissingAddressLines, aCas2Referral, aProposedAddress, 1L)
 
       assertThat(result).isNull()
-    }
-  }
-
-  @Nested
-  inner class DetermineCurrentHdcStatus {
-    @ParameterizedTest
-    @CsvSource(
-      "APPROVED",
-    )
-    fun `should return APPROVED when nomis approved and hdced present`(approvalStatus: String) {
-      val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
-      val result = service.determineHdcStatus(hdced, nomis, null)
-      assertThat(HdcStatus.APPROVED).isEqualTo(result)
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-      "APPROVED",
-      "REJECTED",
-      "INELIGIBLE",
-      "ANYTHING",
-    )
-    fun `should return NOT_A_HDC_RELEASE when hdced is null`(approvalStatus: String) {
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
-      val result = service.determineHdcStatus(null, nomis, null)
-      assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-      "REJECTED",
-      "OPT_OUT ACCO",
-      "OPT_OUT OTH",
-      "INELIGIBLE",
-      "PRES UNSUIT",
-    )
-    fun `should return NOT_A_HDC_RELEASE for explicit non release statuses`(approvalStatus: String) {
-      val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = approvalStatus)
-      val result = service.determineHdcStatus(hdced, nomis, HdcStage.PROCESSING_RO)
-      assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-      ", ",
-      "ELIGIBILITY, ",
-    )
-    fun `should return NOT_STARTED when stage is null or eligibility`(
-      hdcStageName: String?,
-    ) {
-      val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = "PP INVEST")
-      val stage = hdcStageName?.takeIf { it.isNotEmpty() }?.let { HdcStage.valueOf(it) }
-      val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertThat(HdcStatus.NOT_STARTED).isEqualTo(result)
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-      "PROCESSING_RO",
-    )
-    fun `should return ELIGIBILITY_CHECKS_COMPLETE when processing ro`(hdcStageName: String) {
-      val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = "ANY_OTHER_STATUS")
-      val stage = HdcStage.valueOf(hdcStageName)
-      val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertThat(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE).isEqualTo(result)
-    }
-
-    @ParameterizedTest
-    @CsvSource(
-      "PROCESSING_CA, ",
-      "APPROVAL, ",
-      "MODIFIED, ",
-    )
-    fun `should return RISK_CHECKS_COMPLETE for remaining stages`(
-      hdcStageName: String,
-    ) {
-      val hdced = LocalDate.now()
-      val nomis = hdcPrisonerStatus().copy(approvalStatus = "OTHER")
-      val stage = HdcStage.valueOf(hdcStageName)
-      val result = service.determineHdcStatus(hdced, nomis, stage)
-      assertThat(HdcStatus.RISK_CHECKS_COMPLETE).isEqualTo(result)
     }
   }
 

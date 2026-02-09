@@ -3,18 +3,17 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelFirstNight
-import java.time.LocalDate
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress as ModelCurfewAddress
 
 @Service
 class LicenceService(
   private val licenceRepository: LicenceRepository,
+  private val hdcStatusService: HdcStatusService,
 ) {
   fun getByBookingId(bookingId: Long): HdcLicence? {
     val licences = licenceRepository.findByBookingIds(listOf(bookingId))
@@ -48,6 +47,7 @@ class LicenceService(
       firstNightCurfewHours = curfew?.firstNight?.let { transformToModelFirstNight(it) },
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
+      status = hdcStatusService.getForBooking(bookingId, licence),
     )
   }
 
@@ -141,32 +141,6 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
-  }
-
-  private val nonReleaseStatuses: Set<String> = setOf(
-    "REJECTED",
-    "INELIGIBLE",
-    "PRES UNSUIT",
-  ).mapTo(mutableSetOf()) { it.uppercase() }
-
-  private fun String?.isNonReleaseStatus(): Boolean = this != null && (this in nonReleaseStatuses || this.startsWith("OPT_OUT"))
-
-  private fun String?.toNormalizedStatus(): String? = this?.trim()?.uppercase()
-
-  fun determineHdcStatus(
-    hdced: LocalDate?,
-    nomis: PrisonerHdcStatus?,
-    hdcStage: HdcStage?,
-  ): HdcStatus {
-    val nomisApprovalStatus = nomis?.approvalStatus.toNormalizedStatus()
-    return when {
-      hdced == null -> HdcStatus.NOT_A_HDC_RELEASE
-      nomisApprovalStatus == "APPROVED" -> HdcStatus.APPROVED
-      nomisApprovalStatus.isNonReleaseStatus() -> HdcStatus.NOT_A_HDC_RELEASE
-      hdcStage == null || hdcStage == HdcStage.ELIGIBILITY -> HdcStatus.NOT_STARTED
-      hdcStage == HdcStage.PROCESSING_RO -> HdcStatus.ELIGIBILITY_CHECKS_COMPLETE
-      else -> HdcStatus.RISK_CHECKS_COMPLETE
-    }
   }
 
   private companion object {
