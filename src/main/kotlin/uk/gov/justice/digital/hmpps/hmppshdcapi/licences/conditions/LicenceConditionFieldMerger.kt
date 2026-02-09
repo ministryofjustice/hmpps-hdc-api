@@ -13,13 +13,17 @@ class LicenceConditionFieldMerger {
     private val COMMA = listOf(", ")
     private val ENDING_ON = listOf(" ending on ")
 
-    val fieldMergeRules: Map<String, FieldMergeRule> = mapOf(
+    val fieldMergeRules = mapOf(
       "appointmentDetails" to FieldMergeRule(
         fields = listOf("appointmentAddress", "appointmentDate", "appointmentTime"),
         delimiters = ON_AT,
       ),
       "appointmentDetailsInDrugsSection" to FieldMergeRule(
-        fields = listOf("appointmentAddressInDrugsSection", "appointmentDateInDrugsSection", "appointmentTimeInDrugsSection"),
+        fields = listOf(
+          "appointmentAddressInDrugsSection",
+          "appointmentDateInDrugsSection",
+          "appointmentTimeInDrugsSection"
+        ),
         delimiters = ON_AT,
       ),
       "attendSampleDetails" to FieldMergeRule(
@@ -41,44 +45,52 @@ class LicenceConditionFieldMerger {
     conditionMetaData: ConditionMetadata,
     additionalFields: Map<String, Any>,
   ): Map<String, Any> {
-    val inProcessAdditionalFields = additionalFields.toMutableMap()
     val rule = fieldMergeRules[conditionMetaData.userInput] ?: return additionalFields
+    val mutableFields = additionalFields.toMutableMap()
 
-    val values = rule.fields.mapNotNull { field ->
-      inProcessAdditionalFields[field]?.toString()?.takeIf { it.isNotBlank() }
+    val valuesInRuleOrder = rule.fields.mapIndexedNotNull { index, field ->
+      mutableFields[field]?.toString()?.takeIf { it.isNotBlank() }?.let { index to it }
     }
 
-    if (values.isNotEmpty()) {
-      val merged = mergeValues(rule, inProcessAdditionalFields)
-      rule.fields.forEach { inProcessAdditionalFields.remove(it) }
-      inProcessAdditionalFields[getLowestRuleFieldKey(conditionMetaData, rule)] = merged
-    }
+    if (valuesInRuleOrder.isEmpty()) return additionalFields
 
-    return inProcessAdditionalFields
+    val mergedWithDelimiters = mergeFieldValues(valuesInRuleOrder, rule)
+
+    // Remove merged fields
+    rule.fields.forEach(mutableFields::remove)
+
+    // Store merged value under the first rule field
+    mutableFields[getFirstFieldOfRuleGroupKey(rule, conditionMetaData)] = mergedWithDelimiters
+
+    return mutableFields
   }
 
-  fun getLowestRuleFieldKey(
-    condition: ConditionMetadata,
-    rule: FieldMergeRule,
-  ): String = rule.fields.minBy { condition.fieldPosition.getValue(it) }
 
-  private fun mergeValues(
+  private fun getFirstFieldOfRuleGroupKey(
     rule: FieldMergeRule,
-    additionalFields: Map<String, Any>,
+    conditionMetaData: ConditionMetadata,
+  ): String = rule.fields.minBy { conditionMetaData.fieldPosition.getValue(it) }
+
+  private fun mergeFieldValues(
+    values: List<Pair<Int, String>>,
+    rule: FieldMergeRule,
   ): String {
-    val result = StringBuilder()
+    val builder = StringBuilder()
+    var first = true
 
-    rule.fields.forEachIndexed { index, field ->
-      val value = additionalFields[field]?.toString()?.takeIf { it.isNotBlank() } ?: return@forEachIndexed
-
-      if (result.isNotEmpty()) {
-        val delimiter = rule.delimiters.getOrElse(index - 1) { rule.delimiters.last() }
-        result.append(delimiter)
+    values.forEach { (ruleIndex, value) ->
+      if (first) {
+        builder.append(value)
+        first = false
+      } else {
+        // Pick delimiter based on the previous ruleIndex
+        val delimiter = rule.delimiters.getOrElse(ruleIndex - 1) { rule.delimiters.last() }
+        builder.append(delimiter).append(value)
       }
-
-      result.append(value)
     }
 
-    return result.toString()
+    return builder.toString()
   }
+
+
 }
