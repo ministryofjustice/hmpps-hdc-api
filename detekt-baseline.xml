@@ -15,6 +15,7 @@
     <ID>MagicNumber:V1Conditions.kt$3</ID>
     <ID>MagicNumber:V2Conditions.kt$3</ID>
     <ID>MagicNumber:V2Conditions.kt$5</ID>
+    <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;Pair&lt;String, String&gt;&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
   </CurrentIssues>

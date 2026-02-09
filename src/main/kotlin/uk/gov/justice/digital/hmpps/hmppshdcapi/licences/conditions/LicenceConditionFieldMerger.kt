@@ -22,7 +22,7 @@ class LicenceConditionFieldMerger {
         fields = listOf(
           "appointmentAddressInDrugsSection",
           "appointmentDateInDrugsSection",
-          "appointmentTimeInDrugsSection"
+          "appointmentTimeInDrugsSection",
         ),
         delimiters = ON_AT,
       ),
@@ -65,7 +65,6 @@ class LicenceConditionFieldMerger {
     return mutableFields
   }
 
-
   private fun getFirstFieldOfRuleGroupKey(
     rule: FieldMergeRule,
     conditionMetaData: ConditionMetadata,
@@ -91,6 +90,4 @@ class LicenceConditionFieldMerger {
 
     return builder.toString()
   }
-
-
 }
