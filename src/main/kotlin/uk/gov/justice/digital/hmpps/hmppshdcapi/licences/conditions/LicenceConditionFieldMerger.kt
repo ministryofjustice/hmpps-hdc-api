@@ -59,7 +59,7 @@ class LicenceConditionFieldMerger {
     // Remove merged fields
     rule.fields.forEach(mutableFields::remove)
 
-    // Store merged value under the first rule field
+    // Store merged value under the first fieldPosition of the rule group
     mutableFields[getFirstFieldOfRuleGroupKey(rule, conditionMetaData)] = mergedWithDelimiters
 
     return mutableFields
@@ -71,7 +71,7 @@ class LicenceConditionFieldMerger {
   ): String = rule.fields.minBy { conditionMetaData.fieldPosition.getValue(it) }
 
   private fun mergeFieldValues(
-    values: List<Pair<Int, String>>,
+    values: List<Pair<Int, Any>>,
     rule: FieldMergeRule,
   ): String {
     val builder = StringBuilder()
@@ -79,13 +79,13 @@ class LicenceConditionFieldMerger {
 
     values.forEach { (ruleIndex, value) ->
       if (first) {
-        builder.append(value)
         first = false
       } else {
         // Pick delimiter based on the previous ruleIndex
         val delimiter = rule.delimiters.getOrElse(ruleIndex - 1) { rule.delimiters.last() }
-        builder.append(delimiter).append(value)
+        builder.append(delimiter)
       }
+      builder.append(value)
     }
 
     return builder.toString()

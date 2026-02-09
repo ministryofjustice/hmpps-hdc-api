@@ -156,6 +156,63 @@ class LicenceConditionFieldMergerTest {
     )
   }
 
+  @Test
+  fun `should handle all fields missing or blank by returning original map`() {
+    // Given
+    val fieldPosition = mapOf("appointmentAddress" to 0, "appointmentDate" to 1, "appointmentTime" to 2)
+    val conditionMetaData = aConditionMetadata(userInput = "appointmentDetails", fieldPosition = fieldPosition)
+    val additionalFields = mapOf(
+      "appointmentAddress" to "",
+      "appointmentDate" to "",
+      "appointmentTime" to "",
+    )
+
+    // When
+    val result = condenser.mergeIfRequired(conditionMetaData, additionalFields)
+
+    // Then
+    assertThat(result).isEqualTo(additionalFields as Map<String, Any>)
+  }
+
+  @Test
+  fun `should update first field based on lowest fieldPosition, not rule order`() {
+    // Given
+    val conditionMetaData = V2_CONDITIONS.find{ it.id == "ATTEND_DEPENDENCY_IN_DRUGS_SECTION"}
+    val additionalFields = mapOf(
+      "appointmentDateInDrugsSection" to "2026-02-15",
+      "appointmentAddressInDrugsSection" to "HMP Leeds",
+      "appointmentTimeInDrugsSection" to "09:30",
+    )
+
+    // When
+    val result = condenser.mergeIfRequired(conditionMetaData!!, additionalFields)
+
+    // Then
+    // appointmentAddress has the lowest position (0) so merged value stored under it
+    assertThat(result).containsExactly(
+      entry("appointmentDateInDrugsSection", "HMP Leeds on 2026-02-15 at 09:30")
+    )
+  }
+
+  @Test
+  fun `should handle partially missing middle field`() {
+    // Given
+    val fieldPosition = mapOf("appointmentAddress" to 0, "appointmentDate" to 1, "appointmentTime" to 2)
+    val conditionMetaData = aConditionMetadata(userInput = "appointmentDetails", fieldPosition = fieldPosition)
+    val additionalFields = mapOf(
+      "appointmentAddress" to "HMP Durham",
+      "appointmentTime" to "11:00",
+    )
+
+    // When
+    val result = condenser.mergeIfRequired(conditionMetaData, additionalFields)
+
+    // Then
+    assertThat(result).containsExactly(
+      entry("appointmentAddress", "HMP Durham at 11:00")
+    )
+  }
+
   fun aConditionMetadata(
     id: String = "default-id",
     text: String = "default text",
