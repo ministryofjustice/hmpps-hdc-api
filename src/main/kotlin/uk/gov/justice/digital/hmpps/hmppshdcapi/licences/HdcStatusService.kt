@@ -22,8 +22,7 @@ class HdcStatusService(
 
   private fun String?.toNormalizedStatus(): String? = this?.trim()?.uppercase()
 
-  private fun PrisonSearchApiClient.getPrisonerByBookingId(bookingId: Long): Prisoner? =
-    getPrisonersByBookingIds(listOf(bookingId)).firstOrNull()
+  private fun PrisonSearchApiClient.getPrisonerByBookingId(bookingId: Long): Prisoner? = getPrisonersByBookingIds(listOf(bookingId)).firstOrNull()
 
   fun getForBooking(bookingId: Long, licence: Licence): HdcStatus {
     val prisoner = prisonSearchApiClient.getPrisonerByBookingId(bookingId)
@@ -32,7 +31,7 @@ class HdcStatusService(
     return determineHdcStatus(
       prisoner?.homeDetentionCurfewEligibilityDate,
       prisonerHdcStatus,
-      licence.stage
+      licence.stage,
     )
   }
 

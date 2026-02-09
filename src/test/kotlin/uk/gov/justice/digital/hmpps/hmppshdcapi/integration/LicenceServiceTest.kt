@@ -270,7 +270,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
         listOf(
           Prisoner(
-            prisonerNumber =  "A1234AA",
+            prisonerNumber = "A1234AA",
             bookingId = bookingId.toString(),
             prisonId = "MDI",
             topupSupervisionExpiryDate = LocalDate.now(),
