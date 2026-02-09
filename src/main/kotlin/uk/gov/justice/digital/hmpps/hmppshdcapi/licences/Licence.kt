@@ -20,7 +20,7 @@ data class Licence(
   @param:NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  val id: Long? = null,
+  var id: Long? = null,
   var prisonNumber: String,
   val bookingId: Long,
 
