@@ -89,5 +89,3 @@ object LicenceConditionRenderer {
     else -> value.toString()
   }
 }
-
-// batch comparison util on front end ,.. open end point for text convert
