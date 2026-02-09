@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStage
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
@@ -34,7 +35,7 @@ fun createLicence(
   id = 1,
   prisonNumber = "A1234BC",
   bookingId = 123,
-  stage = "STAGE",
+  stage = HdcStage.ELIGIBILITY,
   version = 1,
   transitionDate = null,
   varyVersion = 1,
