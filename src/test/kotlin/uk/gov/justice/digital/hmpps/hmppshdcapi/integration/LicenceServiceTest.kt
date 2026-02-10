@@ -10,11 +10,16 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalTime
 
 class LicenceServiceTest : SqsIntegrationTestBase() {
@@ -25,6 +30,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with an approved preferred address`() {
+    stubPrisonersAndHdc(12345L, "APPROVED")
     val result = webTestClient.get()
       .uri("/licence/hdc/12345")
       .accept(MediaType.APPLICATION_JSON)
@@ -36,6 +42,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
+    assertThat(result?.status).isEqualTo(HdcStatus.APPROVED)
     assertThat(result?.curfewAddress).isEqualTo(
       CurfewAddress(
         "1 Test Street",
@@ -79,6 +86,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with an approved CAS2 address`() {
+    stubPrisonersAndHdc(43210L, "ELIGIBILITY")
     val result = webTestClient.get()
       .uri("/licence/hdc/43210")
       .accept(MediaType.APPLICATION_JSON)
@@ -90,6 +98,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
+    assertThat(result?.status).isEqualTo(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
     assertThat(result?.curfewAddress).isEqualTo(
       CurfewAddress(
         "2 Test Road",
@@ -115,6 +124,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with cas2 address`() {
+    stubPrisonersAndHdc(98765L, "REJECTED")
     val result = webTestClient.get()
       .uri("/licence/hdc/98765")
       .accept(MediaType.APPLICATION_JSON)
@@ -126,6 +136,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
+    assertThat(result?.status).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
     assertThat(result?.curfewAddress).isEqualTo(
       CurfewAddress(
         "100 CAS2 Street",
@@ -151,6 +162,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with preferred address`() {
+    stubPrisonersAndHdc(54321L, "OTHER")
     val result = webTestClient.get()
       .uri("/licence/hdc/54321")
       .accept(MediaType.APPLICATION_JSON)
@@ -162,6 +174,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
+    assertThat(result?.status).isEqualTo(HdcStatus.NOT_STARTED)
     assertThat(result?.curfewAddress).isEqualTo(
       CurfewAddress(
         "123 Approved Premises Street 2",
@@ -233,18 +246,42 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
   }
 
   private companion object {
+    val prisonerSearchMockServer = PrisonerSearchMockServer()
+    val prisonApiMockServer = PrisonApiMockServer()
 
     @JvmStatic
     @BeforeAll
     fun startMocks() {
       hmppsAuthMockServer.start()
       hmppsAuthMockServer.stubGrantToken()
+      prisonerSearchMockServer.start()
+      prisonApiMockServer.start()
     }
 
     @JvmStatic
     @AfterAll
     fun stopMocks() {
       hmppsAuthMockServer.stop()
+      prisonerSearchMockServer.stop()
+      prisonApiMockServer.stop()
+    }
+
+    private fun stubPrisonersAndHdc(bookingId: Long, approvalStatus: String) {
+      prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+        listOf(
+          Prisoner(
+            prisonerNumber = "A1234AA",
+            bookingId = bookingId.toString(),
+            prisonId = "MDI",
+            topupSupervisionExpiryDate = LocalDate.now(),
+            licenceExpiryDate = LocalDate.now().minusDays(1),
+            homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2),
+          ),
+          Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now(), homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
+          Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null, homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
+        ),
+      )
+      prisonApiMockServer.stubGetHdcLatest(bookingId = bookingId, approvalStatus = approvalStatus)
     }
   }
 }

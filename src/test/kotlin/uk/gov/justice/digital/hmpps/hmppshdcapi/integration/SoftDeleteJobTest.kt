@@ -48,9 +48,10 @@ class SoftDeleteJobTest : SqsIntegrationTestBase() {
           "MDI",
           topupSupervisionExpiryDate = LocalDate.now(),
           licenceExpiryDate = LocalDate.now().minusDays(1),
+          homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2),
         ),
-        Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now()),
-        Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null),
+        Prisoner("A1234CC", "30", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = LocalDate.now(), homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
+        Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null, homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
       ),
     )
 

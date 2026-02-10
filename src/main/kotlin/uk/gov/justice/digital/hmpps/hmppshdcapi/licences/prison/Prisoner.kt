@@ -11,6 +11,8 @@ data class Prisoner(
   val topupSupervisionExpiryDate: LocalDate?,
   @field:JsonFormat(pattern = "yyyy-MM-dd")
   val licenceExpiryDate: LocalDate?,
+  @field:JsonFormat(pattern = "yyyy-MM-dd")
+  val homeDetentionCurfewEligibilityDate: LocalDate?,
 )
 
 data class Booking(

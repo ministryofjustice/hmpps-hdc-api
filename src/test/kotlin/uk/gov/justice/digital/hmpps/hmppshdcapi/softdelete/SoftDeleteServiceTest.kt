@@ -122,7 +122,7 @@ class SoftDeleteServiceTest {
   }
 
   @Test
-  fun `runJob`() {
+  fun runJob() {
     whenever(transactionTemplate.execute<Any>(any())).thenAnswer {
       (it.arguments[0] as TransactionCallback<*>).doInTransaction(SimpleTransactionStatus())
     }
@@ -154,6 +154,7 @@ class SoftDeleteServiceTest {
       prisonId = "MDI",
       topupSupervisionExpiryDate = null,
       licenceExpiryDate = null,
+      homeDetentionCurfewEligibilityDate = null,
     )
 
     val newLicence = { bookingId: Long ->
