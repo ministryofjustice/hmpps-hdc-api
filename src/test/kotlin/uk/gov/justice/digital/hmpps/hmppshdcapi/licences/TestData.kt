@@ -61,11 +61,11 @@ object TestData {
     suitability = Suitability(Decision.NO),
   )
 
-  fun aPreferredAddressLicence(): Licence = Licence(
+  fun aPreferredAddressLicence(bookingId: Long = 54321L, stage: HdcStage = HdcStage.MODIFIED): Licence = Licence(
     id = 1,
     prisonNumber = "A12345B",
-    bookingId = 54321,
-    stage = HdcStage.MODIFIED,
+    bookingId = bookingId,
+    stage = stage,
     version = 1,
     transitionDate = LocalDateTime.of(2023, 10, 22, 10, 15),
     varyVersion = 0,

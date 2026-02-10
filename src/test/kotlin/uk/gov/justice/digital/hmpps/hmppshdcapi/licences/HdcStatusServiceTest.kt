@@ -28,7 +28,7 @@ class HdcStatusServiceTest {
     whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "APPROVED"),
     )
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.APPROVED).isEqualTo(result)
   }
@@ -45,7 +45,7 @@ class HdcStatusServiceTest {
     whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus),
     )
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
   }
@@ -63,7 +63,7 @@ class HdcStatusServiceTest {
     whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus),
     )
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.NOT_A_HDC_RELEASE).isEqualTo(result)
   }
@@ -74,7 +74,7 @@ class HdcStatusServiceTest {
     whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "PP INVEST"),
     )
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.NOT_STARTED).isEqualTo(result)
   }
@@ -85,7 +85,7 @@ class HdcStatusServiceTest {
     whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "ANY_OTHER_STATUS"),
     )
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE).isEqualTo(result)
   }
@@ -104,7 +104,7 @@ class HdcStatusServiceTest {
       hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "OTHER"),
     )
     val stage = HdcStage.valueOf(hdcStageName)
-    val licence = aPreferredAddressLicence().copy(bookingId = 1L, stage = stage)
+    val licence = aPreferredAddressLicence(bookingId = 1L, stage = stage)
     val result = service.getForBooking(1L, licence)
     assertThat(HdcStatus.RISK_CHECKS_COMPLETE).isEqualTo(result)
   }
