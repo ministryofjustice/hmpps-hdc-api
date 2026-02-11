@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.transformToModelCurfewTimes
@@ -50,6 +51,19 @@ class LicenceService(
       status = hdcStatusService.getForBooking(bookingId, licence),
     )
   }
+
+  fun getHdcStatuses(bookingIds: List<Long>): List<BookingHdcStatus> = bookingIds
+    .distinct()
+    .takeIf { it.isNotEmpty() }
+    ?.let { ids ->
+      val licences = licenceRepository.findByBookingIds(ids)
+      if (licences.isEmpty()) {
+        emptyList()
+      } else {
+        hdcStatusService.getForBookingIds(ids, licences)
+      }
+    }
+    ?: emptyList()
 
   fun CurfewHours?.getNullTimes(): List<String> {
     if (this == null) {

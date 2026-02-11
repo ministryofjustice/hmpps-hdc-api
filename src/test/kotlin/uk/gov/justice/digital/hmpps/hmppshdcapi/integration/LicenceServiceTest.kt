@@ -245,6 +245,67 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     assertThat(result?.userMessage).isEqualTo("Data not found: No licence data found for booking id 22222")
   }
 
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-licences.sql",
+  )
+  fun `Bulk HDC statuses returns statuses for all available booking ids`() {
+    val requestBody = listOf(12345L, 54321L, 98765L)
+
+    prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
+    prisonerSearchMockServer.stubBulkSearchPrisonersByBookingIds(requestBody)
+
+    val result = webTestClient.post()
+      .uri("/licence/hdc/status")
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .bodyValue(requestBody)
+      .exchange()
+      .expectStatus().isOk
+      .expectHeader().contentType(MediaType.APPLICATION_JSON)
+      .expectBodyList(uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus::class.java)
+      .returnResult().responseBody
+
+    assertThat(result).isNotNull
+    assertThat(result?.size).isEqualTo(3)
+
+    val mapById = result!!.associateBy { it.bookingId }
+    assertThat(mapById[12345L]?.status).isEqualTo(HdcStatus.APPROVED)
+    assertThat(mapById[54321L]?.status).isEqualTo(HdcStatus.NOT_STARTED)
+    assertThat(mapById[98765L]?.status).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-licences.sql",
+  )
+  fun `Bulk HDC statuses omits booking ids with no licence data`() {
+    val requestBody = listOf(12345L, 11111L)
+
+    prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED"))
+    prisonerSearchMockServer.stubBulkSearchPrisonersByBookingIds(listOf(requestBody.first()))
+
+    val result = webTestClient.post()
+      .uri("/licence/hdc/status")
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .bodyValue(requestBody)
+      .exchange()
+      .expectStatus().isOk
+      .expectHeader().contentType(MediaType.APPLICATION_JSON)
+      .expectBodyList(uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus::class.java)
+      .returnResult().responseBody
+
+    assertThat(result).isNotNull
+    assertThat(result?.size).isEqualTo(1)
+    assertThat(result?.first()?.bookingId).isEqualTo(12345L)
+    assertThat(result?.first()?.status).isEqualTo(HdcStatus.APPROVED)
+  }
+
   private companion object {
     val prisonerSearchMockServer = PrisonerSearchMockServer()
     val prisonApiMockServer = PrisonApiMockServer()
@@ -281,7 +342,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
           Prisoner("A1234EE", "50", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null, homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
         ),
       )
-      prisonApiMockServer.stubGetHdcLatest(bookingId = bookingId, approvalStatus = approvalStatus)
+      prisonApiMockServer.getHdcStatuses(listOf(bookingId to approvalStatus))
     }
   }
 }
