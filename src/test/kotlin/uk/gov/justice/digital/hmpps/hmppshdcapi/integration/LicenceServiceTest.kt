@@ -254,7 +254,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     val requestBody = listOf(12345L, 54321L, 98765L)
 
     prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
-    prisonerSearchMockServer.stubBulkSearchPrisonersByBookingIds(requestBody)
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(requestBody)
 
     val result = webTestClient.post()
       .uri("/licence/hdc/status")
@@ -286,7 +286,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     val requestBody = listOf(12345L, 11111L)
 
     prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED"))
-    prisonerSearchMockServer.stubBulkSearchPrisonersByBookingIds(listOf(requestBody.first()))
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(listOf(requestBody.first()))
 
     val result = webTestClient.post()
       .uri("/licence/hdc/status")
