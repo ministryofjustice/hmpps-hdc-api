@@ -57,13 +57,13 @@ class HdcStatusService(
     hdcStatus: PrisonerHdcStatus?,
     stage: HdcStage?,
   ): BookingHdcStatus = BookingHdcStatus(
-      bookingId = bookingId,
-      status = determineHdcStatus(
-        prisoner?.homeDetentionCurfewEligibilityDate,
-        hdcStatus,
-        stage,
-      ),
-    )
+    bookingId = bookingId,
+    status = determineHdcStatus(
+      prisoner?.homeDetentionCurfewEligibilityDate,
+      hdcStatus,
+      stage,
+    ),
+  )
 
   private fun determineHdcStatus(
     hdced: LocalDate?,
