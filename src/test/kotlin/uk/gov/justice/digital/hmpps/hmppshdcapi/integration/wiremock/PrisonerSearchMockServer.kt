@@ -25,7 +25,7 @@ class PrisonerSearchMockServer : WireMockServer(8099) {
     )
   }
 
-  fun stubSearchPrisonersByBookingIds(bookingIds: List<Long>) {
+  fun stubSearchPrisonersByBookingIdsList(bookingIds: List<Long>) {
     val today = LocalDate.now()
 
     val jsonArray = bookingIds.joinToString(
