@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
@@ -568,8 +567,6 @@ class LicenceServiceTest {
     fun `returns empty list when bookingIds is empty`() {
       val result = service.getHdcStatuses(emptyList())
       assertThat(result).isEmpty()
-      verify(licenceRepository, times(0)).findByBookingIds(any())
-      verify(hdcStatusService, times(0)).getForBookingIds(any(), any())
     }
 
     @Test
@@ -578,7 +575,6 @@ class LicenceServiceTest {
       whenever(licenceRepository.findByBookingIds(ids)).thenReturn(emptyList())
       val result = service.getHdcStatuses(ids)
       assertThat(result).isEmpty()
-      verify(hdcStatusService, times(0)).getForBookingIds(any(), any())
     }
 
     @Test

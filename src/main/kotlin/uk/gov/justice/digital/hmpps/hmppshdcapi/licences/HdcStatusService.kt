@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus
 import java.time.LocalDate
@@ -41,29 +40,23 @@ class HdcStatusService(
 
     return buildList {
       bookingIds.forEach { id ->
-        computeStatusFor(
-          bookingId = id,
-          prisoner = prisonersById[id],
-          hdcStatus = hdcStatuses[id],
-          stage = stageByBookingId[id],
-        ).let { add(it) }
+        val prisoner = prisonersById[id]
+        val hdcStatus = hdcStatuses[id]
+        val stage = stageByBookingId[id]
+
+        add(
+          BookingHdcStatus(
+            bookingId = id,
+            status = determineHdcStatus(
+              prisoner?.homeDetentionCurfewEligibilityDate,
+              hdcStatus,
+              stage,
+            ),
+          ),
+        )
       }
     }
   }
-
-  private fun computeStatusFor(
-    bookingId: Long,
-    prisoner: Prisoner?,
-    hdcStatus: PrisonerHdcStatus?,
-    stage: HdcStage?,
-  ): BookingHdcStatus = BookingHdcStatus(
-    bookingId = bookingId,
-    status = determineHdcStatus(
-      prisoner?.homeDetentionCurfewEligibilityDate,
-      hdcStatus,
-      stage,
-    ),
-  )
 
   private fun determineHdcStatus(
     hdced: LocalDate?,

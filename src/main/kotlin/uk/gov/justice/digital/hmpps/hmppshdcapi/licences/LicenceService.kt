@@ -52,18 +52,11 @@ class LicenceService(
     )
   }
 
-  fun getHdcStatuses(bookingIds: List<Long>): List<BookingHdcStatus> = bookingIds
-    .distinct()
-    .takeIf { it.isNotEmpty() }
-    ?.let { ids ->
-      val licences = licenceRepository.findByBookingIds(ids)
-      if (licences.isEmpty()) {
-        emptyList()
-      } else {
-        hdcStatusService.getForBookingIds(ids, licences)
-      }
-    }
-    ?: emptyList()
+  fun getHdcStatuses(bookingIds: List<Long>): List<BookingHdcStatus> {
+    val ids = bookingIds.distinct()
+    val licences = licenceRepository.findByBookingIds(ids)
+    return hdcStatusService.getForBookingIds(ids, licences)
+  }
 
   fun CurfewHours?.getNullTimes(): List<String> {
     if (this == null) {
