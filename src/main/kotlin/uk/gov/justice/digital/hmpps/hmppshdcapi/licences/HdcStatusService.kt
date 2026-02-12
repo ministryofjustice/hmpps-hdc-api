@@ -3,8 +3,8 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonerHdcStatus
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus
 import java.time.LocalDate
 
 @Service
@@ -22,17 +22,40 @@ class HdcStatusService(
 
   private fun String?.toNormalizedStatus(): String? = this?.trim()?.uppercase()
 
-  private fun PrisonSearchApiClient.getPrisonerByBookingId(bookingId: Long): Prisoner? = getPrisonersByBookingIds(listOf(bookingId)).firstOrNull()
+  fun getForBooking(bookingId: Long, licence: Licence): HdcStatus = getForBookingIds(listOf(bookingId), listOf(licence)).first().status
 
-  fun getForBooking(bookingId: Long, licence: Licence): HdcStatus {
-    val prisoner = prisonSearchApiClient.getPrisonerByBookingId(bookingId)
-    val prisonerHdcStatus = prisonApiClient.getHdcStatus(bookingId)
+  fun getForBookingIds(
+    bookingIds: List<Long>,
+    licences: List<Licence>,
+  ): List<BookingHdcStatus> {
+    val stageByBookingId = licences.associateBy({ it.bookingId }, { it.stage })
 
-    return determineHdcStatus(
-      prisoner?.homeDetentionCurfewEligibilityDate,
-      prisonerHdcStatus,
-      licence.stage,
-    )
+    val prisonersById = prisonSearchApiClient
+      .getPrisonersByBookingIds(bookingIds)
+      .associateBy { it.bookingId.toLong() }
+
+    val hdcStatuses = prisonApiClient
+      .getHdcStatuses(bookingIds)
+      .associateBy { it.bookingId }
+
+    return buildList {
+      bookingIds.forEach { id ->
+        val prisoner = prisonersById[id]
+        val hdcStatus = hdcStatuses[id]
+        val stage = stageByBookingId[id]
+
+        add(
+          BookingHdcStatus(
+            bookingId = id,
+            status = determineHdcStatus(
+              prisoner?.homeDetentionCurfewEligibilityDate,
+              hdcStatus,
+              stage,
+            ),
+          ),
+        )
+      }
+    }
   }
 
   private fun determineHdcStatus(

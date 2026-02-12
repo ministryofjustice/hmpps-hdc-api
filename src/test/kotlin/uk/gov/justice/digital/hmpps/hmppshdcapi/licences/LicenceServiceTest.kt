@@ -12,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HmppsHdcApiExceptionHandler.NoDataFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -557,6 +558,71 @@ class LicenceServiceTest {
       val result = service.getAddress(aCurfewWithMultipleMissingAddressLines, aCas2Referral, aProposedAddress, 1L)
 
       assertThat(result).isNull()
+    }
+  }
+
+  @Nested
+  inner class GetHdcStatuses {
+    @Test
+    fun `returns empty list when bookingIds is empty`() {
+      val result = service.getHdcStatuses(emptyList())
+      assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `returns empty list when no licences found`() {
+      val ids = listOf(1L, 2L)
+      whenever(licenceRepository.findByBookingIds(ids)).thenReturn(emptyList())
+      val result = service.getHdcStatuses(ids)
+      assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `returns statuses when licences are present`() {
+      val ids = listOf(1L, 2L)
+      val licences = listOf(
+        Licence(1, "P1", 1L, HdcStage.ELIGIBILITY, 1, null, 0, null, null, null, false, null),
+        Licence(2, "P2", 2L, HdcStage.PROCESSING_RO, 1, null, 0, null, null, null, false, null),
+      )
+
+      val expectedStatuses = listOf(
+        BookingHdcStatus(1L, HdcStatus.APPROVED),
+        BookingHdcStatus(2L, HdcStatus.ELIGIBILITY_CHECKS_COMPLETE),
+      )
+
+      whenever(licenceRepository.findByBookingIds(ids)).thenReturn(licences)
+      whenever(hdcStatusService.getForBookingIds(ids, licences)).thenReturn(expectedStatuses)
+
+      val result = service.getHdcStatuses(ids)
+
+      assertThat(result).isEqualTo(expectedStatuses)
+      verify(licenceRepository, times(1)).findByBookingIds(ids)
+      verify(hdcStatusService, times(1)).getForBookingIds(ids, licences)
+    }
+
+    @Test
+    fun `dedupes duplicate bookingIds before querying repository`() {
+      val inputIds = listOf(1L, 1L, 2L)
+      val distinctIds = listOf(1L, 2L)
+
+      val licences = listOf(
+        Licence(1, "P1", 1L, HdcStage.ELIGIBILITY, 1, null, 0, null, null, null, false, null),
+        Licence(2, "P2", 2L, HdcStage.PROCESSING_RO, 1, null, 0, null, null, null, false, null),
+      )
+
+      val expectedStatuses = listOf(
+        BookingHdcStatus(1L, HdcStatus.NOT_STARTED),
+        BookingHdcStatus(2L, HdcStatus.RISK_CHECKS_COMPLETE),
+      )
+
+      whenever(licenceRepository.findByBookingIds(distinctIds)).thenReturn(licences)
+      whenever(hdcStatusService.getForBookingIds(distinctIds, licences)).thenReturn(expectedStatuses)
+
+      val result = service.getHdcStatuses(inputIds)
+
+      assertThat(result).isEqualTo(expectedStatuses)
+      verify(licenceRepository, times(1)).findByBookingIds(distinctIds)
+      verify(hdcStatusService, times(1)).getForBookingIds(distinctIds, licences)
     }
   }
 
