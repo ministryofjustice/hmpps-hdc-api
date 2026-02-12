@@ -46,7 +46,7 @@ class HdcStatusService(
           prisoner = prisonersById[id],
           hdcStatus = hdcStatuses[id],
           stage = stageByBookingId[id],
-        )?.let { add(it) }
+        ).let { add(it) }
       }
     }
   }
@@ -56,8 +56,7 @@ class HdcStatusService(
     prisoner: Prisoner?,
     hdcStatus: PrisonerHdcStatus?,
     stage: HdcStage?,
-  ): BookingHdcStatus? = (prisoner != null || hdcStatus != null).takeIf { it }?.let {
-    BookingHdcStatus(
+  ): BookingHdcStatus = BookingHdcStatus(
       bookingId = bookingId,
       status = determineHdcStatus(
         prisoner?.homeDetentionCurfewEligibilityDate,
@@ -65,7 +64,6 @@ class HdcStatusService(
         stage,
       ),
     )
-  }
 
   private fun determineHdcStatus(
     hdced: LocalDate?,
