@@ -14,19 +14,19 @@ class ConditionsService {
   @Autowired
   private lateinit var licenceRepository: LicenceRepository
 
-  fun getBespokeConditions(ids: List<Long>): ConvertedLicenseBatch {
-    val licences = getLicencesWithAdditionalConditions(ids)
+  fun getBespokeConditions(licenceIds: List<Long>): ConvertedLicenseBatch {
+    val licences = getLicencesWithAdditionalConditions(licenceIds)
     val batch = licences.map {
       val conditions = LicenceConditionRenderer.renderConditions(it)
         .map { ConvertedBespokeCondition(it.first, it.second) }
       ConvertedLicenseConditions(it.id!!, it.prisonNumber, it.bookingId, conditions)
     }
 
-    return ConvertedLicenseBatch(ids, batch)
+    return ConvertedLicenseBatch(licenceIds, batch)
   }
 
-  private fun getLicencesWithAdditionalConditions(ids: List<Long>): List<Licence> {
-    val licences = licenceRepository.findAllById(ids)
+  private fun getLicencesWithAdditionalConditions(licenceIds: List<Long>): List<Licence> {
+    val licences = licenceRepository.findAllById(licenceIds)
     return licences.filter { it.licence?.licenceConditions?.additional?.isEmpty() == false }
   }
 }

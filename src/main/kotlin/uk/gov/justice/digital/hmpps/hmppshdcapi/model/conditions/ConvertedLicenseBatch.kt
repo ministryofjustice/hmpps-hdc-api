@@ -9,7 +9,7 @@ data class ConvertedLicenseBatch(
     description = "List of requested licence IDs",
     example = "[12345, 67890]",
   )
-  val ids: List<Long>,
+  val licenceIds: List<Long>,
 
   @field:Schema(
     description = "List of licences with their converted bespoke conditions",

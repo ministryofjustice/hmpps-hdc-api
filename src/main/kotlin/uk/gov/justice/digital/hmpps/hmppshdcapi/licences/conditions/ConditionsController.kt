@@ -48,7 +48,7 @@ class ConditionsController(
   fun getBespokeConditions(
     @Valid @RequestBody request: LicenceIdBatchRequest,
   ): ResponseEntity<ConvertedLicenseBatch> {
-    val result = conditionsService.getBespokeConditions(request.ids)
+    val result = conditionsService.getBespokeConditions(request.licenceIds)
     return ResponseEntity.ok(result)
   }
 }
