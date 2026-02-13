@@ -14,6 +14,11 @@ class LicenceConditionFieldMerger {
     private val ENDING_ON = listOf(" ending on ")
 
     val fieldMergeRules = mapOf(
+      // a new one
+      "reportingDetailsV2" to FieldMergeRule(
+        fields = listOf("reportingAddress", "reportingTime"),
+        delimiters = listOf(" at "),
+      ),
       "appointmentDetails" to FieldMergeRule(
         fields = listOf("appointmentAddress", "appointmentDate", "appointmentTime"),
         delimiters = ON_AT,
@@ -85,7 +90,7 @@ class LicenceConditionFieldMerger {
         val delimiter = rule.delimiters.getOrElse(ruleIndex - 1) { rule.delimiters.last() }
         builder.append(delimiter)
       }
-      builder.append(value)
+      builder.append(value.toString().trim())
     }
 
     return builder.toString()

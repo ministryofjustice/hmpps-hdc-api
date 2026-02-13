@@ -5,6 +5,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.attemptToGuessVersion
 import kotlin.collections.associateBy
 
+private const val ARRAY_SEPARATOR = ", "
+
 object LicenceConditionRenderer {
 
   private val conditionFieldMerger = LicenceConditionFieldMerger()
@@ -32,7 +34,8 @@ object LicenceConditionRenderer {
     val cleanedConditionMetaData = removeUnwantedFieldsFromMetaDataWhenRequired(conditionMeta, condensedFields)
     val orderedFieldsData = getFieldsDataInCorrectPositions(cleanedConditionMetaData, condensedFields)
     val renderedText = renderDataToText(conditionMeta.text, orderedFieldsData)
-    return renderedText
+    // The front end has code that removes trailing periods from rendered text, we remove it twice just in case the data also has a full stop
+    return renderedText.removeSuffix(".").removeSuffix(".")
   }
 
   fun renderDataToText(
@@ -40,10 +43,12 @@ object LicenceConditionRenderer {
     fieldsData: List<Any>,
   ): String {
     var rendered = textTemplate
-    fieldsData.forEach { value ->
-      rendered = rendered.replaceFirst(Regex("\\[.*?]"), convertToString(value))
+    fieldsData.forEachIndexed { index, value ->
+      val regex = Regex("\\[.*?]")
+      rendered = rendered.replaceFirst(regex, convertToString(value))
     }
-    return rendered
+    // This is a one off fix as sometimes problem occours with REPORT_TO
+    return rendered.replace(" ,", ",")
   }
 
   private fun removeUnwantedFieldsFromMetaDataWhenRequired(
@@ -55,7 +60,7 @@ object LicenceConditionRenderer {
     // This is a bit of a hack between version 1 and 2 of the condition meta data (see version info)
     // This will have to change if we have a different version in the future
     when (inProcessConditionMetaData.id) {
-      "REPORTTO", "REPORT_TO" -> {
+      "REPORTTO" -> {
         val fieldPosition = inProcessConditionMetaData.fieldPosition.toMutableMap()
         fieldPosition["reportingFrequency"] = 2
         if (!additionalFields.containsKey("reportingTime")) {
@@ -84,8 +89,8 @@ object LicenceConditionRenderer {
   fun getConditionTemplateVersion(conditionVersion: Int?): Map<String, ConditionMetadata> = (if (conditionVersion == 1) V1_CONDITIONS else V2_CONDITIONS).associateBy { it.id }
 
   private fun convertToString(value: Any): String = when (value) {
-    is Array<*> -> value.joinToString(", ")
-    is Iterable<*> -> value.joinToString(", ")
+    is Array<*> -> value.joinToString(ARRAY_SEPARATOR)
+    is Iterable<*> -> value.joinToString(ARRAY_SEPARATOR)
     else -> value.toString()
   }
 }

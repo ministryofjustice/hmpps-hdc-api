@@ -30,8 +30,8 @@ class LicenceConditionRendererTest {
 
     // Then
     assertThat(renderedTexts).contains(
-      "Not to have unsupervised contact with  TEST_GENDER_VALUE_0 children under the age of TEST_AGE_VALUE_1 without the prior approval of your supervising officer and / or TEST_SOCIAL_VALUE_2 except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
-      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer.",
+      "Not to have unsupervised contact with  TEST_GENDER_VALUE_0 children under the age of TEST_AGE_VALUE_1 without the prior approval of your supervising officer and / or TEST_SOCIAL_VALUE_2 except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life",
+      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactlyInAnyOrder("NOUNSUPERVISEDCONTACT", "NOCONTACTASSOCIATE")
   }
@@ -59,7 +59,7 @@ class LicenceConditionRendererTest {
 
     // Then
     assertThat(renderedTexts).contains(
-      "Report to staff at (0) at (1), unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a (3) basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+      "Report to staff at (0) at (1), unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a (3) basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately",
     )
     assertThat(conditionIds).containsExactly("REPORTTO")
   }
@@ -85,9 +85,36 @@ class LicenceConditionRendererTest {
 
     // Then
     assertThat(renderedTexts).contains(
-      "Report to staff at (0) at (2), unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a  basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+      "Report to staff at (0) at (2), unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a  basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately",
     )
     assertThat(conditionIds).containsExactly("REPORTTO")
+  }
+
+  @Test
+  fun `report REPORT_TO special case missing reportingDaily field`() {
+    // Given
+    val additionalData = mapOf(
+      "REPORT_TO" to mapOf(
+        "reportingTime" to "(1)",
+        "reportingAddress" to "(0)",
+        "reportingFrequency" to "(3)",
+      ),
+    )
+
+    val licenceConditions = createConditions(additionalData)
+    val licenceData = createLicenceData(licenceConditions)
+    val licence = createLicence(licenceData, additionalConditionsVersion = 2)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+    val renderedTexts = result.map { it.second }
+    val conditionIds = result.map { it.first }
+
+    // Then
+    assertThat(renderedTexts).contains(
+      "Report to staff at (0) at (1), unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a (3) basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately",
+    )
+    assertThat(conditionIds).containsExactly("REPORT_TO")
   }
 
   @Test
@@ -111,7 +138,7 @@ class LicenceConditionRendererTest {
 
     // Then
     assertThat(renderedTexts).containsExactly(
-      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer.",
+      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCONTACTASSOCIATE")
   }
@@ -137,7 +164,7 @@ class LicenceConditionRendererTest {
 
     // Then
     assertThat(renderedTexts).containsExactly(
-      "You must reside within REGION_VALUE while of no fixed abode, unless otherwise approved by your supervising officer.",
+      "You must reside within REGION_VALUE while of no fixed abode, unless otherwise approved by your supervising officer",
     )
     assertThat(conditionIds).containsExactly("RESIDE_AT_SPECIFIC_PLACE")
   }

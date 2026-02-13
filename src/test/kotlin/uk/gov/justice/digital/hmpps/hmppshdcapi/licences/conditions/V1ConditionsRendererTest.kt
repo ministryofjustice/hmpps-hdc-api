@@ -26,7 +26,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately",
     )
     assertThat(conditionIds).containsExactly("REPORTTO")
   }
@@ -44,7 +44,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.",
+      "Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCONTACTPRISONER")
   }
@@ -64,7 +64,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer.",
+      "Not to associate with any person currently or formerly associated with GROUPS_OR_ORGANISATION_VALUE without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCONTACTASSOCIATE")
   }
@@ -82,7 +82,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.",
+      "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCONTACTSEXOFFENDER")
   }
@@ -100,7 +100,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Notify your supervising officer of any developing intimate relationships with MEN_OR_WOMEN.",
+      "Notify your supervising officer of any developing intimate relationships with MEN_OR_WOMEN",
     )
     assertThat(conditionIds).containsExactly("INTIMATERELATIONSHIP")
   }
@@ -118,7 +118,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to contact or associate with NAMED_OFFENDER_VALUE without the prior approval of your supervising officer.",
+      "Not to contact or associate with NAMED_OFFENDER_VALUE without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCONTACTNAMED")
   }
@@ -141,7 +141,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to reside (not even to stay for one night) in the same household as ANY MALE child under the age of TEST_AGE_VALUE without the prior approval of your supervising officer.",
+      "Not to reside (not even to stay for one night) in the same household as ANY MALE child under the age of TEST_AGE_VALUE without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NORESIDE")
   }
@@ -165,7 +165,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to have unsupervised contact with  ANY FEMALE children under the age of TEST_AGE_VALUE without the prior approval of your supervising officer and / or TEST_SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+      "Not to have unsupervised contact with  ANY FEMALE children under the age of TEST_AGE_VALUE without the prior approval of your supervising officer and / or TEST_SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life",
     )
     assertThat(conditionIds).containsExactly("NOUNSUPERVISEDCONTACT")
   }
@@ -183,7 +183,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to enter or remain in sight of any PLAYGROUND without the prior approval of your supervising officer.",
+      "Not to enter or remain in sight of any PLAYGROUND without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOCHILDRENSAREA")
   }
@@ -201,7 +201,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to undertake work or other organised activity which will involve a person under the age of 16, either on a paid or unpaid basis without the prior approval of your supervising officer.",
+      "Not to undertake work or other organised activity which will involve a person under the age of 16, either on a paid or unpaid basis without the prior approval of your supervising officer",
     )
     assertThat(conditionIds).containsExactly("NOWORKWITHAGE")
   }
@@ -219,7 +219,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.",
+      "Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with",
     )
     assertThat(conditionIds).containsExactly("NOTIFYRELATIONSHIP")
   }
@@ -242,7 +242,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Not to seek to approach or communicate with VICTIM_NAME without the prior approval of your supervising officer and / or SOCIAL_SERVICE_NAME.",
+      "Not to seek to approach or communicate with VICTIM_NAME without the prior approval of your supervising officer and / or SOCIAL_SERVICE_NAME",
     )
     assertThat(conditionIds).containsExactly("NOCOMMUNICATEVICTIM")
   }
@@ -266,7 +266,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.second }
     val conditionIds = result.map { it.first }
     assertThat(renderedTexts).containsExactly(
-      "Attend 123 Drug Centre on 2026-02-06 at 10:00, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
+      "Attend 123 Drug Centre on 2026-02-06 at 10:00, as directed, to address your dependency on, or propensity to misuse, a controlled drug",
     )
     assertThat(conditionIds).containsExactly("ATTENDDEPENDENCYINDRUGSSECTION")
   }
