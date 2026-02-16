@@ -25,8 +25,8 @@ class HdcStatusServiceTest {
   @Test
   fun `should return APPROVED when nomis approved and hdced present`() {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = LocalDate.now())))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "APPROVED"),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "APPROVED")),
     )
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
     val result = service.getForBooking(1L, licence)
@@ -42,8 +42,8 @@ class HdcStatusServiceTest {
   )
   fun `should return NOT_A_HDC_RELEASE when hdced is null`(approvalStatus: String) {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = null)))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus)),
     )
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
@@ -60,8 +60,8 @@ class HdcStatusServiceTest {
   )
   fun `should return NOT_A_HDC_RELEASE for explicit non release statuses`(approvalStatus: String) {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = LocalDate.now())))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = approvalStatus)),
     )
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
@@ -71,8 +71,8 @@ class HdcStatusServiceTest {
   @Test
   fun `should return NOT_STARTED when stage is null or eligibility`() {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = LocalDate.now())))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "PP INVEST"),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "PP INVEST")),
     )
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.ELIGIBILITY)
     val result = service.getForBooking(1L, licence)
@@ -82,8 +82,8 @@ class HdcStatusServiceTest {
   @Test
   fun `should return ELIGIBILITY_CHECKS_COMPLETE when processing ro`() {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = LocalDate.now())))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "ANY_OTHER_STATUS"),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "ANY_OTHER_STATUS")),
     )
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = HdcStage.PROCESSING_RO)
     val result = service.getForBooking(1L, licence)
@@ -100,8 +100,8 @@ class HdcStatusServiceTest {
     hdcStageName: String,
   ) {
     whenever(prisonSearchApiClient.getPrisonersByBookingIds(any())).thenReturn(listOf(prisoner().copy(bookingId = "1", homeDetentionCurfewEligibilityDate = LocalDate.now())))
-    whenever(prisonApiClient.getHdcStatus(1L)).thenReturn(
-      hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "OTHER"),
+    whenever(prisonApiClient.getHdcStatuses(listOf(1L))).thenReturn(
+      listOf(hdcPrisonerStatus().copy(bookingId = 1L, approvalStatus = "OTHER")),
     )
     val stage = HdcStage.valueOf(hdcStageName)
     val licence = aPreferredAddressLicence(bookingId = 1L, stage = stage)

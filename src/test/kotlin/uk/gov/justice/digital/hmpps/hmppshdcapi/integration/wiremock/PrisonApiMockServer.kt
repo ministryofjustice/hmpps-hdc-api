@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.delete
 import com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import org.springframework.http.HttpStatusCode
@@ -43,17 +44,29 @@ class PrisonApiMockServer : WireMockServer(8091) {
     verify(1, deleteRequestedFor(urlEqualTo("/api/offender-sentences/booking/$bookingId/home-detention-curfews/latest/checks-passed")))
   }
 
-  fun stubGetHdcLatest(bookingId: Long = 12345, approvalStatus: String = "REJECTED", passed: Boolean = true) {
+  fun getHdcStatuses(statuses: List<Pair<Long, String>>) {
+    val jsonArray = statuses.joinToString(
+      prefix = "[",
+      postfix = "]",
+      separator = ",",
+    ) { (bookingId, approvalStatus) ->
+      """
+      {
+        "bookingId": "$bookingId",
+        "passed": true,
+        "approvalStatus": "$approvalStatus"
+      }
+      """.trimIndent()
+    }
+
     stubFor(
-      get(urlEqualTo("/api/offender-sentences/booking/$bookingId/home-detention-curfews/latest")).willReturn(
-        aResponse().withHeader("Content-Type", "application/json").withBody(
-          """{
-                "approvalStatus": "$approvalStatus",
-                "passed": $passed,
-                "bookingId": $bookingId
-               }""",
-        ).withStatus(200),
-      ),
+      post(urlEqualTo("/api/offender-sentences/home-detention-curfews/latest"))
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(jsonArray)
+            .withStatus(200),
+        ),
     )
   }
 }
