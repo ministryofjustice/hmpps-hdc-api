@@ -9,11 +9,14 @@ private const val MAX_BATCH_SIZE = 1000
 @Schema(description = "Request containing licence IDs to retrieve bespoke conditions for")
 data class LicenceIdBatchRequest(
 
-  @field:NotEmpty
-  @field:Size(max = MAX_BATCH_SIZE, message = "Maximum $MAX_BATCH_SIZE licence IDs allowed per request")
-  @field:Schema(
-    description = "List of licence IDs",
-    example = "[1, 2, 3]",
-  )
-  val licenceIds: List<Long>,
+    @field:NotEmpty
+    @field:Size(
+        max = MAX_BATCH_SIZE,
+        message = "Maximum $MAX_BATCH_SIZE licence IDs allowed per request",
+    )
+    @field:Schema(
+        description = "List of licence IDs",
+        example = "[1, 2, 3]",
+    )
+    val licenceIds: List<Long>,
 )
