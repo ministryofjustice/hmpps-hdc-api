@@ -17,7 +17,7 @@ class ConditionsService {
     val licences = getLicencesWithAdditionalConditions(licenceIds)
     val batch = licences.map {
       val conditions = LicenceConditionRenderer.renderConditions(it)
-      ConvertedLicenseConditions(it.id!!, it.prisonNumber, it.bookingId, conditions)
+      ConvertedLicenseConditions(it.id!!, it.prisonNumber ?: "", it.bookingId, conditions)
     }
 
     return ConvertedLicenseBatch(licenceIds, batch)
