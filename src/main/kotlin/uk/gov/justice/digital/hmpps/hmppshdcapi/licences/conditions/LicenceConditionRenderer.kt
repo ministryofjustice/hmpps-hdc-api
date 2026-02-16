@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.conditions.ConvertedBespokeCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.attemptToGuessVersion
 import kotlin.collections.associateBy
 
@@ -11,20 +12,22 @@ object LicenceConditionRenderer {
 
   private val conditionFieldMerger = LicenceConditionFieldMerger()
 
-  fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List<Pair<String, String>> {
+  fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List<ConvertedBespokeCondition> {
     val licenceConditions = licenceData?.licenceConditions ?: return emptyList()
     val additionalData = licenceConditions.additional ?: return emptyList()
 
-    val conditionVersion = conditionVersion ?: attemptToGuessVersion(licenceData.licenceConditions.additional)
+    val conditionVersion = conditionVersion ?: attemptToGuessVersion(additionalData)
     val conditionTemplate = getConditionTemplateVersion(conditionVersion)
 
     return additionalData.mapNotNull { (conditionId, additionalFields) ->
       val conditionMeta = conditionTemplate[conditionId] ?: return@mapNotNull null
       conditionId to renderCondition(conditionMeta, additionalFields)
+
+      ConvertedBespokeCondition(conditionId, renderCondition(conditionMeta, additionalFields))
     }
   }
 
-  fun renderConditions(licence: Licence, conditionVersion: Int? = null): List<Pair<String, String>> = renderConditions(licence.licence, conditionVersion)
+  fun renderConditions(licence: Licence, conditionVersion: Int? = null): List<ConvertedBespokeCondition> = renderConditions(licence.licence, conditionVersion)
 
   fun renderCondition(
     conditionMeta: ConditionMetadata,

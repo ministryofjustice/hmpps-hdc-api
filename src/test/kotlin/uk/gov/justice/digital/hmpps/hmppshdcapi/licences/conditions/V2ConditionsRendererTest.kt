@@ -23,8 +23,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately",
     )
@@ -41,8 +41,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "You must reside within TEST_REGION while of no fixed abode, unless otherwise approved by your supervising officer",
     )
@@ -64,8 +64,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to reside (not even to stay for one night) in the same household as ANY FEMALE child under the age of TEST_AGE_VALUE without the prior approval of your supervising officer",
     )
@@ -82,8 +82,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Attend all appointments arranged for you with a PSYCHIATRIST and co-operate fully with any care or treatment they recommend",
     )
@@ -100,8 +100,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Receive home visits from MENTAL_HEALTH_WORKER Mental Health Worker",
     )
@@ -124,8 +124,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Attend DRUGS_CENTRE on 2026-01-01 at 09:00, as directed, to address your dependency on, or propensity to misuse, a controlled drug",
     )
@@ -147,8 +147,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to seek to approach or communicate with FAMILY_MEMBER without the prior approval of your supervising officer and / or SOCIAL_SERVICES",
     )
@@ -165,8 +165,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to our supervising officer",
     )
@@ -189,8 +189,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to have unsupervised contact with  ANY MALE children under the age of TEST_AGE without the prior approval of your supervising officer and / or SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life",
     )
@@ -207,8 +207,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to contact or associate with OFFENDER_NAME without the prior approval of your supervising officer",
     )
@@ -225,8 +225,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer",
     )
@@ -243,8 +243,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to contact directly or indirectly any person who is a serving or remand prisoner or detained in State custody, without the prior approval of your supervising officer",
     )
@@ -261,8 +261,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to associate with any person currently or formerly associated with SPECIFIC_GROUP without the prior approval of your supervising officer",
     )
@@ -284,8 +284,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your drug problems at the TEST_CENTRE",
     )
@@ -302,8 +302,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to undertake work or other organised activity which will involve a person under the age of 16, either on a paid or unpaid basis without the prior approval of your supervising officer",
     )
@@ -320,8 +320,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone or one you have regular use of, including the IMEI number and the SIM card that you possess",
     )
@@ -338,8 +338,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer",
     )
@@ -356,8 +356,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "Not to own or use a camera without the prior approval of your supervising officer",
     )
@@ -374,8 +374,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer",
     )
@@ -392,8 +392,8 @@ class V2ConditionsRendererTest {
     val result = LicenceConditionRenderer.renderConditions(licence)
 
     // Then
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
       "To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport",
     )

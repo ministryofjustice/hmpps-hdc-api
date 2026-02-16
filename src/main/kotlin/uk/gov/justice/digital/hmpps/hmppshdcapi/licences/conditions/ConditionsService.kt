@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.model.conditions.ConvertedBespokeCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.conditions.ConvertedLicenseBatch
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.conditions.ConvertedLicenseConditions
 
@@ -18,7 +17,6 @@ class ConditionsService {
     val licences = getLicencesWithAdditionalConditions(licenceIds)
     val batch = licences.map {
       val conditions = LicenceConditionRenderer.renderConditions(it)
-        .map { ConvertedBespokeCondition(it.first, it.second) }
       ConvertedLicenseConditions(it.id!!, it.prisonNumber, it.bookingId, conditions)
     }
 

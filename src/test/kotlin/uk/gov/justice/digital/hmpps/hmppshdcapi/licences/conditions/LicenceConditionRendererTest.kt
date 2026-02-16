@@ -25,8 +25,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).contains(
@@ -54,8 +54,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).contains(
@@ -80,8 +80,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).contains(
@@ -107,8 +107,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).contains(
@@ -133,8 +133,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).containsExactly(
@@ -159,8 +159,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).containsExactly(
@@ -178,8 +178,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).isEmpty()
@@ -193,8 +193,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).isEmpty()
@@ -209,8 +209,8 @@ class LicenceConditionRendererTest {
 
     // When
     val result = LicenceConditionRenderer.renderConditions(licence)
-    val renderedTexts = result.map { it.second }
-    val conditionIds = result.map { it.first }
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
 
     // Then
     assertThat(renderedTexts).isEmpty()

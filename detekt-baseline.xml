@@ -16,8 +16,7 @@
     <ID>MagicNumber:V2Conditions.kt$3</ID>
     <ID>MagicNumber:V2Conditions.kt$5</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
-    <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;Pair&lt;String, String&gt;&gt;</ID>
+    <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
-    <ID>TopLevelPropertyNaming:LicenceIdBatchRequest.kt$private const val maxBatchSize = 1000</ID>
   </CurrentIssues>
 </SmellBaseline>
