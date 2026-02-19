@@ -49,7 +49,7 @@ object LicenceConditionRenderer {
       rendered = rendered.replaceFirst(regex, convertToString(value))
     }
     // This is a one off fix as sometimes problem occours with REPORT_TO
-    return rendered.replace(" ,", ",").replace(Regex("\\s+\\.$"), ".").replace("..",".")
+    return rendered.replace(" ,", ",").replace(Regex("\\s+\\.$"), ".").replace("..", ".")
   }
 
   private fun removeUnwantedFieldsFromMetaDataWhenRequired(
