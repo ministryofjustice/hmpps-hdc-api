@@ -17,7 +17,7 @@ class ConditionsService {
   fun getBespokeConditions(licenceIds: List<Long>): ConvertedLicenseBatch {
     val licences = getLicencesWithAdditionalConditions(licenceIds)
     val batch = licences.map {
-      val conditions = LicenceConditionRenderer.renderConditions(it)
+      val conditions = LicenceConditionRenderer.renderConditions(it, it.additionalConditionsVersion)
       log.debug("Found {} conditions for licence {}", conditions.size, it.bookingId)
       ConvertedLicenseConditions(it.id!!, it.prisonNumber ?: "", it.bookingId, conditions)
     }
