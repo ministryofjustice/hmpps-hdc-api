@@ -36,9 +36,7 @@ object LicenceConditionRenderer {
     val condensedFields = conditionFieldMerger.mergeIfRequired(conditionMeta, additionalFields)
     val cleanedConditionMetaData = removeUnwantedFieldsFromMetaDataWhenRequired(conditionMeta, condensedFields)
     val orderedFieldsData = getFieldsDataInCorrectPositions(cleanedConditionMetaData, condensedFields)
-    val renderedText = renderDataToText(conditionMeta.text, orderedFieldsData)
-    // The front end has code that removes trailing periods from rendered text, we remove it twice just in case the data also has a full stop
-    return renderedText.removeSuffix(".").removeSuffix(".")
+    return renderDataToText(conditionMeta.text, orderedFieldsData).replace(Regex("\\s*\\.$"), ".").trim()
   }
 
   fun renderDataToText(
@@ -94,6 +92,7 @@ object LicenceConditionRenderer {
   private fun convertToString(value: Any): String = when (value) {
     is Array<*> -> value.joinToString(ARRAY_SEPARATOR)
     is Iterable<*> -> value.joinToString(ARRAY_SEPARATOR)
+    is String -> value.replace("\\r\\n", "\r\n")
     else -> value.toString()
   }
 }
