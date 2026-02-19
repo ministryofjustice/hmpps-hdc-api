@@ -36,7 +36,7 @@ object LicenceConditionRenderer {
     val condensedFields = conditionFieldMerger.mergeIfRequired(conditionMeta, additionalFields)
     val cleanedConditionMetaData = removeUnwantedFieldsFromMetaDataWhenRequired(conditionMeta, condensedFields)
     val orderedFieldsData = getFieldsDataInCorrectPositions(cleanedConditionMetaData, condensedFields)
-    return renderDataToText(conditionMeta.text, orderedFieldsData).replace(Regex("\\s*\\.$"), ".").trim()
+    return renderDataToText(conditionMeta.text, orderedFieldsData)
   }
 
   fun renderDataToText(
@@ -50,6 +50,8 @@ object LicenceConditionRenderer {
     }
     // This is a one off fix as sometimes problem occours with REPORT_TO
     return rendered.replace(" ,", ",")
+      .replace(Regex("\\s+\\.$"), ".")
+      .replace(Regex("\\.{2,}\\s*$"), ".")
   }
 
   private fun removeUnwantedFieldsFromMetaDataWhenRequired(
