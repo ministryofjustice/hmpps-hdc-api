@@ -53,12 +53,19 @@ class SubjectAccessRequestTest : SqsIntegrationTestBase() {
     "classpath:test_data/subject-access-request-with-conditions-v2.sql",
   )
   fun `Check response of subject access request with V2 of the additional conditions`(role: String) {
-    webTestClient.get()
-      .uri("/subject-access-request?prn=A1234AA")
+    // Given
+    val url = "/subject-access-request?prn=A1234AA"
+    val roles = listOf(role)
+
+    // When
+    val results = webTestClient.get()
+      .uri(url)
       .accept(MediaType.APPLICATION_JSON)
-      .headers(setAuthorisation(roles = listOf(role)))
+      .headers(setAuthorisation(roles = roles))
       .exchange()
-      .expectStatus().isOk()
+
+    // Then
+    results.expectStatus().isOk()
       .expectBody().json(jsonFromFile("subject-access-request-with-conditions-v2.json"), STRICT)
   }
 

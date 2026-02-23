@@ -14,7 +14,6 @@ class V1ConditionsRendererTest {
         "reportingDaily" to "TEST_DAILY",
         "reportingAddress" to "TEST_ADDRESS",
         "reportingFrequency" to "TEST_FREQUENCY",
-
       ),
     )
     val licence = createLicence(createLicenceData(createConditions(additionalData)))
@@ -248,6 +247,29 @@ class V1ConditionsRendererTest {
   }
 
   @Test
+  fun `DRUG_TESTING renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "DRUG_TESTING" to mapOf(
+        "drug_testing_name" to "Addaction Sidney Street, Sheffield., ",
+        "drug_testing_address" to "SCRC Hawke Street ,Sheffield ",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)))
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "Attend Addaction Sidney Street, Sheffield.,, SCRC Hawke Street,Sheffield, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
+    )
+    assertThat(conditionIds).containsExactly("DRUG_TESTING")
+  }
+
+  @Test
   fun `ATTENDDEPENDENCYINDRUGSSECTION renders correctly`() {
     // Given
     val additionalData = mapOf(
@@ -269,5 +291,29 @@ class V1ConditionsRendererTest {
       "Attend 123 Drug Centre on 2026-02-06 at 10:00, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
     )
     assertThat(conditionIds).containsExactly("ATTENDDEPENDENCYINDRUGSSECTION")
+  }
+
+  @Test
+  fun `ATTENDDEPENDENCY renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "ATTENDDEPENDENCY" to mapOf(
+        "appointmentDate" to "//",
+        "appointmentTime" to "",
+        "appointmentAddress" to "",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)))
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "Attend //, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
+    )
+    assertThat(conditionIds).containsExactly("ATTENDDEPENDENCY")
   }
 }
