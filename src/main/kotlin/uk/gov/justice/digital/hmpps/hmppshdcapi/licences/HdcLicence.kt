@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.HdcJsonLocalTimeDeserializer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.util.StringListHolder
 import java.time.LocalTime
 
@@ -282,36 +284,52 @@ data class FirstNight(
 
 @JsonInclude(NON_NULL)
 data class CurfewHours(
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val mondayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val mondayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val tuesdayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val tuesdayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val wednesdayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val wednesdayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val thursdayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val thursdayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val fridayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val fridayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val saturdayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val saturdayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val sundayFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val sundayUntil: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val allFrom: LocalTime?,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val allUntil: LocalTime?,
   val daySpecificInputs: Decision? = null,

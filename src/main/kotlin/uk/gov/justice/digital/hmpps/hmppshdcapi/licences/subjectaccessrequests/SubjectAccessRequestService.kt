@@ -22,12 +22,13 @@ class SubjectAccessRequestService(
     return if (licences.isEmpty() && licenceVersions.isEmpty()) {
       null
     } else {
-      HmppsSubjectAccessRequestContent(
+      val sar = HmppsSubjectAccessRequestContent(
         content = Content(
           licences = licences.map { it.toSAR() },
           licenceVersions = licenceVersions.map { it.toSAR() },
         ),
       )
+      sar
     }
   }
 }

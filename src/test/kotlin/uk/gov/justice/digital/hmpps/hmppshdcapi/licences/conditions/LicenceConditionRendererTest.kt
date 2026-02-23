@@ -6,6 +6,35 @@ import org.junit.jupiter.api.Test
 class LicenceConditionRendererTest {
 
   @Test
+  fun `renderConditions when field is at the end removes unwanted fullstops`() {
+    // Given
+    val additionalData = mapOf(
+      "INTIMATERELATIONSHIP" to mapOf(
+        "intimateGender" to "GROUPS_OR_ORGANISATION_VALUE",
+      ),
+      "INTIMATERELATIONSHIP" to mapOf(
+        "intimateGender" to "GROUPS_OR_ORGANISATION_VALUE.",
+      ),
+      "INTIMATERELATIONSHIP" to mapOf(
+        "intimateGender" to "GROUPS_OR_ORGANISATION_VALUE..",
+      ),
+    )
+
+    val licenceConditions = createConditions(additionalData)
+    val licenceData = createLicenceData(licenceConditions)
+    val licence = createLicence(licenceData, additionalConditionsVersion = 1)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+    val renderedTexts = result.map { it.text }.toSet()
+
+    // Then
+    assertThat(renderedTexts).containsExactly(
+      "Notify your supervising officer of any developing intimate relationships with GROUPS_OR_ORGANISATION_VALUE.",
+    )
+  }
+
+  @Test
   fun `renderConditions replaces placeholders with additional data`() {
     // Given
     val additionalData = mapOf(
