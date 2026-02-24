@@ -27,7 +27,7 @@ class ConditionsService {
 
   private fun getLicencesWithAdditionalConditions(licenceIds: List<Long>): List<Licence> {
     log.debug("Getting licences with additional conditions for ids: {}", licenceIds)
-    val licences = licenceRepository.findAllById(licenceIds)
+    val licences = licenceRepository.findMigratableLicencesByIds(licenceIds)
     log.debug("Found {} licences", licences.size)
     return licences.filter { it.licence?.licenceConditions?.additional?.isEmpty() == false }
   }

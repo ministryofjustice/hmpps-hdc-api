@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.NativeQuery
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -31,6 +32,9 @@ interface LicenceRepository : JpaRepository<Licence, Long> {
 
   @Query("select l from Licence l where l.deletedAt is null order by l.id asc")
   fun findAllByDeletedAtOrderByIdAsc(pageable: Pageable): Page<Licence>
+
+  @NativeQuery(value = " SELECT * FROM licences l WHERE l.id IN (:ids) AND l.deleted_at IS NULL AND additional_conditions_version IS NOT NULL")
+  fun findMigratableLicencesByIds(ids: Iterable<Long>): List<Licence>
 
   @Query("select l from Licence l where l.deletedAt is null and l.bookingId in ?1 order by l.id asc")
   fun findByBookingIds(bookingIds: List<Long>): List<Licence>
