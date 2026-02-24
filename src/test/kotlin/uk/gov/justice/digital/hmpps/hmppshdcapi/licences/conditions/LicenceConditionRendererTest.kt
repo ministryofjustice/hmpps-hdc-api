@@ -35,6 +35,54 @@ class LicenceConditionRendererTest {
   }
 
   @Test
+  fun `renderConditions when field has a renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "NOCOMMUNICATEVICTIM" to mapOf(
+        "socialServicesDept" to "",
+        "victimFamilyMembers" to "•\\tTEST TESTER is not to seek to approach or communicate with the victim of the index offence of Robbery without the prior approval of his supervising officer;",
+      ),
+    )
+
+    val licenceConditions = createConditions(additionalData)
+    val licenceData = createLicenceData(licenceConditions)
+    val licence = createLicence(licenceData, additionalConditionsVersion = 1)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+    val renderedTexts = result.map { it.text }.toSet()
+
+    // Then
+    assertThat(renderedTexts).containsExactly(
+      "Not to seek to approach or communicate with •\tTEST TESTER is not to seek to approach or communicate with the victim of the index offence of Robbery without the prior approval of his supervising officer; without the prior approval of your supervising officer and / or.",
+    )
+  }
+
+  @Test
+  fun `renderConditions when last field a full stop it renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "NOCOMMUNICATEVICTIM" to mapOf(
+        "socialServicesDept" to ".",
+        "victimFamilyMembers" to "test",
+      ),
+    )
+
+    val licenceConditions = createConditions(additionalData)
+    val licenceData = createLicenceData(licenceConditions)
+    val licence = createLicence(licenceData, additionalConditionsVersion = 1)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+    val renderedTexts = result.map { it.text }.toSet()
+
+    // Then
+    assertThat(renderedTexts).containsExactly(
+      "Not to seek to approach or communicate with test without the prior approval of your supervising officer and / or.",
+    )
+  }
+
+  @Test
   fun `renderConditions replaces placeholders with additional data`() {
     // Given
     val additionalData = mapOf(
