@@ -94,7 +94,7 @@ object LicenceConditionRenderer {
   private fun convertToString(value: Any): String = when (value) {
     is Array<*> -> value.joinToString(ARRAY_SEPARATOR)
     is Iterable<*> -> value.joinToString(ARRAY_SEPARATOR)
-    is String -> value.replace("\\r\\n", "\r\n")
+    is String -> value.replace("\\r\\n", System.lineSeparator())
     else -> value.toString()
   }
 }

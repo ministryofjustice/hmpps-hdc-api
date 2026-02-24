@@ -276,8 +276,10 @@ data class Curfew(
 
 @JsonInclude(NON_NULL)
 data class FirstNight(
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val firstNightFrom: LocalTime,
+  @field:JsonDeserialize(using = HdcJsonLocalTimeDeserializer::class)
   @field:JsonFormat(pattern = "HH:mm")
   val firstNightUntil: LocalTime,
 )
