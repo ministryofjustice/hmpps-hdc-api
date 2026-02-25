@@ -61,7 +61,7 @@ val V2_CONDITIONS = listOf(
   ),
   ConditionMetadata(
     id = "NO_UNSUPERVISED_CONTACT",
-    text = "Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+    text = "Not to have unsupervised contact with [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
     userInput = "noUnsupervisedContact",
     fieldPosition = mapOf("unsupervisedContactAge" to 1, "unsupervisedContactGender" to 0, "unsupervisedContactSocial" to 2),
     groupName = "Making or maintaining contact with a person",
@@ -221,7 +221,7 @@ val V2_CONDITIONS = listOf(
   ),
   ConditionMetadata(
     id = "CONFINE_ADDRESS",
-    text = "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
+    text = "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
     userInput = "confinedDetails",
     fieldPosition = mapOf("confinedTo" to 0, "confinedFrom" to 1, "confinedReviewFrequency" to 2),
     groupName = "Curfew arrangement",
@@ -277,7 +277,7 @@ val V2_CONDITIONS = listOf(
   ),
   ConditionMetadata(
     id = "REPORT_TO",
-    text = "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] [at TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+    text = "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] [at TIME / DAILY], unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
     userInput = "reportingDetailsV2",
     fieldPosition = mapOf("reportingTime" to 1, "reportingDaily" to 5, "reportingAddress" to 0, "reportingFrequency" to 2),
     groupName = "Supervision in the community by the supervising officer, or other responsible officer, or organisation",

@@ -26,7 +26,7 @@ class V2ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
     )
     assertThat(conditionIds).containsExactly("REPORT_TO")
   }
@@ -192,7 +192,7 @@ class V2ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Not to have unsupervised contact with  ANY MALE children under the age of TEST_AGE without the prior approval of your supervising officer and / or SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+      "Not to have unsupervised contact with ANY MALE children under the age of TEST_AGE without the prior approval of your supervising officer and / or SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
     )
     assertThat(conditionIds).containsExactly("NO_UNSUPERVISED_CONTACT")
   }
