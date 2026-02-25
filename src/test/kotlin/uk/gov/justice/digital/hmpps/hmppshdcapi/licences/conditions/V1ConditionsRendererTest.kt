@@ -251,8 +251,8 @@ class V1ConditionsRendererTest {
     // Given
     val additionalData = mapOf(
       "DRUG_TESTING" to mapOf(
-        "drug_testing_name" to "Addaction Sidney Street, Sheffield., ",
-        "drug_testing_address" to "SCRC Hawke Street ,Sheffield ",
+        "drug_testing_name" to "Addaction Green Street, TEST., ",
+        "drug_testing_address" to "SCRC Red Street ,TEST ",
       ),
     )
     val licence = createLicence(createLicenceData(createConditions(additionalData)))
@@ -264,7 +264,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Attend Addaction Sidney Street, Sheffield.,, SCRC Hawke Street,Sheffield, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
+      "Attend Addaction Green Street, TEST.,, SCRC Red Street,TEST, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
     )
     assertThat(conditionIds).containsExactly("DRUG_TESTING")
   }

@@ -34,8 +34,8 @@ class LicenceConditionFieldMergerTest {
     val fieldPosition = mapOf("attendSampleDetailsName" to 0, "attendSampleDetailsAddress" to 1)
     val conditionMetaData = aConditionMetadata(userInput = "attendSampleDetails", fieldPosition = fieldPosition)
     val additionalFields = mapOf(
-      "attendSampleDetailsName" to "Officer Smith",
-      "attendSampleDetailsAddress" to "HMP Manchester, Medical Unit",
+      "attendSampleDetailsName" to "Officer Test",
+      "attendSampleDetailsAddress" to "HMP Manchester, Test Unit",
     )
 
     // When
@@ -43,7 +43,7 @@ class LicenceConditionFieldMergerTest {
 
     // Then
     assertThat(result).containsExactly(
-      entry("attendSampleDetailsName", "Officer Smith, HMP Manchester, Medical Unit"),
+      entry("attendSampleDetailsName", "Officer Test, HMP Manchester, Test Unit"),
     )
   }
 
@@ -106,7 +106,7 @@ class LicenceConditionFieldMergerTest {
     val fieldPosition = mapOf("drug_testing_name" to 0, "drug_testing_address" to 1)
     val conditionMetaData = aConditionMetadata(userInput = "drug_testing", fieldPosition = fieldPosition)
     val additionalFields = mapOf(
-      "drug_testing_name" to "Officer Brown",
+      "drug_testing_name" to "Officer Test",
       "drug_testing_address" to "HMP Wandsworth, Testing Lab",
     )
 
@@ -115,7 +115,7 @@ class LicenceConditionFieldMergerTest {
 
     // Then
     assertThat(result).containsExactly(
-      entry("drug_testing_name", "Officer Brown, HMP Wandsworth, Testing Lab"),
+      entry("drug_testing_name", "Officer Test, HMP Wandsworth, Testing Lab"),
     )
   }
 

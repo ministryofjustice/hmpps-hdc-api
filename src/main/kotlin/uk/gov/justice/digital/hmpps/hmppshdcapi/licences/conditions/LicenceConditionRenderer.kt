@@ -51,6 +51,7 @@ object LicenceConditionRenderer {
     // This is a one off fix as sometimes problem occours with REPORT_TO
     return rendered.replace(" ,", ",")
       .replace(Regex("\\s+\\.$"), ".")
+      .replace(Regex("\\s+\\.\\.+$"), ".")
       .replace(Regex("\\.{2,}\\s*$"), ".")
   }
 
@@ -94,7 +95,7 @@ object LicenceConditionRenderer {
   private fun convertToString(value: Any): String = when (value) {
     is Array<*> -> value.joinToString(ARRAY_SEPARATOR)
     is Iterable<*> -> value.joinToString(ARRAY_SEPARATOR)
-    is String -> value.replace("\\r\\n", System.lineSeparator())
+    is String -> value.replace("\\r\\n", System.lineSeparator()).replace("\\t", "\t")
     else -> value.toString()
   }
 }
