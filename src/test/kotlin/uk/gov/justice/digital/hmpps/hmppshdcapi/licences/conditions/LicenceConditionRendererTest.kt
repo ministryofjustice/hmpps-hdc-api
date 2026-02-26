@@ -221,6 +221,31 @@ class LicenceConditionRendererTest {
   }
 
   @Test
+  fun `renderConditions can handel field tag in field value`() {
+    // Given
+    val conditionId = "NO_COMMUNICATE_VICTIM"
+    val additionalData = mapOf(
+      conditionId to mapOf(
+        "socialServicesDept" to "<SOCIAL_SERVICES>",
+        "victimFamilyMembers" to "[IM_A_FIELD_TAG]",
+      ),
+    )
+
+    val licenceConditions = createConditions(additionalData)
+    val licenceData = createLicenceData(licenceConditions)
+    val licence = createLicence(licenceData, additionalConditionsVersion = 2)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+    val renderedTexts = result.map { it.text }
+
+    // Then
+    assertThat(renderedTexts).containsExactly(
+      "Not to seek to approach or communicate with [IM_A_FIELD_TAG] without the prior approval of your supervising officer and / or <SOCIAL_SERVICES>.",
+    )
+  }
+
+  @Test
   fun `renderConditions replaces placeholders with additional data for additionalConditionsVersion two`() {
     // Given
     val conditionId = "RESIDE_AT_SPECIFIC_PLACE"

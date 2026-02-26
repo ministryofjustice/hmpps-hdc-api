@@ -43,13 +43,26 @@ object LicenceConditionRenderer {
     textTemplate: String,
     fieldsData: List<Any>,
   ): String {
-    var rendered = textTemplate
-    fieldsData.forEachIndexed { index, value ->
-      val regex = Regex("\\[.*?]")
-      rendered = rendered.replaceFirst(regex, convertToString(value))
+    val placeholderRegex = Regex("\\[.*?]")
+    val matches = placeholderRegex.findAll(textTemplate)
+
+    val rendered = StringBuilder()
+    var lastIndex = 0
+    var valueIndex = 0
+
+    for (match in matches) {
+      // Append text before placeholder
+      rendered.append(textTemplate.substring(lastIndex, match.range.first))
+
+      if (valueIndex < fieldsData.size) {
+        rendered.append(convertToString(fieldsData[valueIndex]))
+        valueIndex++
+      }
+      lastIndex = match.range.last + 1
     }
-    // This is a one off fix as sometimes problem occours with REPORT_TO
-    return rendered.replace(" ,", ", ")
+    rendered.append(textTemplate.substring(lastIndex))
+    return rendered.toString()
+      .replace(" ,", ", ")
       .replace(",  ", ", ")
       .replace(Regex("\\s+\\.$"), ".")
       .replace(Regex("\\s+\\.\\.+$"), ".")
