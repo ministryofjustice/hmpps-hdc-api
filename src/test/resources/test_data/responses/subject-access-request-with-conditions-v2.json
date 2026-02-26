@@ -141,14 +141,14 @@
                 "renderedText": "To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph."
               },
               {
-                "text": "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] [at TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+                "text": "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] [at TIME / DAILY], unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
                 "fields": {
                   "Reporting time": "12:30",
                   "Reporting address": "Sheffield Police Station",
                   "Reporting frequency": "Weekly"
                 },
                 "conditionCode": "REPORT_TO",
-                "renderedText": "Report to staff at Sheffield Police Station at 12:30, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a Weekly basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately."
+                "renderedText": "Report to staff at Sheffield Police Station at 12:30, unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a Weekly basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately."
               },
               {
                 "text": "Attend all appointments arranged for you with a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.",
@@ -247,14 +247,14 @@
                 "renderedText": "Not to own or use a camera without the prior approval of your supervising officer."
               },
               {
-                "text": "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
+                "text": "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
                 "fields": {
                   "Confined to": "12:20",
                   "Confined from": "16:30",
                   "Confined review frequency": "Other"
                 },
                 "conditionCode": "CONFINE_ADDRESS",
-                "renderedText": "Confine yourself to an address approved by your supervising officer between the hours of 12:20 and 16:30 daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a Other basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately."
+                "renderedText": "Confine yourself to an address approved by your supervising officer between the hours of 12:20 and 16:30 daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a Other basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately."
               },
               {
                 "text": "Not to contact directly or indirectly any person whom you know or believe to have been charged or convicted of any extremist related offence, without the prior approval of your supervising officer.",
@@ -415,14 +415,14 @@
                 "renderedText": "Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer."
               },
               {
-                "text": "Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+                "text": "Not to have unsupervised contact with [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
                 "fields": {
                   "Unsupervised contact age": "20",
                   "Unsupervised contact gender": "any male",
                   "Unsupervised contact social": "Harrow Street"
                 },
                 "conditionCode": "NO_UNSUPERVISED_CONTACT",
-                "renderedText": "Not to have unsupervised contact with  any male children under the age of 20 without the prior approval of your supervising officer and / or Harrow Street except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life."
+                "renderedText": "Not to have unsupervised contact with any male children under the age of 20 without the prior approval of your supervising officer and / or Harrow Street except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life."
               },
               {
                 "text": "Not to take any action that could hamper or frustrate the drug testing process.",

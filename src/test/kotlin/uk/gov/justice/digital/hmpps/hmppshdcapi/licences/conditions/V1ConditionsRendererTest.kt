@@ -25,7 +25,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+      "Report to staff at TEST_ADDRESS at TEST_TIME, unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a TEST_FREQUENCY basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
     )
     assertThat(conditionIds).containsExactly("REPORTTO")
   }
@@ -146,6 +146,29 @@ class V1ConditionsRendererTest {
   }
 
   @Test
+  fun `COMPLYREQUIREMENTS renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "COMPLYREQUIREMENTS" to mapOf(
+        "abuseAndBehaviours" to "ABUSEANDBEHAVIOURS",
+        "courseOrCentre" to "COURSE ,CENTRE",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)))
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ABUSEANDBEHAVIOURS problems at the COURSE, CENTRE.",
+    )
+    assertThat(conditionIds).containsExactly("COMPLYREQUIREMENTS")
+  }
+
+  @Test
   fun `NOUNSUPERVISEDCONTACT renders correctly`() {
     // Given
     val additionalData = mapOf(
@@ -164,7 +187,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Not to have unsupervised contact with  ANY FEMALE children under the age of TEST_AGE_VALUE without the prior approval of your supervising officer and / or TEST_SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+      "Not to have unsupervised contact with ANY FEMALE children under the age of TEST_AGE_VALUE without the prior approval of your supervising officer and / or TEST_SOCIAL_SERVICE except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
     )
     assertThat(conditionIds).containsExactly("NOUNSUPERVISEDCONTACT")
   }
@@ -264,7 +287,7 @@ class V1ConditionsRendererTest {
     val renderedTexts = result.map { it.text }
     val conditionIds = result.map { it.code }
     assertThat(renderedTexts).containsExactly(
-      "Attend Addaction Green Street, TEST.,, SCRC Red Street,TEST, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
+      "Attend Addaction Green Street, TEST.,, SCRC Red Street, TEST, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
     )
     assertThat(conditionIds).containsExactly("DRUG_TESTING")
   }
