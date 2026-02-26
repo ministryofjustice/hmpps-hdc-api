@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
-// NOTE: DO NOT EDIT DIRECTLY: This is generated via "npm run generate:kotlin-types" in https://github.com/ministryofjustice/licences
+// NOTE: This normally should not differ from the generated version via "npm run generate:kotlin-types" in https://github.com/ministryofjustice/licences
+// But for condition migration to cvl we have removed double spaces!
 
 val V2_CONDITIONS = listOf(
   ConditionMetadata(
