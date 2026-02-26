@@ -406,7 +406,7 @@ data class VictimLiaison(
 
 @JsonInclude(NON_NULL)
 data class Approval(
-  val release: Release,
+  val release: Release? = null,
   val consideration: DecisionMade? = null,
 )
 
