@@ -6,6 +6,75 @@ import org.junit.jupiter.api.Test
 class V2ConditionsRendererTest {
 
   @Test
+  fun `ALCOHOL_MONITORING renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "ALCOHOL_MONITORING" to mapOf(
+        "endDate" to "<DATE>",
+        "timeframe" to "<TIME_FRAME>",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)), additionalConditionsVersion = 2)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of <TIME_FRAME> ending on <DATE>, and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.",
+    )
+    assertThat(conditionIds).containsExactly("ALCOHOL_MONITORING")
+  }
+
+  @Test
+  fun `ALCOHOL_MONITORING with missing end date renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "ALCOHOL_MONITORING" to mapOf(
+        "endDate" to "",
+        "timeframe" to "<TIME_FRAME>",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)), additionalConditionsVersion = 2)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of <TIME_FRAME>, and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.",
+    )
+    assertThat(conditionIds).containsExactly("ALCOHOL_MONITORING")
+  }
+
+  @Test
+  fun `ALCOHOL_MONITORING with missing time frame renders correctly`() {
+    // Given
+    val additionalData = mapOf(
+      "ALCOHOL_MONITORING" to mapOf(
+        "endDate" to "<DATE>",
+        "timeframe" to "",
+      ),
+    )
+    val licence = createLicence(createLicenceData(createConditions(additionalData)), additionalConditionsVersion = 2)
+
+    // When
+    val result = LicenceConditionRenderer.renderConditions(licence)
+
+    // Then
+    val renderedTexts = result.map { it.text }
+    val conditionIds = result.map { it.code }
+    assertThat(renderedTexts).containsExactly(
+      "You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of <DATE>, and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.",
+    )
+    assertThat(conditionIds).containsExactly("ALCOHOL_MONITORING")
+  }
+
+  @Test
   fun `REPORT_TO renders correctly`() {
     // Given
     val additionalData = mapOf(
