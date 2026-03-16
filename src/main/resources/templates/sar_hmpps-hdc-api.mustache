@@ -262,8 +262,8 @@
                     </tr>
                     <tr>
                         <td>{{ optionalValue reportingInstructions.buildingAndStreet1 }}</td>
-                        <td>{{ optionalValue (formatDate reportingInstructions.reportingDate) }}</td>
                         <td>{{ optionalValue reportingInstructions.townOrCity }}</td>
+                        <td>{{ optionalValue (formatDate reportingInstructions.reportingDate) }}</td>
                     </tr>
                 </table>
                 <table class="data-table">
@@ -298,12 +298,12 @@
             <h4>Licence conditions</h4>
             {{#licenceConditions}}
                 <table class="summary-list">
-                    <tr><td>Bespoke conditions</td><td>{{#bespoke}}{{.}}{{#unless @last}}, {{/unless}}{{/bespoke}}{{^bespoke}}No Data Held{{/bespoke}}</td></tr>
+                    <tr><td>Bespoke conditions</td><td>{{#bespokeConditions}}{{.}}{{#unless @last}}, {{/unless}}{{/bespokeConditions}}{{^bespokeConditions}}No Data Held{{/bespokeConditions}}</td></tr>
                     <tr><td>Additional conditions required</td><td>{{ optionalValue standard.additionalConditionsRequired }}</td></tr>
-                    <tr><td>Additional conditions justification</td><td>{{ optionalValue conditionsSummary.additionalConditionsJustification }}</td></tr>
+                    <tr><td>Additional conditions justification</td><td>{{ optionalValue additionalConditionsJustification }}</td></tr>
                 </table>
                 <h5>Additional conditions</h5>
-                {{#additional}}
+                {{#additionalConditions}}
                     {{#each .}}
                         <br>
                         <b>{{ @key }}</b>
@@ -312,7 +312,7 @@
                                 {{#each .}}
                                 <tr><td>{{ @key }}</td><td>{{ optionalValue this }}</td></tr>
                                 {{else}}
-                                <div>No Data Held</div>
+                                <tr><td colspan="2">No Data Held</td></tr>
                                 {{/each}}
                             </table>
                         {{/this}}
@@ -320,10 +320,10 @@
                             <p>No Data Held</p>
                         {{/this}}
                     {{/each}}
-                {{/additional}}
-                {{^additional}}
+                {{/additionalConditions}}
+                {{^additionalConditions}}
                     <p>No Data Held</p>
-                {{/additional}}
+                {{/additionalConditions}}
             {{/licenceConditions}}
             {{^licenceConditions}}
                 <p>No Data Held</p>
@@ -630,8 +630,8 @@
                 </tr>
                 <tr>
                     <td>{{ optionalValue reportingInstructions.buildingAndStreet1 }}</td>
-                    <td>{{ optionalValue (formatDate reportingInstructions.reportingDate) }}</td>
                     <td>{{ optionalValue reportingInstructions.townOrCity }}</td>
+                    <td>{{ optionalValue (formatDate reportingInstructions.reportingDate) }}</td>
                 </tr>
             </table>
             <table class="data-table">
@@ -666,12 +666,12 @@
         <h4>Licence conditions</h4>
         {{#licenceConditions}}
             <table class="summary-list">
-                <tr><td>Bespoke conditions</td><td>{{#bespoke}}{{.}}{{#unless @last}}, {{/unless}}{{/bespoke}}{{^bespoke}}No Data Held{{/bespoke}}</td></tr>
+                <tr><td>Bespoke conditions</td><td>{{#bespokeConditions}}{{.}}{{#unless @last}}, {{/unless}}{{/bespokeConditions}}{{^bespokeConditions}}No Data Held{{/bespokeConditions}}</td></tr>
                 <tr><td>Additional conditions required</td><td>{{ optionalValue standard.additionalConditionsRequired }}</td></tr>
                 <tr><td>Additional conditions justification</td><td>{{ optionalValue conditionsSummary.additionalConditionsJustification }}</td></tr>
             </table>
             <h5>Additional conditions</h5>
-            {{#additional}}
+            {{#additionalConditions}}
                 {{#each .}}
                     <br>
                     <b>{{ @key }}</b>
@@ -688,10 +688,10 @@
                         <p>No Data Held</p>
                     {{/this}}
                 {{/each}}
-            {{/additional}}
-            {{^additional}}
+            {{/additionalConditions}}
+            {{^additionalConditions}}
                 <p>No Data Held</p>
-            {{/additional}}
+            {{/additionalConditions}}
         {{/licenceConditions}}
         {{^licenceConditions}}
             <p>No Data Held</p>
