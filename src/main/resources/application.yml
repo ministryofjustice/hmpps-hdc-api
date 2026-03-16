@@ -100,4 +100,9 @@ management:
       cache:
         time-to-live: 2000ms
 
-hmpps.sar.additionalAccessRole: HDC_ADMIN
+hmpps:
+  sar:
+    additionalAccessRole: HDC_ADMIN
+    template:
+      path: /templates/sar_hmpps-hdc-api.mustache
+      enabled: true
