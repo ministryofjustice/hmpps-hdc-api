@@ -65,3 +65,31 @@ sure you select the following options:
 Then `Copy` and paste the generated SQL into `src/main/resources/migration/common/V01__init.sql`. Compare the commit changes in 
 the file to make sure all looks as expected and there are just the additions required made. Also make sure there are no passwords 
 in there before you commit. Replaces all of these passwords with `licences`.
+
+## Subject access requests
+
+This project makes use of the subject access request test library.
+
+If we persist any additional information about an offender, as a team we need consider whether we need to include this
+in the SAR responses.
+
+Any changes to data models or API responses that will affect the SAR responses should be reflected in the SAR snapshots.
+These are stored in `src/test/resources/sar` and are used to compare against the actual responses received
+from the API when running the SAR integration tests.
+
+To regenerate SAR snapshots - use the following command, which will run the SAR integration tests and update the
+snapshots with the actual responses received from the API. This is useful to do if you have made changes to the API that
+will affect the SAR responses, and you want to make sure the snapshots are up to date with the new expected responses.
+```bash
+SAR_GENERATE_ACTUAL=true \
+  ./gradlew clean integrationTest --tests "uk.gov.justice.digital.hmpps.hmppshdcapi.integration.SubjectAccessRequestIntegrationTest"
+```
+
+The generated response will appear as log files in `src/test/resources`
+
+To view the generated PDF: 
+
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+  --headless --disable-gpu --print-to-pdf=example-hmpps-hdc-api.pdf src/test/resources/sar/sar-generated-report.html
+```

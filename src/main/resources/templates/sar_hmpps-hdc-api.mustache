@@ -108,45 +108,25 @@
                     <tr><td>First night until</td><td>{{ optionalValue (formatDate firstNight.firstNightUntil) }}</td></tr>
                 </table>
 
-                <h5>Curfew hours</h5>
+                 <h5>Curfew hours</h5>
                 <table class="data-table">
                     <tr>
-                        <td class="data-column-15">Monday from</td>
-                        <td class="data-column-15">Tuesday from</td>
-                        <td class="data-column-20">Wednesday from</td>
-                        <td class="data-column-15">Thursday from</td>
-                        <td class="data-column-15">Friday from</td>
-                        <td class="data-column-15">Saturday from</td>
-                        <td class="data-column-15">Sunday from</td>
+                        <td class="data-column-14">Monday</td>
+                        <td class="data-column-14">Tuesday</td>
+                        <td class="data-column-14">Wednesday</td>
+                        <td class="data-column-14">Thursday</td>
+                        <td class="data-column-14">Friday</td>
+                        <td class="data-column-14">Saturday</td>
+                        <td class="data-column-14">Sunday</td>
                     </tr>
                     <tr>
-                        <td>{{ optionalValue curfewHours.mondayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.tuesdayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.wednesdayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.thursdayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.fridayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.saturdayFrom }}</td>
-                        <td>{{ optionalValue curfewHours.sundayFrom }}</td>
-                    </tr>
-                </table>
-                <table class="data-table">
-                    <tr>
-                        <td class="data-column-15">Monday until</td>
-                        <td class="data-column-15">Tuesday until</td>
-                        <td class="data-column-20">Wednesday until</td>
-                        <td class="data-column-15">Thursday until</td>
-                        <td class="data-column-15">Friday until</td>
-                        <td class="data-column-15">Saturday until</td>
-                        <td class="data-column-15">Sunday until</td>
-                    </tr>
-                    <tr>
-                        <td>{{ optionalValue curfewHours.mondayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.tuesdayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.wednesdayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.thursdayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.fridayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.saturdayUntil }}</td>
-                        <td>{{ optionalValue curfewHours.sundayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.mondayFrom }} - {{ optionalValue curfewHours.mondayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.tuesdayFrom }} - {{ optionalValue curfewHours.tuesdayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.wednesdayFrom }} - {{ optionalValue curfewHours.wednesdayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.thursdayFrom }} - {{ optionalValue curfewHours.thursdayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.fridayFrom }} - {{ optionalValue curfewHours.fridayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.saturdayFrom }} - {{ optionalValue curfewHours.saturdayUntil }}</td>
+                        <td>{{ optionalValue curfewHours.sundayFrom }} - {{ optionalValue curfewHours.sundayUntil }}</td>
                     </tr>
                 </table>
 
@@ -225,13 +205,12 @@
                 </table>
                 <table class="data-table">
                     <tr>
-                        <td class="data-column-25">Manage in the community</td>
-                        <td class="data-column-50">Manage in the community not possible reason</td>
+                        <td class="data-column-30">Manage in the community</td>
+                        <td class="data-column-70">Manage in the community not possible reason</td>
                     </tr>
                     <tr>
                         <td>{{ optionalValue riskManagement.manageInTheCommunity }}</td>
                         <td>{{ optionalValue riskManagement.manageInTheCommunityNotPossibleReason }}</td>
-                        <td></td>
                     </tr>
                 </table>
             {{/risk}}
@@ -297,30 +276,35 @@
             <br>
             <h4>Licence conditions</h4>
             {{#licenceConditions}}
+                <h5>Bespoke conditions</h5>
+                {{#bespokeConditions}}
                 <table class="summary-list">
-                    <tr><td>Bespoke conditions</td><td>{{#bespokeConditions}}{{.}}{{#unless @last}}, {{/unless}}{{/bespokeConditions}}{{^bespokeConditions}}No Data Held{{/bespokeConditions}}</td></tr>
+                    <tr>
+                        <td>Text</td>
+                        <td>{{optionalValue text}}</td>
+                    </tr>
+                    <tr>
+                        <td>Approved</td>
+                        <td>{{optionalValue approved}}</td>
+                    </tr>
+                </table>
+                {{/bespokeConditions}}
+                {{^bespokeConditions}}
+                    <p>No Data Held</p>
+                {{/bespokeConditions}}
+                <table class="summary-list">
                     <tr><td>Additional conditions required</td><td>{{ optionalValue standard.additionalConditionsRequired }}</td></tr>
                     <tr><td>Additional conditions justification</td><td>{{ optionalValue additionalConditionsJustification }}</td></tr>
                 </table>
                 <h5>Additional conditions</h5>
+                <table class="summary-list">
                 {{#additionalConditions}}
-                    {{#each .}}
-                        <br>
-                        <b>{{ @key }}</b>
-                        {{#this}}
-                            <table class="summary-list">
-                                {{#each .}}
-                                <tr><td>{{ @key }}</td><td>{{ optionalValue this }}</td></tr>
-                                {{else}}
-                                <tr><td colspan="2">No Data Held</td></tr>
-                                {{/each}}
-                            </table>
-                        {{/this}}
-                        {{^this}}
-                            <p>No Data Held</p>
-                        {{/this}}
-                    {{/each}}
+                        <tr>
+                          <td>{{conditionCode}}</td>
+                          <td>{{renderedText}}</td>
+                        </tr>
                 {{/additionalConditions}}
+                     </table>
                 {{^additionalConditions}}
                     <p>No Data Held</p>
                 {{/additionalConditions}}
@@ -359,9 +343,9 @@
             {{#finalChecks}}
             <table class="data-table">
                 <tr>
-                    <td class="data-column-20">On remand decision</td>
-                    <td class="data-column-20">Serious offence decision</td>
-                    <td class="data-column-20">Confiscation order decision</td>
+                    <td class="data-column-33">On remand decision</td>
+                    <td class="data-column-33">Serious offence decision</td>
+                    <td class="data-column-33">Confiscation order decision</td>
                 </tr>
                 <tr>
                     <td>{{ optionalValue onRemand.decision }}</td>
@@ -479,42 +463,22 @@
             <h5>Curfew hours</h5>
             <table class="data-table">
                 <tr>
-                    <td class="data-column-15">Monday from</td>
-                    <td class="data-column-15">Tuesday from</td>
-                    <td class="data-column-20">Wednesday from</td>
-                    <td class="data-column-15">Thursday from</td>
-                    <td class="data-column-15">Friday from</td>
-                    <td class="data-column-15">Saturday from</td>
-                    <td class="data-column-15">Sunday from</td>
+                    <td class="data-column-14">Monday</td>
+                    <td class="data-column-14">Tuesday</td>
+                    <td class="data-column-14">Wednesday</td>
+                    <td class="data-column-14">Thursday</td>
+                    <td class="data-column-14">Friday</td>
+                    <td class="data-column-14">Saturday</td>
+                    <td class="data-column-14">Sunday</td>
                 </tr>
                 <tr>
-                    <td>{{ optionalValue curfewHours.mondayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.tuesdayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.wednesdayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.thursdayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.fridayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.saturdayFrom }}</td>
-                    <td>{{ optionalValue curfewHours.sundayFrom }}</td>
-                </tr>
-            </table>
-            <table class="data-table">
-                <tr>
-                    <td class="data-column-15">Monday until</td>
-                    <td class="data-column-15">Tuesday until</td>
-                    <td class="data-column-20">Wednesday until</td>
-                    <td class="data-column-15">Thursday until</td>
-                    <td class="data-column-15">Friday until</td>
-                    <td class="data-column-15">Saturday until</td>
-                    <td class="data-column-15">Sunday until</td>
-                </tr>
-                <tr>
-                    <td>{{ optionalValue curfewHours.mondayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.tuesdayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.wednesdayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.thursdayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.fridayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.saturdayUntil }}</td>
-                    <td>{{ optionalValue curfewHours.sundayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.mondayFrom }} - {{ optionalValue curfewHours.mondayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.tuesdayFrom }} - {{ optionalValue curfewHours.tuesdayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.wednesdayFrom }} - {{ optionalValue curfewHours.wednesdayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.thursdayFrom }} - {{ optionalValue curfewHours.thursdayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.fridayFrom }} - {{ optionalValue curfewHours.fridayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.saturdayFrom }} - {{ optionalValue curfewHours.saturdayUntil }}</td>
+                    <td>{{ optionalValue curfewHours.sundayFrom }} - {{ optionalValue curfewHours.sundayUntil }}</td>
                 </tr>
             </table>
 
@@ -593,13 +557,12 @@
             </table>
             <table class="data-table">
                 <tr>
-                    <td class="data-column-25">Manage in the community</td>
-                    <td class="data-column-50">Manage in the community not possible reason</td>
+                    <td class="data-column-30">Manage in the community</td>
+                    <td class="data-column-70">Manage in the community not possible reason</td>
                 </tr>
                 <tr>
                     <td>{{ optionalValue riskManagement.manageInTheCommunity }}</td>
                     <td>{{ optionalValue riskManagement.manageInTheCommunityNotPossibleReason }}</td>
-                    <td></td>
                 </tr>
             </table>
         {{/risk}}
@@ -665,30 +628,35 @@
         <br>
         <h4>Licence conditions</h4>
         {{#licenceConditions}}
+            <h5>Bespoke conditions</h5>
+            {{#bespokeConditions}}
             <table class="summary-list">
-                <tr><td>Bespoke conditions</td><td>{{#bespokeConditions}}{{.}}{{#unless @last}}, {{/unless}}{{/bespokeConditions}}{{^bespokeConditions}}No Data Held{{/bespokeConditions}}</td></tr>
+                <tr>
+                    <td>Text</td>
+                    <td>{{optionalValue text}}</td>
+                </tr>
+                <tr>
+                    <td>Approved</td>
+                    <td>{{optionalValue approved}}</td>
+                </tr>
+            </table>
+            {{/bespokeConditions}}
+            {{^bespokeConditions}}
+                <p>No Data Held</p>
+            {{/bespokeConditions}}
+            <table class="summary-list">
                 <tr><td>Additional conditions required</td><td>{{ optionalValue standard.additionalConditionsRequired }}</td></tr>
-                <tr><td>Additional conditions justification</td><td>{{ optionalValue conditionsSummary.additionalConditionsJustification }}</td></tr>
+                <tr><td>Additional conditions justification</td><td>{{ optionalValue additionalConditionsJustification }}</td></tr>
             </table>
             <h5>Additional conditions</h5>
+            <table class="summary-list">
             {{#additionalConditions}}
-                {{#each .}}
-                    <br>
-                    <b>{{ @key }}</b>
-                    {{#this}}
-                        <table class="summary-list">
-                            {{#each .}}
-                                <tr><td>{{ @key }}</td><td>{{ optionalValue this }}</td></tr>
-                            {{else}}
-                                <div>No Data Held</div>
-                            {{/each}}
-                        </table>
-                    {{/this}}
-                    {{^this}}
-                        <p>No Data Held</p>
-                    {{/this}}
-                {{/each}}
+                    <tr>
+                      <td>{{conditionCode}}</td>
+                      <td>{{renderedText}}</td>
+                    </tr>
             {{/additionalConditions}}
+                 </table>
             {{^additionalConditions}}
                 <p>No Data Held</p>
             {{/additionalConditions}}
@@ -727,9 +695,9 @@
         {{#finalChecks}}
             <table class="data-table">
                 <tr>
-                    <td class="data-column-20">On remand decision</td>
-                    <td class="data-column-20">Serious offence decision</td>
-                    <td class="data-column-20">Confiscation order decision</td>
+                    <td class="data-column-33">On remand decision</td>
+                    <td class="data-column-33">Serious offence decision</td>
+                    <td class="data-column-33">Confiscation order decision</td>
                 </tr>
                 <tr>
                     <td>{{ optionalValue onRemand.decision }}</td>

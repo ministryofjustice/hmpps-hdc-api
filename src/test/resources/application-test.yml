@@ -22,7 +22,7 @@ hmpps:
       # This was implemented in reverse, it's been fixed in the latest version of the sar library so will need to be reversed then.
       attachments-expected: true
       # When changing expected schema version this should act as a prompt to consider whether SAR requires updating
-      #check with the rest of the team to see if this required
+      # check with the rest of the team to see if this is required
       expected-flyway-schema-version: "01"
       expected-jpa-entity-schema:
         path: /sar/entity-schema.json
