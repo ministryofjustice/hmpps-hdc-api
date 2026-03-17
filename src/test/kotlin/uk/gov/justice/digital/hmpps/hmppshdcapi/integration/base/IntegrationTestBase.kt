@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.hmppshdcapi.config.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.OAuthMockServer
+import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 abstract class IntegrationTestBase : TestBase() {
@@ -21,7 +21,7 @@ abstract class IntegrationTestBase : TestBase() {
   lateinit var webTestClient: WebTestClient
 
   @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
+  protected lateinit var jwtAuthHelper: JwtAuthorisationHelper
 
   @MockitoSpyBean
   protected lateinit var telemetryClient: TelemetryClient
@@ -56,7 +56,12 @@ abstract class IntegrationTestBase : TestBase() {
   protected fun setAuthorisation(
     user: String = "hmpps-hdc-api-1",
     roles: List<String> = listOf(),
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles)
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
+    clientId = "hmpps-hdc-api-1",
+    username = user,
+    roles = roles,
+    scope = listOf("read"),
+  )
 
   protected fun jsonString(any: Any) = objectMapper.writeValueAsString(any) as String
 }
