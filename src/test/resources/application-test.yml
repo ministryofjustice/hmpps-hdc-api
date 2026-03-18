@@ -24,10 +24,7 @@ spring:
     password: hmpps-hdc-api
 
   flyway:
-    locations: classpath:/migration/common,/migration/{vendor}
-    url: jdbc:postgresql://localhost:5432/hmpps-hdc-api?sslmode=prefer
-    user: licences
-    password: hmpps-hdc-api
+    locations: classpath:/migration/common,classpath:/migration/{vendor}
     enabled: true
 
   main:

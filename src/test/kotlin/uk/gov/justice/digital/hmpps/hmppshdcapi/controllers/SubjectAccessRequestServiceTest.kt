@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.createMapper
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.TestData.aCas2ApprovedPremisesLicence
@@ -20,7 +20,7 @@ class SubjectAccessRequestServiceTest {
   private val licenceVersionRepository: LicenceVersionRepository = mock()
 
   private val service = SubjectAccessRequestService(licenceRepository, licenceVersionRepository)
-  private val mapper = ObjectMapper()
+  private val mapper = createMapper()
 
   @Test
   fun `throws entity not found`() {
