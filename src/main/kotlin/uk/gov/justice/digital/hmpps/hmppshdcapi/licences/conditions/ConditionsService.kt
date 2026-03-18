@@ -19,7 +19,7 @@ class ConditionsService {
     val batch = licences.map {
       val conditions = LicenceConditionRenderer.renderConditions(it, it.additionalConditionsVersion)
       log.debug("Found {} conditions for licence {}", conditions.size, it.bookingId)
-      ConvertedLicenseConditions(it.id!!, it.prisonNumber ?: "", it.bookingId, conditions)
+      ConvertedLicenseConditions(it.id!!, it.prisonNumber, it.bookingId, conditions)
     }
 
     return ConvertedLicenseBatch(licenceIds, batch)

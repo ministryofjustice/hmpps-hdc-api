@@ -1,0 +1,35 @@
+{
+  "AuditEvent": {
+    "action": "String",
+    "details": "Map",
+    "id": "Long",
+    "timestamp": "LocalDateTime",
+    "user": "String"
+  },
+  "Licence": {
+    "additionalConditionsVersion": "Integer",
+    "bookingId": "long",
+    "deletedAt": "LocalDateTime",
+    "id": "Long",
+    "licence": "LicenceData",
+    "licenceInCvl": "boolean",
+    "prisonNumber": "String",
+    "stage": "HdcStage",
+    "standardConditionsVersion": "Integer",
+    "transitionDate": "LocalDateTime",
+    "varyVersion": "int",
+    "version": "int"
+  },
+  "LicenceVersion": {
+    "bookingId": "long",
+    "deletedAt": "LocalDateTime",
+    "id": "Long",
+    "licence": "LicenceData",
+    "licenceInCvl": "boolean",
+    "prisonNumber": "String",
+    "template": "String",
+    "timestamp": "LocalDateTime",
+    "varyVersion": "int",
+    "version": "int"
+  }
+}
