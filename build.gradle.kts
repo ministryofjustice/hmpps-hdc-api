@@ -91,14 +91,6 @@ dependencies {
   testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 }
 
-configurations.matching { it.name == "detekt" }.all {
-  resolutionStrategy.eachDependency {
-    if (requested.group == "org.jetbrains.kotlin") {
-      useVersion("2.0.21")
-    }
-  }
-}
-
 detekt {
   source.setFrom("$projectDir/src/main")
   buildUponDefaultConfig = true // preconfigure defaults
