@@ -7,8 +7,7 @@ data class PrisonerHdcStatus(
   val approvalStatusDate: String? = null,
   val bookingId: Long? = null,
   val checksPassedDate: String? = null,
-  @field:JsonProperty(defaultValue = "false")
-  val passed: Boolean,
+  val passed: Boolean = false,
   val refusedReason: String? = null,
 ) {
   fun isApproved() = approvalStatus == "APPROVED"
