@@ -61,6 +61,10 @@ dependencies {
   // OpenAPI
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
 
+  // To help override SAR
+  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.0.0")
+  implementation("org.jsoup:jsoup:1.18.3")
+
   // New in Spring Boot 4: Dedicated starter for HTTP clients
   implementation("org.springframework.boot:spring-boot-starter-webclient")
 
@@ -141,25 +145,29 @@ tasks {
     }
     jvmTarget = "21"
   }
-  named<Test>("test") {
-    filter {
-      excludeTestsMatching("*.integration.*")
-    }
-  }
 
-  named<Test>("test") {
-    filter {
-      excludeTestsMatching("*.integration.*")
-    }
+  register<Test>("initialiseDatabase") {
+    include("**/InitialiseDatabaseTest.class")
   }
 
   register<Test>("integrationTest") {
     description = "Integration tests"
     group = "verification"
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
     shouldRunAfter("test")
     useJUnitPlatform()
+
     filter {
       includeTestsMatching("*.integration.*")
+    }
+  }
+
+  named<Test>("test") {
+    filter {
+      excludeTestsMatching("*.integration.*")
     }
   }
 

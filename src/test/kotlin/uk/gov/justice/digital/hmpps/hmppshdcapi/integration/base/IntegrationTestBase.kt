@@ -62,7 +62,7 @@ abstract class IntegrationTestBase : TestBase() {
     user: String = "hmpps-hdc-api-1",
     roles: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
-    clientId = "create-and-vary-a-licence-admin",
+    clientId = "hmpps-hdc-api-1",
     username = user,
     roles = roles,
     scope = listOf("read"),
