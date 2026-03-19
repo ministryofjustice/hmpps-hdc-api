@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import tools.jackson.databind.DeserializationFeature
-import tools.jackson.databind.ObjectMapper
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.KotlinFeature
 import tools.jackson.module.kotlin.KotlinModule
@@ -13,10 +12,8 @@ import tools.jackson.module.kotlin.KotlinModule
 @Configuration
 class JacksonConfig {
 
-  @Bean
-  @Primary
-  fun objectMapper(): ObjectMapper = customise(JsonMapper.builder()).build()
 
+  @Primary
   @Bean
   fun customizer(): JsonMapperBuilderCustomizer = JsonMapperBuilderCustomizer { builder ->
     builder?.let { customise(it) }
