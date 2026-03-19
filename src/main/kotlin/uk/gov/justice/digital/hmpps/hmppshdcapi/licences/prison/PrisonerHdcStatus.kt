@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
 data class PrisonerHdcStatus(
   val approvalStatus: String? = null,
   val approvalStatusDate: String? = null,
