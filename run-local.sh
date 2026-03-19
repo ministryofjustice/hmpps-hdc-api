@@ -30,14 +30,8 @@ restart_docker () {
 
 wait_for_docker () {
   echo "Waiting for back end containers to be ready ..."
-    until [ "`docker inspect -f {{.State.Running}} licences-api-db`" == true ]; do
-        sleep 0.1;
-    done;
-    until [ "`docker inspect -f {{.State.Health.Status}} localstack-hdc-api`" == "healthy" ]; do
-        sleep 0.1;
-    done;
-
-    echo "Back end containers are now ready"
+  docker compose up -d --wait
+  echo "Back end containers are now ready"
 }
 
 # Server port - avoid clash with prison-api
