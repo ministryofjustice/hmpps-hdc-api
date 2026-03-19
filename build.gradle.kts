@@ -1,25 +1,31 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.3.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.0.5"
   id("org.owasp.dependencycheck") version "12.2.0"
-  kotlin("plugin.spring") version "2.3.0"
-  kotlin("plugin.jpa") version "2.3.0"
+  kotlin("plugin.spring") version "2.3.10"
+  kotlin("plugin.jpa") version "2.3.10"
   id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
-configurations {
-  testImplementation { exclude(group = "org.junit.vintage") }
+repositories {
+  mavenCentral()
 }
+
+ext["logback.version"] = "1.5.19"
 
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  // Spring boot dependencies
+  // hmpps-kotlin-lib
   constraints {
     implementation("org.apache.commons:commons-compress:1.26.0") {
       because("1.24.0 has CVE-2024-25710 and CVE-2024-26308 vulnerabilities")
     }
   }
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.8.2")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.1")
 
   // CVE-2025-67735 - it does not fix all occurrences
   implementation(enforcedPlatform("io.netty:netty-bom:4.2.8.Final"))
@@ -28,102 +34,65 @@ dependencies {
   implementation("io.netty:netty-handler")
   implementation("io.netty:netty-transport")
   // END of CVE-2025-67735 - Remove when fixed
+
   // Fix for CVE-2025-48924
   implementation("org.apache.commons:commons-lang3:3.18.0")
 
+  // Fix for CVE-2025-68161 -  () - maven/org.apache.logging.log4j/log4j-api@2.25.0
+  implementation(enforcedPlatform("org.apache.logging.log4j:log4j-bom:2.25.1"))
+  implementation("org.apache.logging.log4j:log4j-api")
+  // End of CVE-2025-68161 remove when not needed.
+
   // Spring boot dependencies
-  implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+  implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-cache")
-  implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.16.0")
-  implementation("org.springframework.security:spring-security-config:6.5.3")
+  implementation("org.springframework.boot:spring-boot-starter-flyway")
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.8")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.0.1")
 
   // OpenAPI
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
+
+  // To help override SAR
+  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.0.0")
+  implementation("org.jsoup:jsoup:1.18.3")
+
+  // New in Spring Boot 4: Dedicated starter for HTTP clients
+  implementation("org.springframework.boot:spring-boot-starter-webclient")
+
+  // Required for @AutoConfigureWebTestClient and testing WebClient
+  testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
+
+  // Update to a version compatible with Spring Boot 4.0
+  testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
 
   // Test dependencies
-  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
-  testImplementation("org.springframework.security:spring-security-test")
   testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
   testImplementation("io.jsonwebtoken:jjwt-api:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.13.0")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.1")
-  testImplementation("io.swagger.parser.v3:swagger-parser-v2-converter:2.1.37")
-  testImplementation("org.mockito:mockito-inline:5.2.0")
   testImplementation("io.projectreactor:reactor-test")
-  testImplementation("com.h2database:h2:2.4.240")
-  testImplementation("org.testcontainers:postgresql:1.21.3")
-  testImplementation("org.testcontainers:localstack:1.21.3")
-  testImplementation("io.opentelemetry:opentelemetry-sdk-testing:1.54.1")
+  testImplementation("com.h2database:h2")
+  testImplementation("org.testcontainers:testcontainers-localstack:2.0.3")
+  testImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:1.2.1")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:1.8.2")
-}
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.2")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
+  testImplementation("org.springframework.boot:spring-boot-webtestclient")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.boot:spring-boot-test-autoconfigure")
 
-configurations {
-  testImplementation {
-    exclude(group = "org.mozilla:rhino")
-  }
-}
-
-java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-}
-
-tasks {
-  register<Test>("initialiseDatabase") {
-    include("**/InitialiseDatabaseTest.class")
-  }
-
-  register<Test>("integrationTest") {
-    description = "Integration tests"
-    group = "verification"
-    shouldRunAfter("test")
-    useJUnitPlatform()
-    filter {
-      includeTestsMatching("*.integration.*")
-    }
-  }
-
-  register<Copy>("installLocalGitHook") {
-    from(File(rootProject.rootDir, ".scripts/pre-commit"))
-    into(File(rootProject.rootDir, ".git/hooks"))
-    filePermissions { unix(755) }
-  }
-
-  named<Test>("test") {
-    filter {
-      excludeTestsMatching("*.integration.*")
-    }
-  }
-
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-    compilerOptions.freeCompilerArgs = listOf("-Xjvm-default=all")
-  }
-  withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    reports {
-      html.required.set(true) // observe findings in your browser with structure and code snippets
-    }
-  }
-  getByName("check") {
-    dependsOn(":ktlintCheck", "detekt")
-  }
-}
-
-repositories {
-  mavenCentral()
+  // Specifically for Spring Boot 4 Web MVC testing
+  testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 }
 
 detekt {
@@ -134,16 +103,86 @@ detekt {
   baseline = file("$projectDir/detekt-baseline.xml") // a way of suppressing issues before introducing detekt
 }
 
-allOpen {
-  annotation("jakarta.persistence.Entity")
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(21)) // Java runtime
+  }
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
 }
 
-configurations.matching { it.name == "detekt" }.all {
-  resolutionStrategy.eachDependency {
-    if (requested.group == "org.jetbrains.kotlin") {
-      useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
+configurations {
+  testImplementation {
+    exclude(group = "org.junit.vintage")
+    exclude(group = "org.mozilla:rhino")
+  }
+
+  matching { it.name == "detekt" }.all {
+    resolutionStrategy.eachDependency {
+      if (requested.group == "org.jetbrains.kotlin") {
+        useVersion("2.0.21")
+      }
     }
   }
+}
+
+tasks {
+  withType<KotlinCompile> {
+    compilerOptions {
+      jvmTarget = JVM_21
+      freeCompilerArgs.addAll(
+        "-Xwhen-guards",
+        "-Xjvm-default=all",
+        "-Xjsr305=warn",
+        "-Xtype-enhancement-improvements-strict-mode=false",
+        "-Xjspecify-annotations=ignore",
+      )
+    }
+  }
+  withType<Detekt> {
+    reports {
+      html.required.set(true) // observe findings in your browser with structure and code snippets
+    }
+    jvmTarget = "21"
+  }
+
+  register<Test>("initialiseDatabase") {
+    include("**/InitialiseDatabaseTest.class")
+  }
+
+  register<Test>("integrationTest") {
+    description = "Integration tests"
+    group = "verification"
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
+    shouldRunAfter("test")
+    useJUnitPlatform()
+
+    filter {
+      includeTestsMatching("*.integration.*")
+    }
+  }
+
+  named<Test>("test") {
+    filter {
+      excludeTestsMatching("*.integration.*")
+    }
+  }
+
+  register<Copy>("installLocalGitHook") {
+    from(File(rootProject.rootDir, ".scripts/pre-commit"))
+    into(File(rootProject.rootDir, ".git/hooks"))
+    filePermissions { unix("755") }
+  }
+  getByName("check") {
+    dependsOn(":ktlintCheck", "detekt")
+  }
+}
+
+allOpen {
+  annotation("jakarta.persistence.Entity")
 }
 
 dependencyCheck {

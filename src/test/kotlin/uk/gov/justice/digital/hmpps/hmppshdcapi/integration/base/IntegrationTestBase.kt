@@ -5,8 +5,11 @@ import com.microsoft.applicationinsights.TelemetryClient
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webclient.autoconfigure.WebClientAutoConfiguration
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -14,6 +17,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.OAuthMockSe
 import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@AutoConfigureWebTestClient(timeout = "25000") // 25 seconds
+@ImportAutoConfiguration(WebClientAutoConfiguration::class)
 abstract class IntegrationTestBase : TestBase() {
 
   @Suppress("SpringJavaInjectionPointsAutowiringInspection")

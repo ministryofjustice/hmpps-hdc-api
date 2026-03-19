@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 
 private const val HMPPS_AUTH = "hmpps-auth"
+private const val MAX_IN_MEMORY_SIZE = 10485760 // 10 MB
 
 @Configuration
 class WebClientConfiguration(
@@ -21,7 +22,7 @@ class WebClientConfiguration(
   @param:Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
 ) {
   @Bean
-  fun oauthApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(oauthApiUrl).build()
+  fun oauthApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(oauthApiUrl).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
 
   @Bean
   fun authorizedClientManager(
@@ -50,7 +51,7 @@ class WebClientConfiguration(
               .maxInMemorySize(-1)
           }
           .build(),
-      ).build()
+      ).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
   }
 
   @Bean
@@ -68,6 +69,6 @@ class WebClientConfiguration(
               .maxInMemorySize(-1)
           }
           .build(),
-      ).build()
+      ).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
   }
 }

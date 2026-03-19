@@ -1,9 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
@@ -14,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.springframework.web.reactive.function.client.WebClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.config.createMapper
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.TestData.hdcPrisonerStatus
 
 class PrisonApiClientTest {
@@ -21,11 +18,7 @@ class PrisonApiClientTest {
   companion object {
     @RegisterExtension
     val wiremock = WireMockExtension.newInstance().options(wireMockConfig().dynamicPort()).build()
-    val objectMapper = ObjectMapper().apply {
-      registerModule(Jdk8Module())
-      registerModule(JavaTimeModule())
-      registerKotlinModule()
-    }
+    val objectMapper = createMapper()
   }
 
   lateinit var prisonApiClient: PrisonApiClient
