@@ -25,12 +25,14 @@ restart_docker () {
 
   echo "Pulling back end containers ..."
   docker compose pull
-  docker compose -f docker-compose.yml up -d
+
+  echo "Starting and waiting for back end containers ..."
+  docker compose -f docker-compose.yml up -d --wait
 }
 
 wait_for_docker () {
   echo "Waiting for back end containers to be ready ..."
-  docker compose up -d --wait
+  docker compose -f docker-compose.yml up -d --wait
   echo "Back end containers are now ready"
 }
 
@@ -80,8 +82,9 @@ else
   export SPRING_DATASOURCE_URL='jdbc:postgresql://${DB_SERVER}/${DB_NAME}'
   if [[ $1 == "--start-docker" ]]; then
     restart_docker
+  else
+    wait_for_docker
   fi
-  wait_for_docker
   echo "Starting the API locally"
   SPRING_PROFILES_ACTIVE=stdout,dev,flyway ./gradlew bootRun
 fi
