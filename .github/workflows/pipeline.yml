@@ -58,7 +58,7 @@ jobs:
     secrets: inherit
     with:
       gradle-command: ' ./gradlew check integrationTest'
-      localstack-tag: "3.0.2"
+      localstack-tag: 'community-archive'
       postgres-tag: "16.3"
       upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
       postgres-db: hmpps-hdc-api
