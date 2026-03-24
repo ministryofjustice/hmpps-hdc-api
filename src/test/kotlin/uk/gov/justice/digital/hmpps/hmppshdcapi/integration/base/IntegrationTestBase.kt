@@ -16,6 +16,8 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.OAuthMockServer
 import uk.gov.justice.hmpps.test.kotlin.auth.JwtAuthorisationHelper
 
+private const val CLIENT_ID = "hmpps-hdc-api-1"
+
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "25000") // 25 seconds
 @ImportAutoConfiguration(WebClientAutoConfiguration::class)
@@ -59,10 +61,10 @@ abstract class IntegrationTestBase : TestBase() {
   }
 
   protected fun setAuthorisation(
-    user: String = "hmpps-hdc-api-1",
+    user: String = CLIENT_ID,
     roles: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisationHeader(
-    clientId = "hmpps-hdc-api-1",
+    clientId = CLIENT_ID,
     username = user,
     roles = roles,
     scope = listOf("read"),

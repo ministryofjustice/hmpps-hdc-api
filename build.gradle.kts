@@ -62,7 +62,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
 
   // To help override SAR
-  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.0.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.1.2")
   implementation("org.jsoup:jsoup:1.18.3")
 
   // New in Spring Boot 4: Dedicated starter for HTTP clients
@@ -84,7 +84,7 @@ dependencies {
   testImplementation("com.h2database:h2")
   testImplementation("org.testcontainers:testcontainers-localstack:2.0.3")
   testImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:1.2.1")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.1.2")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.2")
   testImplementation("org.wiremock:wiremock-standalone:3.13.1")
   testImplementation("org.springframework.boot:spring-boot-webtestclient")
