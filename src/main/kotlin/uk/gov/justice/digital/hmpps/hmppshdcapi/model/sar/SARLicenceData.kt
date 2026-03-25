@@ -17,6 +17,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProposedAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.RejectedCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Reporting
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Risk
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Standard
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Vary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Victim
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
@@ -29,6 +30,7 @@ import kotlin.Boolean
 
 @JsonInclude(NON_NULL)
 data class SARLicence(
+  var licenceId: Long,
   var prisonNumber: String,
   val stage: HdcStage,
   val version: Int,
@@ -43,6 +45,7 @@ data class SARLicence(
 
 @JsonInclude(NON_NULL)
 class SARLicenceVersion(
+  var licenceVersionId: Long,
   var prisonNumber: String?,
   val timestamp: LocalDateTime,
   val version: Int,
@@ -75,6 +78,7 @@ data class SARLicenceData(
 data class SARConditions(
   val bespokeConditions: List<BespokeCondition>? = null,
   val additionalConditions: List<SARAdditionalCondition>? = null,
+  val standard: Standard? = null,
   val additionalConditionsJustification: String? = null,
 )
 
@@ -87,6 +91,7 @@ data class SARAdditionalCondition(
 )
 
 fun Licence.toSAR() = SARLicence(
+  licenceId = this.id!!,
   prisonNumber = this.prisonNumber,
   stage = this.stage,
   version = this.version,
@@ -100,6 +105,7 @@ fun Licence.toSAR() = SARLicence(
 )
 
 fun LicenceVersion.toSAR() = SARLicenceVersion(
+  licenceVersionId = this.id!!,
   prisonNumber = this.prisonNumber,
   timestamp = this.timestamp,
   version = this.version,
@@ -121,6 +127,7 @@ fun LicenceData.toSAR(conditionVersion: Int? = null) = SARLicenceData(
   licenceConditions = this.licenceConditions?.let {
     SARConditions(
       bespokeConditions = it.bespoke,
+      standard = it.standard,
       additionalConditions = it.additional?.entries?.map { (code, values) ->
         toAdditionalCondition(
           conditionVersion ?: attemptToGuessVersion(it.additional),

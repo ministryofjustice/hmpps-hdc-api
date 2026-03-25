@@ -1,4 +1,3 @@
-version: "3"
 services:
   licences-api-db:
     image: postgres

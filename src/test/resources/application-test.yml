@@ -19,8 +19,7 @@ hmpps:
 
   sar:
     tests:
-      # This was implemented in reverse, it's been fixed in the latest version of the sar library so will need to be reversed then.
-      attachments-expected: true
+      attachments-expected: false
       # When changing expected schema version this should act as a prompt to consider whether SAR requires updating
       # check with the rest of the team to see if this is required
       expected-flyway-schema-version: "01"
