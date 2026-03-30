@@ -54,7 +54,7 @@ jobs:
       - app_version
   gradle_integration_tests:
     name: Run integration tests
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_verify.yml@v2 # WORKFLOW_VERSION
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_verify.yml@v2.9.5 # WORKFLOW_VERSION
     secrets: inherit
     with:
       gradle-command: ' ./gradlew check integrationTest'
