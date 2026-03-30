@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.1.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.1.1"
   id("org.owasp.dependencycheck") version "12.2.0"
   kotlin("plugin.spring") version "2.3.10"
   kotlin("plugin.jpa") version "2.3.10"
@@ -28,7 +28,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.0.1")
 
   // CVE-2025-67735 - it does not fix all occurrences
-  implementation(enforcedPlatform("io.netty:netty-bom:4.2.8.Final"))
+  implementation(enforcedPlatform("io.netty:netty-bom:4.2.12.Final"))
   implementation("io.netty:netty-buffer")
   implementation("io.netty:netty-codec-http")
   implementation("io.netty:netty-handler")
