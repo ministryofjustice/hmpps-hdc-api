@@ -18,7 +18,7 @@ enum class MigrateLicenceType {
       "hdc_ap" -> AP
       "hdc_pss" -> PSS
       "hdc_ap_pss" -> AP_PSS
-      else -> throw IllegalStateException("Licence type not supported in migration: $decision")
+      else -> error("Licence type not supported in migration: $decision")
     }
   }
 }
@@ -32,7 +32,7 @@ enum class MigrateStatus {
     fun from(hdcStatus: HdcStatus): MigrateStatus = when (hdcStatus) {
       HdcStatus.APPROVED -> APPROVED
       HdcStatus.RISK_CHECKS_COMPLETE -> RISK_CHECKS_COMPLETE
-      else -> throw IllegalArgumentException("Unsupported HdcStatus: $hdcStatus")
+      else -> error("Unsupported HdcStatus: $hdcStatus")
     }
   }
 }

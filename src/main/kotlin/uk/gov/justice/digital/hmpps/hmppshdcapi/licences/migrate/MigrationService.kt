@@ -35,13 +35,7 @@ class MigrationService(
     log.info("Starting migration for licenceId={}", licenceId)
 
     val request = mapToCvlRequest()
-
-    try {
-      cvlClient.migrateLicence(request)
-    } catch (ex: Exception) {
-      // TODO log failed migration to DB
-      throw ex
-    }
+    cvlClient.migrateLicence(request)
 
     log.info("Ending migration for licenceId={}", licenceId)
   }
