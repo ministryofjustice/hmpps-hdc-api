@@ -16,6 +16,9 @@ hmpps:
   prisonersearch:
     api:
       url: http://localhost:8099/api
+  cvl:
+    api:
+      url: http://localhost:8092
 
   sar:
     tests:
