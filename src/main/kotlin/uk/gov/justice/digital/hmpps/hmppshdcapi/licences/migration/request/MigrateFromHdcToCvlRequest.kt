@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migrate.request
+package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus

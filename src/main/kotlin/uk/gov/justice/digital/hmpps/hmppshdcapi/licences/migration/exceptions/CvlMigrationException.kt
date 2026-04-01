@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migrate.exceptions
+package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions
 
 class CvlMigrationException(
   val bookingId: Long?,
