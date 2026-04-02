@@ -20,55 +20,54 @@ class WebClientConfiguration(
   @param:Value("\${hmpps.auth.url}") private val oauthApiUrl: String,
   @param:Value("\${hmpps.prison.api.url}") private val prisonApiUrl: String,
   @param:Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
+  @param:Value("\${hmpps.cvl.api.url}") private val cvlApiUrl: String,
 ) {
+
   @Bean
-  fun oauthApiHealthWebClient(): WebClient = WebClient.builder().baseUrl(oauthApiUrl).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
+  fun oauthApiHealthWebClient(): WebClient = WebClient.builder()
+    .baseUrl(oauthApiUrl)
+    .codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }
+    .build()
+
+  @Bean
+  fun oauthPrisonClient(authorizedClientManager: OAuth2AuthorizedClientManager) = createOauthWebClient(prisonApiUrl, authorizedClientManager)
+
+  @Bean
+  fun oauthPrisonerSearchClient(authorizedClientManager: OAuth2AuthorizedClientManager) = createOauthWebClient(prisonerSearchApiUrl, authorizedClientManager)
+
+  @Bean
+  fun oauthCvlClient(authorizedClientManager: OAuth2AuthorizedClientManager) = createOauthWebClient(cvlApiUrl, authorizedClientManager)
+
+  private fun createOauthWebClient(
+    baseUrl: String,
+    authorizedClientManager: OAuth2AuthorizedClientManager,
+  ): WebClient {
+    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+    oauth2Client.setDefaultClientRegistrationId(HMPPS_AUTH)
+
+    return WebClient.builder()
+      .baseUrl(baseUrl)
+      .apply(oauth2Client.oauth2Configuration())
+      .exchangeStrategies(
+        ExchangeStrategies.builder()
+          .codecs { it.defaultCodecs().maxInMemorySize(-1) }
+          .build(),
+      )
+      .codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }
+      .build()
+  }
 
   @Bean
   fun authorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository,
     oAuth2AuthorizedClientService: OAuth2AuthorizedClientService,
-  ): OAuth2AuthorizedClientManager? {
-    val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build()
-    val authorizedClientManager =
-      AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService)
-    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
-    return authorizedClientManager
-  }
+  ): OAuth2AuthorizedClientManager {
+    val authorizedClientProvider =
+      OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build()
 
-  @Bean
-  fun oauthPrisonClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
-    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
-    oauth2Client.setDefaultClientRegistrationId(HMPPS_AUTH)
-
-    return WebClient.builder()
-      .baseUrl(prisonApiUrl)
-      .apply(oauth2Client.oauth2Configuration())
-      .exchangeStrategies(
-        ExchangeStrategies.builder()
-          .codecs { configurer ->
-            configurer.defaultCodecs()
-              .maxInMemorySize(-1)
-          }
-          .build(),
-      ).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
-  }
-
-  @Bean
-  fun oauthPrisonerSearchClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
-    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
-    oauth2Client.setDefaultClientRegistrationId(HMPPS_AUTH)
-
-    return WebClient.builder()
-      .baseUrl(prisonerSearchApiUrl)
-      .apply(oauth2Client.oauth2Configuration())
-      .exchangeStrategies(
-        ExchangeStrategies.builder()
-          .codecs { configurer ->
-            configurer.defaultCodecs()
-              .maxInMemorySize(-1)
-          }
-          .build(),
-      ).codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }.build()
+    return AuthorizedClientServiceOAuth2AuthorizedClientManager(
+      clientRegistrationRepository,
+      oAuth2AuthorizedClientService,
+    ).apply { setAuthorizedClientProvider(authorizedClientProvider) }
   }
 }

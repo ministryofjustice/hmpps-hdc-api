@@ -10,6 +10,8 @@ generic-service:
     HMPPS_AUTH_TOKEN_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth/oauth/token"
     HMPPS_PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk/api"
     HMPPS_PRISONERSEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
+    HMPPS_CVL_API_URL: "https://create-and-vary-a-licence-api.hmpps.service.justice.gov.uk"
+
 
   retryDlqCronjob:
     enabled: true

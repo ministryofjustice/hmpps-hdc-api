@@ -98,3 +98,6 @@ hmpps:
     template:
       path: /templates/sar_hmpps-hdc-api.mustache
       enabled: true
+  cvl:
+    api:
+      url: ${HMPPS_CVL_API_URL}

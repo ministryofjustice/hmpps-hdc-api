@@ -20,6 +20,9 @@ hmpps:
   prisonersearch:
     api:
       url: "https://prisoner-search-dev.prison.service.justice.gov.uk"
+  cvl:
+    api:
+      url: "https://create-and-vary-a-licence-api-dev.hmpps.service.justice.gov.uk"
 
 
 hmpps.sqs:
