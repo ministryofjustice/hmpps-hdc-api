@@ -63,8 +63,8 @@ data class MigrateFromHdcToCvlRequest(
   @field:Schema(description = "Licence details")
   val licence: MigrateLicenceDetails,
 
-  @field:Schema(description = "Audit information")
-  val audit: MigrateAuditDetails,
+  @field:Schema(description = "Lifecycle details")
+  val lifecycle: MigrateLicenceLifecycleDetails,
 
   @field:Schema(description = "Licence conditions")
   val conditions: MigrateConditions,
@@ -158,7 +158,7 @@ data class MigrateLicenceDetails(
 )
 
 @Schema(description = "Audit information")
-data class MigrateAuditDetails(
+data class MigrateLicenceLifecycleDetails(
   @field:Schema(description = "Approved date", example = "2025-11-20T10:00:00")
   val approvedDate: LocalDateTime?,
 

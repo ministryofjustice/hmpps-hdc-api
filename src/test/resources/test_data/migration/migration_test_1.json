@@ -33,7 +33,7 @@
     "homeDetentionCurfewEndDate" : "2025-04-11",
     "licenceExpiryDate" : "2025-03-31"
   },
-  "audit" : {
+  "lifecycle" : {
     "approvedDate" : "2026-05-01T00:00:00",
     "approvedByUsername" : "approver1",
     "approvedByName" : "Approver Name",

@@ -12,13 +12,13 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAppointmentAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAppointmentDetails
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAuditDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateLicenceDetails
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateLicenceLifecycleDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateLicenceType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigratePrisonDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigratePrisonerDetails
@@ -82,7 +82,7 @@ class MigrationService(
     prison = mapPrisonDetails(prisoner),
     sentence = mapSentenceDetails(prisoner),
     licence = mapLicenceDetails(licence, prisoner, hdcStatus),
-    audit = mapAuditDetails(),
+    lifecycle = mapLifecycleDetails(),
     conditions = mapConditions(),
     curfewAddress = mapCurfewAddress(),
     curfew = mapCurfewDetails(),
@@ -129,7 +129,7 @@ class MigrationService(
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
   )
 
-  private fun mapAuditDetails() = MigrateAuditDetails(
+  private fun mapLifecycleDetails() = MigrateLicenceLifecycleDetails(
     approvedDate = LocalDate.of(2026, 5, 1).atStartOfDay(),
     approvedByUsername = "approver1",
     approvedByName = "Approver Name",
