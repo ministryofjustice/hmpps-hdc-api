@@ -157,7 +157,7 @@ data class MigrateLicenceDetails(
   val licenceExpiryDate: LocalDate?,
 )
 
-@Schema(description = "Audit information")
+@Schema(description = "Lifecycle details")
 data class MigrateLicenceLifecycleDetails(
   @field:Schema(description = "Approved date", example = "2025-11-20T10:00:00")
   val approvedDate: LocalDateTime?,
