@@ -1,8 +1,13 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.LicenceNotFoundForMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAdditionalCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAppointmentAddress
@@ -19,36 +24,64 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigratePrisonerDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateSentenceDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateStatus
-import java.time.DayOfWeek
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import java.time.DayOfWeek.MONDAY
+import java.time.DayOfWeek.TUESDAY
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
 class MigrationService(
+  private val migrationRepository: MigrationRepository,
   private val cvlClient: CvlApiClient,
+  private val prisonApiClient: PrisonApiClient,
+  private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val hdcStatusService: HdcStatusService,
 ) {
 
-  private val log = LoggerFactory.getLogger(this::class.java)
-
+  @Transactional
   fun migrateToCvl(licenceId: Long) {
-    log.info("Starting migration for licenceId={}", licenceId)
-
-    val request = mapToCvlRequest()
-    cvlClient.migrateLicence(request)
-
-    log.info("Ending migration for licenceId={}", licenceId)
+    cvlClient.migrateLicence(createMigrationRequest(licenceId))
+    migrationRepository.insertMigrationLog(licenceId)
   }
 
-  private fun mapToCvlRequest(): MigrateFromHdcToCvlRequest = MigrateFromHdcToCvlRequest(
-    bookingNo = "A1234BC",
-    bookingId = 123456L,
-    pnc = "PNC123",
-    cro = "CRO456",
-    prisoner = mapPrisonerDetails(),
-    prison = mapPrisonDetails(),
-    sentence = mapSentenceDetails(),
-    licence = mapLicenceDetails(),
+  fun createMigrationRequest(licenceId: Long): MigrateFromHdcToCvlRequest {
+    val licence = migrationRepository.findById(licenceId)
+      .orElseThrow { LicenceNotFoundForMigrationException(licenceId) }
+
+    val bookingIds = listOf(licence.bookingId)
+
+    val prisoner = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull()
+      ?: throw LicenceNotFoundForMigrationException(licenceId)
+
+    val prisonerHdcStatus = prisonApiClient
+      .getHdcStatuses(listOf(licence.bookingId))
+      .firstOrNull()
+
+    val hdcStatus = hdcStatusService.determineHdcStatus(
+      prisoner.homeDetentionCurfewEligibilityDate,
+      prisonerHdcStatus,
+      licence.stage,
+    )
+
+    return mapToCvlRequest(licence, prisoner, hdcStatus)
+  }
+
+  private fun mapToCvlRequest(
+    licence: Licence,
+    prisoner: Prisoner,
+    hdcStatus: HdcStatus,
+  ): MigrateFromHdcToCvlRequest = MigrateFromHdcToCvlRequest(
+    bookingNo = prisoner.bookNumber,
+    bookingId = prisoner.bookingId.toLong(),
+    pnc = prisoner.pncNumber,
+    cro = prisoner.croNumber,
+    prisoner = mapPrisonerDetails(prisoner),
+    prison = mapPrisonDetails(prisoner),
+    sentence = mapSentenceDetails(prisoner),
+    licence = mapLicenceDetails(licence, prisoner, hdcStatus),
     audit = mapAuditDetails(),
     conditions = mapConditions(),
     curfewAddress = mapCurfewAddress(),
@@ -56,49 +89,55 @@ class MigrationService(
     appointment = mapAppointmentDetails(),
   )
 
-  private fun mapPrisonerDetails() = MigratePrisonerDetails(
-    prisonerNumber = "A1234BC",
-    forename = "John",
-    middleNames = "Michael",
-    surname = "Doe",
-    dateOfBirth = LocalDate.of(1990, 1, 1),
+  private fun mapPrisonerDetails(prisoner: Prisoner) = MigratePrisonerDetails(
+    prisonerNumber = prisoner.prisonerNumber,
+    forename = prisoner.firstName,
+    middleNames = prisoner.middleNames,
+    surname = prisoner.lastName,
+    dateOfBirth = prisoner.dateOfBirth,
   )
 
-  private fun mapPrisonDetails() = MigratePrisonDetails(
-    prisonCode = "MDI",
-    prisonDescription = "Moorland",
-    prisonTelephone = "0123456789",
+  private fun mapPrisonDetails(prisoner: Prisoner) = MigratePrisonDetails(
+    prisonCode = prisoner.prisonId,
+    prisonDescription = prisoner.prisonName ?: prisoner.locationDescription,
+    prisonTelephone = null,
   )
 
-  private fun mapSentenceDetails() = MigrateSentenceDetails(
-    startDate = LocalDate.now().minusYears(1),
-    endDate = LocalDate.now().plusYears(1),
-    conditionalReleaseDate = LocalDate.now().plusMonths(6),
-    actualReleaseDate = LocalDate.now().plusMonths(6),
-    topupSupervisionStartDate = null,
-    topupSupervisionExpiryDate = null,
-    postRecallReleaseDate = null,
+  private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(
+    startDate = prisoner.sentenceStartDate,
+    endDate = prisoner.sentenceExpiryDate,
+    conditionalReleaseDate = prisoner.conditionalReleaseDateOverrideDate
+      ?: prisoner.conditionalReleaseDate,
+    actualReleaseDate = prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
+    topupSupervisionStartDate = prisoner.topupSupervisionStartDate,
+    topupSupervisionExpiryDate = prisoner.topupSupervisionExpiryDate,
+    postRecallReleaseDate = prisoner.postRecallReleaseDate,
   )
 
-  private fun mapLicenceDetails() = MigrateLicenceDetails(
-    typeCode = MigrateLicenceType.AP,
-    statusCode = MigrateStatus.APPROVED,
-    hdcLicenceVersion = "1",
-    licenceActivationDate = LocalDate.now(),
-    licenceExpiryDate = LocalDate.now().plusYears(1),
-    homeDetentionCurfewActualDate = LocalDate.now(),
-    homeDetentionCurfewEndDate = LocalDate.now().plusMonths(6),
+  private fun mapLicenceDetails(
+    licence: Licence,
+    prisoner: Prisoner,
+    hdcStatus: HdcStatus,
+  ): MigrateLicenceDetails = MigrateLicenceDetails(
+    typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
+    statusCode = MigrateStatus.from(hdcStatus),
+    hdcLicenceVersion = licence.version.toString(),
+    licenceActivationDate = licence.transitionDate?.toLocalDate(),
+    licenceExpiryDate = prisoner.licenceExpiryDate,
+    homeDetentionCurfewActualDate =
+    prisoner.homeDetentionCurfewActualDate ?: prisoner.homeDetentionCurfewEligibilityDate,
+    homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
   )
 
   private fun mapAuditDetails() = MigrateAuditDetails(
-    approvedDate = LocalDateTime.now(),
+    approvedDate = LocalDate.of(2026, 5, 1).atStartOfDay(),
     approvedByUsername = "approver1",
     approvedByName = "Approver Name",
-    submittedDate = LocalDateTime.now().minusDays(1),
+    submittedDate = LocalDate.of(2026, 5, 2).atStartOfDay(),
     submittedByUserName = "submitter1",
     createdByUserName = "creator1",
-    dateCreated = LocalDateTime.now().minusDays(2),
-    dateLastUpdated = LocalDateTime.now(),
+    dateCreated = LocalDate.of(2026, 5, 3).atStartOfDay(),
+    dateLastUpdated = LocalDate.of(2026, 5, 4).atStartOfDay(),
     updatedByUsername = "updater1",
   )
 
@@ -123,11 +162,11 @@ class MigrationService(
   private fun mapCurfewDetails() = MigrateCurfewDetails(
     curfewTimes = listOf(
       MigrateCurfewTime(
-        fromDay = DayOfWeek.MONDAY,
+        fromDay = MONDAY,
         fromTime = LocalTime.of(19, 0),
-        untilDay = DayOfWeek.TUESDAY,
+        untilDay = TUESDAY,
         untilTime = LocalTime.of(7, 0),
-        createdTimestamp = LocalDateTime.now(),
+        createdTimestamp = LocalDate.of(2026, 5, 6).atStartOfDay(),
       ),
     ),
     firstNight = MigrateFirstNight(
@@ -137,8 +176,8 @@ class MigrationService(
   )
 
   private fun mapAppointmentDetails() = MigrateAppointmentDetails(
-    person = "Officer Smith",
-    time = LocalDateTime.now().plusDays(1),
+    person = "Officer Person",
+    time = LocalDate.of(2026, 5, 7).atStartOfDay(),
     telephone = "07123456789",
     address = MigrateAppointmentAddress(
       firstLine = "Probation Office",

@@ -58,7 +58,7 @@ class HdcStatusService(
     }
   }
 
-  private fun determineHdcStatus(
+  fun determineHdcStatus(
     hdced: LocalDate?,
     prisonerHdcStatus: PrisonerHdcStatus?,
     hdcStage: HdcStage?,

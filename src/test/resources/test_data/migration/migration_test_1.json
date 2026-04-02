@@ -1,0 +1,85 @@
+{
+  "bookingNo" : "54321",
+  "bookingId" : 54222,
+  "pnc" : "PNC123",
+  "cro" : "CRO123",
+  "prisoner" : {
+    "prisonerNumber" : "A1234AA",
+    "forename" : "forename",
+    "middleNames" : "middleNames",
+    "surname" : "surname",
+    "dateOfBirth" : "1985-05-20"
+  },
+  "prison" : {
+    "prisonCode" : "MDI",
+    "prisonDescription" : "Manchester Prison",
+    "prisonTelephone" : null
+  },
+  "sentence" : {
+    "startDate" : "2020-01-01",
+    "endDate" : "2025-01-01",
+    "conditionalReleaseDate" : "2025-04-07",
+    "actualReleaseDate" : "2025-04-17",
+    "topupSupervisionStartDate" : "2023-01-01",
+    "topupSupervisionExpiryDate" : "2025-04-01",
+    "postRecallReleaseDate" : "2025-04-21"
+  },
+  "licence" : {
+    "typeCode" : "AP",
+    "statusCode" : "APPROVED",
+    "hdcLicenceVersion" : "1",
+    "licenceActivationDate" : "2021-08-06",
+    "homeDetentionCurfewActualDate" : "2025-03-25",
+    "homeDetentionCurfewEndDate" : "2025-04-11",
+    "licenceExpiryDate" : "2025-03-31"
+  },
+  "audit" : {
+    "approvedDate" : "2026-05-01T00:00:00",
+    "approvedByUsername" : "approver1",
+    "approvedByName" : "Approver Name",
+    "submittedDate" : "2026-05-02T00:00:00",
+    "submittedByUserName" : "submitter1",
+    "createdByUserName" : "creator1",
+    "dateCreated" : "2026-05-03T00:00:00",
+    "dateLastUpdated" : "2026-05-04T00:00:00",
+    "updatedByUsername" : "updater1"
+  },
+  "conditions" : {
+    "bespoke" : [ "Do not contact victim" ],
+    "additional" : [ {
+      "text" : "Report to probation",
+      "conditionCode" : "AC1",
+      "conditionsVersion" : 1
+    } ]
+  },
+  "curfewAddress" : {
+    "addressLine1" : "1 Test Street",
+    "addressLine2" : "Flat 1",
+    "townOrCity" : "London",
+    "postcode" : "SW1A 1AA"
+  },
+  "curfew" : {
+    "curfewTimes" : [ {
+      "fromDay" : "MONDAY",
+      "fromTime" : "19:00:00",
+      "untilDay" : "TUESDAY",
+      "untilTime" : "07:00:00",
+      "createdTimestamp" : "2026-05-06T00:00:00"
+    } ],
+    "firstNight" : {
+      "firstNightFrom" : "18:00:00",
+      "firstNightUntil" : "08:00:00"
+    }
+  },
+  "appointment" : {
+    "person" : "Officer Person",
+    "time" : "2026-05-07T00:00:00",
+    "telephone" : "07123456789",
+    "address" : {
+      "firstLine" : "Probation Office",
+      "secondLine" : "High Street",
+      "townOrCity" : "London",
+      "postcode" : "SW1A 2AA"
+    }
+  }
+}
