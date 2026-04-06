@@ -21,14 +21,14 @@
 {{/eligibility}}
 
 <br>
-<h4>Bass referral</h4>
+<h4>Community Accommodation Services (CAS2)  referral</h4>
 {{#bassReferral}}
     <table class="summary-list">
-        <tr><td>Bass requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
+        <tr><td>Community Accommodation (CAS2) requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
     </table>
     <table class="data-table">
         <tr>
-            <td class="data-column-20">Bass offer accepted</td>
+            <td class="data-column-20">Offer accepted</td>
             <td class="data-column-20">Address line 1</td>
             <td class="data-column-20">Address line 2</td>
             <td class="data-column-20">Town / City</td>
@@ -205,12 +205,11 @@
 {{#reporting}}
     <table class="data-table">
         <tr>
-            <td class="data-column-25">Name</td>
-            <td class="data-column-25">Telephone</td>
+            <td class="data-column-25">Appointment contact last name</td>
             <td class="data-column-50">Organisation</td>
         </tr>
         <tr>
-            <td>{{ optionalValue reportingInstructions.name }}</td>
+            <td>{{ optionalValue reportingInstructions.lastName }}</td>
             <td>{{ optionalValue reportingInstructions.telephone }}</td>
             <td>{{ optionalValue reportingInstructions.organisation }}</td>
         </tr>
@@ -282,7 +281,6 @@
     <table class="summary-list">
     {{#additionalConditions}}
             <tr>
-              <td>{{conditionCode}}</td>
               <td>{{renderedText}}</td>
             </tr>
     {{/additionalConditions}}
@@ -312,7 +310,7 @@
 {{#approval}}
     <table class="summary-list">
         <tr><td>Decision</td><td>{{ optionalValue release.decision }}</td></tr>
-        <tr><td>Decision maker</td><td>{{ optionalValue release.decisionMaker }}</td></tr>
+        <tr><td>Decision maker last name</td><td>{{ optionalValue release.decisionMakerLastName }}</td></tr>
         <tr><td>Reason for decision</td><td>{{ optionalValue release.reasonForDecision }}</td></tr>
     </table>
 {{/approval}}
