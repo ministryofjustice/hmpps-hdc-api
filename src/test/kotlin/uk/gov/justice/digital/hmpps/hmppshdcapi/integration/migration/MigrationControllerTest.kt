@@ -19,7 +19,7 @@ import java.time.LocalDate
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
 
-  private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")
+  private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")!!
     .bufferedReader(UTF_8).readText()
 
   @Sql(
@@ -114,7 +114,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
         recall = false,
         locationDescription = "Cell 12A",
         prisonName = "Manchester Prison",
-        bookNumber = "54321",
+        bookNumber = "64321",
         firstName = "forename",
         middleNames = "middleNames",
         lastName = "surname",

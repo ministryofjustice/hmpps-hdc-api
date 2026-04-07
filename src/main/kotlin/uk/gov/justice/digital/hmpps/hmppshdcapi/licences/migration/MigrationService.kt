@@ -7,6 +7,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.LicenceNotFoundForMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
@@ -82,7 +84,7 @@ class MigrationService(
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
-      bookingId = prisoner.bookingId.toLong(),
+      bookingId = licence.bookingId,
       pnc = prisoner.pncNumber,
       cro = prisoner.croNumber,
       prisoner = mapPrisonerDetails(prisoner),
@@ -90,7 +92,7 @@ class MigrationService(
       sentence = mapSentenceDetails(prisoner),
       licence = mapLicenceDetails(licence, prisoner, hdcStatus),
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
-      conditions = mapConditions(),
+      conditions = mapConditions(licence, licenceData),
       curfewAddress = mapCurfewAddress(),
       curfew = mapCurfewDetails(),
       appointment = mapAppointmentDetails(),
@@ -159,16 +161,21 @@ class MigrationService(
     )
   }
 
-  private fun mapConditions() = MigrateConditions(
-    bespoke = listOf("Do not contact victim"),
-    additional = listOf(
-      MigrateAdditionalCondition(
-        text = "Report to probation",
-        conditionCode = "AC1",
-        conditionsVersion = 1,
-      ),
-    ),
-  )
+  private fun mapConditions(licence: Licence, licenceData: LicenceData): MigrateConditions {
+    licenceData.licenceConditions?.let { conditions ->
+      val additional = LicenceConditionRenderer.renderConditions(licence).map {
+        MigrateAdditionalCondition(
+          text = it.text!!,
+          conditionCode = it.code!!,
+          conditionsVersion = 1,
+        )
+      }
+      // Do I only take over approved bespoke conditions? it.approved
+      val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
+      return MigrateConditions(bespoke = bespoke, additional = additional)
+    }
+    return MigrateConditions()
+  }
 
   private fun mapCurfewAddress() = MigrateAddress(
     addressLine1 = "1 Test Street",
