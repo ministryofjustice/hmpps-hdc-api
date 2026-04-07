@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 
 @RestController
 @RequestMapping("/licences/migration")
@@ -46,5 +47,25 @@ class MigrationController(
   ): ResponseEntity<Void> {
     migrationService.migrateToCvl(licenceId)
     return ResponseEntity.ok().build()
+  }
+
+  @PostMapping("/{licenceId}/to-cvl/preview")
+  @PreAuthorize("hasAnyRole('HDC_ADMIN')")
+  @Operation(
+    summary = "Preview migration of a single licence to CVL",
+    description = "Returns the request object that would be sent to CVL",
+  )
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "Licence migration DTO created successfully"),
+      ApiResponse(responseCode = "400", description = "Invalid request"),
+      ApiResponse(responseCode = "404", description = "Licence not found"),
+    ],
+  )
+  fun previewMigrateLicenceToCvl(
+    @PathVariable licenceId: Long,
+  ): ResponseEntity<MigrateFromHdcToCvlRequest> {
+    val response = migrationService.createMigrationRequest(licenceId)
+    return ResponseEntity.ok(response)
   }
 }
