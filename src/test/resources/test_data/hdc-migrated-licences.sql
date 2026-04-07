@@ -340,3 +340,53 @@ VALUES (1,
        (5,
         null,
         22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false);
+
+-- audit data
+
+INSERT INTO audit (timestamp, "user", action, details)
+VALUES
+    (
+        '2021-08-06 15:06:37.188',
+        'aCaseManager',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb
+    ),
+    (
+        '2021-08-06 15:20:37.188',
+        'creator',
+        'UPDATE_SECTION',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb
+    ),
+    (
+        '2021-08-08 15:06:37.188',
+        'submitter',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "roToCa"
+        }'::jsonb
+    ),
+    (
+        '2021-08-09 15:06:37.188',
+        'updater',
+        'UPDATE_SECTION',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb
+    ),
+    (
+        '2021-08-10 15:06:37.188',
+        'approver',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "dmToCa"
+        }'::jsonb
+    );

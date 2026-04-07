@@ -14,8 +14,6 @@
     <ID>MagicNumber:MigrationService.kt$MigrationService$18</ID>
     <ID>MagicNumber:MigrationService.kt$MigrationService$19</ID>
     <ID>MagicNumber:MigrationService.kt$MigrationService$2026</ID>
-    <ID>MagicNumber:MigrationService.kt$MigrationService$3</ID>
-    <ID>MagicNumber:MigrationService.kt$MigrationService$4</ID>
     <ID>MagicNumber:MigrationService.kt$MigrationService$5</ID>
     <ID>MagicNumber:MigrationService.kt$MigrationService$6</ID>
     <ID>MagicNumber:MigrationService.kt$MigrationService$7</ID>
@@ -28,5 +26,6 @@
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
     <ID>TooManyFunctions:MigrationService.kt$MigrationService</ID>
+    <ID>UnusedPrivateProperty:MigrationService.kt$MigrationService$val licenceData = licence.licence ?: error("Licence data must exist for licence id ${licence.id}")</ID>
   </CurrentIssues>
 </SmellBaseline>
