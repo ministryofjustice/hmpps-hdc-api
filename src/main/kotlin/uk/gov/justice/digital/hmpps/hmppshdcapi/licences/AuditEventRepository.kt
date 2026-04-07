@@ -14,7 +14,7 @@ interface AuditEventRepository :
     nativeQuery = true,
     value = """
       SELECT * FROM audit WHERE details ->> 'bookingId' = :bookingId ORDER BY timestamp
-  """
+  """,
   )
   fun findByBookingId(bookingId: String): List<AuditEvent>
 }
