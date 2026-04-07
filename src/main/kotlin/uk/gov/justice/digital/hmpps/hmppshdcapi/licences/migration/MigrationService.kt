@@ -2,6 +2,8 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
@@ -38,6 +40,7 @@ class MigrationService(
   private val cvlClient: CvlApiClient,
   private val prisonApiClient: PrisonApiClient,
   private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val auditEventRepository: AuditEventRepository,
   private val hdcStatusService: HdcStatusService,
 ) {
 
@@ -73,21 +76,26 @@ class MigrationService(
     licence: Licence,
     prisoner: Prisoner,
     hdcStatus: HdcStatus,
-  ): MigrateFromHdcToCvlRequest = MigrateFromHdcToCvlRequest(
-    bookingNo = prisoner.bookNumber,
-    bookingId = prisoner.bookingId.toLong(),
-    pnc = prisoner.pncNumber,
-    cro = prisoner.croNumber,
-    prisoner = mapPrisonerDetails(prisoner),
-    prison = mapPrisonDetails(prisoner),
-    sentence = mapSentenceDetails(prisoner),
-    licence = mapLicenceDetails(licence, prisoner, hdcStatus),
-    lifecycle = mapLifecycleDetails(),
-    conditions = mapConditions(),
-    curfewAddress = mapCurfewAddress(),
-    curfew = mapCurfewDetails(),
-    appointment = mapAppointmentDetails(),
-  )
+  ): MigrateFromHdcToCvlRequest {
+    val licenceData = licence.licence ?: error("Licence data must exist for licence id ${licence.id}")
+    val audits = auditEventRepository.findByBookingId(licence.bookingId.toString())
+
+    return MigrateFromHdcToCvlRequest(
+      bookingNo = prisoner.bookNumber,
+      bookingId = prisoner.bookingId.toLong(),
+      pnc = prisoner.pncNumber,
+      cro = prisoner.croNumber,
+      prisoner = mapPrisonerDetails(prisoner),
+      prison = mapPrisonDetails(prisoner),
+      sentence = mapSentenceDetails(prisoner),
+      licence = mapLicenceDetails(licence, prisoner, hdcStatus),
+      lifecycle = mapLifecycleDetails(audits, hdcStatus),
+      conditions = mapConditions(),
+      curfewAddress = mapCurfewAddress(),
+      curfew = mapCurfewDetails(),
+      appointment = mapAppointmentDetails(),
+    )
+  }
 
   private fun mapPrisonerDetails(prisoner: Prisoner) = MigratePrisonerDetails(
     prisonerNumber = prisoner.prisonerNumber,
@@ -129,17 +137,27 @@ class MigrationService(
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
   )
 
-  private fun mapLifecycleDetails() = MigrateLicenceLifecycleDetails(
-    approvedDate = LocalDate.of(2026, 5, 1).atStartOfDay(),
-    approvedByUsername = "approver1",
-    approvedByName = "Approver Name",
-    submittedDate = LocalDate.of(2026, 5, 2).atStartOfDay(),
-    submittedByUserName = "submitter1",
-    createdByUserName = "creator1",
-    dateCreated = LocalDate.of(2026, 5, 3).atStartOfDay(),
-    dateLastUpdated = LocalDate.of(2026, 5, 4).atStartOfDay(),
-    updatedByUsername = "updater1",
-  )
+  private fun mapLifecycleDetails(
+    audits: List<AuditEvent>,
+    hdcStatus: HdcStatus,
+  ): MigrateLicenceLifecycleDetails {
+    val submitted = getLastAudit(audits, "SEND", "roToCa")
+    val approved: AuditEvent? = if (hdcStatus == HdcStatus.APPROVED) getLastAudit(audits, "SEND", "dmToCa") else null
+
+    val created = getFirstUpdateAfterCaToRo(audits)
+    val lastUpdated = getLastUpdated(audits)
+
+    return MigrateLicenceLifecycleDetails(
+      approvedDate = approved?.timestamp,
+      approvedByUsername = approved?.user,
+      submittedDate = submitted?.timestamp,
+      submittedByUserName = submitted?.user,
+      createdByUserName = created?.user,
+      dateCreated = created?.timestamp,
+      dateLastUpdated = lastUpdated?.timestamp,
+      updatedByUsername = lastUpdated?.user,
+    )
+  }
 
   private fun mapConditions() = MigrateConditions(
     bespoke = listOf("Do not contact victim"),
@@ -186,4 +204,24 @@ class MigrationService(
       postcode = "SW1A 2AA",
     ),
   )
+
+  fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
+    .asSequence()
+    .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
+    .lastOrNull()
+
+  fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
+    val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
+    if (indexOfTransition == -1) return null
+
+    return allAudits.asSequence().drop(indexOfTransition + 1)
+      .firstOrNull { audit ->
+        audit.action == "UPDATE_SECTION"
+      }
+  }
+
+  fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits.asSequence()
+    .lastOrNull { audit ->
+      audit.action == "UPDATE_SECTION"
+    }
 }

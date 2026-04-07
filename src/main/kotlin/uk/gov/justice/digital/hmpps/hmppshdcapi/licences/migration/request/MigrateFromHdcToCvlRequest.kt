@@ -165,9 +165,6 @@ data class MigrateLicenceLifecycleDetails(
   @field:Schema(description = "Approved by username", example = "username")
   val approvedByUsername: String?,
 
-  @field:Schema(description = "Approved by name", example = "Approvedby Name")
-  val approvedByName: String?,
-
   @field:Schema(description = "Submitted date", example = "2025-11-20T09:00:00")
   val submittedDate: LocalDateTime?,
 

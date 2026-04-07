@@ -34,15 +34,14 @@
     "licenceExpiryDate" : "2025-03-31"
   },
   "lifecycle" : {
-    "approvedDate" : "2026-05-01T00:00:00",
-    "approvedByUsername" : "approver1",
-    "approvedByName" : "Approver Name",
-    "submittedDate" : "2026-05-02T00:00:00",
-    "submittedByUserName" : "submitter1",
-    "createdByUserName" : "creator1",
-    "dateCreated" : "2026-05-03T00:00:00",
-    "dateLastUpdated" : "2026-05-04T00:00:00",
-    "updatedByUsername" : "updater1"
+    "approvedDate" : "2021-08-10T15:06:37.188",
+    "approvedByUsername" : "approver",
+    "submittedDate" : "2021-08-08T15:06:37.188",
+    "submittedByUserName" : "submitter",
+    "createdByUserName" : "creator",
+    "dateCreated" : "2021-08-06T15:20:37.188",
+    "dateLastUpdated" : "2021-08-09T15:06:37.188",
+    "updatedByUsername" : "updater"
   },
   "conditions" : {
     "bespoke" : [ "Do not contact victim" ],

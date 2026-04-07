@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSea
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.HdcLicence
@@ -265,7 +266,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBodyList(uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus::class.java)
+      .expectBodyList(BookingHdcStatus::class.java)
       .returnResult().responseBody
 
     assertThat(result).isNotNull
@@ -297,7 +298,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .exchange()
       .expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
-      .expectBodyList(uk.gov.justice.digital.hmpps.hmppshdcapi.model.BookingHdcStatus::class.java)
+      .expectBodyList(BookingHdcStatus::class.java)
       .returnResult().responseBody
 
     assertThat(result).isNotNull
