@@ -45,7 +45,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isOk
 
-    // Verify the request payload sent to CVL
+    // Verify the request to CVL
     cvlMockServer.verify(
       1,
       postRequestedFor(urlEqualTo("/licences/migrate"))
@@ -67,7 +67,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   fun `Migrate curfew full days licence to CVL successfully`() {
     val licenceId = 1
     stubSearchPrisonersByBookingIds()
-
     stubGetHdcStatuses()
 
     // Given

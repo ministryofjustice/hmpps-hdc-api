@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.LicenceNotFoundForMigrationException
@@ -41,7 +42,9 @@ import java.time.DayOfWeek.THURSDAY
 import java.time.DayOfWeek.TUESDAY
 import java.time.DayOfWeek.WEDNESDAY
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class MigrationService(
@@ -51,6 +54,7 @@ class MigrationService(
   private val prisonSearchApiClient: PrisonSearchApiClient,
   private val auditEventRepository: AuditEventRepository,
   private val hdcStatusService: HdcStatusService,
+  private val licenceService: LicenceService,
 ) {
 
   @Transactional
@@ -100,9 +104,9 @@ class MigrationService(
       licence = mapLicenceDetails(licence, prisoner, hdcStatus),
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
       conditions = mapConditions(licence, licenceData),
-      curfewAddress = mapCurfewAddress(),
+      curfewAddress = mapCurfewAddress(licence, licenceData),
       curfew = mapCurfewDetails(licenceData),
-      appointment = mapAppointmentDetails(),
+      appointment = mapAppointmentDetails(licenceData),
     )
   }
 
@@ -184,12 +188,18 @@ class MigrationService(
     return MigrateConditions()
   }
 
-  private fun mapCurfewAddress() = MigrateAddress(
-    addressLine1 = "1 Test Street",
-    addressLine2 = "Flat 1",
-    townOrCity = "London",
-    postcode = "SW1A 1AA",
-  )
+  private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress? {
+    val address = licenceService.getAddress(
+      licenceData.curfew,
+      licenceData.bassReferral,
+      licenceData.proposedAddress,
+      licence.id,
+    )
+
+    return address?.let {
+      MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
+    }
+  }
 
   private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
     MigrateCurfewDetails(
@@ -200,24 +210,38 @@ class MigrationService(
     )
   }
 
-  private fun mapAppointmentDetails() = MigrateAppointmentDetails(
-    person = "Officer Person",
-    time = LocalDate.of(2026, 5, 7).atStartOfDay(),
-    telephone = "07123456789",
-    address = MigrateAppointmentAddress(
-      firstLine = "Probation Office",
-      secondLine = "High Street",
-      townOrCity = "London",
-      postcode = "SW1A 2AA",
-    ),
-  )
+  private fun mapAppointmentDetails(licenceData: LicenceData): MigrateAppointmentDetails? = licenceData.reporting?.reportingInstructions?.let { ri ->
+    MigrateAppointmentDetails(
+      person = ri.name,
+      time = toLocalDateTimeOrDate(ri.reportingDate, ri.reportingTime),
+      telephone = ri.telephone,
+      address = MigrateAppointmentAddress(
+        firstLine = ri.buildingAndStreet1,
+        secondLine = ri.buildingAndStreet2,
+        townOrCity = ri.townOrCity,
+        postcode = ri.postcode,
+      ),
+    )
+  }
 
-  fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
+  private fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
+    if (reportingDate == null) return null
+
+    return try {
+      val date = LocalDate.parse(reportingDate, DateTimeFormatter.ISO_DATE)
+      val time = reportingTime?.let { LocalTime.parse(it) } ?: LocalTime.MIDNIGHT
+      LocalDateTime.of(date, time)
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+  private fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
     .asSequence()
     .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
     .lastOrNull()
 
-  fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
+  private fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
     val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
     if (indexOfTransition == -1) return null
 
@@ -227,12 +251,12 @@ class MigrationService(
       }
   }
 
-  fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
+  private fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
     .lastOrNull { audit ->
       audit.action == "UPDATE_SECTION"
     }
 
-  fun CurfewHours.toMigrateCurfewTimes(): List<MigrateCurfewTime> {
+  private fun CurfewHours.toMigrateCurfewTimes(): List<MigrateCurfewTime> {
     val isDaySpecific = daySpecificInputs?.name == "YES"
 
     if (isDaySpecific) {
