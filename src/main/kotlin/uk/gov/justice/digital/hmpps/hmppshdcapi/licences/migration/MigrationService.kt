@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
@@ -31,8 +32,14 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import java.time.DayOfWeek
+import java.time.DayOfWeek.FRIDAY
 import java.time.DayOfWeek.MONDAY
+import java.time.DayOfWeek.SATURDAY
+import java.time.DayOfWeek.SUNDAY
+import java.time.DayOfWeek.THURSDAY
 import java.time.DayOfWeek.TUESDAY
+import java.time.DayOfWeek.WEDNESDAY
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -94,7 +101,7 @@ class MigrationService(
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
       conditions = mapConditions(licence, licenceData),
       curfewAddress = mapCurfewAddress(),
-      curfew = mapCurfewDetails(),
+      curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(),
     )
   }
@@ -184,21 +191,14 @@ class MigrationService(
     postcode = "SW1A 1AA",
   )
 
-  private fun mapCurfewDetails() = MigrateCurfewDetails(
-    curfewTimes = listOf(
-      MigrateCurfewTime(
-        fromDay = MONDAY,
-        fromTime = LocalTime.of(19, 0),
-        untilDay = TUESDAY,
-        untilTime = LocalTime.of(7, 0),
-        createdTimestamp = LocalDate.of(2026, 5, 6).atStartOfDay(),
-      ),
-    ),
-    firstNight = MigrateFirstNight(
-      firstNightFrom = LocalTime.of(18, 0),
-      firstNightUntil = LocalTime.of(8, 0),
-    ),
-  )
+  private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
+    MigrateCurfewDetails(
+      curfewTimes = it.curfewHours?.toMigrateCurfewTimes(),
+      firstNight = it.firstNight?.let { fn ->
+        MigrateFirstNight(fn.firstNightFrom, fn.firstNightUntil)
+      },
+    )
+  }
 
   private fun mapAppointmentDetails() = MigrateAppointmentDetails(
     person = "Officer Person",
@@ -227,8 +227,45 @@ class MigrationService(
       }
   }
 
-  fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits.asSequence()
+  fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
     .lastOrNull { audit ->
       audit.action == "UPDATE_SECTION"
     }
+
+  fun CurfewHours.toMigrateCurfewTimes(): List<MigrateCurfewTime> {
+    val isDaySpecific = daySpecificInputs?.name == "YES"
+
+    if (isDaySpecific) {
+      return DayOfWeek.entries.mapNotNull { day ->
+        getTime(day, from = true)?.let { fromTime ->
+          getTime(day, from = false)?.let { untilTime ->
+            val crossesMidnight = untilTime.isBefore(fromTime)
+            MigrateCurfewTime(
+              fromDay = day,
+              fromTime = fromTime,
+              untilDay = if (crossesMidnight) day.plus(1) else day,
+              untilTime = untilTime,
+            )
+          }
+        }
+      }
+    } else {
+      return listOf(
+        MigrateCurfewTime(
+          fromTime = this.allFrom!!,
+          untilTime = this.allUntil!!,
+        ),
+      )
+    }
+  }
+
+  private fun CurfewHours.getTime(day: DayOfWeek, from: Boolean): LocalTime? = when (day) {
+    MONDAY -> if (from) mondayFrom else mondayUntil
+    TUESDAY -> if (from) tuesdayFrom else tuesdayUntil
+    WEDNESDAY -> if (from) wednesdayFrom else wednesdayUntil
+    THURSDAY -> if (from) thursdayFrom else thursdayUntil
+    FRIDAY -> if (from) fridayFrom else fridayUntil
+    SATURDAY -> if (from) saturdayFrom else saturdayUntil
+    SUNDAY -> if (from) sundayFrom else sundayUntil
+  }
 }

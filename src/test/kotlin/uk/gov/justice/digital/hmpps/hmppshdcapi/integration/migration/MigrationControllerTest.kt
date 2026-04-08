@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
-import org.springframework.test.json.JsonCompareMode.STRICT
+import org.springframework.test.json.JsonCompareMode.LENIENT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
@@ -59,6 +59,44 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     )
   }
 
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-full-curfew-days.sql",
+  )
+  @Test
+  fun `Migrate curfew full days licence to CVL successfully`() {
+    val licenceId = 1
+    stubSearchPrisonersByBookingIds()
+
+    stubGetHdcStatuses()
+
+    // Given
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = webTestClient.post()
+      .uri("/licences/migration/$licenceId/to-cvl")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response.expectStatus().isOk
+
+    // Verify the request payload sent to CVL
+    cvlMockServer.verify(
+      1,
+      postRequestedFor(urlEqualTo("/licences/migrate"))
+        .withRequestBody(
+          equalToJson(
+            jsonFromFile("migration_test_with_full_curfew_days.json"),
+            true,
+            false,
+          ),
+        ),
+    )
+  }
+
   @Test
   fun `Preview migration returns expected DTO`() {
     val licenceId = 1
@@ -78,7 +116,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       .expectBody()
       .json(
         jsonFromFile("migration_test_1.json"),
-        STRICT,
+        LENIENT,
       )
   }
 

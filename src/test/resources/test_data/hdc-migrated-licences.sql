@@ -6,6 +6,10 @@ INSERT INTO licences
 VALUES (1,
         '{
                   "curfew": {
+                    "firstNight":{
+                      "firstNightFrom": "15:00",
+                      "firstNightUntil": "07:00"
+                    },
                     "curfewHours": {
                       "allFrom": "19:00",
                       "allUntil": "07:00",

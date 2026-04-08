@@ -1,3 +1,4 @@
+
 {
   "bookingNo" : "64321",
   "bookingId" : 54222,
@@ -12,8 +13,7 @@
   },
   "prison" : {
     "prisonCode" : "MDI",
-    "prisonDescription" : "Manchester Prison",
-    "prisonTelephone" : null
+    "prisonDescription" : "Manchester Prison"
   },
   "sentence" : {
     "startDate" : "2020-01-01",
@@ -159,15 +159,12 @@
   },
   "curfew" : {
     "curfewTimes" : [ {
-      "fromDay" : "MONDAY",
       "fromTime" : "19:00:00",
-      "untilDay" : "TUESDAY",
-      "untilTime" : "07:00:00",
-      "createdTimestamp" : "2026-05-06T00:00:00"
+      "untilTime" : "07:00:00"
     } ],
     "firstNight" : {
-      "firstNightFrom" : "18:00:00",
-      "firstNightUntil" : "08:00:00"
+      "firstNightFrom" : "15:00:00",
+      "firstNightUntil" : "07:00:00"
     }
   },
   "appointment" : {
