@@ -294,15 +294,12 @@ class MigrationService(
   fun getAddress(licenceData: LicenceData): MigrateAddress? {
     var address: Address? = null
     with(licenceData) {
-      licenceData.curfew?.approvedPremisesAddress?.let { address = it }
-      if (address == null) {
-        licenceData.bassReferral?.approvedPremisesAddress?.let { address = it }
-      }
-      if (address == null) {
-        licenceData.proposedAddress?.curfewAddress?.let { address = it }
-      }
-      if (address == null) {
-        licenceData.bassReferral?.bassOffer?.let { address = it }
+      address = when {
+        curfew?.approvedPremisesAddress != null -> curfew.approvedPremisesAddress
+        bassReferral?.approvedPremisesAddress != null -> bassReferral.approvedPremisesAddress
+        proposedAddress?.curfewAddress != null -> proposedAddress.curfewAddress
+        bassReferral?.bassOffer != null -> bassReferral.bassOffer
+        else -> null
       }
     }
 
