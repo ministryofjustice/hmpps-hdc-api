@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
+import jakarta.validation.ValidationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
@@ -41,7 +43,9 @@ import java.time.DayOfWeek.THURSDAY
 import java.time.DayOfWeek.TUESDAY
 import java.time.DayOfWeek.WEDNESDAY
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class MigrationService(
@@ -52,6 +56,8 @@ class MigrationService(
   private val auditEventRepository: AuditEventRepository,
   private val hdcStatusService: HdcStatusService,
 ) {
+
+  private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   @Transactional
   fun migrateToCvl(licenceId: Long) {
@@ -86,7 +92,7 @@ class MigrationService(
     prisoner: Prisoner,
     hdcStatus: HdcStatus,
   ): MigrateFromHdcToCvlRequest {
-    val licenceData = licence.licence ?: error("Licence data must exist for licence id ${licence.id}")
+    val licenceData = licence.licence ?: throw ValidationException("Licence data must exist for licence id ${licence.id}")
     val audits = auditEventRepository.findByBookingId(licence.bookingId.toString())
 
     return MigrateFromHdcToCvlRequest(
@@ -100,9 +106,9 @@ class MigrationService(
       licence = mapLicenceDetails(licence, prisoner, hdcStatus),
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
       conditions = mapConditions(licence, licenceData),
-      curfewAddress = mapCurfewAddress(),
+      curfewAddress = mapCurfewAddress(licence, licenceData),
       curfew = mapCurfewDetails(licenceData),
-      appointment = mapAppointmentDetails(),
+      appointment = mapAppointmentDetails(licenceData),
     )
   }
 
@@ -184,40 +190,54 @@ class MigrationService(
     return MigrateConditions()
   }
 
-  private fun mapCurfewAddress() = MigrateAddress(
-    addressLine1 = "1 Test Street",
-    addressLine2 = "Flat 1",
-    townOrCity = "London",
-    postcode = "SW1A 1AA",
-  )
+  private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress {
+    val address = getAddress(
+      licenceData,
+    ) ?: throw ValidationException("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
+    // Above, Should we check if the address is null? and if so should we throw a validation exception?
+
+    return address.let {
+      MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
+    }
+  }
 
   private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
     MigrateCurfewDetails(
-      curfewTimes = it.curfewHours?.toMigrateCurfewTimes(),
+      curfewTimes = it.curfewHours?.let { curfew -> toMigrateCurfewTimes(curfew) },
       firstNight = it.firstNight?.let { fn ->
         MigrateFirstNight(fn.firstNightFrom, fn.firstNightUntil)
       },
     )
   }
 
-  private fun mapAppointmentDetails() = MigrateAppointmentDetails(
-    person = "Officer Person",
-    time = LocalDate.of(2026, 5, 7).atStartOfDay(),
-    telephone = "07123456789",
-    address = MigrateAppointmentAddress(
-      firstLine = "Probation Office",
-      secondLine = "High Street",
-      townOrCity = "London",
-      postcode = "SW1A 2AA",
-    ),
-  )
+  private fun mapAppointmentDetails(licenceData: LicenceData): MigrateAppointmentDetails? = licenceData.reporting?.reportingInstructions?.let { ri ->
+    MigrateAppointmentDetails(
+      person = ri.name,
+      time = toLocalDateTimeOrDate(ri.reportingDate, ri.reportingTime),
+      telephone = ri.telephone,
+      address = MigrateAppointmentAddress(
+        firstLine = ri.buildingAndStreet1,
+        secondLine = ri.buildingAndStreet2,
+        townOrCity = ri.townOrCity,
+        postcode = ri.postcode,
+      ),
+    )
+  }
 
-  fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
+  private fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
+    if (reportingDate == null || reportingTime == null) return null
+
+    val date = LocalDate.parse(reportingDate, formatter)
+    val time = reportingTime.let { LocalTime.parse(it) }
+    return LocalDateTime.of(date, time)
+  }
+
+  private fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
     .asSequence()
     .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
     .lastOrNull()
 
-  fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
+  private fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
     val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
     if (indexOfTransition == -1) return null
 
@@ -227,35 +247,37 @@ class MigrationService(
       }
   }
 
-  fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
+  private fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
     .lastOrNull { audit ->
       audit.action == "UPDATE_SECTION"
     }
 
-  fun CurfewHours.toMigrateCurfewTimes(): List<MigrateCurfewTime> {
-    val isDaySpecific = daySpecificInputs?.name == "YES"
+  fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> {
+    with(curfewHours) {
+      val isDaySpecific = daySpecificInputs?.name == "YES"
 
-    if (isDaySpecific) {
-      return DayOfWeek.entries.mapNotNull { day ->
-        getTime(day, from = true)?.let { fromTime ->
-          getTime(day, from = false)?.let { untilTime ->
-            val crossesMidnight = untilTime.isBefore(fromTime)
-            MigrateCurfewTime(
-              fromDay = day,
-              fromTime = fromTime,
-              untilDay = if (crossesMidnight) day.plus(1) else day,
-              untilTime = untilTime,
-            )
+      if (isDaySpecific) {
+        return DayOfWeek.entries.mapNotNull { day ->
+          getTime(day, from = true)?.let { fromTime ->
+            getTime(day, from = false)?.let { untilTime ->
+              val crossesMidnight = untilTime.isBefore(fromTime)
+              MigrateCurfewTime(
+                fromDay = day,
+                fromTime = fromTime,
+                untilDay = if (crossesMidnight) day.plus(1) else day,
+                untilTime = untilTime,
+              )
+            }
           }
         }
+      } else {
+        return listOf(
+          MigrateCurfewTime(
+            fromTime = this.allFrom!!,
+            untilTime = this.allUntil!!,
+          ),
+        )
       }
-    } else {
-      return listOf(
-        MigrateCurfewTime(
-          fromTime = this.allFrom!!,
-          untilTime = this.allUntil!!,
-        ),
-      )
     }
   }
 
@@ -267,5 +289,27 @@ class MigrationService(
     FRIDAY -> if (from) fridayFrom else fridayUntil
     SATURDAY -> if (from) saturdayFrom else saturdayUntil
     SUNDAY -> if (from) sundayFrom else sundayUntil
+  }
+
+  fun getAddress(licenceData: LicenceData): MigrateAddress? {
+    var address: Address? = null
+    with(licenceData) {
+      address = when {
+        curfew?.approvedPremisesAddress != null -> curfew.approvedPremisesAddress
+        bassReferral?.approvedPremisesAddress != null -> bassReferral.approvedPremisesAddress
+        proposedAddress?.curfewAddress != null -> proposedAddress.curfewAddress
+        bassReferral?.bassOffer != null -> bassReferral.bassOffer
+        else -> null
+      }
+    }
+
+    return address?.let {
+      MigrateAddress(
+        it.addressLine1,
+        it.addressLine2,
+        it.addressTown,
+        it.postCode,
+      )
+    }
   }
 }

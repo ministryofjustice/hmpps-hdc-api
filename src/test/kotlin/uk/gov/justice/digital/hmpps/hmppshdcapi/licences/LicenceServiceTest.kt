@@ -559,6 +559,64 @@ class LicenceServiceTest {
 
       assertThat(result).isNull()
     }
+
+    @Test
+    fun `given no matching conditions and proposed address is null when getAddress then return null`() {
+      // Given
+      val licenceId = 1L
+
+      val noCurfewApprovedPremisesRequired = aCurfew.copy(
+        approvedPremises = ApprovedPremises(Decision.NO),
+      )
+
+      val noCas2Referral = aCas2Referral.copy(
+        bassRequest = Cas2Request(Decision.NO),
+      )
+
+      // When
+      val result = service.getAddress(noCurfewApprovedPremisesRequired, noCas2Referral, null, licenceId)
+
+      // Then
+      assertThat(result).isNull()
+    }
+
+    @Test
+    fun `given that approved or cas2 address not required then use proposed address`() {
+      // Given
+      val licenceId = 1L
+
+      // When
+      val result = service.getAddress(null, null, aProposedAddress, licenceId)
+
+      // Then
+      assertThat(result).isNotNull
+
+      with(aProposedAddress.curfewAddress!!) {
+        assertThat(result!!.addressLine1).isEqualTo(addressLine1)
+        assertThat(result.addressLine2).isEqualTo(addressLine2)
+        assertThat(result.townOrCity).isEqualTo(addressTown)
+        assertThat(result.postcode).isEqualTo(postCode)
+      }
+    }
+
+    @Test
+    fun `given address fields contain only whitespace when getAddress then return null`() {
+      // Given
+      val aCurfewWithWhitespaceAddress = aCurfew.copy(
+        approvedPremisesAddress = AddressAndPhone(
+          addressLine1 = "   ",
+          addressLine2 = "   ",
+          addressTown = "Town",
+          postCode = "   ",
+        ),
+      )
+
+      // When
+      val result = service.getAddress(aCurfewWithWhitespaceAddress, aCas2Referral, aProposedAddress, 1L)
+
+      // Then
+      assertThat(result).isNull()
+    }
   }
 
   @Nested

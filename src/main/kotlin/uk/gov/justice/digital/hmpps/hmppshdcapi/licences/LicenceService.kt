@@ -118,6 +118,7 @@ class LicenceService(
       isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.let { it.approvedPremisesAddress to AddressType.CAS }
       isCas2ApprovedPremisesRequired -> cas2Referral.let { it.approvedPremisesAddress to AddressType.CAS }
       isCas2Requested && isCas2Accepted -> cas2Referral.let { it.bassOffer to AddressType.CAS }
+      // if proposedAddress is null then returns a null pair
       else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
 

@@ -19,4 +19,14 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
     nativeQuery = true,
   )
   fun insertMigrationLog(licenceId: Long): Int
+
+  @Query(
+    value = """
+    SELECT EXISTS (
+      SELECT 1 FROM licence_migration_log WHERE licence_id = :licenceId
+    )
+  """,
+    nativeQuery = true,
+  )
+  fun migrationLogExists(licenceId: Long): Boolean
 }

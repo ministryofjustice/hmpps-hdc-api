@@ -17,6 +17,14 @@ VALUES
     (
         1,
         '{
+            "proposedAddress": {
+                "curfewAddress": {
+                    "postCode": "TST1 1TS",
+                    "addressTown": "addressTown",
+                    "addressLine1": "addressLine1",
+                    "addressLine2": "addressLine2"
+                }
+            },
             "curfew": {
                 "curfewHours": {
                     "fridayFrom": "10:00",
