@@ -206,7 +206,7 @@ class MigrationService(
 
   private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
     MigrateCurfewDetails(
-      curfewTimes = it.curfewHours?.toMigrateCurfewTimes(),
+      curfewTimes = it.curfewHours?.let { curfew -> toMigrateCurfewTimes(curfew) },
       firstNight = it.firstNight?.let { fn ->
         MigrateFirstNight(fn.firstNightFrom, fn.firstNightUntil)
       },
@@ -255,30 +255,32 @@ class MigrationService(
       audit.action == "UPDATE_SECTION"
     }
 
-  private fun CurfewHours.toMigrateCurfewTimes(): List<MigrateCurfewTime> {
-    val isDaySpecific = daySpecificInputs?.name == "YES"
+  fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> {
+    with(curfewHours) {
+      val isDaySpecific = daySpecificInputs?.name == "YES"
 
-    if (isDaySpecific) {
-      return DayOfWeek.entries.mapNotNull { day ->
-        getTime(day, from = true)?.let { fromTime ->
-          getTime(day, from = false)?.let { untilTime ->
-            val crossesMidnight = untilTime.isBefore(fromTime)
-            MigrateCurfewTime(
-              fromDay = day,
-              fromTime = fromTime,
-              untilDay = if (crossesMidnight) day.plus(1) else day,
-              untilTime = untilTime,
-            )
+      if (isDaySpecific) {
+        return DayOfWeek.entries.mapNotNull { day ->
+          getTime(day, from = true)?.let { fromTime ->
+            getTime(day, from = false)?.let { untilTime ->
+              val crossesMidnight = untilTime.isBefore(fromTime)
+              MigrateCurfewTime(
+                fromDay = day,
+                fromTime = fromTime,
+                untilDay = if (crossesMidnight) day.plus(1) else day,
+                untilTime = untilTime,
+              )
+            }
           }
         }
+      } else {
+        return listOf(
+          MigrateCurfewTime(
+            fromTime = this.allFrom!!,
+            untilTime = this.allUntil!!,
+          ),
+        )
       }
-    } else {
-      return listOf(
-        MigrateCurfewTime(
-          fromTime = this.allFrom!!,
-          untilTime = this.allUntil!!,
-        ),
-      )
     }
   }
 
