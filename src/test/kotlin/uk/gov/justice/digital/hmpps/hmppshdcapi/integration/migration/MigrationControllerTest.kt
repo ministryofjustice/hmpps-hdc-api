@@ -176,7 +176,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test
-  fun `Migrate appointment details when appointment time and date no given the process correctly`() {
+  fun `Migrate appointment details when appointment time and date not given the process correctly`() {
     // Given
     val licenceId = 6L
     stubSearchPrisonersByBookingIds()
