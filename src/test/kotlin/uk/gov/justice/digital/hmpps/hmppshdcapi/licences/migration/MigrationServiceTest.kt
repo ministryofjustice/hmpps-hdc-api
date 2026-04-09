@@ -8,7 +8,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
@@ -26,7 +25,6 @@ class MigrationServiceTest {
   private var prisonSearchApiClient: PrisonSearchApiClient = mock()
   private var auditEventRepository: AuditEventRepository = mock()
   private var hdcStatusService: HdcStatusService = mock()
-  private var licenceService: LicenceService = mock()
 
   @BeforeEach
   fun setUp() {
@@ -37,7 +35,6 @@ class MigrationServiceTest {
       prisonSearchApiClient = prisonSearchApiClient,
       auditEventRepository = auditEventRepository,
       hdcStatusService = hdcStatusService,
-      licenceService = licenceService,
     )
   }
 

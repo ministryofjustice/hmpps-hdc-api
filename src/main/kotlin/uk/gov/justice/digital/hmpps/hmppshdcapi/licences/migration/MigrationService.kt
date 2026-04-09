@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
@@ -9,7 +10,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.LicenceNotFoundForMigrationException
@@ -54,7 +54,6 @@ class MigrationService(
   private val prisonSearchApiClient: PrisonSearchApiClient,
   private val auditEventRepository: AuditEventRepository,
   private val hdcStatusService: HdcStatusService,
-  private val licenceService: LicenceService,
 ) {
 
   private var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -191,11 +190,8 @@ class MigrationService(
   }
 
   private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress {
-    val address = licenceService.getAddress(
-      licenceData.curfew,
-      licenceData.bassReferral,
-      licenceData.proposedAddress,
-      licence.id,
+    val address = getAddress(
+      licenceData,
     ) ?: error("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
     // Above, Should we check if the address is null? and if so should we throw a validation exception?
 
@@ -292,5 +288,31 @@ class MigrationService(
     FRIDAY -> if (from) fridayFrom else fridayUntil
     SATURDAY -> if (from) saturdayFrom else saturdayUntil
     SUNDAY -> if (from) sundayFrom else sundayUntil
+  }
+
+  fun getAddress(licenceData: LicenceData): MigrateAddress? {
+    var address: Address? = null
+    with(licenceData) {
+      licenceData.curfew?.approvedPremisesAddress?.let { address = it }
+
+      if (address == null) {
+        licenceData.bassReferral?.approvedPremisesAddress?.let { address = it }
+      }
+      if (address == null) {
+        licenceData.proposedAddress?.curfewAddress?.let { address = it }
+      }
+      if (address == null) {
+        licenceData.bassReferral?.bassOffer?.let { address = it }
+      }
+    }
+
+    return address?.let {
+      MigrateAddress(
+        it.addressLine1,
+        it.addressLine2,
+        it.addressTown,
+        it.postCode,
+      )
+    }
   }
 }
