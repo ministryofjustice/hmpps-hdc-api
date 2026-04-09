@@ -132,14 +132,6 @@ VALUES (1,
                       "rejectionReason": "area"
                     }
                   ],
-                  "proposedAddress": {
-                    "optOut": {
-                      "decision": "No"
-                    },
-                    "addressProposed": {
-                      "decision": "No"
-                    }
-                  },
         "licenceConditions": {
             "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
             "standard": {
@@ -284,14 +276,6 @@ VALUES (1,
                     "additionalInformation": ""
                    }
                   },
-                  "proposedAddress": {
-                    "optOut": {
-                      "decision": "No"
-                    },
-                    "addressProposed": {
-                      "decision": "No"
-                    }
-                  },
                   "curfew": {
                     "firstNight":{
                       "firstNightFrom": "15:00",
@@ -340,14 +324,6 @@ VALUES (1,
                   "bassAreaCheck": {
                     "approvedPremisesRequiredYesNo": "No"
                    }
-                  },
-                  "proposedAddress": {
-                    "optOut": {
-                      "decision": "No"
-                    },
-                    "addressProposed": {
-                      "decision": "No"
-                    }
                   },
                   "curfew": {
                     "firstNight":{
@@ -445,10 +421,59 @@ VALUES (1,
                 }'::jsonb,
         43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null, false),
 
-        -- Create a licence with no licence data
+       -- Create a licence with no licence data
        (5,
         null,
-        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false);
+        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false),
+       (6,
+        '{
+            "proposedAddress": {
+                "curfewAddress": {
+                    "addressLine1": "TEST_FALLBACK_PRIMARY_1",
+                    "addressLine2": "TEST_FALLBACK_PRIMARY_2",
+                    "addressTown": "TEST_CITY",
+                    "postCode": "ZZ1 1ZZ",
+                    "telephone": "07000000005"
+                }
+            },
+          "eligibility": {
+            "crdTime": {
+              "decision": "No"
+            },
+            "excluded": {
+              "decision": "No"
+            },
+            "suitability": {
+              "decision": "No"
+            }
+          },
+          "curfew": {
+            "approvedPremisesAddress": {
+              "addressLine1": "1 Test Street",
+              "addressLine2": "Test Area",
+              "addressTown": "Test Town",
+              "postCode": "T33 3ST"
+            }
+          },
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
+          "reporting": {
+            "reportingInstructions": {
+              "name": "aaaaaa",
+              "postcode": "YO15 4AA",
+              "telephone": "000000000000",
+              "townOrCity": "aaaaa",
+              "organisation": "sadadas",
+              "buildingAndStreet1": "12 Mayfield",
+              "buildingAndStreet2": ""
+            }
+          }
+        }'::jsonb,
+        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false);
 
 -- audit data
 

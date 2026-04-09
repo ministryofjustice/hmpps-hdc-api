@@ -1,4 +1,3 @@
-
 {
   "bookingNo" : "64321",
   "bookingId" : 54222,
@@ -39,10 +38,10 @@
     "additional" : [ ]
   },
   "curfewAddress" : {
-    "addressLine1" : "1 Test Street",
-    "addressLine2" : "Flat 1",
-    "townOrCity" : "London",
-    "postcode" : "SW1A 1AA"
+    "addressLine1" : "addressLine1",
+    "addressLine2" : "addressLine2",
+    "townOrCity" : "addressTown",
+    "postcode" : "TST1 1TS"
   },
   "curfew" : {
     "curfewTimes" : [ {
@@ -81,16 +80,5 @@
       "untilDay" : "MONDAY",
       "untilTime" : "05:00:00"
     } ]
-  },
-  "appointment" : {
-    "person" : "Officer Person",
-    "time" : "2026-05-07T00:00:00",
-    "telephone" : "07123456789",
-    "address" : {
-      "firstLine" : "Probation Office",
-      "secondLine" : "High Street",
-      "townOrCity" : "London",
-      "postcode" : "SW1A 2AA"
-    }
   }
 }

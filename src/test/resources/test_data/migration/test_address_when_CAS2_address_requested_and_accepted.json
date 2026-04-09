@@ -1,0 +1,47 @@
+{
+  "bookingNo" : "64321",
+  "bookingId" : 10004,
+  "pnc" : "PNC123",
+  "cro" : "CRO123",
+  "prisoner" : {
+    "prisonerNumber" : "A1234AA",
+    "forename" : "forename",
+    "middleNames" : "middleNames",
+    "surname" : "surname",
+    "dateOfBirth" : "1985-05-20"
+  },
+  "prison" : {
+    "prisonCode" : "MDI",
+    "prisonDescription" : "Manchester Prison"
+  },
+  "sentence" : {
+    "startDate" : "2020-01-01",
+    "endDate" : "2025-01-01",
+    "conditionalReleaseDate" : "2025-04-07",
+    "actualReleaseDate" : "2025-04-17",
+    "topupSupervisionStartDate" : "2023-01-01",
+    "topupSupervisionExpiryDate" : "2025-04-01",
+    "postRecallReleaseDate" : "2025-04-21"
+  },
+  "licence" : {
+    "typeCode" : "AP",
+    "statusCode" : "APPROVED",
+    "hdcLicenceVersion" : "1",
+    "licenceActivationDate" : "2021-01-01",
+    "homeDetentionCurfewActualDate" : "2025-03-25",
+    "homeDetentionCurfewEndDate" : "2025-04-11",
+    "licenceExpiryDate" : "2025-03-31"
+  },
+  "lifecycle" : { },
+  "conditions" : {
+    "bespoke" : [ ],
+    "additional" : [ ]
+  },
+  "curfewAddress" : {
+    "addressLine1" : "TEST_BASS_PRIMARY_1",
+    "addressLine2" : "TEST_BASS_PRIMARY_2",
+    "townOrCity" : "TEST_TOWN",
+    "postcode" : "ZZ1 1ZZ"
+  },
+  "curfew" : { }
+}

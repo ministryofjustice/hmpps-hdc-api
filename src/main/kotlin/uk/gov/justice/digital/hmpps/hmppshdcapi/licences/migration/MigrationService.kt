@@ -57,6 +57,8 @@ class MigrationService(
   private val licenceService: LicenceService,
 ) {
 
+  private var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
   @Transactional
   fun migrateToCvl(licenceId: Long) {
     cvlClient.migrateLicence(createMigrationRequest(licenceId))
@@ -188,15 +190,16 @@ class MigrationService(
     return MigrateConditions()
   }
 
-  private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress? {
+  private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress {
     val address = licenceService.getAddress(
       licenceData.curfew,
       licenceData.bassReferral,
       licenceData.proposedAddress,
       licence.id,
-    )
+    ) ?: error("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
+    // Above, Should we check if the address is null? and if so should we throw a validation exception?
 
-    return address?.let {
+    return address.let {
       MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
     }
   }
@@ -225,15 +228,11 @@ class MigrationService(
   }
 
   private fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
-    if (reportingDate == null) return null
+    if (reportingDate == null || reportingTime == null) return null
 
-    return try {
-      val date = LocalDate.parse(reportingDate, DateTimeFormatter.ISO_DATE)
-      val time = reportingTime?.let { LocalTime.parse(it) } ?: LocalTime.MIDNIGHT
-      LocalDateTime.of(date, time)
-    } catch (e: Exception) {
-      null
-    }
+    val date = LocalDate.parse(reportingDate, formatter)
+    val time = reportingTime.let { LocalTime.parse(it) } ?: LocalTime.MIDNIGHT
+    return LocalDateTime.of(date, time)
   }
 
   private fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits

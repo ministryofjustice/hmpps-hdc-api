@@ -3,21 +3,28 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.integration.migration
 import com.github.tomakehurst.wiremock.client.WireMock.equalToJson
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
+import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
+
+  @Autowired
+  private lateinit var migrationRepository: MigrationRepository
 
   private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")!!
     .bufferedReader(UTF_8).readText()
@@ -28,35 +35,20 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   )
   @Test
   fun `Migrate licence to CVL successfully`() {
-    val licenceId = 1
+    // Given
+    val licenceId = 1L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
-    // Given
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = webTestClient.post()
-      .uri("/licences/migration/$licenceId/to-cvl")
-      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
-      .accept(MediaType.APPLICATION_JSON)
-      .exchange()
+    val response = postLicenceIdToMigrate(licenceId)
 
     // Then
     response.expectStatus().isOk
-
-    // Verify the request to CVL
-    cvlMockServer.verify(
-      1,
-      postRequestedFor(urlEqualTo("/licences/migrate"))
-        .withRequestBody(
-          equalToJson(
-            jsonFromFile("migration_test_1.json"),
-            true,
-            false,
-          ),
-        ),
-    )
+    verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
+    assertThat(migrationRepository.migrationLogExists(licenceId)).isTrue
   }
 
   @Sql(
@@ -65,30 +57,153 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   )
   @Test
   fun `Migrate curfew full days licence to CVL successfully`() {
-    val licenceId = 1
+    // Given
+    val licenceId = 1L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
-
-    // Given
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = webTestClient.post()
-      .uri("/licences/migration/$licenceId/to-cvl")
-      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
-      .accept(MediaType.APPLICATION_JSON)
-      .exchange()
+    val response = postLicenceIdToMigrate(licenceId)
 
     // Then
     response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_with_full_curfew_days.json")
+  }
 
-    // Verify the request payload sent to CVL
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+  )
+  @Test
+  fun `Migrate correct curfew address when approved premises is required over proposed address`() {
+    // Given
+    val licenceId = 1L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_when_approved_premises_is_required_over_proposed_address.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+  )
+  @Test
+  fun `Migrate correct curfew address when approved premises is required over CAS2 address`() {
+    // Given
+    val licenceId = 2L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_approved_premises_is_required_over_CAS2_address.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+  )
+  @Test
+  fun `Migrate correct curfew address when CAS2 address requested and accepted`() {
+    // Given
+    val licenceId = 4L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_address_when_CAS2_address_requested_and_accepted.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+  )
+  @Test
+  fun `Migrate correct curfew address when no other address is available then use proposed curfew address`() {
+    // Given
+    val licenceId = 5L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_when_no_other_address_is_available_then_use_proposed_curfew_address.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+  )
+  @Test
+  fun `Migrate Exception is thrown when no address can be found`() {
+    // Given
+    val licenceId = 3L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().is5xxServerError
+    assertThat(migrationRepository.migrationLogExists(licenceId)).isFalse
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-migrated-licences.sql",
+  )
+  @Test
+  fun `Migrate appointment details when appointment time and date no given the process correctly`() {
+    // Given
+    val licenceId = 6L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_when_no_appointment_date_time_given.json")
+  }
+
+  private fun postLicenceIdToMigrate(licenceId: Long): WebTestClient.ResponseSpec = webTestClient.post()
+    .uri("/licences/migration/$licenceId/to-cvl")
+    .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+    .accept(MediaType.APPLICATION_JSON)
+    .exchange()
+
+  private fun verifyRequestPayloadSentToCVL(testUri: String) {
     cvlMockServer.verify(
       1,
       postRequestedFor(urlEqualTo("/licences/migrate"))
         .withRequestBody(
           equalToJson(
-            jsonFromFile("migration_test_with_full_curfew_days.json"),
+            jsonFromFile(testUri),
             true,
             false,
           ),
@@ -98,8 +213,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Test
   fun `Preview migration returns expected DTO`() {
+    // Given
     val licenceId = 1
-
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
@@ -114,7 +229,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
       .expectBody()
       .json(
-        jsonFromFile("migration_test_1.json"),
+        jsonFromFile("test_hdc_to_cvl.json"),
         LENIENT,
       )
   }
