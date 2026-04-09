@@ -228,7 +228,7 @@ class MigrationService(
     if (reportingDate == null || reportingTime == null) return null
 
     val date = LocalDate.parse(reportingDate, formatter)
-    val time = reportingTime.let { LocalTime.parse(it) } ?: LocalTime.MIDNIGHT
+    val time = reportingTime.let { LocalTime.parse(it) }
     return LocalDateTime.of(date, time)
   }
 
