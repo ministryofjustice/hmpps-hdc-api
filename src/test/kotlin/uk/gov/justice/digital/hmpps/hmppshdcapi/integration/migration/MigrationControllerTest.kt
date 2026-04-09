@@ -167,7 +167,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceIdToMigrate(licenceId)
 
     // Then
-    response.expectStatus().is5xxServerError
+    response.expectStatus().isBadRequest
     assertThat(migrationRepository.migrationLogExists(licenceId)).isFalse
   }
 

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
+import jakarta.validation.ValidationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
@@ -56,7 +57,7 @@ class MigrationService(
   private val hdcStatusService: HdcStatusService,
 ) {
 
-  private var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   @Transactional
   fun migrateToCvl(licenceId: Long) {
@@ -91,7 +92,7 @@ class MigrationService(
     prisoner: Prisoner,
     hdcStatus: HdcStatus,
   ): MigrateFromHdcToCvlRequest {
-    val licenceData = licence.licence ?: error("Licence data must exist for licence id ${licence.id}")
+    val licenceData = licence.licence ?: throw ValidationException("Licence data must exist for licence id ${licence.id}")
     val audits = auditEventRepository.findByBookingId(licence.bookingId.toString())
 
     return MigrateFromHdcToCvlRequest(
@@ -192,7 +193,7 @@ class MigrationService(
   private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress {
     val address = getAddress(
       licenceData,
-    ) ?: error("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
+    ) ?: throw ValidationException("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
     // Above, Should we check if the address is null? and if so should we throw a validation exception?
 
     return address.let {
@@ -294,7 +295,6 @@ class MigrationService(
     var address: Address? = null
     with(licenceData) {
       licenceData.curfew?.approvedPremisesAddress?.let { address = it }
-
       if (address == null) {
         licenceData.bassReferral?.approvedPremisesAddress?.let { address = it }
       }
