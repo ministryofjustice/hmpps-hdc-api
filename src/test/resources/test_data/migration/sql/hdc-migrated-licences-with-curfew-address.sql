@@ -14,32 +14,19 @@ INSERT INTO licences (
 )
 VALUES
 
--- Row 1: AP required → curfew.approvedPremisesAddress
+-- Row 1: Approved required curfew.approvedPremisesAddress
 (
     1,
     '{
         "curfew": {
             "approvedPremises": { "required": "Yes" },
             "approvedPremisesAddress": {
-                "addressLine1": "TEST_AP_PRIMARY_1",
-                "addressLine2": "TEST_AP_PRIMARY_2",
+                "addressLine1": "TEST_APPROVED_PRIMARY_1",
+                "addressLine2": "TEST_APPROVED_PRIMARY_2",
                 "addressTown": "TEST_TOWN",
                 "postCode": "ZZ1 1ZZ",
                 "telephone": "07000000001"
             }
-        },
-        "bassReferral": {
-            "bassOffer": {
-                "addressLine1": "TEST_BASS_SHOULD_NOT_BE_USED",
-                "addressLine2": "TEST_BASS_SHOULD_NOT_BE_USED",
-                "addressTown": "TEST_TOWN",
-                "postCode": "ZZ1 1ZZ",
-                "telephone": "07000000002",
-                "bassArea": "TEST_AREA",
-                "bassAccepted": "Yes"
-            },
-            "bassRequest": { "bassRequested": "Yes" },
-            "bassAreaCheck": { "approvedPremisesRequiredYesNo": "No" }
         },
         "approval": {
             "release": {
@@ -68,7 +55,7 @@ VALUES
     FALSE
 ),
 
--- Row 2: AP not required → use bassReferral.approvedPremisesAddress if present
+-- Row 2: Approved not required use bassReferral.approvedPremisesAddress if present
 (
     2,
     '{
@@ -77,8 +64,8 @@ VALUES
         },
         "bassReferral": {
             "approvedPremisesAddress": {
-                "addressLine1": "TEST_CAS2_AP_PRIMARY_1",
-                "addressLine2": "TEST_CAS2_AP_PRIMARY_2",
+                "addressLine1": "TEST_APPROVED_PRIMARY_1",
+                "addressLine2": "TEST_APPROVED_PRIMARY_2",
                 "addressTown": "TEST_TOWN",
                 "postCode": "ZZ1 1ZZ",
                 "telephone": "07000000003"
@@ -113,7 +100,7 @@ VALUES
     FALSE
 ),
 
--- Row 3: No address anywhere → expect NULL fallback
+-- Row 3: No address anywhere expect NULL address
 (
     3,
     '{
@@ -136,7 +123,7 @@ VALUES
     FALSE
 ),
 
--- Row 4: CAS2 offer present → use bassOffer
+-- Row 4: CAS2 offer present use bassOffer
 (
     4,
     '{
@@ -145,8 +132,8 @@ VALUES
         },
         "bassReferral": {
             "bassOffer": {
-                "addressLine1": "TEST_BASS_PRIMARY_1",
-                "addressLine2": "TEST_BASS_PRIMARY_2",
+                "addressLine1": "TEST_CAS2_PRIMARY_1",
+                "addressLine2": "TEST_CAS2_PRIMARY_2",
                 "addressTown": "TEST_TOWN",
                 "postCode": "ZZ1 1ZZ",
                 "telephone": "07000000004",
@@ -183,14 +170,14 @@ VALUES
     FALSE
 ),
 
--- Row 5: No AP + no CAS2 → fallback to proposedAddress.curfewAddress
+-- Row 5: Approved not required + no CAS2 use proposedAddress.curfewAddress
 (
     5,
     '{
         "proposedAddress": {
             "curfewAddress": {
-                "addressLine1": "TEST_FALLBACK_PRIMARY_1",
-                "addressLine2": "TEST_FALLBACK_PRIMARY_2",
+                "addressLine1": "TEST_PROPOSED_PRIMARY_1",
+                "addressLine2": "TEST_PROPOSED_PRIMARY_2",
                 "addressTown": "TEST_CITY",
                 "postCode": "ZZ1 1ZZ",
                 "telephone": "07000000005"

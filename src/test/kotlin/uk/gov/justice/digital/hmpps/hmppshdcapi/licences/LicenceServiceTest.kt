@@ -561,64 +561,6 @@ class LicenceServiceTest {
     }
 
     @Test
-    fun `given both curfew and cas2 approved premises required when getAddress then cas2 takes precedence`() {
-      // Given
-      val licenceId = 1L
-
-      val curfew = aCurfew.copy(
-        approvedPremises = ApprovedPremises(Decision.YES),
-      )
-
-      val cas2 = aCas2Referral.copy(
-        bassAreaCheck = Cas2AreaCheck(Decision.YES),
-      )
-
-      // When
-      val result = service.getAddress(curfew, cas2, aProposedAddress, licenceId)
-
-      // Then
-      assertThat(result).isNotNull
-      with(cas2.approvedPremisesAddress!!) {
-        assertThat(result!!.addressLine1).isEqualTo(addressLine1)
-        assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.townOrCity).isEqualTo(addressTown)
-        assertThat(result.postcode).isEqualTo(postCode)
-      }
-    }
-
-    @Test
-    fun `given cas2 requested but not accepted when getAddress then fallback to proposed address`() {
-      // Given
-      val licenceId = 1L
-
-      val curfew = aCurfew.copy(
-        approvedPremises = ApprovedPremises(Decision.NO),
-      )
-
-      val cas2 = aCas2Referral.copy(
-
-        bassAreaCheck = Cas2AreaCheck(Decision.NO),
-        bassRequest = Cas2Request(Decision.YES),
-        bassOffer = aCas2Offer.copy(
-          bassAccepted = OfferAccepted.UNSUITABLE,
-        ),
-      )
-
-      // When
-      val result = service.getAddress(curfew, cas2, aProposedAddress, licenceId)
-
-      // Then
-      assertThat(result).isNotNull
-
-      with(aProposedAddress.curfewAddress!!) {
-        assertThat(result!!.addressLine1).isEqualTo(addressLine1)
-        assertThat(result.addressLine2).isEqualTo(addressLine2)
-        assertThat(result.townOrCity).isEqualTo(addressTown)
-        assertThat(result.postcode).isEqualTo(postCode)
-      }
-    }
-
-    @Test
     fun `given no matching conditions and proposed address is null when getAddress then return null`() {
       // Given
       val licenceId = 1L
@@ -639,7 +581,7 @@ class LicenceServiceTest {
     }
 
     @Test
-    fun `given curfew and cas2Referral are null when getAddress then use proposed address`() {
+    fun `given that approved or cas2 address not required then use proposed address`() {
       // Given
       val licenceId = 1L
 

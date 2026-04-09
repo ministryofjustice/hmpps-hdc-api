@@ -20,8 +20,6 @@
     <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
-    <ID>SwallowedException:MigrationService.kt$MigrationService$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:MigrationService.kt$MigrationService$e: Exception</ID>
     <ID>TooManyFunctions:MigrationService.kt$MigrationService</ID>
   </CurrentIssues>
 </SmellBaseline>

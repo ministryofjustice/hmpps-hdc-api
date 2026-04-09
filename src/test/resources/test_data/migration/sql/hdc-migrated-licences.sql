@@ -54,7 +54,7 @@ VALUES (1,
                   },
                   "reporting": {
                     "reportingInstructions": {
-                      "name": "aaaaaa",
+                      "name": "Officer Person",
                       "postcode": "YO15 4AA",
                       "telephone": "000000000000",
                       "townOrCity": "aaaaa",
@@ -429,8 +429,8 @@ VALUES (1,
         '{
             "proposedAddress": {
                 "curfewAddress": {
-                    "addressLine1": "TEST_FALLBACK_PRIMARY_1",
-                    "addressLine2": "TEST_FALLBACK_PRIMARY_2",
+                    "addressLine1": "TEST_PROPOSED_PRIMARY_1",
+                    "addressLine2": "TEST_PROPOSED_PRIMARY_2",
                     "addressTown": "TEST_CITY",
                     "postCode": "ZZ1 1ZZ",
                     "telephone": "07000000005"
@@ -447,14 +447,6 @@ VALUES (1,
               "decision": "No"
             }
           },
-          "curfew": {
-            "approvedPremisesAddress": {
-              "addressLine1": "1 Test Street",
-              "addressLine2": "Test Area",
-              "addressTown": "Test Town",
-              "postCode": "T33 3ST"
-            }
-          },
           "document": {
             "template": {
               "decision": "hdc_ap",
@@ -463,7 +455,7 @@ VALUES (1,
           },
           "reporting": {
             "reportingInstructions": {
-              "name": "aaaaaa",
+              "name": "Officer Person",
               "postcode": "YO15 4AA",
               "telephone": "000000000000",
               "townOrCity": "aaaaa",

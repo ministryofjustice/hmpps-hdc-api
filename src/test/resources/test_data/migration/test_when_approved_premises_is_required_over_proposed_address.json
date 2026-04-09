@@ -38,8 +38,8 @@
     "additional" : [ ]
   },
   "curfewAddress" : {
-    "addressLine1" : "TEST_AP_PRIMARY_1",
-    "addressLine2" : "TEST_AP_PRIMARY_2",
+    "addressLine1" : "TEST_APPROVED_PRIMARY_1",
+    "addressLine2" : "TEST_APPROVED_PRIMARY_2",
     "townOrCity" : "TEST_TOWN",
     "postcode" : "ZZ1 1ZZ"
   },

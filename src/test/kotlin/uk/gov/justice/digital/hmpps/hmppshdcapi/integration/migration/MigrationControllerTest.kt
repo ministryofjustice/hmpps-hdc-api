@@ -31,7 +31,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test
   fun `Migrate licence to CVL successfully`() {
@@ -53,10 +53,10 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-full-curfew-days.sql",
+    "classpath:test_data/migration/sql/hdc-migrate_specific_curfew_days_for_licence_to_cvl_successfully.sql",
   )
   @Test
-  fun `Migrate curfew full days licence to CVL successfully`() {
+  fun `Migrate a licence with day specific inputs for curfew times to CVL successfully`() {
     // Given
     val licenceId = 1L
     stubSearchPrisonersByBookingIds()
@@ -68,12 +68,12 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isOk
-    verifyRequestPayloadSentToCVL("test_with_full_curfew_days.json")
+    verifyRequestPayloadSentToCVL("test_with_specific_curfew_days.json")
   }
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
   )
   @Test
   fun `Migrate correct curfew address when approved premises is required over proposed address`() {
@@ -93,7 +93,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
   )
   @Test
   fun `Migrate correct curfew address when approved premises is required over CAS2 address`() {
@@ -113,7 +113,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
   )
   @Test
   fun `Migrate correct curfew address when CAS2 address requested and accepted`() {
@@ -133,10 +133,10 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
   )
   @Test
-  fun `Migrate correct curfew address when no other address is available then use proposed curfew address`() {
+  fun `Migrate correct curfew address when curfew address proposed`() {
     // Given
     val licenceId = 5L
     stubSearchPrisonersByBookingIds()
@@ -153,7 +153,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
   )
   @Test
   fun `Migrate Exception is thrown when no address can be found`() {
@@ -173,7 +173,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/hdc-migrated-licences.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test
   fun `Migrate appointment details when appointment time and date no given the process correctly`() {

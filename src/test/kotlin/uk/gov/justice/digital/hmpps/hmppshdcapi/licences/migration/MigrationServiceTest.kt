@@ -42,7 +42,7 @@ class MigrationServiceTest {
   }
 
   @Test
-  fun shouldReturnSingleCurfewTimeWhenNotDaySpecific() {
+  fun shouldReturnAllSameCurfewTimeWhenNotDaySpecific() {
     // Given
     val curfewHours = createCurfewHours(
       allFrom = LocalTime.of(9, 0),
