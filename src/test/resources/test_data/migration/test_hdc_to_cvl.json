@@ -16,8 +16,8 @@
     "prisonDescription" : "Manchester Prison"
   },
   "sentence" : {
-    "startDate" : "2020-01-01",
-    "endDate" : "2025-01-01",
+    "sentenceStartDate" : "2020-01-01",
+    "sentenceEndDate" : "2025-01-01",
     "conditionalReleaseDate" : "2025-04-07",
     "actualReleaseDate" : "2025-04-17",
     "topupSupervisionStartDate" : "2023-01-01",
@@ -26,9 +26,9 @@
   },
   "licence" : {
     "typeCode" : "AP",
-    "statusCode" : "APPROVED",
-    "hdcLicenceVersion" : "1",
-    "licenceActivationDate" : "2021-08-06",
+    "statusCode" : "ACTIVE",
+    "licenceVersion" : "1",
+    "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
     "homeDetentionCurfewEndDate" : "2025-04-11",
     "licenceExpiryDate" : "2025-03-31"
@@ -40,8 +40,7 @@
     "submittedByUserName" : "submitter",
     "createdByUserName" : "creator",
     "dateCreated" : "2021-08-06T15:20:37.188",
-    "dateLastUpdated" : "2021-08-09T15:06:37.188",
-    "updatedByUsername" : "updater"
+    "dateLastUpdated" : "2021-08-09T15:06:37.188"
   },
   "conditions" : {
     "bespoke" : [ "Some other condition" ],

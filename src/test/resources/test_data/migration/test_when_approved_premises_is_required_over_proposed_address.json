@@ -15,8 +15,8 @@
     "prisonDescription" : "Manchester Prison"
   },
   "sentence" : {
-    "startDate" : "2020-01-01",
-    "endDate" : "2025-01-01",
+    "sentenceStartDate" : "2020-01-01",
+    "sentenceEndDate" : "2025-01-01",
     "conditionalReleaseDate" : "2025-04-07",
     "actualReleaseDate" : "2025-04-17",
     "topupSupervisionStartDate" : "2023-01-01",
@@ -25,9 +25,9 @@
   },
   "licence" : {
     "typeCode" : "AP",
-    "statusCode" : "APPROVED",
-    "hdcLicenceVersion" : "1",
-    "licenceActivationDate" : "2021-01-01",
+    "statusCode" : "ACTIVE",
+    "licenceVersion" : "1",
+    "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
     "homeDetentionCurfewEndDate" : "2025-04-11",
     "licenceExpiryDate" : "2025-03-31"

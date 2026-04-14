@@ -30,7 +30,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigratePrisonDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigratePrisonerDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateSentenceDetails
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateStatus
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
@@ -103,7 +102,7 @@ class MigrationService(
       prisoner = mapPrisonerDetails(prisoner),
       prison = mapPrisonDetails(prisoner),
       sentence = mapSentenceDetails(prisoner),
-      licence = mapLicenceDetails(licence, prisoner, hdcStatus),
+      licence = mapLicenceDetails(licence, prisoner),
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
       conditions = mapConditions(licence, licenceData),
       curfewAddress = mapCurfewAddress(licence, licenceData),
@@ -127,8 +126,8 @@ class MigrationService(
   )
 
   private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(
-    startDate = prisoner.sentenceStartDate,
-    endDate = prisoner.sentenceExpiryDate,
+    sentenceStartDate = prisoner.sentenceStartDate,
+    sentenceEndDate = prisoner.sentenceExpiryDate,
     conditionalReleaseDate = prisoner.conditionalReleaseDateOverrideDate
       ?: prisoner.conditionalReleaseDate,
     actualReleaseDate = prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
@@ -140,15 +139,13 @@ class MigrationService(
   private fun mapLicenceDetails(
     licence: Licence,
     prisoner: Prisoner,
-    hdcStatus: HdcStatus,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
-    statusCode = MigrateStatus.from(hdcStatus),
-    hdcLicenceVersion = licence.version.toString(),
-    licenceActivationDate = licence.transitionDate?.toLocalDate(),
+    statusCode = "ACTIVE",
+    licenceVersion = licence.version.toString(),
+    licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
-    homeDetentionCurfewActualDate =
-    prisoner.homeDetentionCurfewActualDate ?: prisoner.homeDetentionCurfewEligibilityDate,
+    homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
   )
 
@@ -170,7 +167,6 @@ class MigrationService(
       createdByUserName = created?.user,
       dateCreated = created?.timestamp,
       dateLastUpdated = lastUpdated?.timestamp,
-      updatedByUsername = lastUpdated?.user,
     )
   }
 
