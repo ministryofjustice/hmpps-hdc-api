@@ -103,7 +103,7 @@ class MigrationService(
       prisoner = mapPrisonerDetails(prisoner),
       prison = mapPrisonDetails(prisoner),
       sentence = mapSentenceDetails(prisoner),
-      licence = mapLicenceDetails(licence, prisoner, hdcStatus),
+      licence = mapLicenceDetails(licence, prisoner),
       lifecycle = mapLifecycleDetails(audits, hdcStatus),
       conditions = mapConditions(licence, licenceData),
       curfewAddress = mapCurfewAddress(licence, licenceData),
@@ -140,7 +140,6 @@ class MigrationService(
   private fun mapLicenceDetails(
     licence: Licence,
     prisoner: Prisoner,
-    hdcStatus: HdcStatus,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
     statusCode = "ACTIVE",
