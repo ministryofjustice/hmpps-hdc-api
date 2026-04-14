@@ -127,8 +127,8 @@ class MigrationService(
   )
 
   private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(
-    startDate = prisoner.sentenceStartDate,
-    endDate = prisoner.sentenceExpiryDate,
+    sentenceStartDate = prisoner.sentenceStartDate,
+    sentenceEndDate = prisoner.sentenceExpiryDate,
     conditionalReleaseDate = prisoner.conditionalReleaseDateOverrideDate
       ?: prisoner.conditionalReleaseDate,
     actualReleaseDate = prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
@@ -143,12 +143,11 @@ class MigrationService(
     hdcStatus: HdcStatus,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
-    statusCode = MigrateStatus.from(hdcStatus),
-    hdcLicenceVersion = licence.version.toString(),
-    licenceActivationDate = licence.transitionDate?.toLocalDate(),
+    statusCode = "ACTIVE",
+    licenceVersion = licence.version.toString(),
+    licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
-    homeDetentionCurfewActualDate =
-    prisoner.homeDetentionCurfewActualDate ?: prisoner.homeDetentionCurfewEligibilityDate,
+    homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
   )
 
@@ -165,12 +164,12 @@ class MigrationService(
     return MigrateLicenceLifecycleDetails(
       approvedDate = approved?.timestamp,
       approvedByUsername = approved?.user,
+      approvedByName = approved?.user,
       submittedDate = submitted?.timestamp,
       submittedByUserName = submitted?.user,
       createdByUserName = created?.user,
       dateCreated = created?.timestamp,
       dateLastUpdated = lastUpdated?.timestamp,
-      updatedByUsername = lastUpdated?.user,
     )
   }
 

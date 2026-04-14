@@ -117,10 +117,10 @@ data class MigratePrisonerDetails(
 @Schema(description = "Sentence details")
 data class MigrateSentenceDetails(
   @field:Schema(description = "Sentence start date", example = "2024-01-01")
-  val startDate: LocalDate?,
+  val sentenceStartDate: LocalDate?,
 
   @field:Schema(description = "Sentence end date", example = "2025-06-01")
-  val endDate: LocalDate?,
+  val sentenceEndDate: LocalDate?,
 
   @field:Schema(description = "Conditional release date", example = "2025-05-01")
   val conditionalReleaseDate: LocalDate?,
@@ -144,11 +144,11 @@ data class MigrateLicenceDetails(
   @field:Schema(description = "Licence type", example = "AP")
   val typeCode: MigrateLicenceType,
 
-  @field:Schema(description = "HDC stage", example = "APPROVED")
-  val statusCode: MigrateStatus,
+  @field:Schema(description = "HDC stage", example = "ACTIVE")
+  val statusCode: String? = "ACTIVE",
 
-  @field:Schema(description = "Hdc licence version string", example = "1.0")
-  val hdcLicenceVersion: String? = "1.0",
+  @field:Schema(description = "HDC licence version string", example = "1.0")
+  val licenceVersion: String? = "1.0",
 
   @field:Schema(description = "Licence activation date", example = "2025-05-04")
   val licenceActivationDate: LocalDate?,
@@ -172,6 +172,9 @@ data class MigrateLicenceLifecycleDetails(
   @field:Schema(description = "Approved by username", example = "username")
   val approvedByUsername: String?,
 
+  @field:Schema(description = "Approved by name", example = "name")
+  val approvedByName: String?,
+
   @field:Schema(description = "Submitted date", example = "2025-11-20T09:00:00")
   val submittedDate: LocalDateTime?,
 
@@ -186,9 +189,6 @@ data class MigrateLicenceLifecycleDetails(
 
   @field:Schema(description = "Date last updated", example = "2025-11-20T10:30:00")
   val dateLastUpdated: LocalDateTime?,
-
-  @field:Schema(description = "Updated by username", example = "username")
-  val updatedByUsername: String?,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
