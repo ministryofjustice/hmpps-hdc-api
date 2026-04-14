@@ -162,7 +162,6 @@ class MigrationService(
     return MigrateLicenceLifecycleDetails(
       approvedDate = approved?.timestamp,
       approvedByUsername = approved?.user,
-      approvedByName = approved?.user,
       submittedDate = submitted?.timestamp,
       submittedByUserName = submitted?.user,
       createdByUserName = created?.user,

@@ -36,7 +36,6 @@
   "lifecycle" : {
     "approvedDate" : "2021-08-10T15:06:37.188",
     "approvedByUsername" : "approver",
-    "approvedByName": "approver",
     "submittedDate" : "2021-08-08T15:06:37.188",
     "submittedByUserName" : "submitter",
     "createdByUserName" : "creator",
