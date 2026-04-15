@@ -200,7 +200,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   private fun verifyRequestPayloadSentToCVL(testUri: String) {
     cvlMockServer.verify(
       1,
-      postRequestedFor(urlEqualTo("/licences/migrate"))
+      postRequestedFor(urlEqualTo("/licences/migrate/active"))
         .withRequestBody(
           equalToJson(
             jsonFromFile(testUri),
