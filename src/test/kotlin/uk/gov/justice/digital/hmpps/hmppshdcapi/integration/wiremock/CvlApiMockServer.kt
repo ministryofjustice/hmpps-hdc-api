@@ -9,7 +9,7 @@ class CvlApiMockServer(port: Int = 8092) : WireMockServer(port) {
 
   fun stubMigrateLicenceSuccess() {
     stubFor(
-      post(urlEqualTo("/licences/migrate"))
+      post(urlEqualTo("/licences/migrate/active"))
         .willReturn(
           aResponse()
             .withHeader("Content-Type", "application/json")
@@ -20,7 +20,7 @@ class CvlApiMockServer(port: Int = 8092) : WireMockServer(port) {
 
   fun stubMigrateLicenceFailure(status: Int, body: String? = null) {
     stubFor(
-      post(urlEqualTo("/licences/migrate"))
+      post(urlEqualTo("/licences/migrate/active"))
         .willReturn(
           aResponse()
             .withHeader("Content-Type", "application/json")

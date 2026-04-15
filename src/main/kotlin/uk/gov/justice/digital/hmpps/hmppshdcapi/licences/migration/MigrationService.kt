@@ -141,7 +141,6 @@ class MigrationService(
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
-    statusCode = "ACTIVE",
     licenceVersion = licence.version.toString(),
     licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
@@ -166,7 +165,6 @@ class MigrationService(
       submittedByUserName = submitted?.user,
       createdByUserName = created?.user,
       dateCreated = created?.timestamp,
-      dateLastUpdated = lastUpdated?.timestamp,
     )
   }
 
@@ -179,7 +177,6 @@ class MigrationService(
           conditionsVersion = 1,
         )
       }
-      // Do I only take over approved bespoke conditions? it.approved
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
       return MigrateConditions(bespoke = bespoke, additional = additional)
     }
@@ -190,7 +187,6 @@ class MigrationService(
     val address = getAddress(
       licenceData,
     ) ?: throw ValidationException("Curfew address is null for licence id ${licence.id} this should not migrate to cvl!")
-    // Above, Should we check if the address is null? and if so should we throw a validation exception?
 
     return address.let {
       MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
