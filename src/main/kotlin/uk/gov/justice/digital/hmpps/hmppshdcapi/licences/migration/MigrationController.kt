@@ -23,7 +23,7 @@ class MigrationController(
   @PostMapping("/{licenceId}/to-cvl")
   @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
-    summary = "Migrate a single licence to CVL",
+    summary = "Migrate a single active licence to CVL",
     description = "Triggers migration of the supplied licence ID into CVL",
   )
   @ApiResponses(
