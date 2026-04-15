@@ -20,5 +20,6 @@
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
     <ID>TooManyFunctions:MigrationService.kt$MigrationService</ID>
+    <ID>UnusedPrivateProperty:MigrationService.kt$MigrationService$val lastUpdated = getLastUpdated(audits)</ID>
   </CurrentIssues>
 </SmellBaseline>

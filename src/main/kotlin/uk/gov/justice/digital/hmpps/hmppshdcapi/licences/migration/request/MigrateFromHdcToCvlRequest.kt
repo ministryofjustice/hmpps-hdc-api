@@ -144,9 +144,6 @@ data class MigrateLicenceDetails(
   @field:Schema(description = "Licence type", example = "AP")
   val typeCode: MigrateLicenceType,
 
-  @field:Schema(description = "HDC stage", example = "ACTIVE")
-  val statusCode: String? = "ACTIVE",
-
   @field:Schema(description = "HDC licence version string", example = "1.0")
   val licenceVersion: String? = "1.0",
 
@@ -183,9 +180,6 @@ data class MigrateLicenceLifecycleDetails(
 
   @field:Schema(description = "Date created", example = "2025-11-20T08:30:00")
   val dateCreated: LocalDateTime?,
-
-  @field:Schema(description = "Date last updated", example = "2025-11-20T10:30:00")
-  val dateLastUpdated: LocalDateTime?,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

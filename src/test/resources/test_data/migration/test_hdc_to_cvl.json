@@ -26,7 +26,6 @@
   },
   "licence" : {
     "typeCode" : "AP",
-    "statusCode" : "ACTIVE",
     "licenceVersion" : "1",
     "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
@@ -39,8 +38,7 @@
     "submittedDate" : "2021-08-08T15:06:37.188",
     "submittedByUserName" : "submitter",
     "createdByUserName" : "creator",
-    "dateCreated" : "2021-08-06T15:20:37.188",
-    "dateLastUpdated" : "2021-08-09T15:06:37.188"
+    "dateCreated" : "2021-08-06T15:20:37.188"
   },
   "conditions" : {
     "bespoke" : [ "Some other condition" ],

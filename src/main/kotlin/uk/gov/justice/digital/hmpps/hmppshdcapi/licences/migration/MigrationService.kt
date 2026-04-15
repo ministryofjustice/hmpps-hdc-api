@@ -141,7 +141,6 @@ class MigrationService(
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
-    statusCode = "ACTIVE",
     licenceVersion = licence.version.toString(),
     licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
@@ -166,7 +165,6 @@ class MigrationService(
       submittedByUserName = submitted?.user,
       createdByUserName = created?.user,
       dateCreated = created?.timestamp,
-      dateLastUpdated = lastUpdated?.timestamp,
     )
   }
 
