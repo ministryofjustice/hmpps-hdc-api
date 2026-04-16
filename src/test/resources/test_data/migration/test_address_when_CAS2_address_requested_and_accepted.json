@@ -24,12 +24,14 @@
     "postRecallReleaseDate" : "2025-04-21"
   },
   "licence" : {
+    "licenceId" : 4,
     "typeCode" : "AP",
-    "licenceVersion" : "1",
     "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
     "homeDetentionCurfewEndDate" : "2025-04-11",
-    "licenceExpiryDate" : "2025-03-31"
+    "licenceExpiryDate" : "2025-03-31",
+    "licenceVersion" : 1,
+    "varyVersion" : 0
   },
   "lifecycle" : { },
   "conditions" : {

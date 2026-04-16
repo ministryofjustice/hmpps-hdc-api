@@ -14,13 +14,13 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 
 @RestController
-@RequestMapping("/licences/migration")
+@RequestMapping("/licences/migrate/active")
 @Tag(name = "Licence Migration", description = "Operations related to licence migration to CVL")
 class MigrationController(
   private val migrationService: MigrationService,
 ) {
 
-  @PostMapping("/{licenceId}/to-cvl")
+  @PostMapping("/{activeLicenceId}/to-cvl")
   @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
     summary = "Migrate a single active licence to CVL",
@@ -43,16 +43,16 @@ class MigrationController(
     ],
   )
   fun migrateLicenceToCvl(
-    @PathVariable licenceId: Long,
+    @PathVariable activeLicenceId: Long,
   ): ResponseEntity<Void> {
-    migrationService.migrateToCvl(licenceId)
+    migrationService.migrateToCvl(activeLicenceId)
     return ResponseEntity.ok().build()
   }
 
-  @PostMapping("/{licenceId}/to-cvl/preview")
+  @PostMapping("/{activeLicenceId}/to-cvl/preview")
   @PreAuthorize("hasAnyRole('HDC_ADMIN')")
   @Operation(
-    summary = "Preview migration of a single licence to CVL",
+    summary = "Preview migration of a single active licence to CVL",
     description = "Returns the request object that would be sent to CVL",
   )
   @ApiResponses(
@@ -63,9 +63,9 @@ class MigrationController(
     ],
   )
   fun previewMigrateLicenceToCvl(
-    @PathVariable licenceId: Long,
+    @PathVariable activeLicenceId: Long,
   ): ResponseEntity<MigrateFromHdcToCvlRequest> {
-    val response = migrationService.createMigrationRequest(licenceId)
+    val response = migrationService.buildMigrationRequest(activeLicenceId)
     return ResponseEntity.ok(response)
   }
 }

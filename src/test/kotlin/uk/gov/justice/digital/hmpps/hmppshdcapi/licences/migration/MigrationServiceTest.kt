@@ -7,7 +7,6 @@ import org.mockito.kotlin.mock
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
@@ -24,7 +23,6 @@ class MigrationServiceTest {
   private var prisonApiClient: PrisonApiClient = mock()
   private var prisonSearchApiClient: PrisonSearchApiClient = mock()
   private var auditEventRepository: AuditEventRepository = mock()
-  private var hdcStatusService: HdcStatusService = mock()
 
   @BeforeEach
   fun setUp() {
@@ -34,7 +32,6 @@ class MigrationServiceTest {
       prisonApiClient = prisonApiClient,
       prisonSearchApiClient = prisonSearchApiClient,
       auditEventRepository = auditEventRepository,
-      hdcStatusService = hdcStatusService,
     )
   }
 

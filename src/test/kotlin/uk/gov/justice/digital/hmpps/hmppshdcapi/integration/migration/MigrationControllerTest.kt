@@ -191,8 +191,35 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     verifyRequestPayloadSentToCVL("test_when_no_appointment_date_time_given.json")
   }
 
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+  )
+  @Test
+  fun `Preview migration returns expected DTO`() {
+    // Given
+    val licenceId = 1
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    // When
+    val response = webTestClient.post()
+      .uri("/licences/migrate/active/$licenceId/to-cvl/preview")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response.expectStatus().isOk
+      .expectBody()
+      .json(
+        jsonFromFile("test_hdc_to_cvl.json"),
+        LENIENT,
+      )
+  }
+
   private fun postLicenceIdToMigrate(licenceId: Long): WebTestClient.ResponseSpec = webTestClient.post()
-    .uri("/licences/migration/$licenceId/to-cvl")
+    .uri("/licences/migrate/active/$licenceId/to-cvl")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
     .accept(MediaType.APPLICATION_JSON)
     .exchange()
@@ -209,29 +236,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
           ),
         ),
     )
-  }
-
-  @Test
-  fun `Preview migration returns expected DTO`() {
-    // Given
-    val licenceId = 1
-    stubSearchPrisonersByBookingIds()
-    stubGetHdcStatuses()
-
-    // When
-    val response = webTestClient.post()
-      .uri("/licences/migration/$licenceId/to-cvl/preview")
-      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
-      .accept(MediaType.APPLICATION_JSON)
-      .exchange()
-
-    // Then
-    response.expectStatus().isOk
-      .expectBody()
-      .json(
-        jsonFromFile("test_hdc_to_cvl.json"),
-        LENIENT,
-      )
   }
 
   fun stubGetHdcStatuses() {
