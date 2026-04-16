@@ -155,6 +155,12 @@ data class MigrateLicenceDetails(
 
   @field:Schema(description = "Licence expiry date", example = "2026-05-04")
   val licenceExpiryDate: LocalDate?,
+
+  @field:Schema(description = "hdc licence version", example = "1")
+  val licenceVersion: Int,
+
+  @field:Schema(description = "hdc vary version", example = "2")
+  val varyVersion: Int,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

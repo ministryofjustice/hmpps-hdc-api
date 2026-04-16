@@ -144,6 +144,8 @@ class MigrationService(
     licenceExpiryDate = prisoner.licenceExpiryDate,
     homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
+    licenceVersion = licence.version,
+    varyVersion = licence.varyVersion,
   )
 
   private fun mapLifecycleDetails(
