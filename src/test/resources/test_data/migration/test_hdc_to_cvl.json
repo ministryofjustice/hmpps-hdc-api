@@ -25,6 +25,7 @@
     "postRecallReleaseDate" : "2025-04-21"
   },
   "licence" : {
+    "licenceId" : 1,
     "typeCode" : "AP",
     "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
