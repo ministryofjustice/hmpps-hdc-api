@@ -187,4 +187,5 @@ allOpen {
 
 dependencyCheck {
   nvd.datafeedUrl = "file:///opt/vulnz/cache"
+  suppressionFiles.add("hdc-api-suppressions.xml")
 }
