@@ -7,13 +7,10 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatusService
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.LicenceNotFoundForMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAdditionalCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAddress
@@ -45,6 +42,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class MigrationService(
@@ -53,43 +51,44 @@ class MigrationService(
   private val prisonApiClient: PrisonApiClient,
   private val prisonSearchApiClient: PrisonSearchApiClient,
   private val auditEventRepository: AuditEventRepository,
-  private val hdcStatusService: HdcStatusService,
 ) {
 
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   @Transactional
-  fun migrateToCvl(licenceId: Long) {
-    cvlClient.migrateLicence(createMigrationRequest(licenceId))
-    migrationRepository.insertMigrationLog(licenceId)
+  fun migrateToCvl(activeLicenceId: Long) {
+    val request = buildMigrationRequest(activeLicenceId)
+    cvlClient.migrateLicence(request)
+    migrationRepository.insertMigrationLog(activeLicenceId)
   }
 
-  fun createMigrationRequest(licenceId: Long): MigrateFromHdcToCvlRequest {
-    val licence = migrationRepository.findById(licenceId)
-      .orElseThrow { LicenceNotFoundForMigrationException(licenceId) }
+  @Transactional
+  fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest {
+    val licence = migrationRepository.findById(activeLicenceId).getOrNull()
+    val prisoner: Prisoner? = licence?.let { performPrisonerSearch(it) }
 
-    val bookingIds = listOf(licence.bookingId)
+    validate(activeLicenceId, licence, prisoner)
 
-    val prisoner = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull()
-      ?: throw LicenceNotFoundForMigrationException(licenceId)
-
-    val prisonerHdcStatus = prisonApiClient
-      .getHdcStatuses(listOf(licence.bookingId))
-      .firstOrNull()
-
-    val hdcStatus = hdcStatusService.determineHdcStatus(
-      prisoner.homeDetentionCurfewEligibilityDate,
-      prisonerHdcStatus,
-      licence.stage,
+    return createMigrationRequest(
+      licence!!,
+      prisoner!!,
+      isApproved(licence),
     )
-
-    return mapToCvlRequest(licence, prisoner, hdcStatus)
   }
 
-  private fun mapToCvlRequest(
+  private fun validate(licenceId: Long, licence: Licence?, prisoner: Prisoner?) {
+    if (licence == null) {
+      throw ValidationException("Licence not found for licence id $licenceId")
+    }
+    if (prisoner == null) {
+      throw ValidationException("Prisoner not found for licence id $licenceId ")
+    }
+  }
+
+  private fun createMigrationRequest(
     licence: Licence,
     prisoner: Prisoner,
-    hdcStatus: HdcStatus,
+    approved: Boolean,
   ): MigrateFromHdcToCvlRequest {
     val licenceData = licence.licence ?: throw ValidationException("Licence data must exist for licence id ${licence.id}")
     val audits = auditEventRepository.findByBookingId(licence.bookingId.toString())
@@ -103,7 +102,7 @@ class MigrationService(
       prison = mapPrisonDetails(prisoner),
       sentence = mapSentenceDetails(prisoner),
       licence = mapLicenceDetails(licence, prisoner),
-      lifecycle = mapLifecycleDetails(audits, hdcStatus),
+      lifecycle = mapLifecycleDetails(audits, approved),
       conditions = mapConditions(licence, licenceData),
       curfewAddress = mapCurfewAddress(licence, licenceData),
       curfew = mapCurfewDetails(licenceData),
@@ -149,10 +148,10 @@ class MigrationService(
 
   private fun mapLifecycleDetails(
     audits: List<AuditEvent>,
-    hdcStatus: HdcStatus,
+    approved: Boolean,
   ): MigrateLicenceLifecycleDetails {
     val submitted = getLastAudit(audits, "SEND", "roToCa")
-    val approved: AuditEvent? = if (hdcStatus == HdcStatus.APPROVED) getLastAudit(audits, "SEND", "dmToCa") else null
+    val approved: AuditEvent? = if (approved) getLastAudit(audits, "SEND", "dmToCa") else null
 
     val created = getFirstUpdateAfterCaToRo(audits)
     val lastUpdated = getLastUpdated(audits)
@@ -270,6 +269,19 @@ class MigrationService(
         )
       }
     }
+  }
+
+  private fun performPrisonerSearch(licence: Licence): Prisoner? {
+    val bookingIds = listOf(licence.bookingId)
+    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull()
+  }
+
+  private fun isApproved(licence: Licence): Boolean {
+    val prisonerHdcStatus = prisonApiClient
+      .getHdcStatuses(listOf(licence.bookingId))
+      .firstOrNull()
+
+    return prisonerHdcStatus?.isApproved() == true
   }
 
   private fun CurfewHours.getTime(day: DayOfWeek, from: Boolean): LocalTime? = when (day) {
