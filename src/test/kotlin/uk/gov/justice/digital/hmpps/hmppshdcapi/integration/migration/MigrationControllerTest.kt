@@ -203,7 +203,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     stubGetHdcStatuses()
 
     // When
-    val response = webTestClient.post()
+    val response = webTestClient.get()
       .uri("/licences/migrate/active/$licenceId/to-cvl/preview")
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
