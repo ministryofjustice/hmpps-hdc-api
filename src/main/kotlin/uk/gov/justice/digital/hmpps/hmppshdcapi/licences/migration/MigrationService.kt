@@ -81,7 +81,7 @@ class MigrationService(
       throw ValidationException("Licence not found for licence id $licenceId")
     }
     if (prisoner == null) {
-      throw ValidationException("Prisoner not found for licence id $licenceId ")
+      throw ValidationException("Prisoner not found for licence id $licenceId and booking ${licence.bookingId} ")
     }
   }
 
@@ -145,6 +145,7 @@ class MigrationService(
     licenceExpiryDate = prisoner.licenceExpiryDate,
     homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
+    homeDetentionCurfewEligibilityDate = prisoner.homeDetentionCurfewEligibilityDate,
     licenceVersion = licence.version,
     varyVersion = licence.varyVersion,
   )
