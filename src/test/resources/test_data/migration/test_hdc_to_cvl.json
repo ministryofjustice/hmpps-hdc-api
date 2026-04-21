@@ -22,6 +22,7 @@
     "actualReleaseDate" : "2025-04-17",
     "topupSupervisionStartDate" : "2023-01-01",
     "topupSupervisionExpiryDate" : "2025-04-01",
+
     "postRecallReleaseDate" : "2025-04-21"
   },
   "licence" : {
@@ -30,6 +31,7 @@
     "licenceActivationDate" : "2025-03-25",
     "homeDetentionCurfewActualDate" : "2025-03-25",
     "homeDetentionCurfewEndDate" : "2025-04-11",
+    "homeDetentionCurfewEligibilityDate" : "2025-03-30",
     "licenceExpiryDate" : "2025-03-31",
     "licenceVersion" : 1,
     "varyVersion" : 0
