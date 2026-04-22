@@ -21,7 +21,7 @@ interface AuditEventRepository :
   @Query(
     nativeQuery = true,
     value = """
-      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" = 'LICENCE_RECORD_STARTED' ORDER BY a.id DESC LIMIT 1
+      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" = 'LICENCE_RECORD_STARTED' ORDER BY timestamp DESC LIMIT 1
   """,
   )
   fun findLicenceRecordStartedAuditId(bookingId: String): Long?
