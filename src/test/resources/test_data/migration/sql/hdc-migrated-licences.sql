@@ -55,13 +55,13 @@ VALUES (1,
                   "reporting": {
                     "reportingInstructions": {
                       "name": "Officer Person",
-                      "postcode": "YO15 4AA",
+                      "postcode": "TT1 1TT",
                       "telephone": "000000000000",
-                      "townOrCity": "aaaaa",
-                      "organisation": "sadadas",
+                      "townOrCity": "Test Town",
+                      "organisation": "Test Organisation",
                       "reportingDate": "12/09/2025",
                       "reportingTime": "21:00",
-                      "buildingAndStreet1": "12 Mayfield",
+                      "buildingAndStreet1": "Test Street",
                       "buildingAndStreet2": ""
                     }
                   },
@@ -107,10 +107,10 @@ VALUES (1,
                       "approvedPremisesRequiredYesNo": "Yes"
                     },
                     "approvedPremisesAddress": {
-                      "postCode": "YO15 3LE",
+                      "postCode": "TT1 1TT",
                       "telephone": "00000000066",
-                      "addressTown": "aaaaa",
-                      "addressLine1": "12 Mayfield",
+                      "addressTown": "Test Town",
+                      "addressLine1": "Test Street",
                       "addressLine2": ""
                     }
                   },
@@ -456,11 +456,11 @@ VALUES (1,
           "reporting": {
             "reportingInstructions": {
               "name": "Officer Person",
-              "postcode": "YO15 4AA",
+              "postcode": "TT1 1TT",
               "telephone": "000000000000",
-              "townOrCity": "aaaaa",
-              "organisation": "sadadas",
-              "buildingAndStreet1": "12 Mayfield",
+              "townOrCity": "Test Town",
+              "organisation": "Test Organisation",
+              "buildingAndStreet1": "Test Street",
               "buildingAndStreet2": ""
             }
           }

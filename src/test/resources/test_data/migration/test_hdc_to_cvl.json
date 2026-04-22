@@ -150,10 +150,10 @@
     } ]
   },
   "curfewAddress" : {
-      "addressLine1" : "12 Mayfield",
+      "addressLine1" : "Test Street",
       "addressLine2" : "",
-      "townOrCity" : "aaaaa",
-      "postcode" : "YO15 3LE"
+      "townOrCity" : "Test Town",
+      "postcode" : "TT1 1TT"
   },
   "curfew" : {
     "curfewTimes" : [ {
@@ -170,10 +170,10 @@
     "time" : "2025-09-12T21:00:00",
     "telephone" : "000000000000",
     "address" : {
-      "firstLine" : "12 Mayfield",
+      "firstLine" : "Test Street",
       "secondLine" : "",
-      "townOrCity" : "aaaaa",
-      "postcode" : "YO15 4AA"
+      "townOrCity" : "Test Town",
+      "postcode" : "TT1 1TT"
     }
   }
 }

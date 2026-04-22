@@ -28,14 +28,14 @@
   },
   "reporting": {
     "reportingInstructions": {
-      "name": "aaaaaa",
-      "postcode": "YO15 4AA",
+      "name": "Test Name",
+      "postcode": "TT1 1TT",
       "telephone": "000000000000",
-      "townOrCity": "aaaaa",
+      "townOrCity": "Test Town",
       "organisation": "",
       "reportingDate": "12/09/2025",
       "reportingTime": "21:00",
-      "buildingAndStreet1": "12 Mayfield",
+      "buildingAndStreet1": "Test Street",
       "buildingAndStreet2": ""
     }
   },
@@ -64,10 +64,10 @@
       "approvedPremisesRequiredYesNo": "Yes"
     },
     "approvedPremisesAddress": {
-      "postCode": "YO15 3LE",
+      "postCode": "TT1 1TT",
       "telephone": "00000000066",
-      "addressTown": "aaaaa",
-      "addressLine1": "12 Mayfield",
+      "addressTown": "Test Town",
+      "addressLine1": "Test Street",
       "addressLine2": ""
     }
   },
