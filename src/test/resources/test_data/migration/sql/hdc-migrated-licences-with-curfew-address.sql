@@ -216,3 +216,48 @@ VALUES
     NULL,
     FALSE
 );
+
+INSERT INTO audit (timestamp, "user", action, details)
+VALUES
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "10001"
+        }'::jsonb
+    ),
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "10002"
+        }'::jsonb
+    ),
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "10003"
+        }'::jsonb
+    ),
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "10004"
+        }'::jsonb
+    ),
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "10005"
+        }'::jsonb
+    );
+
+

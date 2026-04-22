@@ -2,7 +2,7 @@ INSERT INTO licences
 (id, licence, booking_id, stage, "version", transition_date, vary_version, additional_conditions_version,
  standard_conditions_version, prison_number, deleted_at, licence_in_cvl)
 
--- Create the data for a HDC licence with a preferred address
+-- Create the data for a HDC licence
 VALUES (1,
         '{
                   "curfew": {
@@ -243,244 +243,14 @@ VALUES (1,
             }
         }
                 }'::jsonb,
-        54222, 'ELIGIBILITY', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false),
-
-       -- Create the data for a HDC licence with a CAS2 address
-       (2,
-        '{
-                  "eligibility": {
-                    "crdTime": {
-                      "decision": "No"
-                    },
-                    "excluded": {
-                      "decision": "No"
-                    },
-                    "suitability": {
-                      "decision": "No"
-                    }
-                  },
-                  "bassReferral": {
-                    "bassOffer": {
-                     "bassArea": "Test City",
-                     "postCode": "TS12 TST",
-                     "telephone": "55000000000",
-                     "addressTown": "Test City",
-                     "addressLine1": "100 CAS2 Street",
-                     "addressLine2": "The Avenue",
-                     "bassAccepted": "Yes",
-                     "bassOfferDetails": ""
-                   },
-                   "bassRequest": {
-                    "specificArea": "No",
-                    "bassRequested": "Yes",
-                    "additionalInformation": ""
-                   }
-                  },
-                  "curfew": {
-                    "firstNight":{
-                      "firstNightFrom": "15:00",
-                      "firstNightUntil": "07:00"
-                    },
-                    "curfewHours": {
-                      "fridayFrom": "19:00",
-                      "mondayFrom": "19:00",
-                      "sundayFrom": "19:00",
-                      "fridayUntil": "07:00",
-                      "mondayUntil": "07:00",
-                      "sundayUntil": "07:00",
-                      "tuesdayFrom": "19:00",
-                      "saturdayFrom": "19:00",
-                      "thursdayFrom": "19:00",
-                      "tuesdayUntil": "07:00",
-                      "saturdayUntil": "07:00",
-                      "thursdayUntil": "07:00",
-                      "wednesdayFrom": "19:00",
-                      "wednesdayUntil": "07:00"
-                    }
-                  }
-                }'::jsonb,
-        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false),
-
-       -- Create the data for an approved preferred premises HDC licence
-       (3,
-        '{
-                  "eligibility": {
-                    "crdTime": {
-                      "decision": "No"
-                    },
-                    "excluded": {
-                      "decision": "No"
-                    },
-                    "suitability": {
-                      "decision": "No"
-                    }
-                  },
-                  "bassReferral": {
-                   "bassRequest": {
-                    "specificArea": "No",
-                    "bassRequested": "No",
-                    "additionalInformation": ""
-                   },
-                  "bassAreaCheck": {
-                    "approvedPremisesRequiredYesNo": "No"
-                   }
-                  },
-                  "curfew": {
-                    "firstNight":{
-                      "firstNightFrom": "15:00",
-                      "firstNightUntil": "07:00"
-                    },
-                    "curfewHours": {
-                      "fridayFrom": "19:00",
-                      "mondayFrom": "19:00",
-                      "sundayFrom": "19:00",
-                      "fridayUntil": "07:00",
-                      "mondayUntil": "07:00",
-                      "sundayUntil": "07:00",
-                      "tuesdayFrom": "19:00",
-                      "saturdayFrom": "19:00",
-                      "thursdayFrom": "19:00",
-                      "tuesdayUntil": "07:00",
-                      "saturdayUntil": "07:00",
-                      "thursdayUntil": "07:00",
-                      "wednesdayFrom": "19:00",
-                      "wednesdayUntil": "07:00"
-                    },
-                    "approvedPremisesAddress": {
-                      "addressLine1": "1 Test Street",
-                      "addressLine2": "Test Area",
-                      "addressTown": "Test Town",
-                      "postCode": "T33 3ST"
-                    },
-                    "approvedPremises": {
-                      "required": "Yes"
-                    }
-                  }
-                }'::jsonb,
-        12345, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null, false),
-
-       -- Create the data for a CAS2 approved premises HDC licence
-       (4,
-        '{
-                  "eligibility": {
-                    "crdTime": {
-                      "decision": "No"
-                    },
-                    "excluded": {
-                      "decision": "No"
-                    },
-                    "suitability": {
-                      "decision": "No"
-                    }
-                  },
-                  "bassReferral": {
-                    "approvedPremisesAddress": {
-                     "addressLine1": "2 Test Road",
-                     "addressTown": "Another Town",
-                     "postCode": "TS7 7TS"
-                    },
-                   "bassRequest": {
-                    "specificArea": "No",
-                    "bassRequested": "Yes",
-                    "additionalInformation": ""
-                   },
-                   "bassAreaCheck": {
-                    "approvedPremisesRequiredYesNo": "Yes"
-                   }
-                  },
-                  "proposedAddress": {
-                    "optOut": {
-                      "decision": "No"
-                    },
-                    "addressProposed": {
-                      "decision": "No"
-                    }
-                  },
-                  "curfew": {
-                    "firstNight":{
-                      "firstNightFrom": "15:00",
-                      "firstNightUntil": "07:00"
-                    },
-                    "curfewHours": {
-                      "fridayFrom": "19:00",
-                      "mondayFrom": "19:00",
-                      "sundayFrom": "19:00",
-                      "fridayUntil": "07:00",
-                      "mondayUntil": "07:00",
-                      "sundayUntil": "07:00",
-                      "tuesdayFrom": "19:00",
-                      "saturdayFrom": "19:00",
-                      "thursdayFrom": "19:00",
-                      "tuesdayUntil": "07:00",
-                      "saturdayUntil": "07:00",
-                      "thursdayUntil": "07:00",
-                      "wednesdayFrom": "19:00",
-                      "wednesdayUntil": "07:00"
-                    }
-                  }
-                }'::jsonb,
-        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null, false),
-
-       -- Create a licence with no licence data
-       (5,
-        null,
-        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false),
-       (6,
-        '{
-            "proposedAddress": {
-                "curfewAddress": {
-                    "addressLine1": "TEST_PROPOSED_PRIMARY_1",
-                    "addressLine2": "TEST_PROPOSED_PRIMARY_2",
-                    "addressTown": "TEST_CITY",
-                    "postCode": "ZZ1 1ZZ",
-                    "telephone": "07000000005"
-                }
-            },
-          "eligibility": {
-            "crdTime": {
-              "decision": "No"
-            },
-            "excluded": {
-              "decision": "No"
-            },
-            "suitability": {
-              "decision": "No"
-            }
-          },
-          "document": {
-            "template": {
-              "decision": "hdc_ap",
-              "offenceCommittedBeforeFeb2015": "No"
-            }
-          },
-          "reporting": {
-            "reportingInstructions": {
-              "name": "Officer Person",
-              "postcode": "YO15 4AA",
-              "telephone": "000000000000",
-              "townOrCity": "aaaaa",
-              "organisation": "sadadas",
-              "buildingAndStreet1": "12 Mayfield",
-              "buildingAndStreet2": ""
-            }
-          }
-        }'::jsonb,
-        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false);
+        54222, 'ELIGIBILITY', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false);
 
 -- audit data
 
 INSERT INTO audit (timestamp, "user", action, details)
 VALUES
     (
-        '2021-04-05 15:06:37.188',
-        'creator',
-        'LICENCE_RECORD_STARTED',
-        '{
-          "bookingId": "98765"
-        }'::jsonb
-    ),
-    (
-        '2021-04-05 15:06:37.188',
+        '2021-03-03 15:06:37.188',
         'creator',
         'LICENCE_RECORD_STARTED',
         '{
@@ -488,7 +258,7 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-04-05 15:07:37.188',
+        '2021-03-03 15:07:37.188',
         'aCaseManager',
         'SEND',
         '{
@@ -497,7 +267,37 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-08-06 15:04:37.188',
+        '2021-03-05 15:03:37.188',
+        'creator',
+        'UPDATE_SECTION',
+        '{
+          "path": "/hdc/curfew/approvedPremises/54222",
+          "bookingId": "54222",
+          "userInput": {
+            "required": "No"
+            }
+        }'::jsonb
+    ),
+    (
+        '2021-03-05 15:06:37.188',
+        'submitter',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "roToCa"
+        }'::jsonb
+    ),
+    (
+        '2021-03-08 15:06:37.188',
+        'approver',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "dmToCa"
+        }'::jsonb
+    ),
+    (
+        '2021-03-09 15:04:37.188',
         'creator',
         'RESET',
         '{
@@ -526,17 +326,11 @@ VALUES
         'creator',
         'UPDATE_SECTION',
         '{
+          "path": "/hdc/curfew/approvedPremises/54222",
           "bookingId": "54222",
-          "transitionType": "caToRo"
-        }'::jsonb
-    ),
-    (
-        '2021-08-08 15:06:37.188',
-        'submitter',
-        'SEND',
-        '{
-          "bookingId": "54222",
-          "transitionType": "roToCa"
+          "userInput": {
+            "required": "No"
+          }
         }'::jsonb
     ),
     (
@@ -546,6 +340,15 @@ VALUES
         '{
           "bookingId": "54222",
           "transitionType": "caToRo"
+        }'::jsonb
+    ),
+    (
+        '2021-08-08 15:30:37.188',
+        'submitter',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "roToCa"
         }'::jsonb
     ),
     (

@@ -91,7 +91,7 @@ class MigrationService(
     approved: Boolean,
   ): MigrateFromHdcToCvlRequest {
     val licenceData = licence.licence ?: throw ValidationException("Licence data must exist for licence id ${licence.id}")
-    val audits = auditEventRepository.findByBookingId(licence.bookingId.toString())
+    val audits = getAuditsForLatestLicence(licence.bookingId)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -229,6 +229,11 @@ class MigrationService(
     .asSequence()
     .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
     .lastOrNull()
+
+  private fun getAuditsForLatestLicence(bookingId: Long): List<AuditEvent> {
+    val id = auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()) ?: error("LICENCE_RECORD_STARTED audit id not found for booking id $bookingId")
+    return auditEventRepository.findByBookingIdAndAuditId(bookingId.toString(), id)
+  }
 
   private fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
     val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
