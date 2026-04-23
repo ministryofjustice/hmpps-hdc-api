@@ -36,26 +36,60 @@ class MigrationServiceTest {
   }
 
   @Test
-  fun shouldReturnAllSameCurfewTimeWhenNotDaySpecific() {
+  fun whenDayNotSpecificAndAllFromTimeAreAfterUtilTimesThenResultsAreReturnedAsExpected() {
     // Given
     val curfewHours = createCurfewHours(
-      allFrom = LocalTime.of(9, 0),
-      allUntil = LocalTime.of(17, 0),
+      allFrom = LocalTime.of(17, 0),
+      allUntil = LocalTime.of(6, 0),
       mondayFrom = LocalTime.of(9, 0),
-      mondayUntil = LocalTime.of(17, 0),
+      mondayUntil = LocalTime.of(21, 0),
       daySpecificInputs = Decision.NO,
     )
+
+    val expectedOrderForFromDays = DayOfWeek.entries.toList()
+    val expectedOrderForUntilDays = expectedOrderForFromDays.map { it.plus(1) }
 
     // When
     val result = toMigrateCurfewTimes(curfewHours)
 
     // Then
-    Assertions.assertThat(result).hasSize(1)
-    val curfew = result.first()
-    Assertions.assertThat(curfew.fromTime).isEqualTo(LocalTime.of(9, 0))
-    Assertions.assertThat(curfew.untilTime).isEqualTo(LocalTime.of(17, 0))
-    Assertions.assertThat(curfew.fromDay).isNull()
-    Assertions.assertThat(curfew.untilDay).isNull()
+    Assertions.assertThat(result).isNotNull.hasSize(7)
+
+    Assertions.assertThat(result)
+      .allSatisfy {
+        Assertions.assertThat(it.fromTime).isEqualTo(LocalTime.of(17, 0))
+        Assertions.assertThat(it.untilTime).isEqualTo(LocalTime.of(6, 0))
+      }
+    Assertions.assertThat(result).extracting<DayOfWeek> { it.fromDay }.containsExactlyElementsOf(expectedOrderForFromDays)
+    Assertions.assertThat(result).extracting<DayOfWeek> { it.untilDay }.containsExactlyElementsOf(expectedOrderForUntilDays)
+  }
+
+  @Test
+  fun whenNotDaySpecificAndAllFromTimeAreBeforeUtilTimesThenResultsAreReturnedAsExpected() {
+    // Given
+    val curfewHours = createCurfewHours(
+      allFrom = LocalTime.of(12, 0),
+      allUntil = LocalTime.of(17, 0),
+      mondayFrom = LocalTime.of(9, 0),
+      mondayUntil = LocalTime.of(21, 0),
+      daySpecificInputs = Decision.NO,
+    )
+
+    val expectedOrderForDays = DayOfWeek.entries.toList()
+
+    // When
+    val result = toMigrateCurfewTimes(curfewHours)
+
+    // Then
+    Assertions.assertThat(result).isNotNull.hasSize(7)
+
+    Assertions.assertThat(result)
+      .allSatisfy {
+        Assertions.assertThat(it.fromTime).isEqualTo(LocalTime.of(12, 0))
+        Assertions.assertThat(it.untilTime).isEqualTo(LocalTime.of(17, 0))
+      }
+    Assertions.assertThat(result).extracting<DayOfWeek> { it.fromDay }.containsExactlyElementsOf(expectedOrderForDays)
+    Assertions.assertThat(result).extracting<DayOfWeek> { it.untilDay }.containsExactlyElementsOf(expectedOrderForDays)
   }
 
   @Test
