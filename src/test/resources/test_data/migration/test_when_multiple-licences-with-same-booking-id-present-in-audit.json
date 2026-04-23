@@ -36,7 +36,7 @@
   "lifecycle" : {
     "approvedDate" : "2021-08-10T15:06:37.188",
     "approvedByUsername" : "approver",
-    "submittedDate" : "2021-08-08T15:06:37.188",
+    "submittedDate" : "2021-08-08T15:30:37.188",
     "submittedByUserName" : "submitter",
     "createdByUserName" : "creator",
     "dateCreated" : "2021-08-06T15:20:37.188"
@@ -150,10 +150,10 @@
     } ]
   },
   "curfewAddress" : {
-      "addressLine1" : "Test Street",
-      "addressLine2" : "",
-      "townOrCity" : "Test Town",
-      "postcode" : "TT1 1TT"
+    "addressLine1" : "Test Street",
+    "addressLine2" : "",
+    "townOrCity" : "Test Town",
+    "postcode" : "TT1 1TT"
   },
   "curfew" : {
     "curfewTimes" : [ {

@@ -106,3 +106,14 @@ VALUES
         NULL,
         FALSE
     );
+
+INSERT INTO audit (timestamp, "user", action, details)
+VALUES
+    (
+        '2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "54222"
+        }'::jsonb
+    );

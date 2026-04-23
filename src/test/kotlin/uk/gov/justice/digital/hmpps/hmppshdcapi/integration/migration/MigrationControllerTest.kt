@@ -53,7 +53,27 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/migration/sql/hdc-migrate_specific_curfew_days_for_licence_to_cvl_successfully.sql",
+    "classpath:test_data/migration/sql/hdc-migrate-licence-with-multiple-licences-with-the-same-booking-id-present-in-audit.sql",
+  )
+  @Test
+  fun `Migrate correct audit data when multiple licences with the same booking id present in audit`() {
+    // Given
+    val licenceId = 1L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isOk
+    verifyRequestPayloadSentToCVL("test_when_multiple-licences-with-same-booking-id-present-in-audit.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrate-specific-curfew-days-for-licence-to-cvl-successfully.sql",
   )
   @Test
   fun `Migrate a licence with day specific inputs for curfew times to CVL successfully`() {
