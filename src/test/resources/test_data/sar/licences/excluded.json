@@ -1,0 +1,11 @@
+{
+  "eligibility": {
+    "excluded": {
+      "reason": [
+        "sexOffenderRegister",
+        "convictedSexOffences"
+      ],
+      "decision": "Yes"
+    }
+  }
+}

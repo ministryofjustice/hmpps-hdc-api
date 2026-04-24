@@ -1,38 +1,33 @@
 {
   "risk": {
     "riskManagement": {
-      "version": "2",
-      "emsInformation": "Yes",
-      "unsuitableReason": "",
-      "hasConsideredChecks": "Yes",
-      "emsInformationDetails": "sdfdfds",
-      "riskManagementDetails": "sdfsfs",
-      "proposedAddressSuitable": "Yes",
-      "awaitingOtherInformation": "No",
+      "version": "1",
+      "planningActions": "No",
+      "unsuitableReason": "a problem",
+      "awaitingInformation": "No",
+      "riskManagementDetails": "ok so far",
+      "proposedAddressSuitable": "No",
       "nonDisclosableInformation": "Yes",
-      "nonDisclosableInformationDetails": "fdfsfdfsdfs"
-    }
-  },
-  "curfew": {
-    "approvedPremises": {
-      "required": "No"
-    },
-    "curfewAddressReview": {
-      "version": "2",
-      "electricity": "Yes",
-      "homeVisitConducted": "Yes",
-      "addressReviewComments": "everything is fine"
+      "nonDisclosableInformationDetails": "some details"
     }
   },
   "eligibility": {
     "crdTime": {
-      "decision": "No"
+      "decision": "Yes",
+      "dmApproval": "Yes"
     },
     "excluded": {
       "decision": "No"
     },
     "suitability": {
-      "decision": "No"
+      "reason": [
+        "sexOffender",
+        "deportationLiable"
+      ],
+      "decision": "Yes"
+    },
+    "exceptionalCircumstances": {
+      "decision": "Yes"
     }
   },
   "bassReferral": {
@@ -46,15 +41,15 @@
     },
     "curfewAddress": {
       "occupier": {
-        "name": "aaaaaa",
+        "name": "aaaaaa bbbbb",
         "isOffender": "Yes",
         "relationship": ""
       },
-      "postCode": "PC15 3AA",
+      "postCode": "AA15 3AA",
       "residents": [],
       "telephone": "0123534343",
       "addressTown": "aaaaa",
-      "addressLine1": "12 Mogword",
+      "addressLine1": "12 Street",
       "addressLine2": "",
       "additionalInformation": "",
       "residentOffenceDetails": "",
