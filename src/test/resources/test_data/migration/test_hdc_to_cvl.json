@@ -46,107 +46,107 @@
     "additional" : [ {
       "text" : "To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.",
       "conditionCode" : "NO_CAMERA",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to reside (not even to stay for one night) in the same household as any male child under the age of 20 without the prior approval of your supervising officer.",
       "conditionCode" : "NO_RESIDE",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Report to staff at Sheffield Police Station at 12:30, unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a Weekly basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
       "conditionCode" : "REPORT_TO",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Attend all appointments arranged for you with a psychiatrist and co-operate fully with any care or treatment they recommend.",
       "conditionCode" : "ATTEND_ALL",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Receive home visits from Jim Smith Mental Health Worker.",
       "conditionCode" : "HOME_VISITS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Attend Bobby, Smith Street Centre, as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour.",
       "conditionCode" : "DRUG_TESTING",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to enter the area of Rugby, as defined by the attached map without the prior approval of your supervising officer.",
       "conditionCode" : "EXCLUSION_AREA",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Confine yourself to remain at 21 Smith Street Smith Town initially from 12:30 until 16:30 each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored yes.",
       "conditionCode" : "REMAIN_ADDRESS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Confine yourself to an address approved by your supervising officer between the hours of 12:20 and 16:30 daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a Other basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
       "conditionCode" : "CONFINE_ADDRESS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Provide your supervising officer with details Red Estate Car of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.",
       "conditionCode" : "VEHICLE_DETAILS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to contact or associate with James, Johnny without the prior approval of your supervising officer.",
       "conditionCode" : "NO_CONTACT_NAMED",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to undertake work or other organised activity which will involve a person under the age of 20, either on a paid or unpaid basis without the prior approval of your supervising officer.",
       "conditionCode" : "NO_WORK_WITH_AGE",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Attend Smith Street S1 1AA on 12/03/2026 at 12:21, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
       "conditionCode" : "ATTEND_DEPENDENCY",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to enter The Crown on Smith Street, LS1 3GH without the prior approval of your supervising officer.",
       "conditionCode" : "EXCLUSION_ADDRESS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to enter or remain in sight of any Swimming pool without the prior approval of your supervising officer.",
       "conditionCode" : "NO_CHILDRENS_AREA",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of 4 weeks ending on 12/11/2026, and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.",
       "conditionCode" : "ALCOHOL_MONITORING",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol, sexual, gambling, debt problems at the Stop drinking course.",
       "conditionCode" : "COMPLY_REQUIREMENTS",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to associate with any person currently or formerly associated with The Tables without the prior approval of your supervising officer.",
       "conditionCode" : "NO_CONTACT_ASSOCIATE",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Notify your supervising officer of any developing intimate relationships with Women or men.",
       "conditionCode" : "INTIMATE_RELATIONSHIP",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to seek to approach or communicate with John and James without the prior approval of your supervising officer and / or Harrow Street.",
       "conditionCode" : "NO_COMMUNICATE_VICTIM",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Not to have unsupervised contact with any male children under the age of 20 without the prior approval of your supervising officer and / or Harrow Street except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
       "conditionCode" : "NO_UNSUPERVISED_CONTACT",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "You must reside within wales while of no fixed abode, unless otherwise approved by your supervising officer.",
       "conditionCode" : "RESIDE_AT_SPECIFIC_PLACE",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "You must stay at 21 Smith Street, Smith Town, S12 1AA between 5pm and midnight every day until your electronic tag is installed unless otherwise authorised by your supervising officer.",
       "conditionCode" : "CURFEW_UNTIL_INSTALLATION",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "You will be subject to trail monitoring. Your whereabouts will be electronically monitored by GPS Satellite Tagging, ending on 12/12/2026, and you must cooperate with the monitoring as directed by your supervising officer unless otherwise authorised by your supervising officer.",
       "conditionCode" : "ELECTRONIC_MONITORING_TRAIL",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Attend Some Street LS1 1AB on 12/12/2026 at 12:32, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
       "conditionCode" : "ATTEND_DEPENDENCY_IN_DRUGS_SECTION",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     }, {
       "text" : "Allow person(s) as designated by your supervising officer to install an electronic monitoring tag on you and access to install any associated equipment in your property, and for the purpose of ensuring that equipment is functioning correctly. You must not damage or tamper with these devices and ensure that the tag is charged, and report to your supervising officer and the EM provider immediately if the tag or the associated equipment are not working correctly. This will be for the purpose of monitoring your alcohol, smoking licence condition(s) unless otherwise authorised by your supervising officer.",
       "conditionCode" : "ELECTRONIC_MONITORING_INSTALLATION",
-      "conditionsVersion" : 1
+      "conditionsVersion" : 2
     } ]
   },
   "curfewAddress" : {

@@ -243,7 +243,7 @@ VALUES (1,
             }
         }
                 }'::jsonb,
-        54222, 'ELIGIBILITY', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false),
+        54222, 'ELIGIBILITY', 1, '2021-08-06 15:06:37.188', 0, '2', '2', 'A12345B', null, false),
 
        -- Create the data for a HDC licence with a CAS2 address
        (2,
