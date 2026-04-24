@@ -175,7 +175,7 @@ class MigrationService(
         MigrateAdditionalCondition(
           text = it.text!!,
           conditionCode = it.code!!,
-          conditionsVersion = licence.additionalConditionsVersion?: error("additional conditions version not set for licence id ${licence.id} condition code ${it.code}"),
+          conditionsVersion = licence.additionalConditionsVersion ?: error("additional conditions version not set for licence id ${licence.id} condition code ${it.code}"),
         )
       }
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
