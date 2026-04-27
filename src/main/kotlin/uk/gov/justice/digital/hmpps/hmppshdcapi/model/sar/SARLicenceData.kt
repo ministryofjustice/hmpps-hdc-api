@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ApprovedPremises
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.BespokeCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Cas2AreaCheck
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Cas2Request
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CasRejectionReason
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ConfiscationOrder
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
@@ -21,11 +22,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.FirstNight
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStage
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.OfferAccepted
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Postpone
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.RejectedCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.RejectedRiskManagement
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Risk
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Standard
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Victim
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Withdrawal
 import java.time.LocalDateTime
 
 @JsonInclude(NON_NULL)
@@ -69,7 +70,18 @@ data class SARLicenceData(
   val finalChecks: SARFinalChecks?,
   val variedFromLicenceNotInSystem: Boolean? = null,
   val vary: SARVary? = null,
-  val bassRejections: List<RejectedCas2Referral>? = null,
+  val bassRejections: List<SARRejectedCas2Referral>? = null,
+)
+
+@JsonInclude(NON_NULL)
+data class SARRejectedCas2Referral(
+  // bassOffer only nullable as address will be either this if Cas2Referral or curfewAddress if proposed address
+  val bassOffer: SARCas2Offer? = null,
+  val bassRequest: Cas2Request? = null,
+  val approvedPremisesAddress: Address? = null,
+  val bassAreaCheck: Cas2AreaCheck? = null,
+  val rejectionReason: CasRejectionReason? = null,
+  val withdrawal: Withdrawal? = null,
 )
 
 @JsonInclude(NON_NULL)

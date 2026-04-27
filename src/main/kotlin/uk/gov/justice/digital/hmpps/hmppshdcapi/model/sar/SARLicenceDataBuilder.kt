@@ -12,12 +12,14 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Occupier
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProposedAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.RejectedCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Rejection
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Reporting
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Resident
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Vary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.VaryApproval
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARCas2Offer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.getPolicyVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARConditionFormatter.policyVersions
 import kotlin.String
@@ -88,7 +90,16 @@ fun LicenceData.toSAR(conditionVersion: Int? = null) = SARLicenceData(
   finalChecks = this.finalChecks.toSAR(),
   variedFromLicenceNotInSystem = this.variedFromLicenceNotInSystem,
   vary = this.vary.toSAR(),
-  bassRejections = this.bassRejections,
+  bassRejections = this.bassRejections?.map { it.toSAR() },
+)
+
+fun RejectedCas2Referral.toSAR() = SARRejectedCas2Referral(
+  bassOffer = this.bassOffer?.toSAR(),
+  bassRequest = this.bassRequest,
+  approvedPremisesAddress = this.approvedPremisesAddress?.toAddress(),
+  bassAreaCheck = this.bassAreaCheck,
+  rejectionReason = this.rejectionReason,
+  withdrawal = this.withdrawal,
 )
 
 fun FinalChecks?.toSAR() = if (this == null) {
