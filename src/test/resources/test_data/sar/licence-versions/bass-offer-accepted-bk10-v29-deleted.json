@@ -1,5 +1,27 @@
 {
+  "risk": {
+    "riskManagement": {
+      "version": "3",
+      "emsInformation": "No",
+      "pomConsultation": "Yes",
+      "mentalHealthPlan": "No",
+      "unsuitableReason": "",
+      "hasConsideredChecks": "Yes",
+      "manageInTheCommunity": "Yes",
+      "emsInformationDetails": "",
+      "riskManagementDetails": "",
+      "proposedAddressSuitable": "Yes",
+      "awaitingOtherInformation": "No",
+      "nonDisclosableInformation": "No",
+      "nonDisclosableInformationDetails": "",
+      "manageInTheCommunityNotPossibleReason": ""
+    }
+  },
   "curfew": {
+    "firstNight": {
+      "firstNightFrom": "15:00",
+      "firstNightUntil": "07:00"
+    },
     "curfewHours": {
       "allFrom": "19:00",
       "allUntil": "07:00",
@@ -22,15 +44,14 @@
   },
   "victim": {
     "victimLiaison": {
-      "decision": "Yes",
-      "victimLiaisonDetails": "gghhgghh"
+      "decision": "No"
     }
   },
   "approval": {
     "release": {
       "decision": "Yes",
-      "decisionMaker": "Anne DecisionMaker",
-      "reasonForDecision": "fgtfhgfgfhgfhg"
+      "decisionMaker": "AAAAA CCCCC",
+      "reasonForDecision": "hfdtuc"
     },
     "consideration": {
       "decision": "Yes"
@@ -44,15 +65,15 @@
   },
   "reporting": {
     "reportingInstructions": {
-      "name": "Test Name",
-      "postcode": "TT1 1TT",
-      "telephone": "000000000000",
-      "townOrCity": "Test Town",
-      "organisation": "Test Organisation",
-      "reportingDate": "12/09/2025",
-      "reportingTime": "21:00",
-      "buildingAndStreet1": "Test Street",
-      "buildingAndStreet2": ""
+      "name": "sam",
+      "postcode": "AA BRD",
+      "telephone": "47450",
+      "townOrCity": "Test town",
+      "organisation": "crc",
+      "reportingDate": "12/12/2023",
+      "reportingTime": "12:12",
+      "buildingAndStreet1": "10",
+      "buildingAndStreet2": "street"
     }
   },
   "eligibility": {
@@ -84,44 +105,27 @@
     }
   },
   "bassReferral": {
+    "bassOffer": {
+      "bassArea": "hhh",
+      "postCode": "AA AA",
+      "telephone": "11111",
+      "addressTown": "Test town",
+      "addressLine1": "10",
+      "addressLine2": "street",
+      "bassAccepted": "Yes",
+      "bassOfferDetails": ""
+    },
     "bassRequest": {
-      "proposedTown": "sdfdsds",
-      "specificArea": "Yes",
+      "specificArea": "No",
       "bassRequested": "Yes",
-      "proposedCounty": "dsdsdssd",
-      "additionalInformation": "dcsfdsf"
+      "additionalInformation": ""
     },
     "bassAreaCheck": {
       "bassAreaReason": "",
       "bassAreaCheckSeen": "true",
-      "approvedPremisesRequiredYesNo": "Yes"
-    },
-    "approvedPremisesAddress": {
-      "postCode": "TT1 1TT",
-      "telephone": "00000000066",
-      "addressTown": "Test Town",
-      "addressLine1": "Test Street",
-      "addressLine2": ""
+      "approvedPremisesRequiredYesNo": "No"
     }
   },
-  "bassRejections": [
-    {
-      "bassRequest": {
-        "proposedTown": "dasdsa",
-        "specificArea": "Yes",
-        "bassRequested": "Yes",
-        "proposedCounty": "dsdasd",
-        "additionalInformation": "sadfsdfsdfs"
-      },
-      "bassAreaCheck": {
-        "bassAreaReason": "sdadasd",
-        "bassAreaSuitable": "No",
-        "bassAreaCheckSeen": "true",
-        "approvedPremisesRequiredYesNo": "No"
-      },
-      "rejectionReason": "area"
-    }
-  ],
   "proposedAddress": {
     "optOut": {
       "decision": "No"
@@ -131,6 +135,12 @@
     }
   },
   "licenceConditions": {
+    "bespoke": [
+      {
+        "text": "Some other condition",
+        "approved": "Yes"
+      }
+    ],
     "standard": {
       "additionalConditionsRequired": "No"
     }

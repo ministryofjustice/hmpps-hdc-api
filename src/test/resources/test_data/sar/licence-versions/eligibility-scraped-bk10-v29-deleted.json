@@ -1,0 +1,21 @@
+{
+  "eligibility": {
+    "crdTime": {
+      "decision": "Yes",
+      "dmApproval": "Yes"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "reason": [
+        "sexOffender",
+        "deportationLiable"
+      ],
+      "decision": "Yes"
+    },
+    "exceptionalCircumstances": {
+      "decision": "Yes"
+    }
+  }
+}

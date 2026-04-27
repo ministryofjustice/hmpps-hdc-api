@@ -4,11 +4,11 @@
       "required": "No"
     },
     "curfewAddressReview": {
-      "consent": "Yes",
-      "version": "1",
+      "version": "2",
       "electricity": "No",
       "homeVisitConducted": "No",
-      "addressReviewComments": "dsadasdasd"
+      "consentHavingSpoken": "Yes",
+      "addressReviewComments": "sassdsddsa"
     }
   },
   "eligibility": {
@@ -33,7 +33,7 @@
     },
     "curfewAddress": {
       "occupier": {
-        "name": "aaaaaa",
+        "name": "aaaaaa bbbbb",
         "relationship": "sdsds"
       },
       "postCode": "PC15 3AA",

@@ -1,0 +1,73 @@
+{
+  "vary": {
+    "approval": {
+      "name": "Some Approver",
+      "jobTitle": "Decision Maker"
+    },
+    "evidence": {
+      "evidence": "The licence need to be varied because Brian has broken his terms of release"
+    }
+  },
+  "curfew": {
+    "curfewHours": {
+      "allFrom": "19:00",
+      "allUntil": "07:00",
+      "fridayFrom": "19:00",
+      "mondayFrom": "19:00",
+      "sundayFrom": "19:00",
+      "fridayUntil": "07:00",
+      "mondayUntil": "07:00",
+      "sundayUntil": "07:00",
+      "tuesdayFrom": "19:00",
+      "saturdayFrom": "19:00",
+      "thursdayFrom": "19:00",
+      "tuesdayUntil": "07:00",
+      "saturdayUntil": "07:00",
+      "thursdayUntil": "07:00",
+      "wednesdayFrom": "19:00",
+      "wednesdayUntil": "07:00",
+      "daySpecificInputs": "No"
+    }
+  },
+  "document": {
+    "template": {
+      "decision": "hdc_ap_pss",
+      "offenceCommittedBeforeFeb2015": "No"
+    }
+  },
+  "reporting": {
+    "reportingInstructions": {
+      "name": "Mr Probation Jones",
+      "postcode": "S1 1AA",
+      "telephone": "0115 9 400 200",
+      "townOrCity": "Sheffield",
+      "buildingAndStreet1": "The Probation Service",
+      "buildingAndStreet2": "Hight Street"
+    }
+  },
+  "proposedAddress": {
+    "curfewAddress": {
+      "postCode": "S3 3TY",
+      "telephone": "020 123456",
+      "addressTown": "Sheffield",
+      "addressLine1": "1 Green Lane"
+    }
+  },
+  "licenceConditions": {
+    "bespoke": [],
+    "standard": {
+      "additionalConditionsRequired": "Yes"
+    },
+    "additional": {
+      "NO_RESIDE": {
+        "notResideWithAge": "16",
+        "notResideWithGender": "any"
+      },
+      "DONT_HAMPER_DRUG_TESTING": {}
+    },
+    "conditionsSummary": {
+      "additionalConditionsJustification": "These are very important conditions"
+    }
+  },
+  "variedFromLicenceNotInSystem": true
+}

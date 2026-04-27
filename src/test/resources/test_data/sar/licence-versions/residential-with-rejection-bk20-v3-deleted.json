@@ -1,0 +1,219 @@
+{
+  "risk": {
+    "riskManagement": {
+      "version": "3",
+      "emsInformation": "Yes",
+      "pomConsultation": "Yes",
+      "mentalHealthPlan": "Yes",
+      "unsuitableReason": "",
+      "hasConsideredChecks": "Yes",
+      "manageInTheCommunity": "Yes",
+      "emsInformationDetails": "Big dog",
+      "riskManagementDetails": "They were fine",
+      "proposedAddressSuitable": "Yes",
+      "awaitingOtherInformation": "No",
+      "nonDisclosableInformation": "Yes",
+      "prisonHealthcareConsultation": "Yes",
+      "nonDisclosableInformationDetails": "I'm worried about X",
+      "manageInTheCommunityNotPossibleReason": ""
+    }
+  },
+  "curfew": {
+    "firstNight": {
+      "firstNightFrom": "15:00",
+      "firstNightUntil": "07:00"
+    },
+    "curfewHours": {
+      "allFrom": "19:00",
+      "allUntil": "07:00",
+      "fridayFrom": "19:00",
+      "mondayFrom": "19:00",
+      "sundayFrom": "19:00",
+      "fridayUntil": "07:00",
+      "mondayUntil": "07:00",
+      "sundayUntil": "07:00",
+      "tuesdayFrom": "21:00",
+      "saturdayFrom": "19:00",
+      "thursdayFrom": "04:00",
+      "tuesdayUntil": "22:00",
+      "saturdayUntil": "06:45",
+      "thursdayUntil": "09:00",
+      "wednesdayFrom": "19:00",
+      "wednesdayUntil": "07:00",
+      "daySpecificInputs": "Yes"
+    },
+    "addressWithdrawn": {
+      "enterNewAddress": "Yes"
+    },
+    "approvedPremises": {
+      "required": "No"
+    },
+    "curfewAddressReview": {
+      "version": "2",
+      "electricity": "Yes",
+      "homeVisitConducted": "Yes",
+      "addressReviewComments": "it was fine"
+    }
+  },
+  "victim": {
+    "victimLiaison": {
+      "decision": "Yes",
+      "victimLiaisonDetails": "Spoke to them last week and there were no concerns"
+    }
+  },
+  "approval": {
+    "release": {
+      "decision": "Yes",
+      "decisionMaker": "Anne DecisionMaker",
+      "reasonForDecision": "Everything looks in order"
+    },
+    "consideration": {
+      "decision": "Yes"
+    }
+  },
+  "document": {
+    "template": {
+      "decision": "hdc_ap_pss",
+      "offenceCommittedBeforeFeb2015": "No"
+    }
+  },
+  "reporting": {
+    "reportingInstructions": {
+      "name": "An Officer",
+      "postcode": "PC15 3AA",
+      "telephone": "0123534343",
+      "townOrCity": "teston",
+      "organisation": "CRC Unit 1",
+      "reportingDate": "01/01/2028",
+      "reportingTime": "01:02",
+      "buildingAndStreet1": "12 street",
+      "buildingAndStreet2": ""
+    }
+  },
+  "eligibility": {
+    "crdTime": {
+      "decision": "No"
+    },
+    "excluded": {
+      "decision": "No"
+    },
+    "suitability": {
+      "decision": "No"
+    }
+  },
+  "finalChecks": {
+    "onRemand": {
+      "decision": "No"
+    },
+    "segregation": {
+      "decision": "No"
+    },
+    "seriousOffence": {
+      "decision": "No"
+    },
+    "confiscationOrder": {
+      "decision": "No"
+    },
+    "undulyLenientSentence": {
+      "decision": "No"
+    }
+  },
+  "bassReferral": {
+    "bassRequest": {
+      "bassRequested": "No"
+    }
+  },
+  "proposedAddress": {
+    "optOut": {
+      "decision": "No"
+    },
+    "rejections": [
+      {
+        "address": {
+          "occupier": {
+            "name": "aaaaaa bbbb",
+            "relationship": "Brother"
+          },
+          "postCode": "PC12 3AA",
+          "residents": [
+            {
+              "age": "54",
+              "name": "Ann Occupier",
+              "relationship": "Husband"
+            }
+          ],
+          "telephone": "0123534343",
+          "addressTown": "aaaaa",
+          "addressLine1": "12 The Street",
+          "addressLine2": "",
+          "additionalInformation": "",
+          "residentOffenceDetails": "",
+          "cautionedAgainstResident": "No"
+        },
+        "addressReview": {
+          "curfewAddressReview": {
+            "version": "2",
+            "electricity": "Yes",
+            "homeVisitConducted": "Yes",
+            "consentHavingSpoken": "Yes",
+            "addressReviewComments": "some details"
+          }
+        },
+        "riskManagement": {
+          "unsuitableReason": "",
+          "hasConsideredChecks": "Yes",
+          "manageInTheCommunity": "Yes",
+          "proposedAddressSuitable": "Yes",
+          "manageInTheCommunityNotPossibleReason": ""
+        },
+        "withdrawalReason": "withdrawAddress"
+      }
+    ],
+    "curfewAddress": {
+      "occupier": {
+        "name": "Erik BBBB",
+        "isOffender": "Yes",
+        "relationship": ""
+      },
+      "postCode": "PC15 3AA",
+      "residents": [],
+      "telephone": "0123534343",
+      "addressTown": "Teston",
+      "addressLine1": "13 Test street",
+      "addressLine2": "",
+      "additionalInformation": "",
+      "residentOffenceDetails": "it was a small issue",
+      "cautionedAgainstResident": "Yes"
+    },
+    "addressProposed": {
+      "decision": "Yes"
+    }
+  },
+  "licenceConditions": {
+    "bespoke": [
+      {
+        "text": "Stay away from the supermarket",
+        "approved": "Yes"
+      },
+      {
+        "text": "Don't drive e-bikes",
+        "approved": "Yes"
+      }
+    ],
+    "standard": {
+      "additionalConditionsRequired": "Yes"
+    },
+    "additional": {
+      "NO_RESIDE": {
+        "notResideWithAge": "32",
+        "notResideWithGender": "any"
+      },
+      "RESIDE_AT_SPECIFIC_PLACE": {
+        "region": "The south"
+      }
+    },
+    "conditionsSummary": {
+      "additionalConditionsJustification": "They were appropriate given risk factors"
+    }
+  }
+}
