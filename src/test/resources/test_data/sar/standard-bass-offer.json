@@ -51,7 +51,7 @@
     "release": {
       "decision": "Yes",
       "decisionMaker": "Sam Smith",
-      "reasonForDecision": ""
+      "reasonForDecision": "All checks have been considered and the release is approved"
     },
     "consideration": {
       "decision": "Yes"
@@ -73,7 +73,7 @@
       "reportingDate": "12/12/2025",
       "reportingTime": "11:12",
       "buildingAndStreet1": "CRC Street",
-      "buildingAndStreet2": ""
+      "buildingAndStreet2": "street"
     }
   },
   "eligibility": {
@@ -108,12 +108,12 @@
     "bassOffer": {
       "bassArea": "Reading",
       "postCode": "A1 1AA",
-      "telephone": "",
+      "telephone": "11111",
       "addressTown": "Test Town",
       "addressLine1": "Test Street",
-      "addressLine2": "",
+      "addressLine2": "East Side",
       "bassAccepted": "Yes",
-      "bassOfferDetails": ""
+      "bassOfferDetails": "The accommodation will be available"
     },
     "bassRequest": {
       "specificArea": "No",
@@ -135,7 +135,12 @@
     }
   },
   "licenceConditions": {
-    "bespoke": [],
+    "bespoke": [
+      {
+        "text": "Some other condition",
+        "approved": "Yes"
+      }
+    ],
     "standard": {
       "additionalConditionsRequired": "Yes"
     },

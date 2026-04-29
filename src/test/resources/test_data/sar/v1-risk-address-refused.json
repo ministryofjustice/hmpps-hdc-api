@@ -41,7 +41,7 @@
     },
     "curfewAddress": {
       "occupier": {
-        "name": "aaaaaa",
+        "name": "aaaaaa bbbbb",
         "isOffender": "Yes",
         "relationship": ""
       },
@@ -50,7 +50,7 @@
       "telephone": "0123534343",
       "addressTown": "aaaaa",
       "addressLine1": "12 Street",
-      "addressLine2": "",
+      "addressLine2": "East Side",
       "additionalInformation": "",
       "residentOffenceDetails": "",
       "cautionedAgainstResident": "No"

@@ -2,7 +2,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
@@ -63,7 +62,6 @@ class SubjectAccessRequestIntegrationTest :
     super.`SAR report should render as expected`()
   }
 
-  @Disabled
   @Test
   @Sql("classpath:test_data/reset.sql")
   fun `SAR template should render all fields in the data model`() {
@@ -76,11 +74,6 @@ class SubjectAccessRequestIntegrationTest :
       modelClass = Content::class,
       ignoredPaths = IGNORED_SAR_PATHS,
     )
-
-    result.expectedPaths.forEach {
-      val segments = it // .split("(\\.)|(\\[])".toRegex())
-      println(segments)
-    }
 
     val extraInfo = if (result.pathsWithNoTestData.isNotEmpty()) {
       "\n\nThe following model fields have no test data and could not be verified:\n" +

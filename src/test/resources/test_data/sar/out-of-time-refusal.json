@@ -12,17 +12,6 @@
       "required": "No"
     }
   },
-  "approval": {
-    "release": {
-      "reason": "addressUnsuitable",
-      "decision": "No",
-      "decisionMaker": "Anne DecisionMaker",
-      "reasonForDecision": "problem"
-    },
-    "consideration": {
-      "decision": "Yes"
-    }
-  },
   "eligibility": {
     "crdTime": {
       "decision": "No"
@@ -36,7 +25,12 @@
   },
   "finalChecks": {
     "refusal": {
-      "decision": "No"
+      "reason": "insufficientTime",
+      "decision": "Yes",
+      "outOfTimeReasons": [
+        "underInvestigation",
+        "confiscationOrder"
+      ]
     },
     "onRemand": {
       "decision": "No"
@@ -55,10 +49,6 @@
     }
   },
   "bassReferral": {
-    "bassOffer": {
-      "bassAccepted": "Yes",
-      "bassOfferDetails": ""
-    },
     "bassRequest": {
       "proposedTown": "big town",
       "specificArea": "Yes",
@@ -187,7 +177,7 @@
           "telephone": "0123534343",
           "addressTown": "aaaaa",
           "addressLine1": "12 Mill road",
-          "addressLine2": "",
+          "addressLine2": "East Side",
           "additionalInformation": "",
           "residentOffenceDetails": "",
           "cautionedAgainstResident": "No"
