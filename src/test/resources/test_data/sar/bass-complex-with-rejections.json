@@ -15,7 +15,7 @@
       "nonDisclosableInformation": "Yes",
       "prisonHealthcareConsultation": "Yes",
       "nonDisclosableInformationDetails": "I'm worried about X",
-      "manageInTheCommunityNotPossibleReason": ""
+      "manageInTheCommunityNotPossibleReason": "Unable to support in the community due to X"
     }
   },
   "curfew": {
@@ -139,7 +139,7 @@
       "telephone": "0123534344",
       "addressTown": "bbb",
       "addressLine1": "12 Short Lane",
-      "addressLine2": ""
+      "addressLine2": "North Side"
     }
   },
   "bassRejections": [
@@ -170,7 +170,7 @@
         "telephone": "0123534343",
         "addressTown": "BBBB",
         "addressLine1": "12 Long lane",
-        "addressLine2": "",
+        "addressLine2": "East Side",
         "bassAccepted": "Yes",
         "bassOfferDetails": "a good offer"
       },
@@ -201,7 +201,7 @@
       {
         "address": {
           "occupier": {
-            "name": "aaaaaa bbbbbb",
+            "name": "aaaaaa bbbb",
             "relationship": "Brother"
           },
           "postCode": "PC12 3AA",
@@ -215,7 +215,7 @@
           "telephone": "0123534343",
           "addressTown": "aaaaa",
           "addressLine1": "12 The Street",
-          "addressLine2": "",
+          "addressLine2": "East Side",
           "additionalInformation": "",
           "residentOffenceDetails": "",
           "cautionedAgainstResident": "No"
@@ -230,18 +230,18 @@
           }
         },
         "riskManagement": {
-          "unsuitableReason": "",
+          "unsuitableReason": "unsuitable due to...",
           "hasConsideredChecks": "Yes",
           "manageInTheCommunity": "Yes",
           "proposedAddressSuitable": "Yes",
-          "manageInTheCommunityNotPossibleReason": ""
+          "manageInTheCommunityNotPossibleReason": "cannot manage in the community due to..."
         },
         "withdrawalReason": "withdrawAddress"
       },
       {
         "address": {
           "occupier": {
-            "name": "Erik",
+            "name": "Erik BBBBB",
             "isOffender": "Yes",
             "relationship": ""
           },
@@ -250,7 +250,7 @@
           "telephone": "0123534343",
           "addressTown": "Teston",
           "addressLine1": "13 Test street",
-          "addressLine2": "",
+          "addressLine2": "East Side",
           "additionalInformation": "",
           "residentOffenceDetails": "it was a small issue",
           "cautionedAgainstResident": "Yes"

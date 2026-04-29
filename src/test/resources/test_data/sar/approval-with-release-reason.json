@@ -128,11 +128,11 @@
           }
         },
         "riskManagement": {
-          "unsuitableReason": "",
+          "unsuitableReason": "not suitable due to...",
           "hasConsideredChecks": "Yes",
           "manageInTheCommunity": "Yes",
           "proposedAddressSuitable": "Yes",
-          "manageInTheCommunityNotPossibleReason": ""
+          "manageInTheCommunityNotPossibleReason": "cannot manage in the community due to..."
         },
         "withdrawalReason": "withdrawAddress"
       },
@@ -187,7 +187,7 @@
           "telephone": "0123534343",
           "addressTown": "aaaaa",
           "addressLine1": "12 Mill road",
-          "addressLine2": "",
+          "addressLine2": "East Side",
           "additionalInformation": "",
           "residentOffenceDetails": "",
           "cautionedAgainstResident": "No"

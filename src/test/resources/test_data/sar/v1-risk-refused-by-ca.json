@@ -1,9 +1,19 @@
 {
+  "risk": {
+    "riskManagement": {
+      "version": "1",
+      "emsInformation": "No",
+      "planningActions": "No",
+      "unsuitableReason": "a problem",
+      "awaitingInformation": "No",
+      "emsInformationDetails": "",
+      "riskManagementDetails": "ok so far",
+      "proposedAddressSuitable": "Yes",
+      "nonDisclosableInformation": "Yes",
+      "nonDisclosableInformationDetails": "some details"
+    }
+  },
   "curfew": {
-    "firstNight": {
-      "firstNightFrom": "15:00",
-      "firstNightUntil": "07:00"
-    },
     "curfewHours": {
       "allFrom": "19:00",
       "allUntil": "07:00",
@@ -24,14 +34,13 @@
       "daySpecificInputs": "No"
     },
     "approvedPremises": {
-      "required": "Yes"
+      "required": "No"
     },
-    "approvedPremisesAddress": {
-      "postCode": "BA15 3AA",
-      "telephone": "0123534343",
-      "addressTown": "BBBBBBBB",
-      "addressLine1": "12 Long Street",
-      "addressLine2": ""
+    "curfewAddressReview": {
+      "version": "2",
+      "electricity": "Yes",
+      "homeVisitConducted": "No",
+      "addressReviewComments": "fine"
     }
   },
   "victim": {
@@ -39,49 +48,48 @@
       "decision": "No"
     }
   },
-  "approval": {
-    "release": {
-      "decision": "Yes",
-      "decisionMaker": "Anne DecisionMaker",
-      "notedComments": "Yes",
-      "reasonForDecision": "its fine now"
-    },
-    "consideration": {
-      "decision": "Yes"
-    }
-  },
-  "document": {
-    "template": {
-      "decision": "hdc_ap_pss",
-      "offenceCommittedBeforeFeb2015": "Yes"
-    }
-  },
   "reporting": {
     "reportingInstructions": {
-      "name": "BBBB",
-      "postcode": "BA15 3AA",
+      "name": "aaaaaa bbbb",
+      "postcode": "PC15 3AA",
       "telephone": "0123534343",
-      "townOrCity": "CCCCC",
-      "organisation": "CRC Unit 3",
-      "reportingDate": "12/01/2028",
-      "reportingTime": "12:21",
-      "buildingAndStreet1": "12 Mogword",
+      "townOrCity": "aaaaa",
+      "organisation": "bbbbb",
+      "reportingDate": "12/01/2027",
+      "reportingTime": "11:23",
+      "buildingAndStreet1": "aaaaaa",
       "buildingAndStreet2": ""
     }
   },
   "eligibility": {
     "crdTime": {
-      "decision": "No"
+      "decision": "Yes",
+      "dmApproval": "Yes"
     },
     "excluded": {
       "decision": "No"
     },
     "suitability": {
-      "decision": "No"
+      "reason": [
+        "sexOffender",
+        "deportationLiable"
+      ],
+      "decision": "Yes"
+    },
+    "exceptionalCircumstances": {
+      "decision": "Yes"
     }
   },
   "finalChecks": {
+    "refusal": {
+      "reason": "addressUnsuitable",
+      "decision": "Yes"
+    },
     "onRemand": {
+      "decision": "No"
+    },
+    "postpone": {
+      "version": "2",
       "decision": "No"
     },
     "segregation": {
@@ -91,7 +99,7 @@
       "decision": "No"
     },
     "confiscationOrder": {
-      "comments": "Its fine now",
+      "comments": "it was all fine",
       "decision": "Yes",
       "confiscationUnitConsulted": "Yes"
     },
@@ -114,21 +122,15 @@
         "isOffender": "Yes",
         "relationship": ""
       },
-      "postCode": "FA15 3AA",
-      "residents": [
-        {
-          "age": "54",
-          "name": "Ann Occupier",
-          "relationship": "Husband"
-        }
-      ],
+      "postCode": "AA15 3AA",
+      "residents": [],
       "telephone": "0123534343",
       "addressTown": "aaaaa",
-      "addressLine1": "12 Mogword",
-      "addressLine2": "",
+      "addressLine1": "12 Street",
+      "addressLine2": "East Side",
       "additionalInformation": "",
-      "residentOffenceDetails": "Some issue but its fine now",
-      "cautionedAgainstResident": "Yes"
+      "residentOffenceDetails": "",
+      "cautionedAgainstResident": "No"
     },
     "addressProposed": {
       "decision": "Yes"

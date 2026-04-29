@@ -50,7 +50,7 @@
   },
   "reporting": {
     "reportingInstructions": {
-      "name": "aaaaaa",
+      "name": "aaaaaa bbbb",
       "postcode": "PC15 3AA",
       "telephone": "0123534343",
       "townOrCity": "aaaaa",
@@ -81,30 +81,10 @@
     }
   },
   "finalChecks": {
-    "refusal": {
-      "reason": "addressUnsuitable",
-      "decision": "Yes"
-    },
-    "onRemand": {
-      "decision": "No"
-    },
     "postpone": {
       "version": "2",
-      "decision": "No"
-    },
-    "segregation": {
-      "decision": "No"
-    },
-    "seriousOffence": {
-      "decision": "No"
-    },
-    "confiscationOrder": {
-      "comments": "it was all fine",
       "decision": "Yes",
-      "confiscationUnitConsulted": "Yes"
-    },
-    "undulyLenientSentence": {
-      "decision": "No"
+      "postponeReason": "awaitingInformation"
     }
   },
   "bassReferral": {
@@ -127,7 +107,7 @@
       "telephone": "0123534343",
       "addressTown": "aaaaa",
       "addressLine1": "12 Street",
-      "addressLine2": "",
+      "addressLine2": "East Side",
       "additionalInformation": "",
       "residentOffenceDetails": "",
       "cautionedAgainstResident": "No"

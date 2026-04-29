@@ -148,6 +148,13 @@ object SarTemplateFieldTracker {
     else -> value
   }
 
+  /** A field only counts as used when it resolves to a non-empty string or any other non-null value. */
+  private fun shouldTrackAccessedValue(value: Any?): Boolean = when (value) {
+    null -> false
+    is String -> value.isNotEmpty()
+    else -> true
+  }
+
   /**
    * Intercepts map.get(key) during Handlebars rendering to record every accessed field path.
    * Handlebars' MapValueResolver resolves properties by calling map.get(name).
@@ -160,7 +167,7 @@ object SarTemplateFieldTracker {
     override fun get(key: String): Any? {
       val childPath = if (path.isEmpty()) key else "$path.$key"
       val value = delegate[key]
-      if (value != null) tracker.add(childPath)
+      if (shouldTrackAccessedValue(value)) tracker.add(childPath)
       return wrap(childPath, value, tracker)
     }
   }
