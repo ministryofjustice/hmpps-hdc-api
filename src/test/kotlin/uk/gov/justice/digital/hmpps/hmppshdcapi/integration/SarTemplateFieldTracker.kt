@@ -151,7 +151,7 @@ object SarTemplateFieldTracker {
   /** A field only counts as used when it resolves to a non-empty string or any other non-null value. */
   private fun shouldTrackAccessedValue(value: Any?): Boolean = when (value) {
     null -> false
-    is String -> value.isNotEmpty()
+    is String -> value.isNotBlank()
     else -> true
   }
 
