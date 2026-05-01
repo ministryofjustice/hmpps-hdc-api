@@ -7,7 +7,7 @@
     <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt$HMPPSMessage$val Message: String</ID>
     <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt$HMPPSMessage$val MessageAttributes: HMPPSMessageAttributes</ID>
     <ID>CyclomaticComplexMethod:LicenceService.kt$LicenceService$fun CurfewHours?.getNullTimes(): List&lt;String&gt;</ID>
-    <ID>CyclomaticComplexMethod:MigrationService.kt$MigrationService$private fun CurfewHours.getTime(day: DayOfWeek, from: Boolean): LocalTime?</ID>
+    <ID>CyclomaticComplexMethod:MigrationRequestService.kt$MigrationRequestService$private fun CurfewHours.getTime(day: DayOfWeek, from: Boolean): LocalTime?</ID>
     <ID>LongParameterList:Licence.kt$Licence$( @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id", nullable = false) val id: Long? = null, var prisonNumber: String, val bookingId: Long, @Enumerated(EnumType.STRING) val stage: HdcStage, val version: Int, val transitionDate: LocalDateTime?, val varyVersion: Int, val additionalConditionsVersion: Int?, val standardConditionsVersion: Int?, var deletedAt: LocalDateTime?, var licenceInCvl: Boolean, @JdbcTypeCode(SqlTypes.JSON) val licence: LicenceData?, )</ID>
     <ID>LongParameterList:LicenceVersion.kt$LicenceVersion$( @Id @param:NotNull @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "id", nullable = false) val id: Long? = null, var prisonNumber: String?, val bookingId: Long, val timestamp: LocalDateTime, val version: Int, val template: String, val varyVersion: Int, var deletedAt: LocalDateTime?, var licenceInCvl: Boolean, @JdbcTypeCode(SqlTypes.JSON) val licence: LicenceData?, )</ID>
     <ID>LongParameterList:SARLicenceData.kt$SARLicenceVersion$( var licenceVersionId: Long, val timestamp: LocalDateTime, val version: Int, val template: String, val varyVersion: Int, var deletedAt: LocalDateTime?, var licenceInCvl: Boolean, val licence: SARLicenceData?, )</ID>
@@ -18,9 +18,13 @@
     <ID>MagicNumber:V2Conditions.kt$5</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
+    <ID>ReturnCount:MigrationRequestService.kt$MigrationRequestService$fun isEligible(prisoner: Prisoner): Boolean</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
-    <ID>TooManyFunctions:MigrationService.kt$MigrationService</ID>
+    <ID>ThrowsCount:MigrationProcessService.kt$MigrationProcessService$fun processLicence(licenceId: Long)</ID>
+    <ID>TooGenericExceptionCaught:MigrationProcessService.kt$MigrationProcessService$e: Exception</ID>
+    <ID>TooManyFunctions:MigrationRequestService.kt$MigrationRequestService</ID>
     <ID>TooManyFunctions:SARLicenceDataBuilder.kt$uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARLicenceDataBuilder.kt</ID>
-    <ID>UnusedPrivateProperty:MigrationService.kt$MigrationService$val lastUpdated = getLastUpdated(audits)</ID>
+    <ID>UnusedParameter:MigrationRequestService.kt$MigrationRequestService$licence: Licence</ID>
+    <ID>UnusedPrivateProperty:MigrationRequestService.kt$MigrationRequestService$val lastUpdated = getLastUpdated(audits)</ID>
   </CurrentIssues>
 </SmellBaseline>
