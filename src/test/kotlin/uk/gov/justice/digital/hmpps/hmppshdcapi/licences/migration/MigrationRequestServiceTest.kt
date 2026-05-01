@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
@@ -12,12 +13,14 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalTime
 
-class MigrationServiceTest {
+class MigrationRequestServiceTest {
 
-  private lateinit var migrationService: MigrationService
+  private lateinit var migrationRequestService: MigrationRequestService
   private var migrationRepository: MigrationRepository = mock()
   private var cvlClient: CvlApiClient = mock()
   private var prisonApiClient: PrisonApiClient = mock()
@@ -26,7 +29,7 @@ class MigrationServiceTest {
 
   @BeforeEach
   fun setUp() {
-    migrationService = MigrationService(
+    migrationRequestService = MigrationRequestService(
       migrationRepository = migrationRepository,
       cvlClient = cvlClient,
       prisonApiClient = prisonApiClient,
@@ -158,7 +161,143 @@ class MigrationServiceTest {
     Assertions.assertThat(curfew.untilTime).isEqualTo(LocalTime.of(6, 0))
   }
 
-  private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationService.toMigrateCurfewTimes(curfewHours)
+  @Test
+  fun `should return true when prisoner is eligible`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(false)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isTrue()
+  }
+
+  @Test
+  fun `should return false when any required date is null`() {
+    // Given
+    val today = LocalDate.now()
+
+    val prisonerWithNullHdcad = mock<Prisoner>()
+    whenever(prisonerWithNullHdcad.homeDetentionCurfewActualDate).thenReturn(null)
+
+    val prisonerWithNullLed = mock<Prisoner>()
+    whenever(prisonerWithNullLed.homeDetentionCurfewActualDate).thenReturn(today)
+    whenever(prisonerWithNullLed.licenceExpiryDate).thenReturn(null)
+
+    val prisonerWithNullTused = mock<Prisoner>()
+    whenever(prisonerWithNullTused.homeDetentionCurfewActualDate).thenReturn(today)
+    whenever(prisonerWithNullTused.licenceExpiryDate).thenReturn(today)
+    whenever(prisonerWithNullTused.topupSupervisionExpiryDate).thenReturn(null)
+
+    // When / Then
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullHdcad)).isFalse()
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullLed)).isFalse()
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullTused)).isFalse()
+  }
+
+  @Test
+  fun `should return false when status is not inactive out`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("ACTIVE")
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today)
+    whenever(prisoner.licenceExpiryDate).thenReturn(today)
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today)
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isFalse()
+  }
+
+  @Test
+  fun `should return false when prisoner is restricted patient`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(true)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today)
+    whenever(prisoner.licenceExpiryDate).thenReturn(today)
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today)
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isFalse()
+  }
+
+  @Test
+  fun `should return false when HDCAD is in the future`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(false)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isFalse()
+  }
+
+  @Test
+  fun `should return false when both licence and topup dates are in the past`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(false)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.minusDays(1))
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isFalse()
+  }
+
+  @Test
+  fun `should return true when only one of licence or topup is in the past`() {
+    // Given
+    val today = LocalDate.now()
+    val prisoner = mock<Prisoner>()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(false)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner)
+
+    // Then
+    Assertions.assertThat(result).isTrue()
+  }
+
+  private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)
 
   fun createCurfewHours(
     mondayFrom: LocalTime? = null,

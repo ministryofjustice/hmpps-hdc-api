@@ -1,4 +1,5 @@
-truncate table licences;
-truncate table licence_versions;
-truncate table audit;
-truncate table licence_migration_log;
+TRUNCATE TABLE licences RESTART IDENTITY CASCADE;
+TRUNCATE TABLE licence_versions RESTART IDENTITY CASCADE;
+TRUNCATE TABLE audit RESTART IDENTITY CASCADE;
+TRUNCATE TABLE licence_migration_log RESTART IDENTITY CASCADE;
+

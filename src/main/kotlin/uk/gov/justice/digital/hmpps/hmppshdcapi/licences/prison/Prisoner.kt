@@ -81,7 +81,11 @@ data class Prisoner(
   val topupSupervisionStartDate: LocalDate? = null,
 
   val croNumber: String? = null,
-)
+
+  val restrictedPatient: Boolean? = null,
+) {
+  fun isRestrictedPatient() = restrictedPatient == true && status == "INACTIVE OUT"
+}
 
 data class Booking(
   val offenderNo: String,

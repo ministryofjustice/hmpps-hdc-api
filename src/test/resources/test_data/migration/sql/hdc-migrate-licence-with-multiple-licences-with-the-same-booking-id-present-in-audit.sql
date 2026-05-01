@@ -5,6 +5,12 @@ INSERT INTO licences
 -- Create the data for a HDC licence
 VALUES (1,
         '{
+                  "document": {
+                    "template": {
+                      "decision": "hdc_ap",
+                      "offenceCommittedBeforeFeb2015": "No"
+                    }
+                  },
                   "curfew": {
                     "firstNight":{
                       "firstNightFrom": "15:00",
@@ -243,7 +249,7 @@ VALUES (1,
             }
         }
                 }'::jsonb,
-        54222, 'ELIGIBILITY', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false);
+        54222, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'A12345B', null, false);
 
 -- audit data
 
