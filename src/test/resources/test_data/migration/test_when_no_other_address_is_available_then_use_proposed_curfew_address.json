@@ -20,16 +20,16 @@
     "conditionalReleaseDate" : "2025-04-07",
     "actualReleaseDate" : "2025-04-17",
     "topupSupervisionStartDate" : "2023-01-01",
-    "topupSupervisionExpiryDate" : "2025-04-01",
+    "topupSupervisionExpiryDate" : "2028-02-10",
     "postRecallReleaseDate" : "2025-04-21"
   },
   "licence" : {
     "licenceId" : 5,
     "typeCode" : "AP",
-    "licenceActivationDate" : "2025-03-25",
-    "homeDetentionCurfewActualDate" : "2025-03-25",
+    "licenceActivationDate" : "2025-04-30",
+    "homeDetentionCurfewActualDate" : "2025-04-30",
     "homeDetentionCurfewEndDate" : "2025-04-11",
-    "licenceExpiryDate" : "2025-03-31",
+    "licenceExpiryDate" : "2028-03-30",
     "licenceVersion" : 1,
     "varyVersion" : 0
   },

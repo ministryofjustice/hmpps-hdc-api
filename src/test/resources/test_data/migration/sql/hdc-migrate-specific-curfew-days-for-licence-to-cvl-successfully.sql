@@ -16,7 +16,13 @@ INSERT INTO licences
 VALUES
     (
         1,
-        '{
+'{
+          "document": {
+            "template": {
+              "decision": "hdc_ap",
+              "offenceCommittedBeforeFeb2015": "No"
+            }
+          },
             "proposedAddress": {
                 "curfewAddress": {
                     "postCode": "TST1 1TS",
@@ -96,7 +102,7 @@ VALUES
             }
         }'::jsonb,
         54222,
-        'ELIGIBILITY',
+        'DECIDED',
         1,
         '2021-08-06 15:06:37.188',
         0,

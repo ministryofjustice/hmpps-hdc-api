@@ -18,7 +18,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 @RequestMapping("/licences/migrate/active")
 @Tag(name = "Licence Migration", description = "Operations related to licence migration to CVL")
 class MigrationController(
-  private val migrationService: MigrationService,
+  private val migrationProcessService: MigrationProcessService,
+  private val migrationRequestService: MigrationRequestService,
 ) {
 
   @PostMapping("/{activeLicenceId}/to-cvl")
@@ -35,6 +36,39 @@ class MigrationController(
       ),
       ApiResponse(
         responseCode = "400",
+        description = "Migration validation failed",
+      ),
+      ApiResponse(
+        responseCode = "422",
+        description = "Migration rejected due to business rules or CVL state",
+      ),
+      ApiResponse(
+        responseCode = "503",
+        description = "CVL temporarily unavailable, retryable migration failure",
+      ),
+    ],
+  )
+  fun migrateLicenceToCvl(
+    @PathVariable activeLicenceId: Long,
+  ): ResponseEntity<Void> {
+    migrationProcessService.processLicence(activeLicenceId)
+    return ResponseEntity.ok().build()
+  }
+
+  @PostMapping("/batch/to-cvl")
+  @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
+  @Operation(
+    summary = "Migrate a batch of licences to CVL",
+    description = "Triggers migration of a batch of licences ID into CVL",
+  )
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Licence batch migrated to CVL successfully",
+      ),
+      ApiResponse(
+        responseCode = "400",
         description = "Invalid request",
       ),
       ApiResponse(
@@ -43,15 +77,13 @@ class MigrationController(
       ),
     ],
   )
-  fun migrateLicenceToCvl(
-    @PathVariable activeLicenceId: Long,
-  ): ResponseEntity<Void> {
-    migrationService.migrateToCvl(activeLicenceId)
+  fun migrateBatchToCvl(): ResponseEntity<Void> {
+    migrationProcessService.migrateToCvl()
     return ResponseEntity.ok().build()
   }
 
   @GetMapping("/{activeLicenceId}/to-cvl/preview")
-  @PreAuthorize("hasAnyRole('HDC_ADMIN')")
+  @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
     summary = "Preview migration of a single active licence to CVL",
     description = "Returns the request object that would be sent to CVL",
@@ -66,7 +98,7 @@ class MigrationController(
   fun previewMigrateLicenceToCvl(
     @PathVariable activeLicenceId: Long,
   ): ResponseEntity<MigrateFromHdcToCvlRequest> {
-    val response = migrationService.buildMigrationRequest(activeLicenceId)
+    val response = migrationRequestService.buildMigrationRequest(activeLicenceId)
     return ResponseEntity.ok(response)
   }
 }

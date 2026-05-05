@@ -7,7 +7,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
@@ -20,6 +23,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
+import java.util.stream.IntStream
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
 
@@ -48,7 +52,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isOk
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
-    assertThat(migrationRepository.migrationLogExists(licenceId)).isTrue
+    assertThat(migrationRepository.getMigrationLog(licenceId, true, retry = false)).isEqualTo("migrated successfully")
   }
 
   @Sql(
@@ -173,22 +177,44 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/migration/sql/hdc-migrated-licences-with-curfew-address.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test
-  fun `Migrate Exception is thrown when no address can be found`() {
+  fun `Migrate licence to CVL migration fails because of a http 400 error the migration is retryable`() {
     // Given
-    val licenceId = 3L
+    val licenceId = 1L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
-    cvlMockServer.stubMigrateLicenceSuccess()
+
+    cvlMockServer.stubMigrateLicenceClient400Error()
 
     // When
     val response = postLicenceIdToMigrate(licenceId)
 
     // Then
-    response.expectStatus().isBadRequest
-    assertThat(migrationRepository.migrationLogExists(licenceId)).isFalse
+    response.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT)
+    assertThat(migrationRepository.getMigrationLog(licenceId, false, retry = false)).isEqualTo("it does not exist")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+  )
+  @Test
+  fun `Migrate licence to CVL migration fails because of a http Other error the migration is retryable`() {
+    // Given
+    val licenceId = 1L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    cvlMockServer.stubMigrateLicenceClient500Error()
+
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
+    assertThat(migrationRepository.getMigrationLog(licenceId, false, retry = true)).isEqualTo("Service has failed")
   }
 
   @Sql(
@@ -209,6 +235,23 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isOk
     verifyRequestPayloadSentToCVL("test_when_no_appointment_date_time_given.json")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-invalid-licences.sql",
+  )
+  @ParameterizedTest
+  @MethodSource("invalidLicenceIds")
+  fun `When SQL finds no valid licences to migrate, no licences are migrated to CVL`(
+    licenceId: Long,
+  ) {
+    // Given
+    // When
+    val response = postLicenceIdToMigrate(licenceId)
+
+    // Then
+    response.expectStatus().isBadRequest
   }
 
   @Sql(
@@ -262,19 +305,19 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
   }
 
-  fun stubSearchPrisonersByBookingIds() = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+  fun stubSearchPrisonersByBookingIds(restrictedPatient: Boolean = false) = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
     listOf(
       Prisoner(
         prisonerNumber = "A1234AA",
         bookingId = "54222",
         prisonId = "MDI",
-        topupSupervisionExpiryDate = LocalDate.of(2025, 4, 1),
-        licenceExpiryDate = LocalDate.of(2025, 3, 31),
-        homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 30),
+        topupSupervisionExpiryDate = LocalDate.of(2028, 2, 10),
+        licenceExpiryDate = LocalDate.of(2028, 3, 30),
+        homeDetentionCurfewActualDate = LocalDate.of(2025, 4, 30),
+        homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 20),
         pncNumber = "PNC123",
-        status = "ACTIVE",
+        status = "INACTIVE OUT",
         mostSeriousOffence = "Theft",
-        homeDetentionCurfewActualDate = LocalDate.of(2025, 3, 25),
         homeDetentionCurfewEndDate = LocalDate.of(2025, 4, 11),
         releaseDate = LocalDate.of(2025, 4, 16),
         confirmedReleaseDate = LocalDate.of(2025, 4, 17),
@@ -300,6 +343,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
         sentenceExpiryDate = LocalDate.of(2025, 1, 1),
         topupSupervisionStartDate = LocalDate.of(2023, 1, 1),
         croNumber = "CRO123",
+        restrictedPatient = false,
       ),
       Prisoner(
         prisonerNumber = "A1234CC",
@@ -337,6 +381,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
         sentenceExpiryDate = LocalDate.of(2027, 6, 1),
         topupSupervisionStartDate = null,
         croNumber = "CRO456",
+        restrictedPatient = false,
       ),
       Prisoner(
         prisonerNumber = "A1234EE",
@@ -374,6 +419,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
         sentenceExpiryDate = LocalDate.of(2024, 8, 1),
         topupSupervisionStartDate = null,
         croNumber = "CRO789",
+        restrictedPatient = false,
       ),
     ),
   )
@@ -384,8 +430,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     private val prisonApiMockServer = PrisonApiMockServer()
 
     @JvmStatic
+    fun invalidLicenceIds() = IntStream.rangeClosed(1, 8).boxed()
+
+    @JvmStatic
     @BeforeAll
     fun startWireMocks() {
+      hmppsAuthMockServer.start()
+      hmppsAuthMockServer.stubGrantToken()
       cvlMockServer.start()
       prisonerSearchMockServer.start()
       prisonApiMockServer.start()
@@ -394,6 +445,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     @JvmStatic
     @AfterAll
     fun stopWireMocks() {
+      hmppsAuthMockServer.stop()
       cvlMockServer.stop()
       prisonerSearchMockServer.stop()
       prisonApiMockServer.stop()

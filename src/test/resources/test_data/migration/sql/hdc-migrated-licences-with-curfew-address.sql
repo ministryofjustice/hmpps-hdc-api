@@ -44,7 +44,7 @@ VALUES
         }
     }'::jsonb,
     10001,
-    'ELIGIBILITY',
+    'DECIDED',
     1,
     '2021-01-01 00:00:00',
     0,
@@ -89,7 +89,7 @@ VALUES
         }
     }'::jsonb,
     10002,
-    'ELIGIBILITY',
+    'DECIDED',
     1,
     '2021-01-01 00:00:00',
     0,
@@ -112,7 +112,7 @@ VALUES
         }
     }'::jsonb,
     10003,
-    'ELIGIBILITY',
+    'DECIDED',
     1,
     '2021-01-01 00:00:00',
     0,
@@ -159,7 +159,7 @@ VALUES
         }
     }'::jsonb,
     10004,
-    'ELIGIBILITY',
+    'DECIDED',
     1,
     '2021-01-01 00:00:00',
     0,
@@ -206,7 +206,7 @@ VALUES
         }
     }'::jsonb,
     10005,
-    'ELIGIBILITY',
+    'DECIDED',
     1,
     '2021-01-01 00:00:00',
     0,
@@ -259,5 +259,4 @@ VALUES
           "bookingId": "10005"
         }'::jsonb
     );
-
 

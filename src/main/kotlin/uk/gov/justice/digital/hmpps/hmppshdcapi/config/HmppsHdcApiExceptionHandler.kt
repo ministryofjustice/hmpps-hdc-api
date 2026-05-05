@@ -6,12 +6,16 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
 import org.springframework.web.servlet.resource.NoResourceFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 
 @RestControllerAdvice
 class HmppsHdcApiExceptionHandler {
@@ -77,6 +81,46 @@ class HmppsHdcApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.error("Unexpected exception", e) }
+
+  @ExceptionHandler(
+    CvlMigrationException::class,
+    MigrationValidationException::class,
+  )
+  fun handleMigrationException(migrationException: Exception): ResponseEntity<ErrorResponse> {
+    log.warn("Migration failed : {}", migrationException.message)
+
+    val status = when (migrationException) {
+      is MigrationValidationException -> BAD_REQUEST
+      else -> UNPROCESSABLE_CONTENT
+    }
+
+    return ResponseEntity
+      .status(status)
+      .body(
+        ErrorResponse(
+          status = status.value(),
+          userMessage = "Migration failed - ${migrationException.message}",
+          developerMessage = migrationException.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(CvlRetryMigrationException::class)
+  fun handleMigrationException(
+    migrationException: CvlRetryMigrationException,
+  ): ResponseEntity<ErrorResponse> {
+    log.warn("Migration failed: {}", migrationException.message)
+
+    return ResponseEntity
+      .status(HttpStatus.CONFLICT)
+      .body(
+        ErrorResponse(
+          status = HttpStatus.CONFLICT.value(),
+          userMessage = "Retryable migration failed - ${migrationException.message}",
+          developerMessage = migrationException.message,
+        ),
+      )
+  }
 
   @ExceptionHandler(NoDataFoundException::class)
   fun handleNoDataFoundException(e: NoDataFoundException): ResponseEntity<ErrorResponse> = ResponseEntity
