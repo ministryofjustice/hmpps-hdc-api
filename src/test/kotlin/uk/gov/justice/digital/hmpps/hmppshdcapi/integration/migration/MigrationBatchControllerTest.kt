@@ -77,6 +77,35 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrat-licences_for_second-time.sql",
+  )
+  @Test
+  fun `When licences are already migrated only retriable ones are allowed on second run`() {
+    // Given
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+      listOf(
+        defaultPrisoner(bookingId = "11", prisonerNumber = "A1234EF"),
+      ),
+    )
+
+    prisonApiMockServer.getHdcStatuses(listOf(11L to "APPROVED"))
+    cvlMockServer.stubMigrateLicenceSuccess()
+    val originalLogSize = migrationRepository.getMigrationLogCount()
+
+    // When
+    val response = postForBatchToMigrate()
+
+    // Then
+    response.expectStatus().isOk
+
+    cvlMockServer.verify(1, postRequestedFor(urlEqualTo("/licences/migrate/active")))
+
+    assertThat(migrationRepository.getMigrationLogCount() - originalLogSize).isEqualTo(1)
+    assertThat(migrationRepository.getMigrationLog(2, true, retry = false)).isEqualTo("migrated successfully")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrated-batched-licences.sql",
   )
   @Test
