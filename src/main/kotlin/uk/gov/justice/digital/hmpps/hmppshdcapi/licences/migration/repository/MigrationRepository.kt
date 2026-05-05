@@ -41,6 +41,14 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
 
   @Query(
     value = """
+        SELECT count(*) FROM licence_migration_log
+  """,
+    nativeQuery = true,
+  )
+  fun getMigrationLogCount(): Int
+
+  @Query(
+    value = """
     SELECT EXISTS (
       SELECT 1 FROM licence_migration_log WHERE licence_id = :licenceId and success = :success
     )
