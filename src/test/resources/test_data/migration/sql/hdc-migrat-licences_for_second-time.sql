@@ -1,4 +1,4 @@
--- LICENCE 1 Full details No migration log -> SHOULD RETURN
+-- License 1 → the latest retry false no processing - No Migration
 INSERT INTO licences (id,
                       licence,
                       booking_id,
