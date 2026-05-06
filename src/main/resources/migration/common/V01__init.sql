@@ -1,5 +1,11 @@
 -- DROP SCHEMA public;
 
+-- DROP TYPE public."migration_error_source";
+
+CREATE TYPE public."migration_error_source" AS ENUM (
+	'CVL',
+	'HDC');
+
 -- DROP SEQUENCE public.active_local_delivery_units_id_seq;
 
 CREATE SEQUENCE public.active_local_delivery_units_id_seq
@@ -74,6 +80,21 @@ CREATE SEQUENCE public.knex_migrations_lock_index_seq
 
 ALTER SEQUENCE public.knex_migrations_lock_index_seq OWNER TO licences;
 GRANT ALL ON SEQUENCE public.knex_migrations_lock_index_seq TO licences;
+
+-- DROP SEQUENCE public.licence_migration_log_id_seq;
+
+CREATE SEQUENCE public.licence_migration_log_id_seq
+    INCREMENT BY 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE public.licence_migration_log_id_seq OWNER TO licences;
+GRANT ALL ON SEQUENCE public.licence_migration_log_id_seq TO licences;
 
 -- DROP SEQUENCE public.licence_versions_id_seq;
 
@@ -235,6 +256,30 @@ ALTER TABLE public.knex_migrations_lock OWNER TO licences;
 GRANT ALL ON TABLE public.knex_migrations_lock TO licences;
 
 
+-- public.licence_migration_log definition
+
+-- Drop table
+
+-- DROP TABLE public.licence_migration_log;
+
+CREATE TABLE public.licence_migration_log (
+                                              id bigserial NOT NULL,
+                                              licence_id int8 NOT NULL,
+                                              created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+                                              success bool NULL,
+                                              retry bool NULL,
+                                              message text NULL,
+                                              error_source public."migration_error_source" NULL,
+                                              CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
+);
+CREATE INDEX idx_licence_migration_log_licence_id ON public.licence_migration_log USING btree (licence_id);
+
+-- Permissions
+
+ALTER TABLE public.licence_migration_log OWNER TO licences;
+GRANT ALL ON TABLE public.licence_migration_log TO licences;
+
+
 -- public.licence_versions definition
 
 -- Drop table
@@ -330,8 +375,8 @@ CREATE TABLE public.staff_ids (
                                   organisation varchar(255) NULL,
                                   job_role varchar(255) NULL,
                                   email varchar(255) NULL,
-                                  telephone varchar(255) NULL,
                                   org_email varchar(255) NULL,
+                                  telephone varchar(255) NULL,
                                   auth_onboarded bool DEFAULT false NOT NULL,
                                   deleted bool DEFAULT false NOT NULL,
                                   delius_username varchar(255) NULL,
@@ -378,18 +423,18 @@ GRANT ALL ON TABLE public.warnings TO licences;
 -- public.v_licence_versions_excluding_deleted source
 
 CREATE OR REPLACE VIEW public.v_licence_versions_excluding_deleted
-AS SELECT licence_versions.id,
-          licence_versions."timestamp",
-          licence_versions.licence,
-          licence_versions.booking_id,
-          licence_versions.version,
-          licence_versions.template,
-          licence_versions.vary_version,
-          licence_versions.prison_number,
-          licence_versions.deleted_at,
-          licence_versions.licence_in_cvl
+AS SELECT id,
+          "timestamp",
+          licence,
+          booking_id,
+          version,
+          template,
+          vary_version,
+          prison_number,
+          deleted_at,
+          licence_in_cvl
    FROM licence_versions
-   WHERE licence_versions.deleted_at IS NULL;
+   WHERE deleted_at IS NULL;
 
 -- Permissions
 
@@ -400,20 +445,20 @@ GRANT ALL ON TABLE public.v_licence_versions_excluding_deleted TO licences;
 -- public.v_licences_excluding_deleted source
 
 CREATE OR REPLACE VIEW public.v_licences_excluding_deleted
-AS SELECT licences.id,
-          licences.licence,
-          licences.booking_id,
-          licences.stage,
-          licences.version,
-          licences.transition_date,
-          licences.vary_version,
-          licences.additional_conditions_version,
-          licences.standard_conditions_version,
-          licences.prison_number,
-          licences.deleted_at,
-          licences.licence_in_cvl
+AS SELECT id,
+          licence,
+          booking_id,
+          stage,
+          version,
+          transition_date,
+          vary_version,
+          additional_conditions_version,
+          standard_conditions_version,
+          prison_number,
+          deleted_at,
+          licence_in_cvl
    FROM licences
-   WHERE licences.deleted_at IS NULL;
+   WHERE deleted_at IS NULL;
 
 -- Permissions
 
@@ -424,21 +469,21 @@ GRANT ALL ON TABLE public.v_licences_excluding_deleted TO licences;
 -- public.v_staff_ids source
 
 CREATE OR REPLACE VIEW public.v_staff_ids
-AS SELECT staff_ids.nomis_id,
-          staff_ids.staff_id,
-          staff_ids.first_name,
-          staff_ids.last_name,
-          staff_ids.organisation,
-          staff_ids.job_role,
-          staff_ids.email,
-          staff_ids.telephone,
-          staff_ids.org_email,
-          staff_ids.auth_onboarded,
-          staff_ids.deleted,
-          staff_ids.delius_username,
-          staff_ids.staff_identifier
+AS SELECT nomis_id,
+          staff_id,
+          first_name,
+          last_name,
+          organisation,
+          job_role,
+          email,
+          org_email,
+          telephone,
+          auth_onboarded,
+          deleted,
+          delius_username,
+          staff_identifier
    FROM staff_ids
-   WHERE staff_ids.deleted IS FALSE;
+   WHERE deleted IS FALSE;
 
 -- Permissions
 
