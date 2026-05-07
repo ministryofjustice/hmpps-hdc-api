@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.core.task.SyncTaskExecutor
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -21,6 +24,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
+import java.util.concurrent.Executor
 
 class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
@@ -31,6 +35,13 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")!!
     .bufferedReader(UTF_8).readText()
+
+  @TestConfiguration
+  class DisableAsyncConfig {
+
+    @Bean(name = ["taskExecutor"])
+    fun taskExecutor(): Executor = SyncTaskExecutor()
+  }
 
   @BeforeEach
   fun resetMocks() {
@@ -64,7 +75,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val response = postForBatchToMigrate()
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isAccepted
 
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_1_of_batch.json")
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_2_of_batch.json")
@@ -96,7 +107,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val response = postForBatchToMigrate()
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isAccepted
 
     cvlMockServer.verify(1, postRequestedFor(urlEqualTo("/licences/migrate/active")))
 
@@ -126,7 +137,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val response = postForBatchToMigrate()
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isAccepted
 
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_2_of_batch.json")
     assertThat(migrationRepository.getMigrationLog(1, false, retry = true)).isEqualTo("Service has failed - retry")
@@ -147,7 +158,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val response = postForBatchToMigrate()
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isAccepted
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
     assertThat(migrationRepository.getMigrationLog(1, false, retry = false)).isEqualTo("Prisoner not found for booking id 10")
     assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Prisoner not found for booking id 20")
@@ -165,7 +176,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val response = postForBatchToMigrate()
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isAccepted
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
   }
 

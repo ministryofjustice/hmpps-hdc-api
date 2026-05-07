@@ -56,4 +56,13 @@ VALUES
     "curfewHours": { "allFrom": "19:00" }
   }
 }'::jsonb,
- 8, 'DECIDED', 1, '2021-01-01', 0, '2', '2', 'C2001AH', null, false);
+ 8, 'DECIDED', 1, '2021-01-01', 0, '2', '2', 'C2001AH', null, false),
+-- 9. has been deleted
+('{
+  "document": { "template": { "decision": "hdc_ap" } },
+  "curfew": {
+    "approvedPremisesAddress": { "postCode": "A1" }
+  }
+}'::jsonb,
+    9, 'DECIDED', 1, '2021-01-01', 0, '2', '2', 'C2001AH', '2021-01-01', false);
+

@@ -59,27 +59,25 @@ class MigrationController(
   @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
     summary = "Migrate a batch of licences to CVL",
-    description = "Triggers migration of a batch of licences ID into CVL",
+    description = "Triggers migration of licences into CVL",
   )
   @ApiResponses(
     value = [
       ApiResponse(
-        responseCode = "200",
-        description = "Licence batch migrated to CVL successfully",
+        responseCode = "202",
+        description = "Migration started successfully",
       ),
       ApiResponse(
         responseCode = "400",
         description = "Invalid request",
       ),
-      ApiResponse(
-        responseCode = "404",
-        description = "Licence not found",
-      ),
     ],
   )
-  fun migrateBatchToCvl(): ResponseEntity<Void> {
+  fun migrateBatchToCvl(): ResponseEntity<String> {
     migrationProcessService.migrateToCvl()
-    return ResponseEntity.ok().build()
+
+    return ResponseEntity.accepted()
+      .body("Migration started")
   }
 
   @GetMapping("/{activeLicenceId}/to-cvl/preview")
