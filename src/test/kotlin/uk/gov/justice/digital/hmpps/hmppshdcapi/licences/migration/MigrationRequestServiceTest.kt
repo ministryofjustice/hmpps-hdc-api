@@ -174,7 +174,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isTrue()
@@ -198,9 +198,9 @@ class MigrationRequestServiceTest {
     whenever(prisonerWithNullTused.topupSupervisionExpiryDate).thenReturn(null)
 
     // When / Then
-    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullHdcad)).isFalse()
-    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullLed)).isFalse()
-    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullTused)).isFalse()
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullHdcad, 1L)).isFalse()
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullLed, 1L)).isFalse()
+    Assertions.assertThat(migrationRequestService.isEligible(prisonerWithNullTused, 1L)).isFalse()
   }
 
   @Test
@@ -215,7 +215,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isFalse()
@@ -234,7 +234,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isFalse()
@@ -253,7 +253,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isFalse()
@@ -272,7 +272,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.minusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isFalse()
@@ -291,7 +291,7 @@ class MigrationRequestServiceTest {
     whenever(prisoner.topupSupervisionExpiryDate).thenReturn(today.plusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner)
+    val result = migrationRequestService.isEligible(prisoner, 1L)
 
     // Then
     Assertions.assertThat(result).isTrue()

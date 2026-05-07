@@ -71,7 +71,7 @@ class MigrationRequestService(
   fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
     val licence = getLicence(activeLicenceId)
     val prisoner = performPrisonerSearch(licence.bookingId)
-    if (isEligible(prisoner)) {
+    if (isEligible(prisoner, activeLicenceId)) {
       return createMigrationRequest(licence, prisoner)
     }
     log.debug("Licence id $activeLicenceId is not eligible for migration")
@@ -128,19 +128,21 @@ class MigrationRequestService(
     postRecallReleaseDate = prisoner.postRecallReleaseDate,
   )
 
-  fun isEligible(prisoner: Prisoner): Boolean {
+  fun isEligible(prisoner: Prisoner, activeLicenceId: Long): Boolean {
+    fun notEligible(reason: String): Boolean {
+      log.info("Prisoner not eligible: {}. prisonerNumber={}, bookingId={} activeLicenceId={}", reason, prisoner.prisonerNumber, prisoner.bookingId, activeLicenceId)
+      return false
+    }
+
     with(prisoner) {
-      // Null dates are not allowed
-      val hdcad = homeDetentionCurfewActualDate ?: return false
-      val led = licenceExpiryDate ?: return false
-      val tused = topupSupervisionExpiryDate ?: return false
-
-      if (status != "INACTIVE OUT") return false
-      if (isRestrictedPatient()) return false
-
       val today = LocalDate.now()
-      if (hdcad.isAfter(today)) return false
-      if (led.isBefore(today) && tused.isBefore(today)) return false
+      val hdcad = homeDetentionCurfewActualDate ?: return notEligible("missing HDCAD")
+      val led = licenceExpiryDate ?: return notEligible("missing licence expiry date")
+      val tused = topupSupervisionExpiryDate ?: return notEligible("missing top-up supervision expiry date")
+      if (status != "INACTIVE OUT") return notEligible("invalid status: $status")
+      if (isRestrictedPatient()) return notEligible("restricted patient")
+      if (hdcad.isAfter(today)) return notEligible("HDCAD is in the future: $hdcad")
+      if (led.isBefore(today) && tused.isBefore(today)) return notEligible("licence and top-up dates expired: led=$led, tused=$tused")
     }
 
     return true
