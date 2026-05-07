@@ -68,13 +68,13 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
         ) m ON l.id = m.licence_id
         WHERE
             l.id > :lastProcessedId 
-            AND l.stage = 'DECIDED'
+            AND l.stage = 'DECIDED' AND l.deleted_at IS NULL
             AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
               OR l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
               OR l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
               OR l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
             AND (l.licence -> 'document' -> 'template' IS NOT NULL) 
-            AND (m.licence_id IS NULL OR (m.success = false AND m.retry = true))             
+            AND (m.licence_id IS NULL OR (m.success = false AND m.retry = true))               
         ORDER BY l.id
         LIMIT :batchSize
   """,
@@ -93,7 +93,7 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
         ) m ON l.id = m.licence_id
         WHERE
             l.id = :licenceId 
-            AND l.stage = 'DECIDED'
+            AND l.stage = 'DECIDED' AND l.deleted_at IS NULL
             AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
               OR l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
               OR l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
