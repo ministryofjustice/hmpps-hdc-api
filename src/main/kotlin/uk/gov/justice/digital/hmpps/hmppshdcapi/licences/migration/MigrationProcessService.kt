@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -23,6 +24,7 @@ class MigrationProcessService(
   private val prisonSearchApiClient: PrisonSearchApiClient,
 ) {
 
+  @Async
   fun migrateToCvl() {
     var lastProcessedId = 0L
     var batch = 1
