@@ -180,14 +180,33 @@ class MigrationRequestServiceTest {
   }
 
   @Test
-  fun `should return false when both hdcad and licence expiry date are null`() {
+  fun `should return false when licence expiry date are null`() {
     // Given
     val prisoner = mock<Prisoner>()
+    val today = LocalDate.now()
+
+    whenever(prisoner.status).thenReturn("INACTIVE OUT")
+    whenever(prisoner.isRestrictedPatient()).thenReturn(false)
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(null)
+
+    // When
+    val result = migrationRequestService.isEligible(prisoner, 1L)
+
+    // Then
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun `should return false when hdcad date are null`() {
+    // Given
+    val prisoner = mock<Prisoner>()
+    val today = LocalDate.now()
 
     whenever(prisoner.status).thenReturn("INACTIVE OUT")
     whenever(prisoner.isRestrictedPatient()).thenReturn(false)
     whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(null)
-    whenever(prisoner.licenceExpiryDate).thenReturn(null)
+    whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
 
     // When
     val result = migrationRequestService.isEligible(prisoner, 1L)
