@@ -34,12 +34,12 @@
     "varyVersion" : 0
   },
   "lifecycle" : {
-    "approvedDate" : "2021-08-10T15:06:37.188",
-    "approvedByUsername" : "approver",
-    "submittedDate" : "2021-08-08T15:30:37.188",
-    "submittedByUserName" : "submitter",
-    "createdByUserName" : "creator",
-    "dateCreated" : "2021-08-06T15:20:37.188"
+    "approvedDate" : "2021-08-10T15:14:37.188",
+    "approvedByUsername" : "latest_approver",
+    "submittedDate" : "2021-08-08T15:13:37.188",
+    "submittedByUserName" : "latest_creator",
+    "createdByUserName" : "latest_creator",
+    "dateCreated" : "2021-08-06T15:11:38.188"
   },
   "conditions" : {
     "bespoke" : [ "Some other condition" ],

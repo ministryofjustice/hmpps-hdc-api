@@ -245,7 +245,7 @@ class MigrationRequestService(
     return auditEventRepository.findByBookingIdAndAuditId(bookingId.toString(), id)
   }
 
-  private fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
+  fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
     val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
     if (indexOfTransition == -1) return null
 

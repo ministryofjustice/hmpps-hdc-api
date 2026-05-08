@@ -34,7 +34,7 @@ class CvlApiClient(
             handleMigrationErrorResponse(
               status = response.statusCode(),
               bodyBytes = bodyBytes,
-              bookingId = request.bookingId,
+              request = request,
             )
           }
       }
@@ -47,14 +47,14 @@ class CvlApiClient(
   private fun handleMigrationErrorResponse(
     status: HttpStatusCode,
     bodyBytes: ByteArray,
-    bookingId: Long,
+    request: MigrateFromHdcToCvlRequest,
   ): Nothing {
     val body = runCatching {
       mapper.readValue(bodyBytes, ErrorResponse::class.java)
     }.getOrNull()
 
     log.warn(
-      "Failed to migrate licence $bookingId to CVL, " +
+      "Failed to migrate licence id:${request.licence.licenceId} booking id:${request.bookingId} to CVL, " +
         "status:$status, uri:/licences/migrate/active, body:$body",
     )
 
@@ -62,13 +62,13 @@ class CvlApiClient(
 
     throw if (status.value() in RETRYABLE_STATUS_VALUES) {
       CvlRetryMigrationException(
-        bookingId = bookingId,
+        bookingId = request.bookingId,
         status = status.value(),
         message = message,
       )
     } else {
       CvlMigrationException(
-        bookingId = bookingId,
+        bookingId = request.bookingId,
         status = status.value(),
         message = message,
       )
