@@ -13,7 +13,7 @@ interface AuditEventRepository :
   @Query(
     nativeQuery = true,
     value = """
-      SELECT * FROM audit WHERE details ->> 'bookingId' = :bookingId AND id >= :id ORDER BY timestamp DESC
+      SELECT * FROM audit WHERE details ->> 'bookingId' = :bookingId AND id >= :id ORDER BY timestamp ASC
   """,
   )
   fun findByBookingIdAndAuditId(bookingId: String, id: Long): List<AuditEvent>

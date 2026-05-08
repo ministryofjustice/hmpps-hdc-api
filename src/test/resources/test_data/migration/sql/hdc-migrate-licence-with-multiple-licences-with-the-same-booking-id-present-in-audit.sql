@@ -256,16 +256,16 @@ VALUES (1,
 INSERT INTO audit (timestamp, "user", action, details)
 VALUES
     (
-        '2021-03-03 15:06:37.188',
-        'creator',
+        '2021-03-03 15:06:30.188',
+        'previous_starter',
         'LICENCE_RECORD_STARTED',
         '{
           "bookingId": "54222"
         }'::jsonb
     ),
     (
-        '2021-03-03 15:07:37.188',
-        'aCaseManager',
+        '2021-03-03 15:07:31.188',
+        'previous_starter',
         'SEND',
         '{
           "bookingId": "54222",
@@ -273,8 +273,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-03-05 15:03:37.188',
-        'creator',
+        '2021-03-05 15:03:32.188',
+        'previous_creator',
         'UPDATE_SECTION',
         '{
           "path": "/hdc/curfew/approvedPremises/54222",
@@ -285,8 +285,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-03-05 15:06:37.188',
-        'submitter',
+        '2021-03-05 15:06:33.188',
+        'previous_creator',
         'SEND',
         '{
           "bookingId": "54222",
@@ -294,8 +294,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-03-08 15:06:37.188',
-        'approver',
+        '2021-03-08 15:07:34.188',
+        'previous_approver',
         'SEND',
         '{
           "bookingId": "54222",
@@ -303,24 +303,24 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-03-09 15:04:37.188',
-        'creator',
+        '2021-03-09 15:08:35.188',
+        'admin',
         'RESET',
         '{
           "bookingId": "54222"
         }'::jsonb
     ),
     (
-        '2021-08-06 15:05:37.188',
-        'creator',
+        '2021-08-06 15:09:36.188',
+        'latest_starter',
         'LICENCE_RECORD_STARTED',
         '{
           "bookingId": "54222"
         }'::jsonb
     ),
     (
-        '2021-08-06 15:06:37.188',
-        'aCaseManager',
+        '2021-08-06 15:10:37.188',
+        'latest_starter',
         'SEND',
         '{
           "bookingId": "54222",
@@ -328,8 +328,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-08-06 15:20:37.188',
-        'creator',
+        '2021-08-06 15:11:38.188',
+        'latest_creator',
         'UPDATE_SECTION',
         '{
           "path": "/hdc/curfew/approvedPremises/54222",
@@ -340,8 +340,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-08-09 15:06:37.188',
-        'updater',
+        '2021-08-09 15:12:39.188',
+        'latest_starter',
         'UPDATE_SECTION',
         '{
           "bookingId": "54222",
@@ -349,8 +349,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-08-08 15:30:37.188',
-        'submitter',
+        '2021-08-08 15:13:37.188',
+        'latest_creator',
         'SEND',
         '{
           "bookingId": "54222",
@@ -358,8 +358,8 @@ VALUES
         }'::jsonb
     ),
     (
-        '2021-08-10 15:06:37.188',
-        'approver',
+        '2021-08-10 15:14:37.188',
+        'latest_approver',
         'SEND',
         '{
           "bookingId": "54222",
