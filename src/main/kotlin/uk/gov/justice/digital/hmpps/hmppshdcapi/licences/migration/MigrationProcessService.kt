@@ -51,7 +51,7 @@ class MigrationProcessService(
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
     val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
     performPrisonerSearch(licenceDetails)
-      .filter { migrationRequestService.isEligible(it.value) }
+      .filter { (bookingId, prisoner) -> migrationRequestService.isEligible(prisoner, licenceDetailsMap[bookingId]!!.licenceId) }
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
         processBatchedLicence(licenceDetail, prisoner)

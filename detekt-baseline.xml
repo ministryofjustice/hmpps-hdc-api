@@ -18,7 +18,7 @@
     <ID>MagicNumber:V2Conditions.kt$5</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
-    <ID>ReturnCount:MigrationRequestService.kt$MigrationRequestService$fun isEligible(prisoner: Prisoner): Boolean</ID>
+    <ID>ReturnCount:MigrationRequestService.kt$MigrationRequestService$fun isEligible(prisoner: Prisoner, activeLicenceId: Long): Boolean</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
     <ID>ThrowsCount:MigrationProcessService.kt$MigrationProcessService$fun processLicence(licenceId: Long)</ID>
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt$MigrationProcessService$e: Exception</ID>
