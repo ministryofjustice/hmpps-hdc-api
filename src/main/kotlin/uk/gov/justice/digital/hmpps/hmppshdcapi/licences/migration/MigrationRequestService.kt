@@ -136,13 +136,13 @@ class MigrationRequestService(
 
     val today = LocalDate.now()
     with(prisoner) {
-      if (status != "INACTIVE OUT") return notEligible("invalid status: $status")
-      if (isRestrictedPatient()) return notEligible("restricted patient")
-      if (homeDetentionCurfewActualDate == null && licenceExpiryDate == null) return notEligible("Licence must have hdcad or lsd date")
-      if (homeDetentionCurfewActualDate?.isAfter(today) ?: false) return notEligible("HDCAD is in the future: $homeDetentionCurfewActualDate")
-
-      val led = licenceExpiryDate ?: return notEligible("missing licence expiry date")
-      if (led.isBefore(today)) return notEligible("Licence expiry date is in past: led=$led")
+      with(prisoner) {
+        if (status != "INACTIVE OUT") return notEligible("invalid status: $status")
+        if (isRestrictedPatient()) return notEligible("restricted patient")
+        if (homeDetentionCurfewActualDate?.isAfter(today) == true) return notEligible("HDCAD is in the future: $homeDetentionCurfewActualDate")
+        val led = licenceExpiryDate ?: return notEligible("missing licence expiry date")
+        if (led.isBefore(today)) return notEligible("Licence expiry date is in past: LED=$led")
+      }
     }
 
     return true
