@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
@@ -172,11 +174,8 @@ class MigrationRequestServiceTest {
     whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
 
-    // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isTrue()
+    // When + Then
+    migrationRequestService.validate(prisoner)
   }
 
   @Test
@@ -191,10 +190,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(null)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing licence expiry date")
   }
 
   @Test
@@ -209,10 +209,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing HDCAD date")
   }
 
   @Test
@@ -228,10 +229,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(null)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing licence expiry date")
   }
 
   @Test
@@ -245,10 +247,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(today)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Invalid status: ACTIVE")
   }
 
   @Test
@@ -263,10 +266,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(today)
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Restricted patient")
   }
 
   @Test
@@ -281,10 +285,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("HDCAD is in the future: 2026-05-13")
   }
 
   @Test
@@ -299,10 +304,11 @@ class MigrationRequestServiceTest {
     whenever(prisoner.licenceExpiryDate).thenReturn(today.minusDays(1))
 
     // When
-    val result = migrationRequestService.isEligible(prisoner, 1L)
-
-    // Then
-    assertThat(result).isFalse()
+    assertThatThrownBy {
+      migrationRequestService.validate(prisoner)
+      // Then
+    }.isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Licence expiry date is in past: LED=2026-05-11")
   }
 
   private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)

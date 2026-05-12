@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -71,11 +70,8 @@ class MigrationRequestService(
   fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
     val licence = getLicence(activeLicenceId)
     val prisoner = performPrisonerSearch(licence.bookingId)
-    if (isEligible(prisoner, activeLicenceId)) {
-      return createMigrationRequest(licence, prisoner)
-    }
-    log.debug("Licence id $activeLicenceId is not eligible for migration")
-    return null
+    validate(prisoner)
+    return createMigrationRequest(licence, prisoner)
   }
 
   private fun createMigrationRequest(
@@ -97,7 +93,7 @@ class MigrationRequestService(
       // See isApproved below should we be rejecting the license if not approved? I would say so!
       lifecycle = mapLifecycleDetails(audits, isApproved(licence)),
       conditions = mapConditions(licence, licenceData),
-      curfewAddress = mapCurfewAddress(licence, licenceData),
+      curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
     )
@@ -128,23 +124,21 @@ class MigrationRequestService(
     postRecallReleaseDate = prisoner.postRecallReleaseDate,
   )
 
-  fun isEligible(prisoner: Prisoner, activeLicenceId: Long): Boolean {
-    fun notEligible(reason: String): Boolean {
-      log.info("Prisoner not eligible: {}. prisonerNumber={}, bookingId={} activeLicenceId={}", reason, prisoner.prisonerNumber, prisoner.bookingId, activeLicenceId)
-      return false
-    }
+  fun validate(prisoner: Prisoner) {
+    fun notEligible(reason: String): Unit = throw MigrationValidationException(reason)
 
-    val today = LocalDate.now()
     with(prisoner) {
-      if (status != "INACTIVE OUT") return notEligible("invalid status: $status")
-      if (isRestrictedPatient()) return notEligible("restricted patient")
-      val hdcad = homeDetentionCurfewActualDate ?: return notEligible("missing HDCAD date")
-      if (hdcad.isAfter(today) == true) return notEligible("HDCAD is in the future: $homeDetentionCurfewActualDate")
-      val led = licenceExpiryDate ?: return notEligible("missing licence expiry date")
-      if (led.isBefore(today)) return notEligible("Licence expiry date is in past: LED=$led")
-    }
+      if (status != "INACTIVE OUT") notEligible("Invalid status: $status")
+      if (isRestrictedPatient()) notEligible("Restricted patient")
 
-    return true
+      val today = LocalDate.now()
+      homeDetentionCurfewActualDate?.let {
+        if (it.isAfter(today)) notEligible("HDCAD is in the future: $it")
+      } ?: notEligible("Missing HDCAD date")
+      licenceExpiryDate?.let {
+        if (it.isBefore(today)) notEligible("Licence expiry date is in past: LED=$it")
+      } ?: notEligible("Missing licence expiry date")
+    }
   }
 
   private fun mapLicenceDetails(
@@ -167,9 +161,7 @@ class MigrationRequestService(
   ): MigrateLicenceLifecycleDetails {
     val submitted = getLastAudit(audits, "SEND", "roToCa")
     val approved: AuditEvent? = if (approved) getLastAudit(audits, "SEND", "dmToCa") else null
-
     val created = getFirstUpdateAfterCaToRo(audits)
-    val lastUpdated = getLastUpdated(audits)
 
     return MigrateLicenceLifecycleDetails(
       approvedDate = approved?.timestamp,
@@ -196,7 +188,7 @@ class MigrationRequestService(
     return MigrateConditions()
   }
 
-  private fun mapCurfewAddress(licence: Licence, licenceData: LicenceData): MigrateAddress {
+  private fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
     val address = getAddress(licenceData)!!
 
     return address.let {
@@ -254,11 +246,6 @@ class MigrationRequestService(
         audit.action == "UPDATE_SECTION"
       }
   }
-
-  private fun getLastUpdated(allAudits: List<AuditEvent>): AuditEvent? = allAudits
-    .lastOrNull { audit ->
-      audit.action == "UPDATE_SECTION"
-    }
 
   fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> {
     with(curfewHours) {
@@ -341,9 +328,5 @@ class MigrationRequestService(
     val licence = migrationRepository.getMigratableLicence(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence id $activeLicenceId")
     return licence
-  }
-
-  companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
   }
 }
