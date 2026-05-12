@@ -23,9 +23,5 @@
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt$MigrationProcessService$e: Exception</ID>
     <ID>TooManyFunctions:MigrationRequestService.kt$MigrationRequestService</ID>
     <ID>TooManyFunctions:SARLicenceDataBuilder.kt$uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARLicenceDataBuilder.kt</ID>
-    <ID>UnusedParameter:MigrationRequestService.kt$MigrationRequestService$activeLicenceId: Long</ID>
-    <ID>UnusedParameter:MigrationRequestService.kt$MigrationRequestService$licence: Licence</ID>
-    <ID>UnusedPrivateMember:MigrationRequestService.kt$MigrationRequestService$private fun getLastUpdated(allAudits: List&lt;AuditEvent&gt;): AuditEvent?</ID>
-    <ID>UnusedPrivateProperty:MigrationRequestService.kt$MigrationRequestService.Companion$private val log = LoggerFactory.getLogger(this::class.java)</ID>
   </CurrentIssues>
 </SmellBaseline>
