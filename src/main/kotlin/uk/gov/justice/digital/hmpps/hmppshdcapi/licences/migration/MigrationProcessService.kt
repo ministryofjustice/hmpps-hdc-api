@@ -38,12 +38,13 @@ class MigrationProcessService(
       )
 
       if (licenceIds.isEmpty()) {
+        log.info("Finished all batches!")
         break
       }
 
       processBatch(licenceIds)
-
       lastProcessedId = licenceIds.last().licenceId
+      log.info("Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
       batch++
     }
   }
@@ -54,8 +55,9 @@ class MigrationProcessService(
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
         processBatchedLicence(licenceDetail, prisoner)
-        sleep(100.milliseconds.inWholeMilliseconds)
+        sleep(50.milliseconds.inWholeMilliseconds)
       }
+    sleep(500.milliseconds.inWholeMilliseconds)
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
@@ -120,6 +122,6 @@ class MigrationProcessService(
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-    private const val BATCH_SIZE = 1000
+    private const val BATCH_SIZE = 100
   }
 }
