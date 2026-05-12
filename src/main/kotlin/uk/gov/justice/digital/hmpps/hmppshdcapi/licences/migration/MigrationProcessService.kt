@@ -53,7 +53,6 @@ class MigrationProcessService(
     performPrisonerSearch(licenceDetails)
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
-        migrationRequestService.validate(prisoner)
         processBatchedLicence(licenceDetail, prisoner)
         sleep(100.milliseconds.inWholeMilliseconds)
       }
@@ -61,6 +60,7 @@ class MigrationProcessService(
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
     try {
+      migrationRequestService.validate(prisoner)
       migrationRequestService.migrateBatchedLicenceToCvl(licenceDetail, prisoner)
       logSuccess(licenceDetail.licenceId)
     } catch (e: CvlRetryMigrationException) {
