@@ -51,9 +51,9 @@ class MigrationProcessService(
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
     val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
     performPrisonerSearch(licenceDetails)
-      .filter { (bookingId, prisoner) -> migrationRequestService.isEligible(prisoner, licenceDetailsMap[bookingId]!!.licenceId) }
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
+        migrationRequestService.validate(prisoner)
         processBatchedLicence(licenceDetail, prisoner)
         sleep(100.milliseconds.inWholeMilliseconds)
       }
@@ -111,7 +111,7 @@ class MigrationProcessService(
 
   private fun logFailure(licenceId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
     log.debug("Licence id: $licenceId, error: ${e.message}", e)
-    logFailure(licenceId, e.message ?: "Unknown error", retry, source)
+    logFailure(licenceId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
   }
 
   private fun logFailure(licenceId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
