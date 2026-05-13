@@ -39,7 +39,7 @@ class MigrationProcessService(
         )
         log.info("HDC migration: Fetched {} licences", licenceIds.size)
 
-        if (licenceIds.isEmpty() || licenceIds.size < BATCH_SIZE) {
+        if (licenceIds.isEmpty()) {
           log.info("HDC migration: Finished all batches!")
           break
         }
