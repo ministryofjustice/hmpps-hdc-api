@@ -30,17 +30,16 @@ class MigrationProcessService(
     var batch = 1
 
     try {
-      while (true) {
+      var licenceIds: List<LicenceBookingDetail>
+      do {
         log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
-
-        val licenceIds = migrationRepository.getMigratableLicences(
+        licenceIds = migrationRepository.getMigratableLicences(
           lastProcessedId = lastProcessedId,
           batchSize = BATCH_SIZE,
         )
         log.info("HDC migration: Fetched {} licences", licenceIds.size)
 
         if (licenceIds.isEmpty()) {
-          log.info("HDC migration: Finished all batches!")
           break
         }
 
@@ -48,7 +47,8 @@ class MigrationProcessService(
         lastProcessedId = licenceIds.last().licenceId
         log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
         batch++
-      }
+      } while (licenceIds.size < BATCH_SIZE)
+      log.info("HDC migration: Finished all batches!")
     } catch (e: Exception) {
       log.error("HDC migration: Error processing batch :{} lastProcessedId{}", batch, lastProcessedId, e)
       throw e
