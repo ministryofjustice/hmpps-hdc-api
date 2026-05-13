@@ -278,10 +278,11 @@ class MigrationRequestServiceTest {
     // Given
     val today = LocalDate.now()
     val prisoner = mock<Prisoner>()
+    val hdcad = today.plusDays(1)
 
     whenever(prisoner.status).thenReturn("INACTIVE OUT")
     whenever(prisoner.isRestrictedPatient()).thenReturn(false)
-    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(hdcad)
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
 
     // When
@@ -289,7 +290,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("HDCAD is in the future: 2026-05-13")
+      .hasMessage("HDCAD is in the future: $hdcad")
   }
 
   @Test
