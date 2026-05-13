@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 
@@ -17,17 +18,17 @@ enum class MigrationErrorSource {
   HDC,
 }
 
+@Transactional(propagation = Propagation.NEVER)
 @Repository
 interface MigrationRepository : CrudRepository<Licence, Long> {
 
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   @Modifying
-  @Transactional
   @Query(
     value = """
             INSERT INTO licence_migration_log(licence_id, success, retry, message, error_source)  VALUES (:licenceId,:success,:retry,:message,CAST(:source AS migration_error_source))
         """,
     nativeQuery = true,
-
   )
   fun insertMigrationLog(licenceId: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
 
