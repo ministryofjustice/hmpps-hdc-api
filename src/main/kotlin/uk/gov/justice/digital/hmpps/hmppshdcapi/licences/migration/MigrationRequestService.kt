@@ -45,7 +45,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+@Transactional(propagation = Propagation.NEVER)
 @Service
 class MigrationRequestService(
   private val migrationRepository: MigrationRepository,
