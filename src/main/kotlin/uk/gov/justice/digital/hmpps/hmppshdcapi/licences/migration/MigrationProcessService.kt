@@ -30,22 +30,22 @@ class MigrationProcessService(
     var batch = 1
 
     while (true) {
-      log.info("Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
+      log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
 
       val licenceIds = migrationRepository.getMigratableLicences(
         lastProcessedId = lastProcessedId,
         batchSize = BATCH_SIZE,
       )
-      log.info("Fetched {} licences", licenceIds.size)
+      log.info("HDC migration: Fetched {} licences", licenceIds.size)
 
       if (licenceIds.isEmpty()) {
-        log.info("Finished all batches!")
+        log.info("HDC migration: Finished all batches!")
         break
       }
 
       processBatch(licenceIds)
       lastProcessedId = licenceIds.last().licenceId
-      log.info("Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
+      log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
       batch++
     }
   }
@@ -98,22 +98,33 @@ class MigrationProcessService(
 
   private fun performPrisonerSearch(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
     val bookingIds = licenceDetails.map { it.bookingId }.toList()
-    val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).associateBy { it.bookingId.toLong() }
-    licenceDetails.forEach { licenceDetail ->
-      if (!prisoners.containsKey(licenceDetail.bookingId)) {
-        logFailure(licenceDetail.licenceId, "Prisoner not found for booking id ${licenceDetail.bookingId}", retry = false, MigrationErrorSource.HDC)
+
+    try {
+      val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).associateBy { it.bookingId.toLong() }
+      licenceDetails.forEach { licenceDetail ->
+        if (!prisoners.containsKey(licenceDetail.bookingId)) {
+          logFailure(
+            licenceDetail.licenceId,
+            "Prisoner not found for booking id ${licenceDetail.bookingId}",
+            retry = false,
+            MigrationErrorSource.HDC,
+          )
+        }
       }
+      return prisoners
+    } catch (e: Exception) {
+      log.error("HDC migration: Error fetching prisoner details for booking ids $bookingIds", e)
+      throw e
     }
-    return prisoners
   }
 
   private fun logSuccess(licenceId: Long) {
-    log.info("Licence id: $licenceId, migrated successfully")
+    log.info("HDC migration: Licence id: $licenceId, migrated successfully")
     migrationRepository.insertMigrationLog(licenceId, true, retry = false, "migrated successfully")
   }
 
   private fun logFailure(licenceId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
-    log.debug("Licence id: $licenceId, error: ${e.message}", e)
+    log.debug("HDC migration: Licence id: $licenceId, error: ${e.message}", e)
     logFailure(licenceId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
   }
 
@@ -123,6 +134,8 @@ class MigrationProcessService(
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-    private const val BATCH_SIZE = 2000
+
+    // The maximum number of licenses we can process is 999 as the prisoners by booking ids must have between 1 and 1000 {
+    private const val BATCH_SIZE = 250
   }
 }
