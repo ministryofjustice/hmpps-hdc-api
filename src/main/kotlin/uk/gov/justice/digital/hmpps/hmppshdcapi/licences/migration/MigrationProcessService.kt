@@ -36,6 +36,7 @@ class MigrationProcessService(
         lastProcessedId = lastProcessedId,
         batchSize = BATCH_SIZE,
       )
+      log.info("Fetched {} licences", licenceIds.size)
 
       if (licenceIds.isEmpty()) {
         log.info("Finished all batches!")
@@ -122,6 +123,6 @@ class MigrationProcessService(
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
-    private const val BATCH_SIZE = 100
+    private const val BATCH_SIZE = 2000
   }
 }
