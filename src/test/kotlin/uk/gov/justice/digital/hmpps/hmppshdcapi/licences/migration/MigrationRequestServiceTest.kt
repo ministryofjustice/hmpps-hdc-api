@@ -298,18 +298,19 @@ class MigrationRequestServiceTest {
     // Given
     val today = LocalDate.now()
     val prisoner = mock<Prisoner>()
+    val led = today.minusDays(1)
 
     whenever(prisoner.status).thenReturn("INACTIVE OUT")
     whenever(prisoner.isRestrictedPatient()).thenReturn(false)
     whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(today.minusDays(1))
-    whenever(prisoner.licenceExpiryDate).thenReturn(today.minusDays(1))
+    whenever(prisoner.licenceExpiryDate).thenReturn(led)
 
     // When
     assertThatThrownBy {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence expiry date is in past: LED=2026-05-11")
+      .hasMessage("Licence expiry date is in past: LED=${led}")
   }
 
   private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)
