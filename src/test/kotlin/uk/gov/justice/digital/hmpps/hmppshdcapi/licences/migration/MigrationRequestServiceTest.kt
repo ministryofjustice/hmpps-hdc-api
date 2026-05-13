@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
@@ -311,6 +313,57 @@ class MigrationRequestServiceTest {
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("Licence expiry date is in past: LED=$led")
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = ["", "  ", " "])
+  fun `should return null when licence appointment time is blank or empty`(time: String?) {
+    // Given
+    val date = "20/05/2001"
+
+    // When
+    val result = migrationRequestService.toLocalDateTimeOrDate(date, time)
+
+    // Then
+    assertThat(result).isNull()
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = ["", "  ", " "])
+  fun `should return null when licence appointment date is blank or empty`(date: String?) {
+    // Given
+    val time = "10:30"
+
+    // When
+    val result = migrationRequestService.toLocalDateTimeOrDate(date, time)
+
+    // Then
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun `should return null when licence appointment time is null`() {
+    // Given
+    val date = "20/05/2001"
+
+    // When
+    val result = migrationRequestService.toLocalDateTimeOrDate(date, null)
+
+    // Then
+    assertThat(result).isNull()
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = ["", "  ", " "])
+  fun `should return null when licence appointment date is null`() {
+    // Given
+    val time = "10:30"
+
+    // When
+    val result = migrationRequestService.toLocalDateTimeOrDate(null, time)
+
+    // Then
+    assertThat(result).isNull()
   }
 
   private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)

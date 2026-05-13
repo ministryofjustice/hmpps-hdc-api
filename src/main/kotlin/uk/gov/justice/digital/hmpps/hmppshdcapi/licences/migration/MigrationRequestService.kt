@@ -219,8 +219,8 @@ class MigrationRequestService(
     )
   }
 
-  private fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
-    if (reportingDate.isNullOrEmpty() || reportingTime.isNullOrEmpty()) return null
+  fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
+    if (reportingDate.isNullOrBlank() || reportingTime.isNullOrBlank()) return null
 
     val date = LocalDate.parse(reportingDate, formatter)
     val time = reportingTime.let { LocalTime.parse(it) }
