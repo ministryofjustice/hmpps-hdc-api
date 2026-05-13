@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -63,6 +64,7 @@ class MigrationRequestService(
   }
 
   fun migrateBatchedLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
+    log.info("HDC migration: Migrating licence id {} to CVL", licenceDetail.licenceId)
     val licence = migrationRepository.findById(licenceDetail.licenceId).get()
     return cvlClient.migrateLicence(createMigrationRequest(licence, prisoner))
   }
@@ -125,6 +127,7 @@ class MigrationRequestService(
   )
 
   fun validate(prisoner: Prisoner) {
+    log.info("HDC migration: Validating licence eligibility for prisoner: {}", prisoner.prisonerNumber)
     fun notEligible(reason: String): Unit = throw MigrationValidationException(reason)
 
     with(prisoner) {
@@ -328,5 +331,9 @@ class MigrationRequestService(
     val licence = migrationRepository.getMigratableLicence(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence id $activeLicenceId")
     return licence
+  }
+
+  companion object {
+    private val log = LoggerFactory.getLogger(this::class.java)
   }
 }

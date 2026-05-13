@@ -29,24 +29,29 @@ class MigrationProcessService(
     var lastProcessedId = 0L
     var batch = 1
 
-    while (true) {
-      log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
+    try {
+      var licenceIds: List<LicenceBookingDetail>
+      do {
+        log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
+        licenceIds = migrationRepository.getMigratableLicences(
+          lastProcessedId = lastProcessedId,
+          batchSize = BATCH_SIZE,
+        )
+        log.info("HDC migration: Fetched {} licences", licenceIds.size)
 
-      val licenceIds = migrationRepository.getMigratableLicences(
-        lastProcessedId = lastProcessedId,
-        batchSize = BATCH_SIZE,
-      )
-      log.info("HDC migration: Fetched {} licences", licenceIds.size)
+        if (licenceIds.isEmpty()) {
+          break
+        }
 
-      if (licenceIds.isEmpty()) {
-        log.info("HDC migration: Finished all batches!")
-        break
-      }
-
-      processBatch(licenceIds)
-      lastProcessedId = licenceIds.last().licenceId
-      log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
-      batch++
+        processBatch(licenceIds)
+        lastProcessedId = licenceIds.last().licenceId
+        log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
+        batch++
+      } while (licenceIds.size < BATCH_SIZE)
+      log.info("HDC migration: Finished all batches!")
+    } catch (e: Exception) {
+      log.error("HDC migration: Error processing batch :{} lastProcessedId{}", batch, lastProcessedId, e)
+      throw e
     }
   }
 
@@ -62,6 +67,7 @@ class MigrationProcessService(
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
+    log.info("HDC migration: Processing licence id {}", licenceDetail.licenceId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateBatchedLicenceToCvl(licenceDetail, prisoner)
@@ -97,6 +103,7 @@ class MigrationProcessService(
   }
 
   private fun performPrisonerSearch(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
+    log.info("HDC migration: Fetching prisoner details for booking ids {}", licenceDetails.map { it.bookingId })
     val bookingIds = licenceDetails.map { it.bookingId }.toList()
 
     try {
