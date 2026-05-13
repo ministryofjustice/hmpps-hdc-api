@@ -310,7 +310,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence expiry date is in past: LED=${led}")
+      .hasMessage("Licence expiry date is in past: LED=$led")
   }
 
   private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)
