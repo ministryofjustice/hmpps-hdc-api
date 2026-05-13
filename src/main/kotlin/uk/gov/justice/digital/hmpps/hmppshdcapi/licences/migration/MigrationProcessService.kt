@@ -47,7 +47,7 @@ class MigrationProcessService(
         lastProcessedId = licenceIds.last().licenceId
         log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
         batch++
-      } while (licenceIds.size < BATCH_SIZE)
+      } while (licenceIds.size == BATCH_SIZE)
       log.info("HDC migration: Finished all batches!")
     } catch (e: Exception) {
       log.error("HDC migration: Error processing batch :{} lastProcessedId{}", batch, lastProcessedId, e)
