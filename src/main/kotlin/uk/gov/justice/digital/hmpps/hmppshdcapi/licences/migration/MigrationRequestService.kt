@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -56,6 +58,9 @@ class MigrationRequestService(
   private val auditEventRepository: AuditEventRepository,
 ) {
 
+  @PersistenceContext
+  private lateinit var entityManager: EntityManager
+
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   fun migrateLicenceToCvl(activeLicenceId: Long) {
@@ -66,7 +71,11 @@ class MigrationRequestService(
   fun migrateBatchedLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
     log.info("HDC migration: Migrating licence id {} to CVL", licenceDetail.licenceId)
     val licence = migrationRepository.findById(licenceDetail.licenceId).get()
-    return cvlClient.migrateLicence(createMigrationRequest(licence, prisoner))
+    try {
+      return cvlClient.migrateLicence(createMigrationRequest(licence, prisoner))
+    } finally {
+      entityManager.detach(licence)
+    }
   }
 
   fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
