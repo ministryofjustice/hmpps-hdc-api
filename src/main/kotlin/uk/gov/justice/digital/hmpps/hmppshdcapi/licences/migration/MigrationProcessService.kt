@@ -57,7 +57,8 @@ class MigrationProcessService(
 
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
     val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
-    performPrisonerSearch(licenceDetails)
+    performPrisonerSearchByPrisonNumber(licenceDetails)
+      .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
         processBatchedLicence(licenceDetail, prisoner)
@@ -101,7 +102,7 @@ class MigrationProcessService(
     }
   }
 
-  private fun performPrisonerSearch(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
+  private fun performPrisonerSearchByBookingId(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
     log.info("HDC migration: Fetching prisoner details for booking ids {}", licenceDetails.map { it.bookingId })
     val bookingIds = licenceDetails.map { it.bookingId }.toList()
 
@@ -120,6 +121,44 @@ class MigrationProcessService(
       return prisoners
     } catch (e: Exception) {
       log.error("HDC migration: Error fetching prisoner details for booking ids $bookingIds", e)
+      throw e
+    }
+  }
+
+  private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
+    log.info("HDC migration: Fetching prisoner details for prison number {}", licenceDetails.map { it.bookingId })
+    val prisonNumbers = licenceDetails.map { it.prisonNumber }.toList()
+
+    try {
+      val prisoners = prisonSearchApiClient.getPrisonersByPrisonNumber(prisonNumbers)
+      val prisonersMap = prisonSearchApiClient.getPrisonersByPrisonNumber(prisonNumbers).associateBy { it.prisonerNumber }
+
+      licenceDetails.forEach { licenceDetail ->
+
+        val prisoner = prisonersMap[licenceDetail.prisonNumber]
+
+        prisoner?.let {
+          if (it.bookingId.toLong() != licenceDetail.bookingId) {
+            logFailure(
+              licenceDetail.licenceId,
+              "Not Active Booking id, prisoner booking id :${it.bookingId} != licence booking id: ${licenceDetail.bookingId}",
+              retry = false,
+              MigrationErrorSource.HDC,
+            )
+          }
+        } ?: run {
+          logFailure(
+            licenceDetail.licenceId,
+            "Prisoner not found for prisoner number ${licenceDetail.prisonNumber}",
+            retry = false,
+            MigrationErrorSource.HDC,
+          )
+        }
+      }
+
+      return prisoners.associateBy { it.bookingId.toLong() }
+    } catch (e: Exception) {
+      log.error("HDC migration: Error fetching prisoner details for prison numbers $prisonNumbers", e)
       throw e
     }
   }

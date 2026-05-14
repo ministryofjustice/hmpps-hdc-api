@@ -21,7 +21,24 @@ class PrisonSearchApiClient(@param:Qualifier("oauthPrisonerSearchClient") val pr
       .block() ?: emptyList()
   }
 
+  fun getPrisonersByPrisonNumber(prisonNumbers: List<String>): List<Prisoner> {
+    if (prisonNumbers.isEmpty()) return emptyList()
+
+    return prisonerSearchApiWebClient
+      .post()
+      .uri("/prisoner-search/prisoner-numbers")
+      .accept(MediaType.APPLICATION_JSON)
+      .bodyValue(PrisonerSearchByPrisonerNumbersRequest(prisonNumbers))
+      .retrieve()
+      .bodyToMono(typeReference<List<Prisoner>>())
+      .block()
+  }
+
   data class PrisonerSearchByBookingIdsRequest(
     val bookingIds: List<Long>,
+  )
+
+  data class PrisonerSearchByPrisonerNumbersRequest(
+    val prisonerNumbers: List<String>,
   )
 }
