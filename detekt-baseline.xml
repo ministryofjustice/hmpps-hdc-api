@@ -18,6 +18,7 @@
     <ID>MagicNumber:V2Conditions.kt$5</ID>
     <ID>MagicNumber:WebClientConfiguration.kt$WebClientConfiguration$10</ID>
     <ID>MagicNumber:WebClientConfiguration.kt$WebClientConfiguration$10000</ID>
+    <ID>NestedBlockDepth:MigrationProcessService.kt$MigrationProcessService$private fun performPrisonerSearchByPrisonNumber(licenceDetails: List&lt;LicenceBookingDetail&gt;): Map&lt;Long, Prisoner&gt;</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt$LicenceConditionFieldMerger$fun mergeIfRequired( conditionMetaData: ConditionMetadata, additionalFields: Map&lt;String, Any&gt;, ): Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt$LicenceConditionRenderer$fun renderConditions(licenceData: LicenceData?, conditionVersion: Int? = null): List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>SpreadOperator:HmppsHdcApi.kt$(*args)</ID>
@@ -25,5 +26,6 @@
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt$MigrationProcessService$e: Exception</ID>
     <ID>TooManyFunctions:MigrationRequestService.kt$MigrationRequestService</ID>
     <ID>TooManyFunctions:SARLicenceDataBuilder.kt$uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARLicenceDataBuilder.kt</ID>
+    <ID>UnusedPrivateMember:MigrationProcessService.kt$MigrationProcessService$private fun performPrisonerSearchByBookingId(licenceDetails: List&lt;LicenceBookingDetail&gt;): Map&lt;Long, Prisoner&gt;</ID>
   </CurrentIssues>
 </SmellBaseline>

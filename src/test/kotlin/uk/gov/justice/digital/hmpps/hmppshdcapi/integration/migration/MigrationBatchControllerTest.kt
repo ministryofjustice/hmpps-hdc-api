@@ -60,7 +60,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate a batch of licences to CVL successfully`() {
     // Given
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
       listOf(
         defaultPrisoner(bookingId = "10", prisonerNumber = "A1234EE"),
         defaultPrisoner(bookingId = "20", prisonerNumber = "B1234EE"),
@@ -93,7 +93,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `When licences are already migrated only retriable ones are allowed on second run`() {
     // Given
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
       listOf(
         defaultPrisoner(bookingId = "11", prisonerNumber = "A1234EF"),
       ),
@@ -117,12 +117,38 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrat-licences_for_second-time.sql",
+  )
+  @Test
+  fun `When licences have a different booking id from the prisoner migration fails and the licence is not migrated`() {
+    // Given
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(bookingId = "666", prisonerNumber = "A1234EF"),
+      ),
+    )
+
+    val originalLogSize = migrationRepository.getMigrationLogCount()
+
+    // When
+    val response = postForBatchToMigrate()
+
+    // Then
+    response.expectStatus().isAccepted
+
+    cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
+    assertThat(migrationRepository.getMigrationLogCount() - originalLogSize).isEqualTo(1)
+    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Not Active Booking id, prisoner booking id :666 != licence booking id: 11")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrated-batched-licences.sql",
   )
   @Test
   fun `When client exceptions are thrown other licences are still migrated to CVL successfully`() {
     // Given
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
       listOf(
         defaultPrisoner(bookingId = "10", prisonerNumber = "A1234EE"),
         defaultPrisoner(bookingId = "20", prisonerNumber = "B1234EE"),
@@ -152,7 +178,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Do not migrate a batch of licences when prisoners cannot be found`() {
     // Given
-    prisonerSearchMockServer.stubSearchPrisonersByBookingIds(listOf())
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(listOf())
 
     // When
     val response = postForBatchToMigrate()
@@ -160,9 +186,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isAccepted
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
-    assertThat(migrationRepository.getMigrationLog(1, false, retry = false)).isEqualTo("Prisoner not found for booking id 10")
-    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Prisoner not found for booking id 20")
-    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Prisoner not found for booking id 30")
+    assertThat(migrationRepository.getMigrationLog(1, false, retry = false)).isEqualTo("Prisoner not found for prisoner number A1234EE")
+    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Prisoner not found for prisoner number B1234EE")
+    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Prisoner not found for prisoner number C1234EE")
   }
 
   @Sql(

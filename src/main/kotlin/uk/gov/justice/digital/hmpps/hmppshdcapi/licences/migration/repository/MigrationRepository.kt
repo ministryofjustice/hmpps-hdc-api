@@ -11,6 +11,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
 interface LicenceBookingDetail {
   val licenceId: Long
   val bookingId: Long
+  val prisonNumber: String
 }
 
 enum class MigrationErrorSource {
@@ -63,7 +64,7 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
    */
   @Query(
     value = """
-        SELECT l.id AS licenceId, l.booking_id AS bookingId FROM licences l
+        SELECT l.id AS licenceId, l.booking_id AS bookingId, l.prison_number AS prisonNumber FROM licences l
         LEFT JOIN (
           SELECT DISTINCT ON (licence_id) licence_id, success, retry FROM licence_migration_log ORDER BY licence_id, id DESC
         ) m ON l.id = m.licence_id

@@ -25,6 +25,20 @@ class PrisonerSearchMockServer : WireMockServer(8099) {
     )
   }
 
+  fun stubSearchPrisonersByPrisonerNumbers(prisoners: List<Prisoner>) {
+    stubFor(
+      post(urlEqualTo("/api/prisoner-search/prisoner-numbers"))
+        .willReturn(
+          aResponse().withHeader(
+            "Content-Type",
+            "application/json",
+          ).withBody(
+            mapper.writeValueAsString(prisoners),
+          ).withStatus(200),
+        ),
+    )
+  }
+
   fun stubSearchPrisonersByBookingIdsList(bookingIds: List<Long>) {
     val today = LocalDate.now()
 
