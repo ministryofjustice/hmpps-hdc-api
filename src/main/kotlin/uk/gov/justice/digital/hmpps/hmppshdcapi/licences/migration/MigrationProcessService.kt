@@ -131,7 +131,7 @@ class MigrationProcessService(
 
     try {
       val prisoners = prisonSearchApiClient.getPrisonersByPrisonNumber(prisonNumbers)
-      val prisonersMap = prisonSearchApiClient.getPrisonersByPrisonNumber(prisonNumbers).associateBy { it.prisonerNumber }
+      val prisonersMap = prisoners.associateBy { it.prisonerNumber }
 
       licenceDetails.forEach { licenceDetail ->
 
