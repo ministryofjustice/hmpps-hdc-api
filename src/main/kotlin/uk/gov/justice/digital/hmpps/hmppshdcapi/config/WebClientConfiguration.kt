@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.config
 
+import io.netty.channel.ChannelOption
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
@@ -11,6 +13,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
+import java.time.Duration
 
 private const val HMPPS_AUTH = "hmpps-auth"
 private const val MAX_IN_MEMORY_SIZE = 10485760 // 10 MB
@@ -36,16 +40,23 @@ class WebClientConfiguration(
   fun oauthPrisonerSearchClient(authorizedClientManager: OAuth2AuthorizedClientManager) = createOauthWebClient(prisonerSearchApiUrl, authorizedClientManager)
 
   @Bean
-  fun oauthCvlClient(authorizedClientManager: OAuth2AuthorizedClientManager) = createOauthWebClient(cvlApiUrl, authorizedClientManager)
+  fun oauthCvlClient(
+    authorizedClientManager: OAuth2AuthorizedClientManager,
+  ) = createOauthWebClient(
+    baseUrl = cvlApiUrl,
+    authorizedClientManager = authorizedClientManager,
+    httpClient = HttpClient.create().option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000).responseTimeout(Duration.ofSeconds(10)),
+  )
 
   private fun createOauthWebClient(
     baseUrl: String,
     authorizedClientManager: OAuth2AuthorizedClientManager,
+    httpClient: HttpClient? = null,
   ): WebClient {
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
     oauth2Client.setDefaultClientRegistrationId(HMPPS_AUTH)
 
-    return WebClient.builder()
+    val builder = WebClient.builder()
       .baseUrl(baseUrl)
       .apply(oauth2Client.oauth2Configuration())
       .exchangeStrategies(
@@ -54,7 +65,11 @@ class WebClientConfiguration(
           .build(),
       )
       .codecs { it.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE) }
-      .build()
+
+    httpClient?.let {
+      builder.clientConnector(ReactorClientHttpConnector(it))
+    }
+    return builder.build()
   }
 
   @Bean

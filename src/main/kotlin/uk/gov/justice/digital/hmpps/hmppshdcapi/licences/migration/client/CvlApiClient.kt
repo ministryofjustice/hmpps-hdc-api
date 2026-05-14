@@ -41,7 +41,7 @@ class CvlApiClient(
       .toBodilessEntity()
       .block()
 
-    log.info("Successfully migrated licence ${request.bookingId} to CVL")
+    log.info("HDC migration: Successfully migrated licence ${request.bookingId} to CVL")
   }
 
   private fun handleMigrationErrorResponse(

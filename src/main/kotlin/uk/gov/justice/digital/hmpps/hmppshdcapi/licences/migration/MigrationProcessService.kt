@@ -61,9 +61,8 @@ class MigrationProcessService(
       .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
       .forEach { (licenceDetail, prisoner) ->
         processBatchedLicence(licenceDetail, prisoner)
-        sleep(50.milliseconds.inWholeMilliseconds)
+        sleep(100.milliseconds.inWholeMilliseconds)
       }
-    sleep(500.milliseconds.inWholeMilliseconds)
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
@@ -143,6 +142,6 @@ class MigrationProcessService(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     // The maximum number of licenses we can process is 999 as the prisoners by booking ids must have between 1 and 1000 {
-    private const val BATCH_SIZE = 250
+    private const val BATCH_SIZE = 100
   }
 }
