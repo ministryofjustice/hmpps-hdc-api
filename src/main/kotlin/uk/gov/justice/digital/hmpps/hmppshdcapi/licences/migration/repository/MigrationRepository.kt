@@ -27,11 +27,11 @@ interface MigrationRepository : CrudRepository<Licence, Long> {
   @Modifying
   @Query(
     value = """
-            INSERT INTO licence_migration_log(licence_id, bookind_id, success, retry, message, error_source)  VALUES (:licenceId,:success,:retry,:message,CAST(:source AS migration_error_source))
+            INSERT INTO licence_migration_log(licence_id, booking_id, success, retry, message, error_source)  VALUES (:licenceId,:bookingId,:success,:retry,:message,CAST(:source AS migration_error_source))
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceId: Long, bookingID: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(licenceId: Long, bookingId: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
 
   @Query(
     value = """
