@@ -270,6 +270,7 @@ CREATE TABLE public.licence_migration_log (
                                               retry bool NULL,
                                               message text NULL,
                                               error_source public."migration_error_source" NULL,
+                                              booking_id int4 NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
 CREATE INDEX idx_licence_migration_log_licence_id ON public.licence_migration_log USING btree (licence_id);
