@@ -84,7 +84,7 @@ data class Prisoner(
 
   val restrictedPatient: Boolean? = null,
 ) {
-  fun isRestrictedPatient() = restrictedPatient == true && status == "INACTIVE OUT"
+  fun isRestrictedPatient() = restrictedPatient == true
 }
 
 data class Booking(
