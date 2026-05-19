@@ -1,13 +1,12 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.2.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.3.1"
   id("org.owasp.dependencycheck") version "12.2.1"
   kotlin("plugin.spring") version "2.3.21"
   kotlin("plugin.jpa") version "2.3.21"
-  id("io.gitlab.arturbosch.detekt") version "1.23.8"
+  id("dev.detekt") version "2.0.0-alpha.3"
 }
 
 repositories {
@@ -85,10 +84,8 @@ detekt {
 
 java {
   toolchain {
-    languageVersion.set(JavaLanguageVersion.of(21)) // Java runtime
+    languageVersion.set(JavaLanguageVersion.of(25)) // Java runtime
   }
-  sourceCompatibility = JavaVersion.VERSION_21
-  targetCompatibility = JavaVersion.VERSION_21
 }
 
 configurations {
@@ -100,7 +97,7 @@ configurations {
   matching { it.name == "detekt" }.all {
     resolutionStrategy.eachDependency {
       if (requested.group == "org.jetbrains.kotlin") {
-        useVersion("2.0.21")
+        useVersion(dev.detekt.gradle.plugin.getSupportedKotlinVersion())
       }
     }
   }
@@ -109,7 +106,7 @@ configurations {
 tasks {
   withType<KotlinCompile> {
     compilerOptions {
-      jvmTarget = JVM_21
+      jvmTarget = JVM_25
       freeCompilerArgs.addAll(
         "-Xwhen-guards",
         "-Xjvm-default=all",
@@ -118,12 +115,6 @@ tasks {
         "-Xjspecify-annotations=ignore",
       )
     }
-  }
-  withType<Detekt> {
-    reports {
-      html.required.set(true) // observe findings in your browser with structure and code snippets
-    }
-    jvmTarget = "21"
   }
 
   register<Test>("initialiseDatabase") {
