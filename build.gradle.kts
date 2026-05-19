@@ -1,4 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -7,7 +6,7 @@ plugins {
   id("org.owasp.dependencycheck") version "12.2.1"
   kotlin("plugin.spring") version "2.3.21"
   kotlin("plugin.jpa") version "2.3.21"
-  id("io.gitlab.arturbosch.detekt") version "1.23.8"
+  id("dev.detekt") version "2.0.0-alpha.3"
 }
 
 repositories {
@@ -98,7 +97,7 @@ configurations {
   matching { it.name == "detekt" }.all {
     resolutionStrategy.eachDependency {
       if (requested.group == "org.jetbrains.kotlin") {
-        useVersion("2.0.21")
+        useVersion(dev.detekt.gradle.plugin.getSupportedKotlinVersion())
       }
     }
   }
@@ -116,12 +115,6 @@ tasks {
         "-Xjspecify-annotations=ignore",
       )
     }
-  }
-  withType<Detekt> {
-    reports {
-      html.required.set(true) // observe findings in your browser with structure and code snippets
-    }
-    jvmTarget = "21"
   }
 
   register<Test>("initialiseDatabase") {
