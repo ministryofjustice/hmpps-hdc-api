@@ -264,7 +264,7 @@ GRANT ALL ON TABLE public.knex_migrations_lock TO licences;
 
 CREATE TABLE public.licence_migration_log (
                                               id bigserial NOT NULL,
-                                              licence_id int8 NOT NULL,
+                                              licence_version_id int8 NOT NULL,
                                               created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
                                               success bool NULL,
                                               retry bool NULL,
@@ -273,7 +273,7 @@ CREATE TABLE public.licence_migration_log (
                                               booking_id int4 NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
-CREATE INDEX idx_licence_migration_log_licence_id ON public.licence_migration_log USING btree (licence_id);
+CREATE INDEX idx_licence_migration_log_licence_id ON public.licence_migration_log USING btree (licence_version_id);
 
 -- Permissions
 
