@@ -39,7 +39,9 @@ VALUES (1,
         'hdc_ap',
         '{
             "curfew": {
-                "approvedPremisesAddress": { "postCode": "A4" }
+                "approvedPremisesAddress": {
+                    "postCode": "A4"
+                }
             }
        }'::jsonb,
         4, 1, 0, 'C2001AD', null, false, now()),

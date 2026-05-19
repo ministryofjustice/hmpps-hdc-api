@@ -24,6 +24,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
 import java.util.stream.IntStream
+import java.util.stream.Stream
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
 
@@ -454,7 +455,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     private val prisonApiMockServer = PrisonApiMockServer()
 
     @JvmStatic
-    fun invalidLicenceVersionIds() = IntStream.rangeClosed(1, 8).boxed()
+    fun invalidLicenceVersionIds(): Stream<Long> = IntStream.rangeClosed(1, 8).mapToLong { it.toLong() }.boxed()
 
     @JvmStatic
     @BeforeAll
