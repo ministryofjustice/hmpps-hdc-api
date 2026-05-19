@@ -1,22 +1,20 @@
-INSERT INTO licences (
+INSERT INTO licence_versions (
     id,
+    template,
     licence,
     booking_id,
-    stage,
-    "version",
-    transition_date,
+    version,
     vary_version,
-    additional_conditions_version,
-    standard_conditions_version,
     prison_number,
     deleted_at,
-    licence_in_cvl
-)
+    licence_in_cvl,
+    "timestamp")
 VALUES
 
 -- Row 1: Approved required curfew.approvedPremisesAddress
 (
     1,
+    'hdc_ap',
     '{
         "curfew": {
             "approvedPremises": { "required": "Yes" },
@@ -44,20 +42,17 @@ VALUES
         }
     }'::jsonb,
     10001,
-    'DECIDED',
     1,
-    '2021-01-01 00:00:00',
     0,
-    1,
-    1,
     'TST001',
-    NULL,
-    FALSE
-),
+    null,
+    False,
+    NOW()),
 
 -- Row 2: Approved not required use bassReferral.approvedPremisesAddress if present
 (
     2,
+    'hdc_ap',
     '{
         "curfew": {
             "approvedPremises": { "required": "No" }
@@ -89,20 +84,18 @@ VALUES
         }
     }'::jsonb,
     10002,
-    'DECIDED',
     1,
-    '2021-01-01 00:00:00',
     0,
-    1,
-    1,
     'TST002',
-    NULL,
-    FALSE
+    null,
+    False,
+    NOW()
 ),
 
 -- Row 3: No address anywhere expect NULL address
 (
     3,
+    'hdc_ap',
     '{
         "document": {
             "template": {
@@ -112,20 +105,18 @@ VALUES
         }
     }'::jsonb,
     10003,
-    'DECIDED',
     1,
-    '2021-01-01 00:00:00',
     0,
-    1,
-    1,
     'TST003',
-    NULL,
-    FALSE
+    null,
+    False,
+    NOW()
 ),
 
 -- Row 4: CAS2 offer present use bassOffer
 (
     4,
+    'hdc_ap',
     '{
         "curfew": {
             "approvedPremises": { "required": "No" }
@@ -159,20 +150,17 @@ VALUES
         }
     }'::jsonb,
     10004,
-    'DECIDED',
     1,
-    '2021-01-01 00:00:00',
     0,
-    1,
-    1,
     'TST004',
     NULL,
-    FALSE
-),
+    FALSE,
+    NOW()),
 
 -- Row 5: Approved not required + no CAS2 use proposedAddress.curfewAddress
 (
     5,
+    'hdc_ap',
     '{
         "proposedAddress": {
             "curfewAddress": {
@@ -206,15 +194,12 @@ VALUES
         }
     }'::jsonb,
     10005,
-    'DECIDED',
     1,
-    '2021-01-01 00:00:00',
     0,
-    1,
-    1,
     'TST005',
     NULL,
-    FALSE
+    FALSE,
+    NOW()
 );
 
 INSERT INTO audit (timestamp, "user", action, details)

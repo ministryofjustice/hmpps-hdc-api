@@ -88,6 +88,53 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-licences-with-unknow_conditions.sql",
+  )
+  @Test
+  fun `When batch has only unknow versioned conditions then do not migrate licence to CVL`() {
+    // Given
+    val licenceVersionId = 1L
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(bookingId = "54222", prisonerNumber = "A12345B"),
+      ),
+    )
+
+    // When
+    val response = postForBatchToMigrate()
+
+    // Then
+    response.expectStatus().isAccepted
+    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("Licence additional conditions version not determined!")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-licences-with-different_versions.sql",
+  )
+  @Test
+  fun `When batched licences have multiple versions then latest version is migrated to CVL`() {
+    // Given
+    val expectedLatestVersionId = 3L
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(bookingId = "54222", prisonerNumber = "A12345B"),
+      ),
+    )
+    prisonApiMockServer.getHdcStatuses(listOf(11L to "APPROVED"))
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postForBatchToMigrate()
+
+    // Then
+    response.expectStatus().isAccepted
+    assertThat(migrationRepository.getMigrationLogCount()).isEqualTo(1)
+    assertThat(migrationRepository.getMigrationLog(expectedLatestVersionId, true, retry = false)).isEqualTo("migrated successfully")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrat-licences_for_second-time.sql",
   )
   @Test

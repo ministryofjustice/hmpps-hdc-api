@@ -35,29 +35,25 @@ class MigrationProcessService(
     var batch = 1
 
     try {
-      var licenceIds: List<LicenceBookingDetail>
+      var licenceVersionIds: List<LicenceBookingDetail>
       do {
-        log.info(
-          "HDC migration: Processing batch {} (lastProcessedId={}, size={})",
-          batch,
-          lastProcessedId,
-          BATCH_SIZE,
-        )
-        licenceIds = migrationRepository.getMigratableLicences(
+        log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
+
+        licenceVersionIds = migrationRepository.getMigratableLicences(
           lastProcessedId = lastProcessedId,
           batchSize = BATCH_SIZE,
         )
-        log.info("HDC migration: Fetched {} licences", licenceIds.size)
+        log.info("HDC migration: Fetched {} licence", licenceVersionIds.size)
 
-        if (licenceIds.isEmpty()) {
+        if (licenceVersionIds.isEmpty()) {
           break
         }
-        processBatch(licenceIds)
+        processBatch(licenceVersionIds)
 
-        lastProcessedId = licenceIds.last().licenceId
+        lastProcessedId = licenceVersionIds.last().licenceVersionId
         log.info("HDC migration:  Processed batch {} (lastProcessedId={})", batch, lastProcessedId)
         batch++
-      } while (licenceIds.size == BATCH_SIZE)
+      } while (licenceVersionIds.size == BATCH_SIZE)
 
       log.info("HDC migration: Finished all batches!")
     } catch (e: Exception) {
@@ -78,44 +74,43 @@ class MigrationProcessService(
         }
     } finally {
       // To prevent out of memory issues
-      entityManager.flush()
       entityManager.clear()
     }
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
-    log.info("HDC migration: Processing licence id {}", licenceDetail.licenceId)
+    log.info("HDC migration: Processing licence id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateBatchedLicenceToCvl(licenceDetail, prisoner)
-      logSuccess(licenceDetail.licenceId, licenceDetail.bookingId)
+      logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId)
     } catch (e: CvlRetryMigrationException) {
-      logFailure(licenceDetail.licenceId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
     } catch (e: CvlMigrationException) {
-      logFailure(licenceDetail.licenceId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
     } catch (e: MigrationValidationException) {
-      logFailure(licenceDetail.licenceId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
     } catch (e: Exception) {
-      logFailure(licenceDetail.licenceId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
     }
   }
 
-  fun processLicence(licenceId: Long) {
-    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceId) ?: throw MigrationValidationException("No eligible licence found for licence id $licenceId")
+  fun processLicence(licenceVersionId: Long) {
+    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceVersionId) ?: throw MigrationValidationException("No eligible licence found for licence id $licenceVersionId")
     try {
-      migrationRequestService.migrateLicenceToCvl(licenceId)
-      logSuccess(licenceId, licenceBookingDetail.bookingId)
+      migrationRequestService.migrateLicenceToCvl(licenceVersionId)
+      logSuccess(licenceVersionId, licenceBookingDetail.bookingId)
     } catch (e: CvlRetryMigrationException) {
-      logFailure(licenceId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
       throw e
     } catch (e: CvlMigrationException) {
-      logFailure(licenceId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
       throw e
     } catch (e: MigrationValidationException) {
-      logFailure(licenceId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
       throw e
     } catch (e: Exception) {
-      logFailure(licenceId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
       throw e
     }
   }
@@ -129,7 +124,7 @@ class MigrationProcessService(
       licenceDetails.forEach { licenceDetail ->
         if (!prisoners.containsKey(licenceDetail.bookingId)) {
           logFailure(
-            licenceDetail.licenceId,
+            licenceDetail.licenceVersionId,
             licenceDetail.bookingId,
             "Prisoner not found for booking id ${licenceDetail.bookingId}",
             retry = false,
@@ -159,7 +154,7 @@ class MigrationProcessService(
         prisoner?.let {
           if (it.bookingId.toLong() != licenceDetail.bookingId) {
             logFailure(
-              licenceDetail.licenceId,
+              licenceDetail.licenceVersionId,
               licenceDetail.bookingId,
               "Not Active Booking id, prisoner booking id :${it.bookingId} != licence booking id: ${licenceDetail.bookingId}",
               retry = false,
@@ -168,7 +163,7 @@ class MigrationProcessService(
           }
         } ?: run {
           logFailure(
-            licenceDetail.licenceId,
+            licenceDetail.licenceVersionId,
             licenceDetail.bookingId,
             "Prisoner not found for prisoner number ${licenceDetail.prisonNumber}",
             retry = false,
@@ -184,18 +179,18 @@ class MigrationProcessService(
     }
   }
 
-  private fun logSuccess(licenceId: Long, bookingId: Long) {
-    log.info("HDC migration: Licence id: $licenceId, migrated successfully")
-    migrationRepository.insertMigrationLog(licenceId, bookingId, true, retry = false, "migrated successfully")
+  private fun logSuccess(licenceVersionId: Long, bookingId: Long) {
+    log.info("HDC migration: Licence id: $licenceVersionId, migrated successfully")
+    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, true, retry = false, "migrated successfully")
   }
 
-  private fun logFailure(licenceId: Long, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
-    log.debug("HDC migration: Licence id: $licenceId, error: ${e.message}", e)
-    logFailure(licenceId, bookingId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
+  private fun logFailure(licenceVersionId: Long, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
+    log.debug("HDC migration: Licence id: $licenceVersionId, error: ${e.message}", e)
+    logFailure(licenceVersionId, bookingId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
   }
 
-  private fun logFailure(licenceId: Long, bookingId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
-    migrationRepository.insertMigrationLog(licenceId, bookingId, false, retry = retry, message, source.name)
+  private fun logFailure(licenceVersionId: Long, bookingId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
+    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, false, retry = retry, message, source.name)
   }
 
   companion object {
