@@ -366,7 +366,7 @@ class MigrationRequestService(
 
   private fun getLicenceVersion(activeLicenceId: Long): LicenceVersion {
     val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
-      ?: throw MigrationValidationException("No eligible licence found for licence id $activeLicenceId")
+      ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
     return licenceVersion
   }
 

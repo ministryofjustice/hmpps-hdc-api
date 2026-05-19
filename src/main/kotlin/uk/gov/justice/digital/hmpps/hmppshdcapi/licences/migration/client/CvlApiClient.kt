@@ -54,7 +54,7 @@ class CvlApiClient(
     }.getOrNull()
 
     log.warn(
-      "Failed to migrate licence id:${request.licence.licenceVersionId} booking id:${request.bookingId} to CVL, " +
+      "Failed to migrate licence version id:${request.licence.licenceVersionId} booking id:${request.bookingId} to CVL, " +
         "status:$status, uri:/licences/migrate/active, body:$body",
     )
 

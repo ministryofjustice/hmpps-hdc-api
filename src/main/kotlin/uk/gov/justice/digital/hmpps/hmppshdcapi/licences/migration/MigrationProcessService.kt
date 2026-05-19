@@ -79,7 +79,7 @@ class MigrationProcessService(
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
-    log.info("HDC migration: Processing licence id {}", licenceDetail.licenceVersionId)
+    log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateBatchedLicenceToCvl(licenceDetail, prisoner)
@@ -96,7 +96,7 @@ class MigrationProcessService(
   }
 
   fun processLicence(licenceVersionId: Long) {
-    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceVersionId) ?: throw MigrationValidationException("No eligible licence found for licence id $licenceVersionId")
+    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceVersionId) ?: throw MigrationValidationException("No eligible licence found for licence version id $licenceVersionId")
     try {
       migrationRequestService.migrateLicenceToCvl(licenceVersionId)
       logSuccess(licenceVersionId, licenceBookingDetail.bookingId)
