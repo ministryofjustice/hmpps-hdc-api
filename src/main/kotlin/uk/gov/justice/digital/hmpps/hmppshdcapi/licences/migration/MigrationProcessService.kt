@@ -43,7 +43,7 @@ class MigrationProcessService(
           lastProcessedId = lastProcessedId,
           batchSize = BATCH_SIZE,
         )
-        log.info("HDC migration: Fetched {} licence", licenceVersionIds.size)
+        log.info("HDC migration: Fetched {} licences", licenceVersionIds.size)
 
         if (licenceVersionIds.isEmpty()) {
           break
