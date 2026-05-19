@@ -1,9 +1,18 @@
-INSERT INTO licences
-(id, licence, booking_id, stage, "version", transition_date, vary_version, additional_conditions_version,
- standard_conditions_version, prison_number, deleted_at, licence_in_cvl)
+INSERT INTO licence_versions (
+    id,
+    template,
+    licence,
+    booking_id,
+    version,
+    vary_version,
+    prison_number,
+    deleted_at,
+    licence_in_cvl,
+    "timestamp")
 
 -- Create the data for a HDC licence with a preferred address
 VALUES (1,
+        'hdc_ap',
         '{
                   "document": {
                     "template": {
@@ -233,12 +242,19 @@ VALUES (1,
             "conditionsSummary": {
                 "additionalConditionsJustification": "adsas"
             }
-        }
-                }'::jsonb,
-        10, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '2', '2', 'A1234EE', null, false),
+          }
+        }'::jsonb,
+        10,
+        1,
+        0,
+        'A1234EE',
+        null,
+        false,
+        NOW()),
 
        -- Create the data for a HDC licence with a CAS2 address
        (2,
+        'hdc_ap',
         '{
                "document": {
                  "template": {
@@ -297,11 +313,18 @@ VALUES (1,
                    "daySpecificInputs": "Yes"
                  }
                }
-             }'::jsonb,
-        20, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'B1234EE', null, false),
+        }'::jsonb,
+        20,
+        1,
+        0,
+        'B1234EE',
+        null,
+        false,
+        NOW()),
 
        -- Create the data for an approved preferred premises HDC licence
        (3,
+        'hdc_ap',
         '{
                "document": {
                  "template": {
@@ -362,9 +385,14 @@ VALUES (1,
                       "required": "Yes"
                     }
                   }
-                }'::jsonb,
-        30, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'C1234EE', null, false);
-
+        }'::jsonb,
+                30,
+                1,
+                0,
+                'C1234EE',
+                null,
+                false,
+                NOW());
 
 -- audit data
 

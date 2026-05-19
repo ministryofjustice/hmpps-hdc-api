@@ -10,8 +10,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Address
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Licence
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
@@ -35,6 +36,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.attemptToGuessVersion
 import java.time.DayOfWeek
 import java.time.DayOfWeek.FRIDAY
 import java.time.DayOfWeek.MONDAY
@@ -63,47 +65,49 @@ class MigrationRequestService(
 
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-  fun migrateLicenceToCvl(activeLicenceId: Long) {
-    val request = buildMigrationRequest(activeLicenceId)
+  fun migrateLicenceToCvl(activeLicenceVersionId: Long) {
+    val request = buildMigrationRequest(activeLicenceVersionId)
     request?.let { cvlClient.migrateLicence(request) }
   }
 
   fun migrateBatchedLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
-    log.info("HDC migration: Migrating licence id {} to CVL", licenceDetail.licenceId)
-    val licence = migrationRepository.findById(licenceDetail.licenceId).get()
+    log.info("HDC migration: Migrating licence version id {} to CVL", licenceDetail.licenceVersionId)
+    val licenceVersion = migrationRepository.findById(licenceDetail.licenceVersionId).get()
     try {
-      return cvlClient.migrateLicence(createMigrationRequest(licence, prisoner))
+      validate(licenceVersion)
+      return cvlClient.migrateLicence(createMigrationRequest(licenceVersion, prisoner))
     } finally {
-      entityManager.detach(licence)
+      entityManager.detach(licenceVersion)
     }
   }
 
   fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
-    val licence = getLicence(activeLicenceId)
-    val prisoner = performPrisonerSearch(licence.bookingId)
+    val licenceVersion = getLicenceVersion(activeLicenceId)
+    val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     validate(prisoner)
-    return createMigrationRequest(licence, prisoner)
+    validate(licenceVersion)
+    return createMigrationRequest(licenceVersion, prisoner)
   }
 
   private fun createMigrationRequest(
-    licence: Licence,
+    licenceVersion: LicenceVersion,
     prisoner: Prisoner,
   ): MigrateFromHdcToCvlRequest {
-    val licenceData = licence.licence ?: throw MigrationValidationException("Licence data must exist for licence id ${licence.id}")
-    val audits = getAuditsForLatestLicence(licence.bookingId)
+    val licenceData = licenceVersion.licence ?: throw MigrationValidationException("Licence data must exist for licence version id ${licenceVersion.id}")
+    val audits = getAuditsForLatestLicence(licenceVersion.bookingId)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
-      bookingId = licence.bookingId,
+      bookingId = licenceVersion.bookingId,
       pnc = prisoner.pncNumber,
       cro = prisoner.croNumber,
       prisoner = mapPrisonerDetails(prisoner),
       prison = mapPrisonDetails(prisoner),
       sentence = mapSentenceDetails(prisoner),
-      licence = mapLicenceDetails(licence, prisoner),
+      licence = mapLicenceDetails(licenceVersion, prisoner),
       // See isApproved below should we be rejecting the license if not approved? I would say so!
-      lifecycle = mapLifecycleDetails(audits, isApproved(licence)),
-      conditions = mapConditions(licence, licenceData),
+      lifecycle = mapLifecycleDetails(audits, isApproved(licenceVersion)),
+      conditions = mapConditions(licenceVersion, licenceData),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
@@ -153,18 +157,24 @@ class MigrationRequestService(
     }
   }
 
+  fun validate(licenceVersion: LicenceVersion) {
+    licenceVersion.licence?.licenceConditions?.additional?.let {
+      attemptToGuessVersion(it) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+    }
+  }
+
   private fun mapLicenceDetails(
-    licence: Licence,
+    licenceVersion: LicenceVersion,
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
-    licenceId = licence.id!!,
-    typeCode = MigrateLicenceType.from(licence.licence?.document?.template?.decision),
+    licenceVersionId = licenceVersion.id!!,
+    typeCode = MigrateLicenceType.from(licenceVersion.template),
     licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
     homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
-    licenceVersion = licence.version,
-    varyVersion = licence.varyVersion,
+    licenceVersion = licenceVersion.version,
+    varyVersion = licenceVersion.varyVersion,
   )
 
   private fun mapLifecycleDetails(
@@ -185,19 +195,37 @@ class MigrationRequestService(
     )
   }
 
-  private fun mapConditions(licence: Licence, licenceData: LicenceData): MigrateConditions {
+  private fun mapConditions(licenceVersion: LicenceVersion, licenceData: LicenceData): MigrateConditions {
     licenceData.licenceConditions?.let { conditions ->
-      val additional = LicenceConditionRenderer.renderConditions(licence).map {
-        MigrateAdditionalCondition(
-          text = it.text!!,
-          conditionCode = it.code!!,
-          conditionsVersion = licence.additionalConditionsVersion ?: throw MigrationValidationException("additional conditions version not set for licence id ${licence.id} condition code ${it.code}"),
-        )
-      }
+
+      val additional = mapAdditionalConditions(conditions, licenceVersion)
+
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
       return MigrateConditions(bespoke = bespoke, additional = additional)
     }
+
     return MigrateConditions()
+  }
+
+  private fun mapAdditionalConditions(
+    conditions: LicenceConditions,
+    licenceVersion: LicenceVersion,
+  ): MutableList<MigrateAdditionalCondition> {
+    val additional = mutableListOf<MigrateAdditionalCondition>()
+
+    conditions.additional?.let {
+      val conditionsVersion = attemptToGuessVersion(conditions.additional)!!
+      LicenceConditionRenderer.renderConditions(licenceVersion.licence, conditionsVersion).forEach {
+        additional.add(
+          MigrateAdditionalCondition(
+            text = it.text!!,
+            conditionCode = it.code!!,
+            conditionsVersion = conditionsVersion,
+          ),
+        )
+      }
+    }
+    return additional
   }
 
   private fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
@@ -293,12 +321,12 @@ class MigrationRequestService(
 
   private fun performPrisonerSearch(bookingId: Long): Prisoner {
     val bookingIds = listOf(bookingId)
-    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for licence id $bookingId")
+    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for booking id $bookingId")
   }
 
-  private fun isApproved(licence: Licence): Boolean {
+  private fun isApproved(licenceVersion: LicenceVersion): Boolean {
     val prisonerHdcStatus = prisonApiClient
-      .getHdcStatuses(listOf(licence.bookingId))
+      .getHdcStatuses(listOf(licenceVersion.bookingId))
       .firstOrNull()
 
     return prisonerHdcStatus?.isApproved() == true
@@ -336,10 +364,10 @@ class MigrationRequestService(
     }
   }
 
-  private fun getLicence(activeLicenceId: Long): Licence {
-    val licence = migrationRepository.getMigratableLicence(activeLicenceId)
-      ?: throw MigrationValidationException("No eligible licence found for licence id $activeLicenceId")
-    return licence
+  private fun getLicenceVersion(activeLicenceId: Long): LicenceVersion {
+    val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
+      ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
+    return licenceVersion
   }
 
   companion object {

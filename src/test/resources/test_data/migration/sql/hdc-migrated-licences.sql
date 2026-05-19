@@ -1,9 +1,17 @@
-INSERT INTO licences
-(id, licence, booking_id, stage, "version", transition_date, vary_version, additional_conditions_version,
- standard_conditions_version, prison_number, deleted_at, licence_in_cvl)
+INSERT INTO licence_versions (id,
+                              template,
+                              licence,
+                              booking_id,
+                              version,
+                              vary_version,
+                              prison_number,
+                              deleted_at,
+                              licence_in_cvl,
+                              "timestamp")
 
 -- Create the data for a HDC licence with a preferred address
 VALUES (1,
+        'hdc_ap',
         '{
                   "document": {
                     "template": {
@@ -249,10 +257,16 @@ VALUES (1,
             }
         }
                 }'::jsonb,
-        54222, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '2', '2', 'A12345B', null, false),
-
+        54222,
+        1,
+        0,
+        'A12345B',
+        NULL,
+        FALSE,
+        NOW()),
        -- Create the data for a HDC licence with a CAS2 address
        (2,
+        'hdc_ap',
         '{
                   "eligibility": {
                     "crdTime": {
@@ -305,10 +319,16 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        98765, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false),
-
+        98765,
+        1,
+        0,
+        'T12345D',
+        NULL,
+        FALSE,
+        NOW()),
        -- Create the data for an approved preferred premises HDC licence
        (3,
+        'hdc_ap',
         '{
                   "eligibility": {
                     "crdTime": {
@@ -363,10 +383,16 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        12345, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null, false),
-
+        12345,
+        1,
+        0,
+        'E01234F',
+        NULL,
+        FALSE,
+        NOW()),
        -- Create the data for a CAS2 approved premises HDC licence
        (4,
+        'hdc_ap',
         '{
                   "eligibility": {
                     "crdTime": {
@@ -425,13 +451,26 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        43210, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'G67890H', null, false),
-
+        43210,
+        1,
+        0,
+        'G67890H',
+        NULL,
+        FALSE,
+        NOW()),
        -- Create a licence with no licence data
        (5,
+        'hdc_ap',
         null,
-        22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false),
+        22222,
+        1,
+        0,
+        'I12345J',
+        NULL,
+        FALSE,
+        NOW()),
        (6,
+        'hdc_ap',
         '{
             "proposedAddress": {
                 "curfewAddress": {
@@ -471,95 +510,80 @@ VALUES (1,
             }
           }
         }'::jsonb,
-        98765, 'DECIDED', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'T12345D', null, false);
+        98765,
+        1,
+        1,
+        'T12345D',
+        NULL,
+        FALSE,
+        NOW());
 
 -- audit data
 
 INSERT INTO audit (timestamp, "user", action, details)
-VALUES
-    (
-        '2021-04-05 15:06:37.188',
+VALUES ('2021-04-05 15:06:37.188',
         'creator',
         'LICENCE_RECORD_STARTED',
         '{
           "bookingId": "98765"
-        }'::jsonb
-    ),
-    (
-        '2021-04-05 15:06:37.188',
+        }'::jsonb),
+       ('2021-04-05 15:06:37.188',
         'creator',
         'LICENCE_RECORD_STARTED',
         '{
           "bookingId": "54222"
-        }'::jsonb
-    ),
-    (
-        '2021-04-05 15:07:37.188',
+        }'::jsonb),
+       ('2021-04-05 15:07:37.188',
         'aCaseManager',
         'SEND',
         '{
           "bookingId": "54222",
           "transitionType": "caToRo"
-        }'::jsonb
-    ),
-    (
-        '2021-08-06 15:04:37.188',
+        }'::jsonb),
+       ('2021-08-06 15:04:37.188',
         'creator',
         'RESET',
         '{
           "bookingId": "54222"
-        }'::jsonb
-    ),
-    (
-        '2021-08-06 15:05:37.188',
+        }'::jsonb),
+       ('2021-08-06 15:05:37.188',
         'creator',
         'LICENCE_RECORD_STARTED',
         '{
           "bookingId": "54222"
-        }'::jsonb
-    ),
-    (
-        '2021-08-06 15:06:37.188',
+        }'::jsonb),
+       ('2021-08-06 15:06:37.188',
         'aCaseManager',
         'SEND',
         '{
           "bookingId": "54222",
           "transitionType": "caToRo"
-        }'::jsonb
-    ),
-    (
-        '2021-08-06 15:20:37.188',
+        }'::jsonb),
+       ('2021-08-06 15:20:37.188',
         'creator',
         'UPDATE_SECTION',
         '{
           "bookingId": "54222",
           "transitionType": "caToRo"
-        }'::jsonb
-    ),
-    (
-        '2021-08-08 15:06:37.188',
+        }'::jsonb),
+       ('2021-08-08 15:06:37.188',
         'submitter',
         'SEND',
         '{
           "bookingId": "54222",
           "transitionType": "roToCa"
-        }'::jsonb
-    ),
-    (
-        '2021-08-09 15:06:37.188',
+        }'::jsonb),
+       ('2021-08-09 15:06:37.188',
         'updater',
         'UPDATE_SECTION',
         '{
           "bookingId": "54222",
           "transitionType": "caToRo"
-        }'::jsonb
-    ),
-    (
-        '2021-08-10 15:06:37.188',
+        }'::jsonb),
+       ('2021-08-10 15:06:37.188',
         'approver',
         'SEND',
         '{
           "bookingId": "54222",
           "transitionType": "dmToCa"
-        }'::jsonb
-    );
+        }'::jsonb);
