@@ -59,9 +59,6 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   )
   fun migrationLogExists(licenceVersionId: Long, success: Boolean): Boolean
 
-  /**
-   * AND (l.licence -> 'document' -> 'template' IS NOT null)  mean it has been printed!
-   */
   @Query(
     value = """
         SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 

@@ -180,12 +180,12 @@ class MigrationProcessService(
   }
 
   private fun logSuccess(licenceVersionId: Long, bookingId: Long) {
-    log.info("HDC migration: Licence id: $licenceVersionId, migrated successfully")
+    log.info("HDC migration: Licence version id: $licenceVersionId, migrated successfully")
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, true, retry = false, "migrated successfully")
   }
 
   private fun logFailure(licenceVersionId: Long, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
-    log.debug("HDC migration: Licence id: $licenceVersionId, error: ${e.message}", e)
+    log.debug("HDC migration: Licence version id: $licenceVersionId, error: ${e.message}", e)
     logFailure(licenceVersionId, bookingId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
   }
 

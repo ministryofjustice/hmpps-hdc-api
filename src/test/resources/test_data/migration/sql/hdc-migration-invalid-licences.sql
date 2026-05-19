@@ -95,5 +95,5 @@ VALUES (1,
             "approvedPremisesAddress": { "postCode": "A1" }
         }
         }'::jsonb,
-        9, 1, 0, 'C2001AH', null, false, now());
+        9, 1, 0, 'C2001AH', now(), false, now());
 

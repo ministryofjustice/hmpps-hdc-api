@@ -88,10 +88,10 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
-    "classpath:test_data/migration/sql/hdc-licences-with-unknow_conditions.sql",
+    "classpath:test_data/migration/sql/hdc-licences-with-unknown_conditions.sql",
   )
   @Test
-  fun `When batch has only unknow versioned conditions then do not migrate licence to CVL`() {
+  fun `When batch has only unknown versioned conditions then do not migrate licence to CVL`() {
     // Given
     val licenceVersionId = 1L
     prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(

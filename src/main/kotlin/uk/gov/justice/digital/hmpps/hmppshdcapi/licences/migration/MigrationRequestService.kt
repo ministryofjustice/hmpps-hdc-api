@@ -168,7 +168,7 @@ class MigrationRequestService(
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     licenceVersionId = licenceVersion.id!!,
-    typeCode = MigrateLicenceType.from(licenceVersion.licence?.document?.template?.decision),
+    typeCode = MigrateLicenceType.from(licenceVersion.template),
     licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
     homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
@@ -321,7 +321,7 @@ class MigrationRequestService(
 
   private fun performPrisonerSearch(bookingId: Long): Prisoner {
     val bookingIds = listOf(bookingId)
-    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for licence version id $bookingId")
+    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for booking id $bookingId")
   }
 
   private fun isApproved(licenceVersion: LicenceVersion): Boolean {
