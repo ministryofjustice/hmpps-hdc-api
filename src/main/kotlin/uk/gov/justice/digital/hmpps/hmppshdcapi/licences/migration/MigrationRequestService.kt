@@ -88,12 +88,8 @@ class MigrationRequestService(
   ): MigrateFromHdcToCvlRequest {
     val audits = getAuditsForLatestLicence(licenceVersion.bookingId)
 
-    var licenceData: LicenceData
-    try {
-      licenceData = mapper.readValue(licenceVersion.licenceJson, LicenceData::class.java)
-    } catch (e: DatabindException) {
-      throw MigrationValidationException("JSON Parse exception, ${e.message}")
-    }
+    val licenceData: LicenceData = extractLicenceDataFromJson(licenceVersion)
+
     validate(licenceData)
 
     return MigrateFromHdcToCvlRequest(
@@ -112,6 +108,14 @@ class MigrationRequestService(
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
     )
+  }
+
+  private fun extractLicenceDataFromJson(licenceVersion: MigrationLicenceVersion): LicenceData {
+    try {
+      return mapper.readValue(licenceVersion.licenceJson, LicenceData::class.java)
+    } catch (e: DatabindException) {
+      throw MigrationValidationException("JSON Parse exception, ${e.message}")
+    }
   }
 
   private fun mapPrisonerDetails(prisoner: Prisoner) = MigratePrisonerDetails(
