@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
+import java.time.LocalDateTime
 
 interface LicenceBookingDetail {
   val licenceVersionId: Long
@@ -19,9 +20,103 @@ enum class MigrationErrorSource {
   HDC,
 }
 
+data class MigrationLicenceVersion(
+  val id: Long,
+  val prisonNumber: String?,
+  val bookingId: Long,
+  val version: Int,
+  val template: String,
+  val varyVersion: Int,
+  val deletedAt: LocalDateTime?,
+  val licenceInCvl: Boolean,
+  val licenceJson: String,
+)
+
 @Transactional(propagation = Propagation.NEVER)
 @Repository
 interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
+
+  @Query(
+    value = """
+        SELECT 
+            lv.id AS id,
+            lv.prison_number AS prisonNumber,
+            lv.booking_id AS bookingId,
+            lv.version AS version,
+            lv.template AS template,
+            lv.vary_version AS varyVersion,
+            lv.deleted_at AS deletedAt,
+            lv.licence_in_cvl AS licenceInCvl,
+            lv.licence AS licenceJson
+        FROM licence_versions lv
+            LEFT JOIN (
+                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log ORDER BY licence_version_id, id DESC
+            ) migration_log ON migration_log.licence_version_id = lv.id            
+            JOIN (    
+                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
+            WHERE l.deleted_at IS NULL
+                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
+            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
+        ) activeLicence ON activeLicence.id = lv.id 
+          WHERE  lv.id = :licenceVersionId AND  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)  
+          ORDER BY lv.id
+          LIMIT 1
+  """,
+    nativeQuery = true,
+  )
+  fun getMigratableLicenceVersion(
+    licenceVersionId: Long,
+  ): MigrationLicenceVersion?
+
+  @Query(
+    value = """
+        SELECT 
+            lv.id AS id,
+            lv.prison_number AS prisonNumber,
+            lv.booking_id AS bookingId,
+            lv.version AS version,
+            lv.template AS template,
+            lv.vary_version AS varyVersion,
+            lv.deleted_at AS deletedAt,
+            lv.licence_in_cvl AS licenceInCvl,
+            lv.licence AS licenceJson
+        FROM licence_versions lv WHERE  lv.id = :licenceVersionId 
+  """,
+    nativeQuery = true,
+  )
+  fun getLicenceVersion(
+    licenceVersionId: Long,
+  ): MigrationLicenceVersion
+
+  @Query(
+    value = """
+        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 
+            FROM licence_versions lv
+            LEFT JOIN (
+                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log ORDER BY licence_version_id, id DESC
+            ) migration_log ON migration_log.licence_version_id = lv.id            
+            JOIN (    
+                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
+            WHERE l.deleted_at IS NULL
+                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
+            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
+        ) activeLicence ON activeLicence.id = lv.id 
+          WHERE  lv.id > :lastProcessedId AND  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)  
+          ORDER BY lv.id
+          LIMIT :batchSize
+  """,
+    nativeQuery = true,
+  )
+  fun getMigratableLicenceBatch(
+    lastProcessedId: Long,
+    batchSize: Int,
+  ): List<LicenceBookingDetail>
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @Modifying
@@ -58,58 +153,6 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun migrationLogExists(licenceVersionId: Long, success: Boolean): Boolean
-
-  @Query(
-    value = """
-        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 
-            FROM licence_versions lv
-            LEFT JOIN (
-                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log ORDER BY licence_version_id, id DESC
-            ) migration_log ON migration_log.licence_version_id = lv.id            
-            JOIN (    
-                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
-            WHERE l.deleted_at IS NULL
-                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
-            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
-        ) activeLicence ON activeLicence.id = lv.id 
-          WHERE  lv.id > :lastProcessedId AND  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)  
-          ORDER BY lv.id
-          LIMIT :batchSize
-  """,
-    nativeQuery = true,
-  )
-  fun getMigratableLicences(
-    lastProcessedId: Long,
-    batchSize: Int,
-  ): List<LicenceBookingDetail>
-
-  @Query(
-    value = """
-        SELECT lv.* FROM licence_versions lv
-            LEFT JOIN (
-                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log ORDER BY licence_version_id, id DESC
-            ) migration_log ON migration_log.licence_version_id = lv.id            
-            JOIN (    
-                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
-            WHERE l.deleted_at IS NULL
-                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
-            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
-        ) activeLicence ON activeLicence.id = lv.id 
-          WHERE  lv.id = :licenceVersionId AND  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)  
-          ORDER BY lv.id
-          LIMIT 1
-  """,
-    nativeQuery = true,
-  )
-  fun getMigratableLicenceVersion(
-    licenceVersionId: Long,
-  ): LicenceVersion?
 
   @Query(
     value = """

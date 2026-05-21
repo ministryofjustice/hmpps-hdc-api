@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
-import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
+import com.fasterxml.jackson.databind.DatabindException
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -12,11 +13,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationLicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAdditionalCondition
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAddress
@@ -49,6 +50,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 @Transactional(propagation = Propagation.NEVER)
 @Service
@@ -60,9 +62,6 @@ class MigrationRequestService(
   private val auditEventRepository: AuditEventRepository,
 ) {
 
-  @PersistenceContext
-  private lateinit var entityManager: EntityManager
-
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   fun migrateLicenceToCvl(activeLicenceVersionId: Long) {
@@ -72,29 +71,26 @@ class MigrationRequestService(
 
   fun migrateBatchedLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
     log.info("HDC migration: Migrating licence version id {} to CVL", licenceDetail.licenceVersionId)
-    val licenceVersion = migrationRepository.findById(licenceDetail.licenceVersionId).get()
-    try {
-      validate(licenceVersion)
-      return cvlClient.migrateLicence(createMigrationRequest(licenceVersion, prisoner))
-    } finally {
-      entityManager.detach(licenceVersion)
-    }
+    val licenceVersion = migrationRepository.getLicenceVersion(licenceDetail.licenceVersionId)
+    return cvlClient.migrateLicence(createMigrationRequest(licenceVersion, prisoner))
   }
 
   fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
     val licenceVersion = getLicenceVersion(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     validate(prisoner)
-    validate(licenceVersion)
     return createMigrationRequest(licenceVersion, prisoner)
   }
 
   private fun createMigrationRequest(
-    licenceVersion: LicenceVersion,
+    licenceVersion: MigrationLicenceVersion,
     prisoner: Prisoner,
   ): MigrateFromHdcToCvlRequest {
-    val licenceData = licenceVersion.licence ?: throw MigrationValidationException("Licence data must exist for licence version id ${licenceVersion.id}")
     val audits = getAuditsForLatestLicence(licenceVersion.bookingId)
+
+    val licenceData: LicenceData = extractLicenceDataFromJson(licenceVersion)
+
+    validate(licenceData)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -107,11 +103,19 @@ class MigrationRequestService(
       licence = mapLicenceDetails(licenceVersion, prisoner),
       // See isApproved below should we be rejecting the license if not approved? I would say so!
       lifecycle = mapLifecycleDetails(audits, isApproved(licenceVersion)),
-      conditions = mapConditions(licenceVersion, licenceData),
+      conditions = mapConditions(licenceData),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
     )
+  }
+
+  private fun extractLicenceDataFromJson(licenceVersion: MigrationLicenceVersion): LicenceData {
+    try {
+      return mapper.readValue(licenceVersion.licenceJson, LicenceData::class.java)
+    } catch (e: DatabindException) {
+      throw MigrationValidationException("JSON Parse exception, ${e.message}")
+    }
   }
 
   private fun mapPrisonerDetails(prisoner: Prisoner) = MigratePrisonerDetails(
@@ -144,30 +148,30 @@ class MigrationRequestService(
     fun notEligible(reason: String): Unit = throw MigrationValidationException(reason)
 
     with(prisoner) {
-      if (status != "INACTIVE OUT") notEligible("Invalid status: $status")
-      if (isRestrictedPatient()) notEligible("Restricted patient")
+      if (status != "INACTIVE OUT") notEligible("Licence has invalid status: $status")
+      if (isRestrictedPatient()) notEligible("Licence has restricted patient")
 
       val today = LocalDate.now()
       homeDetentionCurfewActualDate?.let {
-        if (it.isAfter(today)) notEligible("HDCAD is in the future: $it")
-      } ?: notEligible("Missing HDCAD date")
+        if (it.isAfter(today)) notEligible("Licence has HDCAD in the future: $it")
+      } ?: notEligible("Licence has missing HDCAD date")
       licenceExpiryDate?.let {
         if (it.isBefore(today)) notEligible("Licence expiry date is in past: LED=$it")
       } ?: notEligible("Missing licence expiry date")
     }
   }
 
-  fun validate(licenceVersion: LicenceVersion) {
-    licenceVersion.licence?.licenceConditions?.additional?.let {
+  fun validate(licenceData: LicenceData) {
+    licenceData.licenceConditions?.additional?.let {
       attemptToGuessVersion(it) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
     }
   }
 
   private fun mapLicenceDetails(
-    licenceVersion: LicenceVersion,
+    licenceVersion: MigrationLicenceVersion,
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
-    licenceVersionId = licenceVersion.id!!,
+    licenceVersionId = licenceVersion.id,
     typeCode = MigrateLicenceType.from(licenceVersion.template),
     licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
@@ -195,10 +199,10 @@ class MigrationRequestService(
     )
   }
 
-  private fun mapConditions(licenceVersion: LicenceVersion, licenceData: LicenceData): MigrateConditions {
+  private fun mapConditions(licenceData: LicenceData): MigrateConditions {
     licenceData.licenceConditions?.let { conditions ->
 
-      val additional = mapAdditionalConditions(conditions, licenceVersion)
+      val additional = mapAdditionalConditions(conditions, licenceData)
 
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
       return MigrateConditions(bespoke = bespoke, additional = additional)
@@ -209,13 +213,13 @@ class MigrationRequestService(
 
   private fun mapAdditionalConditions(
     conditions: LicenceConditions,
-    licenceVersion: LicenceVersion,
+    licenceData: LicenceData,
   ): MutableList<MigrateAdditionalCondition> {
     val additional = mutableListOf<MigrateAdditionalCondition>()
 
     conditions.additional?.let {
       val conditionsVersion = attemptToGuessVersion(conditions.additional)!!
-      LicenceConditionRenderer.renderConditions(licenceVersion.licence, conditionsVersion).forEach {
+      LicenceConditionRenderer.renderConditions(licenceData, conditionsVersion).forEach {
         additional.add(
           MigrateAdditionalCondition(
             text = it.text!!,
@@ -261,9 +265,20 @@ class MigrationRequestService(
 
   fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
     if (reportingDate.isNullOrBlank() || reportingTime.isNullOrBlank()) return null
+    var date: LocalDate
+    try {
+      date = LocalDate.parse(reportingDate, formatter)
+    } catch (e: DateTimeParseException) {
+      throw MigrationValidationException("Invalid date format: $reportingDate")
+    }
 
-    val date = LocalDate.parse(reportingDate, formatter)
-    val time = reportingTime.let { LocalTime.parse(it) }
+    var time: LocalTime
+    try {
+      time = reportingTime.let { LocalTime.parse(it) }
+    } catch (e: DateTimeParseException) {
+      throw MigrationValidationException("Invalid time format: $reportingTime")
+    }
+
     return LocalDateTime.of(date, time)
   }
 
@@ -324,7 +339,7 @@ class MigrationRequestService(
     return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for booking id $bookingId")
   }
 
-  private fun isApproved(licenceVersion: LicenceVersion): Boolean {
+  private fun isApproved(licenceVersion: MigrationLicenceVersion): Boolean {
     val prisonerHdcStatus = prisonApiClient
       .getHdcStatuses(listOf(licenceVersion.bookingId))
       .firstOrNull()
@@ -364,7 +379,7 @@ class MigrationRequestService(
     }
   }
 
-  private fun getLicenceVersion(activeLicenceId: Long): LicenceVersion {
+  private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
     val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
     return licenceVersion
@@ -372,5 +387,6 @@ class MigrationRequestService(
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
+    val mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
   }
 }

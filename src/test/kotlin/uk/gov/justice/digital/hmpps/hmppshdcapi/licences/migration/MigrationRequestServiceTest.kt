@@ -215,7 +215,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing HDCAD date")
+      .hasMessage("Licence has missing HDCAD date")
   }
 
   @Test
@@ -253,7 +253,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Invalid status: ACTIVE")
+      .hasMessage("Licence has invalid status: ACTIVE")
   }
 
   @Test
@@ -272,7 +272,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Restricted patient")
+      .hasMessage("Licence has restricted patient")
   }
 
   @Test
@@ -292,7 +292,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("HDCAD is in the future: $hdcad")
+      .hasMessage("Licence has HDCAD in the future: $hdcad")
   }
 
   @Test
