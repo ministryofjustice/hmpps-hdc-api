@@ -52,6 +52,7 @@
     <ID>MaxLineLength:V2Conditions.kt:text = "You will be subject to trail monitoring. Your whereabouts will be electronically monitored by GPS Satellite Tagging, ending on [INSERT END DATE], and you must cooperate with the monitoring as directed by your supervising officer unless otherwise authorised by your supervising officer."</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt:LicenceConditionFieldMerger$fun mergeIfRequired: Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt:LicenceConditionRenderer$fun renderConditions: List&lt;ConvertedBespokeCondition&gt;</ID>
+    <ID>SwallowedException:MigrationRequestService.kt:MigrationRequestService$e: DatabindException</ID>
     <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$fun processLicence</ID>
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt:MigrationProcessService$e: Exception</ID>
     <ID>TooManyFunctions:MigrationRequestService.kt:MigrationRequestService</ID>

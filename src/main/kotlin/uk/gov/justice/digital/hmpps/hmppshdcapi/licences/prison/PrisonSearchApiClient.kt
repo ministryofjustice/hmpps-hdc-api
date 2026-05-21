@@ -31,7 +31,7 @@ class PrisonSearchApiClient(@param:Qualifier("oauthPrisonerSearchClient") val pr
       .bodyValue(PrisonerSearchByPrisonerNumbersRequest(prisonNumbers))
       .retrieve()
       .bodyToMono(typeReference<List<Prisoner>>())
-      .block()
+      .block() ?: emptyList()
   }
 
   data class PrisonerSearchByBookingIdsRequest(

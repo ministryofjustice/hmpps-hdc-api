@@ -185,7 +185,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
     assertThat(migrationRepository.getMigrationLogCount() - originalLogSize).isEqualTo(1)
-    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Not Active Booking id, prisoner booking id :666 != licence booking id: 11")
+    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Old booking id in hdc, 11 != 666 prisoner booking id, status: INACTIVE OUT")
   }
 
   @Sql(

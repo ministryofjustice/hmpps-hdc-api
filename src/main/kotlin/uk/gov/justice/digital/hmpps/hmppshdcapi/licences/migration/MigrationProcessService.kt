@@ -39,7 +39,7 @@ class MigrationProcessService(
       do {
         log.info("HDC migration: Processing batch {} (lastProcessedId={}, size={})", batch, lastProcessedId, BATCH_SIZE)
 
-        licenceVersionIds = migrationRepository.getMigratableLicences(
+        licenceVersionIds = migrationRepository.getMigratableLicenceBatch(
           lastProcessedId = lastProcessedId,
           batchSize = BATCH_SIZE,
         )
@@ -156,7 +156,7 @@ class MigrationProcessService(
             logFailure(
               licenceDetail.licenceVersionId,
               licenceDetail.bookingId,
-              "Not Active Booking id, prisoner booking id :${it.bookingId} != licence booking id: ${licenceDetail.bookingId}",
+              "Old booking id in hdc, ${licenceDetail.bookingId} != ${it.bookingId} prisoner booking id, status: ${it.status}",
               retry = false,
               MigrationErrorSource.HDC,
             )
