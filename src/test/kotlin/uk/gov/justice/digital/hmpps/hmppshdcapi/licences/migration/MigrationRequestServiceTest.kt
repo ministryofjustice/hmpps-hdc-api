@@ -72,6 +72,20 @@ class MigrationRequestServiceTest {
   }
 
   @Test
+  fun whenDayNotSpecificAndAllFromAndAllUntilAreNotGivenThenResultsAreEmpty() {
+    // Given
+    val curfewHours = createCurfewHours(
+      daySpecificInputs = Decision.NO,
+    )
+
+    // When
+    val result = toMigrateCurfewTimes(curfewHours)
+
+    // Then
+    assertThat(result).isNotNull.isEmpty()
+  }
+
+  @Test
   fun whenNotDaySpecificAndAllFromTimeAreBeforeUtilTimesThenResultsAreReturnedAsExpected() {
     // Given
     val curfewHours = createCurfewHours(
