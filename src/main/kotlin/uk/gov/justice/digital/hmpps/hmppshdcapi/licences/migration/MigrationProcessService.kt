@@ -73,9 +73,8 @@ class MigrationProcessService(
         .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
         .forEach { (licenceDetail, prisoner) ->
           processBatchedLicence(licenceDetail, prisoner)
-          sleep(50.milliseconds.inWholeMilliseconds)
+          sleep(125.milliseconds.inWholeMilliseconds)
         }
-      sleep(200.milliseconds.inWholeMilliseconds)
     } finally {
       // To prevent out of memory issues
       entityManager.clear()
