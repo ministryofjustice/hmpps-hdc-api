@@ -321,15 +321,18 @@ class MigrationRequestService(
           }
         }
       } else {
-        return DayOfWeek.entries.map { day ->
-          val crossesMidnight = allUntil!!.isBefore(allFrom!!)
-          MigrateCurfewTime(
-            fromDay = day,
-            fromTime = this.allFrom,
-            untilDay = if (crossesMidnight) day.plus(1) else day,
-            untilTime = this.allUntil,
-          )
+        if (allUntil != null && allFrom != null) {
+          return DayOfWeek.entries.map { day ->
+            val crossesMidnight = allUntil!!.isBefore(allFrom!!)
+            MigrateCurfewTime(
+              fromDay = day,
+              fromTime = this.allFrom,
+              untilDay = if (crossesMidnight) day.plus(1) else day,
+              untilTime = this.allUntil,
+            )
+          }
         }
+        return emptyList()
       }
     }
   }
