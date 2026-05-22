@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
-import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
+import io.netty.channel.unix.Errors
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.reactive.function.client.WebClientRequestException
+import reactor.netty.http.client.PrematureCloseException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
@@ -25,9 +26,6 @@ class MigrationProcessService(
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
 ) {
-
-  @PersistenceContext
-  private lateinit var entityManager: EntityManager
 
   @Async
   fun migrateToCvl() {
@@ -63,19 +61,15 @@ class MigrationProcessService(
   }
 
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
-    try {
-      val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
-      performPrisonerSearchByPrisonNumber(licenceDetails)
-        .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
-        .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
-        .forEach { (licenceDetail, prisoner) ->
-          processBatchedLicence(licenceDetail, prisoner)
-          sleep(100.milliseconds.inWholeMilliseconds)
-        }
-    } finally {
-      // To prevent out of memory issues
-      entityManager.clear()
-    }
+    val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
+    performPrisonerSearchByPrisonNumber(licenceDetails)
+      .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
+      .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
+      .forEach { (licenceDetail, prisoner) ->
+        processBatchedLicence(licenceDetail, prisoner)
+        sleep(50.milliseconds.inWholeMilliseconds)
+      }
+    sleep(200.milliseconds.inWholeMilliseconds)
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
@@ -90,6 +84,12 @@ class MigrationProcessService(
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
     } catch (e: MigrationValidationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+    } catch (e: PrematureCloseException) {
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+    } catch (e: Errors.NativeIoException) {
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+    } catch (e: WebClientRequestException) {
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
     } catch (e: Exception) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
     }
@@ -109,9 +109,14 @@ class MigrationProcessService(
     } catch (e: MigrationValidationException) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
       throw e
+    } catch (e: PrematureCloseException) {
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+    } catch (e: Errors.NativeIoException) {
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+    } catch (e: WebClientRequestException) {
+      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
     } catch (e: Exception) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
-      throw e
     }
   }
 
