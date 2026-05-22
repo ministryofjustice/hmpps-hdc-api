@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration
 
 import io.netty.channel.unix.Errors
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -26,6 +28,9 @@ class MigrationProcessService(
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
 ) {
+
+  @PersistenceContext
+  private lateinit var entityManager: EntityManager
 
   @Async
   fun migrateToCvl() {
@@ -61,15 +66,20 @@ class MigrationProcessService(
   }
 
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
-    val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
-    performPrisonerSearchByPrisonNumber(licenceDetails)
-      .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
-      .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
-      .forEach { (licenceDetail, prisoner) ->
-        processBatchedLicence(licenceDetail, prisoner)
-        sleep(50.milliseconds.inWholeMilliseconds)
-      }
-    sleep(200.milliseconds.inWholeMilliseconds)
+    try {
+      val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
+      performPrisonerSearchByPrisonNumber(licenceDetails)
+        .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
+        .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
+        .forEach { (licenceDetail, prisoner) ->
+          processBatchedLicence(licenceDetail, prisoner)
+          sleep(50.milliseconds.inWholeMilliseconds)
+        }
+      sleep(200.milliseconds.inWholeMilliseconds)
+    } finally {
+      // To prevent out of memory issues
+      entityManager.clear()
+    }
   }
 
   private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
