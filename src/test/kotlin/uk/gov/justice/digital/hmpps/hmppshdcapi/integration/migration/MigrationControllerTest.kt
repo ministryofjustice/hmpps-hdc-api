@@ -58,6 +58,26 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licence-with-withdrawal-in-rejectedCas2Referral-missing-fields.sql",
+  )
+  @Test
+  fun `Migrate licence with bassWithdrawn and approvedPremises in RejectedCas2Referral to CVL successfully`() {
+    // Given
+    val licenceVersionId = 1L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+
+    // Then
+    response.expectStatus().isOk
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-licences-with-unknown_conditions.sql",
   )
   @Test

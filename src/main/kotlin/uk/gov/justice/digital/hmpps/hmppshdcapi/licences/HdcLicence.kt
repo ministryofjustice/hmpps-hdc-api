@@ -137,6 +137,8 @@ data class RejectedCas2Referral(
   val bassAreaCheck: Cas2AreaCheck? = null,
   val rejectionReason: CasRejectionReason? = null,
   val withdrawal: Withdrawal? = null,
+  val approvedPremises: ApprovedPremises? = null,
+  val bassWithdrawn: DecisionMade? = null,
 )
 
 @JsonInclude(NON_NULL)
