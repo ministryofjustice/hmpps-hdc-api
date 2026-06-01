@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.3.1"
-  id("org.owasp.dependencycheck") version "12.2.1"
+  id("org.owasp.dependencycheck") version "12.2.2"
   kotlin("plugin.spring") version "2.3.21"
   kotlin("plugin.jpa") version "2.3.21"
   id("dev.detekt") version "2.0.0-alpha.3"
@@ -18,7 +18,7 @@ ext["logback.version"] = "1.5.25"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.2.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:2.5.0")
 
   // Fix for CVE-2025-48924
   implementation("org.apache.commons:commons-lang3:3.20.0")
@@ -36,13 +36,13 @@ dependencies {
   runtimeOnly("org.postgresql:postgresql:42.7.11")
 
   // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.3.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.3.2")
 
   // OpenAPI
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
   // To help override SAR
-  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.3.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.5.0")
 
   // New in Spring Boot 4: Dedicated starter for HTTP clients
   implementation("org.springframework.boot:spring-boot-starter-webclient")
