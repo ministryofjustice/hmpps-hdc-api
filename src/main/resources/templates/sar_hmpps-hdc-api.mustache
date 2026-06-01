@@ -26,26 +26,26 @@
 {{/eligibility}}
 
 <br>
-<h4>Bass referral</h4>
+<h4>Community Accommodation referral</h4>
 {{#bassReferral}}
     <table class="summary-list">
-        <tr><td>Bass requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
+        <tr><td>Community Accommodation requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
         <tr><td>Specific area</td><td>{{ optionalValue bassRequest.specificArea }}</td></tr>
         <tr><td>Additional information</td><td>{{ optionalValue bassRequest.additionalInformation }}</td></tr>
         <tr><td>Proposed county</td><td>{{ optionalValue bassRequest.proposedCounty }}</td></tr>
         <tr><td>Proposed town</td><td>{{ optionalValue bassRequest.proposedTown }}</td></tr>
         <tr><td>Approved premises required</td><td>{{ optionalValue approvedPremises.required }}</td></tr>
-        <tr><td>Bass withdrawn</td><td>{{ optionalValue bassWithdrawn.decision }}</td></tr>
+        <tr><td>Community Accommodation request withdrawn</td><td>{{ optionalValue bassWithdrawn.decision }}</td></tr>
         <tr><td>Approved premises required yes/no</td><td>{{ optionalValue bassAreaCheck.approvedPremisesRequiredYesNo }}</td></tr>
-        <tr><td>Bass area check seen</td><td>{{ optionalValue bassAreaCheck.bassAreaCheckSeen }}</td></tr>
-        <tr><td>Bass area reason</td><td>{{ optionalValue bassAreaCheck.bassAreaReason }}</td></tr>
-        <tr><td>Bass area suitable</td><td>{{ optionalValue bassAreaCheck.bassAreaSuitable }}</td></tr>
-        <tr><td>Bass area</td><td>{{ optionalValue bassOffer.bassArea }}</td></tr>
-        <tr><td>Bass offer details</td><td>{{ optionalValue bassOffer.bassOfferDetails }}</td></tr>
+        <tr><td>Community Accommodation area check seen</td><td>{{ optionalValue bassAreaCheck.bassAreaCheckSeen }}</td></tr>
+        <tr><td>Community Accommodation area reason</td><td>{{ optionalValue bassAreaCheck.bassAreaReason }}</td></tr>
+        <tr><td>Community Accommodation area suitable</td><td>{{ optionalValue bassAreaCheck.bassAreaSuitable }}</td></tr>
+        <tr><td>Community Accommodation area</td><td>{{ optionalValue bassOffer.bassArea }}</td></tr>
+        <tr><td>Community Accommodation offer details</td><td>{{ optionalValue bassOffer.bassOfferDetails }}</td></tr>
     </table>
     <table class="data-table">
         <tr>
-            <td class="data-column-20">Bass offer accepted</td>
+            <td class="data-column-20">Community Accommodation offer accepted</td>
             <td class="data-column-20">Address line 1</td>
             <td class="data-column-20">Address line 2</td>
             <td class="data-column-20">Town / City</td>
@@ -79,24 +79,24 @@
 {{/bassReferral}}
 
 <br>
-<h4>Bass rejections</h4>
+<h4>Community Accommodation request rejections</h4>
 {{#bassRejections}}
-    <h5>Bass rejection</h5>
+    <h5>Community Accommodation request rejection</h5>
     <table class="summary-list">
         <tr><td>Rejection reason</td><td>{{ optionalValue rejectionReason }}</td></tr>
         <tr><td>Withdrawal</td><td>{{ optionalValue withdrawal }}</td></tr>
-        <tr><td>Bass requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
+        <tr><td>Community Accommodation requested</td><td>{{ optionalValue bassRequest.bassRequested }}</td></tr>
         <tr><td>Specific area</td><td>{{ optionalValue bassRequest.specificArea }}</td></tr>
         <tr><td>Additional information</td><td>{{ optionalValue bassRequest.additionalInformation }}</td></tr>
         <tr><td>Proposed county</td><td>{{ optionalValue bassRequest.proposedCounty }}</td></tr>
         <tr><td>Proposed town</td><td>{{ optionalValue bassRequest.proposedTown }}</td></tr>
         <tr><td>Approved premises required yes/no</td><td>{{ optionalValue bassAreaCheck.approvedPremisesRequiredYesNo }}</td></tr>
-        <tr><td>Bass area check seen</td><td>{{ optionalValue bassAreaCheck.bassAreaCheckSeen }}</td></tr>
-        <tr><td>Bass area reason</td><td>{{ optionalValue bassAreaCheck.bassAreaReason }}</td></tr>
-        <tr><td>Bass area suitable</td><td>{{ optionalValue bassAreaCheck.bassAreaSuitable }}</td></tr>
-        <tr><td>Bass accepted</td><td>{{ optionalValue bassOffer.bassAccepted }}</td></tr>
-        <tr><td>Bass area</td><td>{{ optionalValue bassOffer.bassArea }}</td></tr>
-        <tr><td>Bass offer details</td><td>{{ optionalValue bassOffer.bassOfferDetails }}</td></tr>
+        <tr><td>Community Accommodation area check seen</td><td>{{ optionalValue bassAreaCheck.bassAreaCheckSeen }}</td></tr>
+        <tr><td>Community Accommodation area reason</td><td>{{ optionalValue bassAreaCheck.bassAreaReason }}</td></tr>
+        <tr><td>Community Accommodation area suitable</td><td>{{ optionalValue bassAreaCheck.bassAreaSuitable }}</td></tr>
+        <tr><td>Community Accommodation request accepted</td><td>{{ optionalValue bassOffer.bassAccepted }}</td></tr>
+        <tr><td>Community Accommodation area</td><td>{{ optionalValue bassOffer.bassArea }}</td></tr>
+        <tr><td>Community Accommodation offer details</td><td>{{ optionalValue bassOffer.bassOfferDetails }}</td></tr>
     </table>
     <table class="data-table">
         <tr>
