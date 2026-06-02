@@ -5,7 +5,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -28,11 +30,23 @@ import java.util.stream.Stream
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
 
+  private lateinit var cvlMockServer: CvlApiMockServer
+
   @Autowired
   private lateinit var migrationRepository: MigrationRepository
 
   private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")!!
     .bufferedReader(UTF_8).readText()
+
+  @BeforeEach
+  fun resetMocks() {
+    cvlMockServer = CvlApiMockServer().apply { start() }
+  }
+
+  @AfterEach
+  fun tearDown() {
+    cvlMockServer.stop()
+  }
 
   @Sql(
     "classpath:test_data/reset.sql",
@@ -470,7 +484,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   )
 
   companion object {
-    private val cvlMockServer = CvlApiMockServer()
     private val prisonerSearchMockServer = PrisonerSearchMockServer()
     private val prisonApiMockServer = PrisonApiMockServer()
 
@@ -482,7 +495,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     fun startWireMocks() {
       hmppsAuthMockServer.start()
       hmppsAuthMockServer.stubGrantToken()
-      cvlMockServer.start()
       prisonerSearchMockServer.start()
       prisonApiMockServer.start()
     }
@@ -491,7 +503,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     @AfterAll
     fun stopWireMocks() {
       hmppsAuthMockServer.stop()
-      cvlMockServer.stop()
       prisonerSearchMockServer.stop()
       prisonApiMockServer.stop()
     }
