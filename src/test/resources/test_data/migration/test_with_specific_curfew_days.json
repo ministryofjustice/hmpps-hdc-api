@@ -42,7 +42,8 @@
     "addressLine1" : "addressLine1",
     "addressLine2" : "addressLine2",
     "townOrCity" : "addressTown",
-    "postcode" : "TST1 1TS"
+    "postcode" : "TST1 1TS",
+    "addressType" : "RESIDENTIAL"
   },
   "curfew" : {
     "curfewTimes" : [ {

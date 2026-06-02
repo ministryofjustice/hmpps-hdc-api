@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.HdcStatus
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -226,6 +227,9 @@ data class MigrateAddress(
 
   @field:Schema(description = "Postcode", example = "SA42 1DQ")
   val postcode: String?,
+
+  @field:Schema(description = "Address type", example = "RESIDENTIAL")
+  val addressType: AddressType,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

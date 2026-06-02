@@ -42,7 +42,8 @@
     "addressLine1" : "1 Test Street",
     "addressLine2" : "Test Area",
     "townOrCity" : "Test Town",
-    "postcode" : "T33 3ST"
+    "postcode" : "T33 3ST",
+    "addressType" : "CAS"
   },
   "curfew" : {
     "curfewTimes" : [ {
