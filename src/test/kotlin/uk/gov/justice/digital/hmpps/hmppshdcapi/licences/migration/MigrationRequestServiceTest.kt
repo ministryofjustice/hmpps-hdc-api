@@ -540,7 +540,7 @@ class MigrationRequestServiceTest {
     val licenceData = baseLicenceData(
       proposedAddress = ProposedAddress(
         curfewAddress = CurfewAddress(
-          addressLine1 = "1".repeat(101),
+          addressLine1 = "1".repeat(201),
           addressTown = null,
           postCode = "POSTCODE_ONLY",
         ),
@@ -552,7 +552,7 @@ class MigrationRequestServiceTest {
 
     // Then
     assertThat(result.postcode).isEqualTo("POSTCODE_O")
-    assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
+    assertThat(result.addressLine1).isEqualTo("1".repeat(200))
   }
 
   private fun baseLicenceData(

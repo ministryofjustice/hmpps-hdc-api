@@ -369,7 +369,7 @@ class MigrationRequestService(
       } ?: throw MigrationValidationException("No valid curfew address found")
 
       return MigrateAddress(
-        addressLine1 = address!!.addressLine1.truncate(100),
+        addressLine1 = address!!.addressLine1.truncate(200),
         addressLine2 = address.addressLine2,
         townOrCity = address.addressTown,
         postcode = address.postCode.truncate(10),
