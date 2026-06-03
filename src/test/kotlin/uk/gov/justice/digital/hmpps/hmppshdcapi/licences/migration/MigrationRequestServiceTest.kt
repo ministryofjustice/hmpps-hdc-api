@@ -416,7 +416,7 @@ class MigrationRequestServiceTest {
   }
 
   @Test
-  fun shouldMapBassApprovedPremisesAddressWhenCurfewApprovedPremisesMissing() {
+  fun shouldMapCas2ApprovedPremisesAddressWhenPresent() {
     // Given
     val licenceData = baseLicenceData(
       bassReferral = CurrentCas2Referral(
@@ -437,7 +437,7 @@ class MigrationRequestServiceTest {
   }
 
   @Test
-  fun shouldMapProposedResidentialAddressWhenNoCasAddressesExist() {
+  fun shouldMapProposedResidentialAddressWhenCurfewAddressPresent() {
     // Given
     val licenceData = baseLicenceData(
       proposedAddress = ProposedAddress(
@@ -454,7 +454,7 @@ class MigrationRequestServiceTest {
   }
 
   @Test
-  fun shouldMapBassOfferWhenNoHigherPriorityAddressesExist() {
+  fun shouldMapCas2OfferAddressWhenPresent() {
     // Given
     val licenceData = baseLicenceData(
       bassReferral = CurrentCas2Referral(
