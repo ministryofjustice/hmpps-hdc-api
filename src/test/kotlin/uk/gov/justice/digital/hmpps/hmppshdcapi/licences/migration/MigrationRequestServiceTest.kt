@@ -521,6 +521,27 @@ class MigrationRequestServiceTest {
         curfewAddress = CurfewAddress(
           addressLine1 = null,
           addressTown = null,
+          postCode = "POSTC_ONLY",
+        ),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.postcode).isEqualTo("POSTC_ONLY")
+    assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
+  }
+
+  @Test
+  fun shouldTrimAddressFieldsWhenAreTooLarge() {
+    // Given
+    val licenceData = baseLicenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = CurfewAddress(
+          addressLine1 = "1".repeat(101),
+          addressTown = null,
           postCode = "POSTCODE_ONLY",
         ),
       ),
@@ -530,7 +551,7 @@ class MigrationRequestServiceTest {
     val result = migrationRequestService.mapCurfewAddress(licenceData)
 
     // Then
-    assertThat(result.postcode).isEqualTo("POSTCODE_ONLY")
+    assertThat(result.postcode).isEqualTo("POSTCODE_O")
     assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
   }
 

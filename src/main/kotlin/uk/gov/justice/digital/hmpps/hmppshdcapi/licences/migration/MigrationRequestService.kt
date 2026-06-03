@@ -244,9 +244,9 @@ class MigrationRequestService(
 
   private fun mapAppointmentDetails(licenceData: LicenceData): MigrateAppointmentDetails? = licenceData.reporting?.reportingInstructions?.let { ri ->
     MigrateAppointmentDetails(
-      person = ri.name,
+      person = ri.name.truncate(100),
       time = toLocalDateTimeOrDate(ri.reportingDate, ri.reportingTime),
-      telephone = ri.telephone,
+      telephone = ri.telephone.sanitiseTelephone(),
       address = MigrateAppointmentAddress(
         firstLine = ri.buildingAndStreet1,
         secondLine = ri.buildingAndStreet2,
@@ -255,6 +255,10 @@ class MigrationRequestService(
       ),
     )
   }
+
+  private fun String?.truncate(maxLength: Int): String? = this?.trim()?.take(maxLength)
+
+  private fun String?.sanitiseTelephone(): String? = this?.replace(Regex("\\D"), "")
 
   fun toLocalDateTimeOrDate(reportingDate: String?, reportingTime: String?): LocalDateTime? {
     if (reportingDate.isNullOrBlank() || reportingTime.isNullOrBlank()) return null
@@ -365,10 +369,10 @@ class MigrationRequestService(
       } ?: throw MigrationValidationException("No valid curfew address found")
 
       return MigrateAddress(
-        addressLine1 = address!!.addressLine1,
+        addressLine1 = address!!.addressLine1.truncate(100),
         addressLine2 = address.addressLine2,
         townOrCity = address.addressTown,
-        postcode = address.postCode,
+        postcode = address.postCode.truncate(10),
         addressType = addressType,
       )
     }
