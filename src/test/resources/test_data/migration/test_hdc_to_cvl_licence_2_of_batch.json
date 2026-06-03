@@ -42,7 +42,8 @@
     "addressLine1" : "100 CAS2 Street",
     "addressLine2" : "The Avenue",
     "townOrCity" : "Test City",
-    "postcode" : "TS12 TST"
+    "postcode" : "TS12 TST",
+    "addressType" : "CAS"
   },
   "curfew" : {
     "curfewTimes" : [ {

@@ -37,6 +37,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.attemptToGuessVersion
 import java.time.DayOfWeek
 import java.time.DayOfWeek.FRIDAY
@@ -232,14 +233,6 @@ class MigrationRequestService(
     return additional
   }
 
-  private fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
-    val address = getAddress(licenceData)!!
-
-    return address.let {
-      MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
-    }
-  }
-
   private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
     MigrateCurfewDetails(
       curfewTimes = it.curfewHours?.let { curfew -> toMigrateCurfewTimes(curfew) },
@@ -323,7 +316,7 @@ class MigrationRequestService(
       } else {
         if (allUntil != null && allFrom != null) {
           return DayOfWeek.entries.map { day ->
-            val crossesMidnight = allUntil!!.isBefore(allFrom!!)
+            val crossesMidnight = allUntil.isBefore(allFrom)
             MigrateCurfewTime(
               fromDay = day,
               fromTime = this.allFrom,
@@ -360,27 +353,32 @@ class MigrationRequestService(
     SUNDAY -> if (from) sundayFrom else sundayUntil
   }
 
-  fun getAddress(licenceData: LicenceData): MigrateAddress? {
-    var address: Address? = null
+  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
     with(licenceData) {
-      address = when {
-        curfew?.approvedPremisesAddress != null -> curfew.approvedPremisesAddress
-        bassReferral?.approvedPremisesAddress != null -> bassReferral.approvedPremisesAddress
-        proposedAddress?.curfewAddress != null -> proposedAddress.curfewAddress
-        bassReferral?.bassOffer != null -> bassReferral.bassOffer
-        else -> null
-      }
-    }
+      val (address, addressType) = listOf(
+        curfew?.approvedPremisesAddress to AddressType.CAS,
+        bassReferral?.approvedPremisesAddress to AddressType.CAS,
+        proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
+        bassReferral?.bassOffer to AddressType.CAS,
+      ).firstOrNull { (address, addressType) ->
+        address?.let(::isValidAddress) == true
+      } ?: throw MigrationValidationException("No valid curfew address found")
 
-    return address?.let {
-      MigrateAddress(
-        it.addressLine1,
-        it.addressLine2,
-        it.addressTown,
-        it.postCode,
+      return MigrateAddress(
+        addressLine1 = address!!.addressLine1,
+        addressLine2 = address.addressLine2,
+        townOrCity = address.addressTown,
+        postcode = address.postCode,
+        addressType = addressType,
       )
     }
   }
+
+  fun isValidAddress(address: Address): Boolean = listOf(
+    address.addressLine1,
+    address.addressTown,
+    address.postCode,
+  ).count { !it.isNullOrBlank() } > 0
 
   private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
     val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)

@@ -8,9 +8,17 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AddressAndPhone
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Cas2Offer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Curfew
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurrentCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.OfferAccepted
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProposedAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
@@ -18,6 +26,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -379,6 +388,188 @@ class MigrationRequestServiceTest {
     // Then
     assertThat(result).isNull()
   }
+
+  @Test
+  fun shouldMapCurfewApprovedPremisesAddressWhenPresent() {
+    // Given
+    val licenceData = baseLicenceData(
+      curfew = Curfew(
+        approvedPremisesAddress = addressAndPhone("FROM_CURFEW_APPROVED_PREMISES"),
+        firstNight = null,
+        curfewHours = null,
+      ),
+      bassReferral = CurrentCas2Referral(
+        approvedPremisesAddress = addressAndPhone("FROM_BASS_APPROVED_PREMISES"),
+        bassOffer = cas2Offer("FROM_BASS_OFFER"),
+      ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("FROM_PROPOSED_RESIDENTIAL_ADDRESS"),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.addressLine1).isEqualTo("FROM_CURFEW_APPROVED_PREMISES")
+    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+  }
+
+  @Test
+  fun shouldMapCas2ApprovedPremisesAddressWhenPresent() {
+    // Given
+    val licenceData = baseLicenceData(
+      bassReferral = CurrentCas2Referral(
+        approvedPremisesAddress = addressAndPhone("FROM_BASS_APPROVED_PREMISES"),
+        bassOffer = cas2Offer("FROM_BASS_OFFER"),
+      ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("FROM_PROPOSED_RESIDENTIAL_ADDRESS"),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.addressLine1).isEqualTo("FROM_BASS_APPROVED_PREMISES")
+    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+  }
+
+  @Test
+  fun shouldMapProposedResidentialAddressWhenCurfewAddressPresent() {
+    // Given
+    val licenceData = baseLicenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("FROM_PROPOSED_RESIDENTIAL_ADDRESS"),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.addressLine1).isEqualTo("FROM_PROPOSED_RESIDENTIAL_ADDRESS")
+    assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
+  }
+
+  @Test
+  fun shouldMapCas2OfferAddressWhenPresent() {
+    // Given
+    val licenceData = baseLicenceData(
+      bassReferral = CurrentCas2Referral(
+        bassOffer = cas2Offer("FROM_BASS_OFFER"),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.addressLine1).isEqualTo("FROM_BASS_OFFER")
+    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+  }
+
+  @Test
+  fun shouldThrowWhenAllAddressesAreMissing() {
+    // Given
+    val licenceData = baseLicenceData()
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.mapCurfewAddress(licenceData)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("No valid curfew address found")
+  }
+
+  @Test
+  fun shouldThrowWhenAddressesAreBlankOrWhitespaceOnly() {
+    // Given
+    val blankAddressPhone = AddressAndPhone("   ", addressTown = "\t", postCode = "")
+    val blankCurfewAddress = CurfewAddress("   ", addressTown = "\t", postCode = "")
+    val blankCas2Offer = Cas2Offer("   ", addressTown = "\t", postCode = "", bassAccepted = OfferAccepted.YES)
+
+    val licenceData = baseLicenceData(
+      curfew = Curfew(
+        approvedPremisesAddress = blankAddressPhone,
+        firstNight = null,
+        curfewHours = null,
+      ),
+      bassReferral = CurrentCas2Referral(
+        approvedPremisesAddress = blankAddressPhone,
+        bassOffer = blankCas2Offer,
+      ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = blankCurfewAddress,
+      ),
+    )
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.mapCurfewAddress(licenceData)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("No valid curfew address found")
+  }
+
+  @Test
+  fun shouldTreatAddressAsValidWhenOnlyOneFieldIsPopulated() {
+    // Given
+    val licenceData = baseLicenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = CurfewAddress(
+          addressLine1 = null,
+          addressTown = null,
+          postCode = "POSTCODE_ONLY",
+        ),
+      ),
+    )
+
+    // When
+    val result = migrationRequestService.mapCurfewAddress(licenceData)
+
+    // Then
+    assertThat(result.postcode).isEqualTo("POSTCODE_ONLY")
+    assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
+  }
+
+  private fun baseLicenceData(
+    curfew: Curfew? = null,
+    bassReferral: CurrentCas2Referral? = null,
+    proposedAddress: ProposedAddress? = null,
+  ) = LicenceData(
+    curfew = curfew,
+    bassReferral = bassReferral,
+    proposedAddress = proposedAddress,
+    eligibility = null,
+    risk = null,
+    reporting = null,
+    victim = null,
+    licenceConditions = null,
+    document = null,
+    approval = null,
+    finalChecks = null,
+  )
+
+  private fun curfewAddress(addressLine1: String) = CurfewAddress(
+    addressLine1 = addressLine1,
+    addressTown = "TEST_TOWN",
+    postCode = "TEST_POSTCODE",
+  )
+
+  private fun addressAndPhone(addressLine1: String) = AddressAndPhone(
+    addressLine1 = addressLine1,
+    addressTown = "TEST_TOWN",
+    postCode = "TEST_POSTCODE",
+  )
+
+  private fun cas2Offer(addressLine1: String) = Cas2Offer(
+    addressLine1 = addressLine1,
+    addressTown = "TEST_TOWN",
+    postCode = "TEST_POSTCODE",
+    bassAccepted = OfferAccepted.YES,
+  )
 
   private fun toMigrateCurfewTimes(curfewHours: CurfewHours): List<MigrateCurfewTime> = migrationRequestService.toMigrateCurfewTimes(curfewHours)
 

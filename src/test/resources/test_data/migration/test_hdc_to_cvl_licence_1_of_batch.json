@@ -153,7 +153,8 @@
     "addressLine1" : "Test Street",
     "addressLine2" : "",
     "townOrCity" : "Test Town",
-    "postcode" : "TT1 1TT"
+    "postcode" : "TT1 1TT",
+    "addressType" : "CAS"
   },
   "curfew" : {
     "curfewTimes" : [ {
