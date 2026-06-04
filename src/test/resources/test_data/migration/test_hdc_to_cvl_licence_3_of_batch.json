@@ -36,7 +36,11 @@
   "lifecycle" : { },
   "conditions" : {
     "bespoke" : [ ],
-    "additional" : [ ]
+    "additional" : [ {
+      "text" : "To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.",
+      "conditionCode" : "POLYGRAPH",
+      "conditionsVersion" : 2
+    } ]
   },
   "curfewAddress" : {
     "addressLine1" : "1 Test Street",

@@ -6,7 +6,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AddressAndPhone
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.AuditEventRepository
@@ -16,11 +20,13 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurfewHours
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.CurrentCas2Referral
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.Decision
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.OfferAccepted
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.ProposedAddress
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationLicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
@@ -533,6 +539,152 @@ class MigrationRequestServiceTest {
     assertThat(result.postcode).isEqualTo("POSTCODE_ONLY")
     assertThat(result.addressType).isEqualTo(AddressType.RESIDENTIAL)
   }
+
+  @Test
+  fun shouldThrowWhenAdditionalConditionsVersionCannotBeDetermined() {
+    // Given
+    val licenceData = licenceData()
+    val licence = mock<MigrationLicenceVersion>()
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.validate(licenceData, licence)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Licence additional conditions version not determined!")
+  }
+
+  @Test
+  fun shouldNotThrowWhenOnlyPolygraphConditionExists() {
+    // Given
+    val licenceData = licenceData(
+      licenceConditions = licenceConditions(
+        additional = mapOf(
+          "POLYGRAPH" to emptyMap(),
+        ),
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+
+    // When
+    migrationRequestService.validate(licenceData, licence)
+
+    // Then
+    verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
+  }
+
+  @Test
+  fun shouldUseRepositoryVersionWhenConditionsContainPolygraphAndDrugTesting() {
+    // Given
+    val bookingId = 123L
+    val versionId = 2
+    val licenceData = licenceData(
+      licenceConditions = licenceConditions(
+        additional = mapOf(
+          "POLYGRAPH" to emptyMap(),
+          "DRUG_TESTING" to emptyMap(),
+        ),
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+
+    whenever(licence.bookingId).thenReturn(bookingId)
+    whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
+
+    // When
+    migrationRequestService.validate(licenceData, licence)
+
+    // Then
+    verify(migrationRepository, times(1)).getConditionsVersionFor(bookingId)
+  }
+
+  @Test
+  fun shouldReturnVersionTwoWhenOnlyPolygraphConditionExists() {
+    // Given
+    val licenceData = licenceData(
+      licenceConditions = licenceConditions(
+        additional = mapOf(
+          "POLYGRAPH" to emptyMap(),
+        ),
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+
+    // When
+    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
+
+    // Then
+    assertThat(result).isEqualTo(2)
+    verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
+  }
+
+  @Test
+  fun shouldReturnVersionFromRepositoryWhenPolygraphAndDrugTestingConditionsExist() {
+    // Given
+    val bookingId = 123L
+    val versionId = 2
+    val licenceData = licenceData(
+      licenceConditions = licenceConditions(
+        additional = mapOf(
+          "POLYGRAPH" to emptyMap(),
+          "DRUG_TESTING" to emptyMap(),
+        ),
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+
+    whenever(licence.bookingId).thenReturn(bookingId)
+    whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
+
+    // When
+    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
+
+    // Then
+    assertThat(result).isEqualTo(versionId)
+  }
+
+  @Test
+  fun shouldReturnNullWhenAdditionalConditionsAreMissing() {
+    // Given
+    val licenceData = licenceData()
+    val licence = mock<MigrationLicenceVersion>()
+
+    // When
+    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
+
+    // Then
+    assertThat(result).isNull()
+    verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
+  }
+
+  private fun licenceData(
+    licenceConditions: LicenceConditions? = null,
+  ) = LicenceData(
+    curfew = null,
+    bassReferral = null,
+    proposedAddress = null,
+    eligibility = null,
+    risk = null,
+    reporting = null,
+    victim = null,
+    licenceConditions = licenceConditions,
+    document = null,
+    approval = null,
+    finalChecks = null,
+  )
+
+  private fun licenceConditions(
+    additional: Map<String, Map<String, Any>>? = null,
+  ) = LicenceConditions(
+    bespoke = null,
+    standard = null,
+    additional = additional,
+    conditionsSummary = null,
+  )
 
   private fun baseLicenceData(
     curfew: Curfew? = null,

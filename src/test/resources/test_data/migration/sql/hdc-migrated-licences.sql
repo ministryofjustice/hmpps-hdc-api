@@ -317,7 +317,16 @@ VALUES (1,
                       "wednesdayFrom": "19:00",
                       "wednesdayUntil": "07:00"
                     }
-                  }
+                  },
+                  "licenceConditions": {
+                    "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
+                    "standard": {
+                        "additionalConditionsRequired": "Yes"
+                     },
+                    "additional": {
+                       "POLYGRAPH": {}
+                    }
+                   }
                 }'::jsonb,
         98765,
         1,
@@ -381,7 +390,16 @@ VALUES (1,
                     "approvedPremises": {
                       "required": "Yes"
                     }
-                  }
+                  },
+                  "licenceConditions": {
+                    "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
+                    "standard": {
+                        "additionalConditionsRequired": "Yes"
+                     },
+                    "additional": {
+                       "POLYGRAPH": {}
+                    }
+                   }
                 }'::jsonb,
         12345,
         1,
@@ -449,8 +467,17 @@ VALUES (1,
                       "wednesdayFrom": "19:00",
                       "wednesdayUntil": "07:00"
                     }
-                  }
-                }'::jsonb,
+                  },
+                  "licenceConditions": {
+                    "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
+                    "standard": {
+                        "additionalConditionsRequired": "Yes"
+                     },
+                    "additional": {
+                       "POLYGRAPH": {}
+                    }
+                   }
+        }'::jsonb,
         43210,
         1,
         0,
@@ -508,7 +535,16 @@ VALUES (1,
               "buildingAndStreet1": "Test Street",
               "buildingAndStreet2": ""
             }
-          }
+          },
+          "licenceConditions": {
+            "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
+            "standard": {
+                "additionalConditionsRequired": "Yes"
+             },
+            "additional": {
+               "POLYGRAPH": {}
+            }
+           }
         }'::jsonb,
         98765,
         1,

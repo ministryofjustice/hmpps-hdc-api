@@ -131,7 +131,10 @@ VALUES (1,
                     "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
                     "standard": {
                         "additionalConditionsRequired": "Yes"
-                     }
+                     },
+                    "additional": {
+                       "POLYGRAPH": {}
+                    }
                    }
                 }'::jsonb,
         54222,
