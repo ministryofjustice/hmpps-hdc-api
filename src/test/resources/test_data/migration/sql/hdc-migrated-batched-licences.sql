@@ -312,6 +312,14 @@ VALUES (1,
                    "wednesdayUntil": "07:00",
                    "daySpecificInputs": "Yes"
                  }
+               },
+              "licenceConditions": {
+                "standard": {
+                    "additionalConditionsRequired": "Yes"
+                 },
+                "additional": {
+                   "POLYGRAPH": {}
+                }
                }
         }'::jsonb,
         20,
@@ -384,7 +392,15 @@ VALUES (1,
                     "approvedPremises": {
                       "required": "Yes"
                     }
-                  }
+                  },
+              "licenceConditions": {
+                "standard": {
+                    "additionalConditionsRequired": "Yes"
+                 },
+                "additional": {
+                   "POLYGRAPH": {}
+                }
+               }
         }'::jsonb,
                 30,
                 1,

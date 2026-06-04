@@ -91,7 +91,7 @@ class MigrationRequestService(
 
     val licenceData: LicenceData = extractLicenceDataFromJson(licenceVersion)
 
-    validate(licenceData)
+    validate(licenceData, licenceVersion)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -104,7 +104,7 @@ class MigrationRequestService(
       licence = mapLicenceDetails(licenceVersion, prisoner),
       // See isApproved below should we be rejecting the license if not approved? I would say so!
       lifecycle = mapLifecycleDetails(audits, isApproved(licenceVersion)),
-      conditions = mapConditions(licenceData),
+      conditions = mapConditions(licenceData, licenceVersion),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
@@ -162,10 +162,23 @@ class MigrationRequestService(
     }
   }
 
-  fun validate(licenceData: LicenceData) {
-    licenceData.licenceConditions?.additional?.let {
-      attemptToGuessVersion(it) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+  fun validate(licenceData: LicenceData, licence: MigrationLicenceVersion) {
+    attemptToGuessVersion(licenceData, licence) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+  }
+
+  fun attemptToGuessVersion(licenceData: LicenceData, licence: MigrationLicenceVersion): Int? {
+    val additionalConditions = licenceData.licenceConditions?.additional ?: return null
+    var version = attemptToGuessVersion(additionalConditions)
+    if (version == null && additionalConditions.size == 1 && additionalConditions.containsKey("POLYGRAPH")) {
+      // Text is the same on all versions
+      version = 2
     }
+    if (version == null) {
+      // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
+      version = migrationRepository.getConditionsVersionFor(licence.bookingId)
+      log.debug("HDC migration: used licence to get conditions version {} for licence version id {}", version, licence.id)
+    }
+    return version
   }
 
   private fun mapLicenceDetails(
@@ -200,10 +213,10 @@ class MigrationRequestService(
     )
   }
 
-  private fun mapConditions(licenceData: LicenceData): MigrateConditions {
+  private fun mapConditions(licenceData: LicenceData, licenceVersion: MigrationLicenceVersion): MigrateConditions {
     licenceData.licenceConditions?.let { conditions ->
 
-      val additional = mapAdditionalConditions(conditions, licenceData)
+      val additional = mapAdditionalConditions(conditions, licenceData, licenceVersion)
 
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
       return MigrateConditions(bespoke = bespoke, additional = additional)
@@ -215,11 +228,12 @@ class MigrationRequestService(
   private fun mapAdditionalConditions(
     conditions: LicenceConditions,
     licenceData: LicenceData,
+    licenceVersion: MigrationLicenceVersion,
   ): MutableList<MigrateAdditionalCondition> {
     val additional = mutableListOf<MigrateAdditionalCondition>()
 
     conditions.additional?.let {
-      val conditionsVersion = attemptToGuessVersion(conditions.additional)!!
+      val conditionsVersion = attemptToGuessVersion(licenceData, licenceVersion)!!
       LicenceConditionRenderer.renderConditions(licenceData, conditionsVersion).forEach {
         additional.add(
           MigrateAdditionalCondition(
