@@ -316,10 +316,7 @@ VALUES (1,
               "licenceConditions": {
                 "standard": {
                     "additionalConditionsRequired": "Yes"
-                 },
-                "additional": {
-                   "POLYGRAPH": {}
-                }
+                 }
                }
         }'::jsonb,
         20,

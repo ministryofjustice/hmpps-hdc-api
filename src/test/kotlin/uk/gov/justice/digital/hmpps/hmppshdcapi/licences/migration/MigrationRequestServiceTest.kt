@@ -543,8 +543,18 @@ class MigrationRequestServiceTest {
   @Test
   fun shouldThrowWhenAdditionalConditionsVersionCannotBeDetermined() {
     // Given
-    val licenceData = licenceData()
+    val bookingId = 123L
+    val licenceData = licenceData(
+      licenceConditions = licenceConditions(
+        additional = mapOf(
+          "POLYGRAPH" to emptyMap(),
+          "DRUG_TESTING" to emptyMap(),
+        ),
+      ),
+    )
     val licence = mock<MigrationLicenceVersion>()
+    whenever(licence.bookingId).thenReturn(bookingId)
+    whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(null)
 
     // When / Then
     assertThatThrownBy {
@@ -614,7 +624,7 @@ class MigrationRequestServiceTest {
     val licence = mock<MigrationLicenceVersion>()
 
     // When
-    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
+    val result = migrationRequestService.attemptToGuessVersion(licenceData.licenceConditions!!, licence)
 
     // Then
     assertThat(result).isEqualTo(2)
@@ -641,24 +651,10 @@ class MigrationRequestServiceTest {
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
 
     // When
-    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
+    val result = migrationRequestService.attemptToGuessVersion(licenceData.licenceConditions!!, licence)
 
     // Then
     assertThat(result).isEqualTo(versionId)
-  }
-
-  @Test
-  fun shouldReturnNullWhenAdditionalConditionsAreMissing() {
-    // Given
-    val licenceData = licenceData()
-    val licence = mock<MigrationLicenceVersion>()
-
-    // When
-    val result = migrationRequestService.attemptToGuessVersion(licenceData, licence)
-
-    // Then
-    assertThat(result).isNull()
-    verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
   }
 
   private fun licenceData(
