@@ -163,22 +163,33 @@ class MigrationRequestService(
   }
 
   fun validate(licenceData: LicenceData, licence: MigrationLicenceVersion) {
-    attemptToGuessVersion(licenceData, licence) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+    if (licenceData.licenceConditions?.additional?.isNotEmpty() == true) {
+      attemptToGuessVersion(licenceData.licenceConditions, licence)
+        ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+    }
   }
 
-  fun attemptToGuessVersion(licenceData: LicenceData, licence: MigrationLicenceVersion): Int? {
-    val additionalConditions = licenceData.licenceConditions?.additional ?: return null
-    var version = attemptToGuessVersion(additionalConditions)
-    if (version == null && additionalConditions.size == 1 && additionalConditions.containsKey("POLYGRAPH")) {
-      // Text is the same on all versions
-      version = 2
+  fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
+    if (licenceConditions.additional?.isNotEmpty() == true) {
+      licenceConditions.additional.let {
+        var version = attemptToGuessVersion(it)
+        if (version == null && it?.size == 1 && it.containsKey("POLYGRAPH")) {
+          // Text is the same on all versions
+          version = 2
+        }
+        if (version == null) {
+          // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
+          version = migrationRepository.getConditionsVersionFor(licence.bookingId)
+          log.debug(
+            "HDC migration: used licence to get conditions version {} for licence version id {}",
+            version,
+            licence.id,
+          )
+        }
+        return version
+      }
     }
-    if (version == null) {
-      // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
-      version = migrationRepository.getConditionsVersionFor(licence.bookingId)
-      log.debug("HDC migration: used licence to get conditions version {} for licence version id {}", version, licence.id)
-    }
-    return version
+    return null
   }
 
   private fun mapLicenceDetails(
@@ -232,8 +243,8 @@ class MigrationRequestService(
   ): MutableList<MigrateAdditionalCondition> {
     val additional = mutableListOf<MigrateAdditionalCondition>()
 
-    conditions.additional?.let {
-      val conditionsVersion = attemptToGuessVersion(licenceData, licenceVersion)!!
+    if (conditions.additional?.isNotEmpty() == true) {
+      val conditionsVersion = attemptToGuessVersion(conditions, licenceVersion)!!
       LicenceConditionRenderer.renderConditions(licenceData, conditionsVersion).forEach {
         additional.add(
           MigrateAdditionalCondition(
@@ -244,6 +255,7 @@ class MigrationRequestService(
         )
       }
     }
+
     return additional
   }
 
