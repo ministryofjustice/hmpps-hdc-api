@@ -170,26 +170,23 @@ class MigrationRequestService(
   }
 
   fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
-    if (licenceConditions.additional?.isNotEmpty() == true) {
-      licenceConditions.additional.let {
-        var version = attemptToGuessVersion(it)
-        if (version == null && it?.size == 1 && it.containsKey("POLYGRAPH")) {
-          // Text is the same on all versions
-          version = 2
-        }
-        if (version == null) {
-          // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
-          version = migrationRepository.getConditionsVersionFor(licence.bookingId)
-          log.debug(
-            "HDC migration: used licence to get conditions version {} for licence version id {}",
-            version,
-            licence.id,
-          )
-        }
-        return version
+    licenceConditions.additional.let {
+      var version = attemptToGuessVersion(it)
+      if (version == null && it?.size == 1 && it.containsKey("POLYGRAPH")) {
+        // Text is the same on all versions
+        version = 2
       }
+      if (version == null) {
+        // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
+        version = migrationRepository.getConditionsVersionFor(licence.bookingId)
+        log.debug(
+          "HDC migration: used licence to get conditions version {} for licence version id {}",
+          version,
+          licence.id,
+        )
+      }
+      return version
     }
-    return null
   }
 
   private fun mapLicenceDetails(
