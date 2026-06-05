@@ -369,7 +369,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234AA",
         bookingId = "54222",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = LocalDate.of(2028, 2, 10),
         licenceExpiryDate = LocalDate.of(2028, 3, 30),
         homeDetentionCurfewActualDate = LocalDate.of(2025, 4, 30),
@@ -407,7 +408,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234CC",
         bookingId = "30",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = null,
         licenceExpiryDate = LocalDate.of(2025, 4, 1),
         homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 30),
@@ -445,7 +447,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234EE",
         bookingId = "50",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = null,
         licenceExpiryDate = null,
         homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 30),

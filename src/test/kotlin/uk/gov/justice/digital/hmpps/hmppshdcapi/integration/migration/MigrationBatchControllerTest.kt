@@ -284,7 +284,8 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
   ) = Prisoner(
     prisonerNumber = prisonerNumber,
     bookingId = bookingId,
-    prisonId = "MDI",
+    prisonId = "AWE",
+    lastPrisonId = "MDI",
     topupSupervisionExpiryDate = LocalDate.of(2028, 2, 10),
     licenceExpiryDate = LocalDate.of(2028, 3, 30),
     homeDetentionCurfewActualDate = LocalDate.of(2025, 4, 30),

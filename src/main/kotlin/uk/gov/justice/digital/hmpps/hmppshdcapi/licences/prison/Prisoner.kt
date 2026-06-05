@@ -7,6 +7,7 @@ data class Prisoner(
   val prisonerNumber: String,
   val bookingId: String,
   val prisonId: String?,
+  var lastPrisonId: String?,
   @field:JsonFormat(pattern = "yyyy-MM-dd")
   val topupSupervisionExpiryDate: LocalDate?,
   @field:JsonFormat(pattern = "yyyy-MM-dd")

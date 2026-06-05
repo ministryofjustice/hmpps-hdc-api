@@ -128,7 +128,7 @@ class MigrationRequestService(
   )
 
   private fun mapPrisonDetails(prisoner: Prisoner) = MigratePrisonDetails(
-    prisonCode = prisoner.prisonId,
+    prisonCode = prisoner.lastPrisonId,
     prisonDescription = prisoner.prisonName ?: prisoner.locationDescription,
     prisonTelephone = null,
   )
