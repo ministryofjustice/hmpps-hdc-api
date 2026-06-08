@@ -128,9 +128,7 @@ class MigrationRequestService(
   )
 
   private fun mapPrisonDetails(prisoner: Prisoner) = MigratePrisonDetails(
-    prisonCode = prisoner.prisonId,
-    prisonDescription = prisoner.prisonName ?: prisoner.locationDescription,
-    prisonTelephone = null,
+    prisonCode = prisoner.lastPrisonId ?: throw MigrationValidationException("Prison code not found for prisoner: ${prisoner.prisonerNumber}"),
   )
 
   private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(

@@ -152,6 +152,7 @@ class SoftDeleteServiceTest {
       prisonerNumber = "A1234BC",
       bookingId = "1",
       prisonId = "MDI",
+      lastPrisonId = "MDI",
       topupSupervisionExpiryDate = null,
       licenceExpiryDate = null,
       homeDetentionCurfewEligibilityDate = null,
