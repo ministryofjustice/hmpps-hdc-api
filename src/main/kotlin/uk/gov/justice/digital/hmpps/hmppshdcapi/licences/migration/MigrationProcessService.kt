@@ -129,30 +129,6 @@ class MigrationProcessService(
     }
   }
 
-  private fun performPrisonerSearchByBookingId(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
-    log.info("HDC migration: Fetching prisoner details for booking ids {}", licenceDetails.map { it.bookingId })
-    val bookingIds = licenceDetails.map { it.bookingId }.toList()
-
-    try {
-      val prisoners = prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).associateBy { it.bookingId.toLong() }
-      licenceDetails.forEach { licenceDetail ->
-        if (!prisoners.containsKey(licenceDetail.bookingId)) {
-          logFailure(
-            licenceDetail.licenceVersionId,
-            licenceDetail.bookingId,
-            "Prisoner not found for booking id ${licenceDetail.bookingId}",
-            retry = false,
-            MigrationErrorSource.HDC,
-          )
-        }
-      }
-      return prisoners
-    } catch (e: Exception) {
-      log.error("HDC migration: Error fetching prisoner details for booking ids $bookingIds", e)
-      throw e
-    }
-  }
-
   private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
     log.info("HDC migration: Fetching prisoner details for prison number {}", licenceDetails.map { it.bookingId })
     val prisonNumbers = licenceDetails.map { it.prisonNumber }.toList()

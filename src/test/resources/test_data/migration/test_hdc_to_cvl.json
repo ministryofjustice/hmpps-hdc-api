@@ -11,8 +11,7 @@
     "dateOfBirth" : "1985-05-20"
   },
   "prison" : {
-    "prisonCode" : "MDI",
-    "prisonDescription" : "Manchester Prison"
+    "prisonCode" : "MDI"
   },
   "sentence" : {
     "sentenceStartDate" : "2020-01-01",
