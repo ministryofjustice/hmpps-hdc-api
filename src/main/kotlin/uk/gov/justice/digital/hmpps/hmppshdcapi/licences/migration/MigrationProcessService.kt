@@ -16,9 +16,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.Cv
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceMigrationLogEntry
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.lang.Thread.sleep
@@ -141,7 +141,7 @@ class MigrationProcessService(
     bookingId: Long?,
     errorSource: String?,
     pageable: Pageable,
-  ): Page<LicenceMigrationLogEntry> = migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
+  ): Page<LicenceMigrationLogEntryDto> = migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
 
   @Transactional
   fun updateRetryState(licenceVersionId: Long, retry: Boolean) {

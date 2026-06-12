@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceMigrationLogEntry
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 
 @RestController
 @RequestMapping("/licences/migrate")
@@ -123,7 +123,7 @@ class MigrationController(
     @RequestParam(required = false) bookingId: Long?,
     @RequestParam(required = false) errorSource: String?,
     @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 100) pageable: Pageable,
-  ): ResponseEntity<Page<LicenceMigrationLogEntry>> {
+  ): ResponseEntity<Page<LicenceMigrationLogEntryDto>> {
     val response = migrationProcessService.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
     return ResponseEntity.ok(response)
   }

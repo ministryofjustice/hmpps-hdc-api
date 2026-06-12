@@ -21,9 +21,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceMigrationLogEntry
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
 import java.util.concurrent.Executor
@@ -277,7 +277,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
 
-    val body = response.expectBody<PageResponse<LicenceMigrationLogEntry>>()
+    val body = response.expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .returnResult()
       .responseBody
 
@@ -285,9 +285,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     assertThat(logs).hasSize(3)
     assertThat(logs).containsExactly(
-      LicenceMigrationLogEntry(id = 3, licenceVersionId = 3, bookingId = 30, success = false, retry = false, message = "Prisoner not found for prisoner number C1234EE", errorSource = "HDC"),
-      LicenceMigrationLogEntry(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
-      LicenceMigrationLogEntry(id = 1, licenceVersionId = 1, bookingId = 10, success = true, retry = false, message = "migrated successfully", errorSource = null),
+      LicenceMigrationLogEntryDto(id = 3, licenceVersionId = 3, bookingId = 30, success = false, retry = false, message = "Prisoner not found for prisoner number C1234EE", errorSource = "HDC"),
+      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
+      LicenceMigrationLogEntryDto(id = 1, licenceVersionId = 1, bookingId = 10, success = true, retry = false, message = "migrated successfully", errorSource = null),
     )
   }
 
@@ -307,7 +307,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
 
-    val body = response.expectBody<PageResponse<LicenceMigrationLogEntry>>()
+    val body = response.expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .returnResult()
       .responseBody
 
@@ -315,7 +315,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     assertThat(logs).hasSize(1)
     assertThat(logs).containsExactly(
-      LicenceMigrationLogEntry(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
+      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
     )
   }
 
@@ -333,7 +333,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isOk
-      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
         val body = it.responseBody
         assertThat(body!!.content).hasSize(1)
@@ -355,7 +355,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isOk
-      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
         val body = it.responseBody!!
         assertThat(body.content).hasSize(1)
@@ -377,7 +377,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isOk
-      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
         val body = it.responseBody!!
         assertThat(body.content).hasSize(1)
@@ -400,7 +400,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     multiResponse.expectStatus().isOk
-      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
         val body = it.responseBody!!
         assertThat(body.content).isEmpty()
