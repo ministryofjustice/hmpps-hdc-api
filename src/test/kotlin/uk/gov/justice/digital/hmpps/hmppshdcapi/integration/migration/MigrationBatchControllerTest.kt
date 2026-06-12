@@ -16,10 +16,12 @@ import org.springframework.core.task.SyncTaskExecutor
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceMigrationLogEntry
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
@@ -29,6 +31,12 @@ import java.util.concurrent.Executor
 class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
   private lateinit var cvlMockServer: CvlApiMockServer
+
+  data class PageResponse<T>(
+    val content: List<T>,
+    val totalElements: Long,
+    val totalPages: Int,
+  )
 
   @Autowired
   private lateinit var migrationRepository: MigrationRepository
@@ -253,8 +261,182 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
   }
 
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs returns recent log entries`() {
+    // Given
+    val pageParams = "?page=0&size=5"
+
+    // When
+    val response = getMigrationLogs(pageParams)
+
+    // Then
+    response.expectStatus().isOk
+      .expectHeader().contentType(MediaType.APPLICATION_JSON)
+
+    val body = response.expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .returnResult()
+      .responseBody
+
+    val logs = body!!.content
+
+    assertThat(logs).hasSize(3)
+    assertThat(logs).containsExactly(
+      LicenceMigrationLogEntry(id = 3, licenceVersionId = 3, bookingId = 30, success = false, retry = false, message = "Prisoner not found for prisoner number C1234EE", errorSource = "HDC"),
+      LicenceMigrationLogEntry(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
+      LicenceMigrationLogEntry(id = 1, licenceVersionId = 1, bookingId = 10, success = true, retry = false, message = "migrated successfully", errorSource = null),
+    )
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get next page migration logs returns recent log entries`() {
+    // Given
+    val pageParams = "?page=1&size=1"
+
+    // When
+    val response = getMigrationLogs(pageParams)
+
+    // Then
+    response.expectStatus().isOk
+      .expectHeader().contentType(MediaType.APPLICATION_JSON)
+
+    val body = response.expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .returnResult()
+      .responseBody
+
+    val logs = body!!.content
+
+    assertThat(logs).hasSize(1)
+    assertThat(logs).containsExactly(
+      LicenceMigrationLogEntry(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
+    )
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filtered by licence version id`() {
+    // Given
+    val licenceVersionId = 2L
+
+    // When
+    val response = getMigrationLogs("?licenceVersionId=$licenceVersionId")
+
+    // Then
+    response.expectStatus().isOk
+      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .consumeWith {
+        val body = it.responseBody
+        assertThat(body!!.content).hasSize(1)
+        assertThat(body.content[0].licenceVersionId).isEqualTo(licenceVersionId)
+      }
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filtered by booking id`() {
+    // Given
+    val bookingId = 30L
+
+    // When
+    val response = getMigrationLogs("?bookingId=$bookingId")
+
+    // Then
+    response.expectStatus().isOk
+      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .consumeWith {
+        val body = it.responseBody!!
+        assertThat(body.content).hasSize(1)
+        assertThat(body.content[0].bookingId).isEqualTo(bookingId)
+      }
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filtered by error source`() {
+    // Given
+    val errorSource = "CVL"
+
+    // When
+    val response = getMigrationLogs("?errorSource=$errorSource")
+
+    // Then
+    response.expectStatus().isOk
+      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .consumeWith {
+        val body = it.responseBody!!
+        assertThat(body.content).hasSize(1)
+        assertThat(body.content[0].errorSource).isEqualTo(errorSource)
+      }
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filtered by multiple parameters`() {
+    // Given
+    val multiBookingId = 10L
+    val multiErrorSource = "HDC"
+
+    // When
+    val multiResponse = getMigrationLogs("?bookingId=$multiBookingId&errorSource=$multiErrorSource")
+
+    // Then
+    multiResponse.expectStatus().isOk
+      .expectBody<PageResponse<LicenceMigrationLogEntry>>()
+      .consumeWith {
+        val body = it.responseBody!!
+        assertThat(body.content).isEmpty()
+      }
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Update retry flag for a licence version`() {
+    // Given
+    val licenceVersionId = 1L
+    val retryValue = true
+
+    // When
+    webTestClient.put()
+      .uri("/licences/migrate/$licenceVersionId/retry/$retryValue")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isOk
+
+    // Then
+    assertThat(migrationRepository.getMigrationLog(licenceVersionId, true, retry = true)).isEqualTo("migrated successfully")
+  }
+
   private fun postForBatchToMigrate(): WebTestClient.ResponseSpec = webTestClient.post()
-    .uri("/licences/migrate/active/batch/to-cvl")
+    .uri("/licences/migrate/batch/to-cvl")
+    .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+    .accept(MediaType.APPLICATION_JSON)
+    .exchange()
+
+  private fun getMigrationLogs(queryParams: String = ""): WebTestClient.ResponseSpec = webTestClient.get()
+    .uri("/licences/migrate/logs$queryParams")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
     .accept(MediaType.APPLICATION_JSON)
     .exchange()

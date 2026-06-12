@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository
 
+import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -14,6 +17,24 @@ interface LicenceBookingDetail {
   val bookingId: Long
   val prisonNumber: String
 }
+
+@Schema(description = "Licence migration log entry")
+data class LicenceMigrationLogEntry(
+  @get:Schema(description = "Log entry id", example = "123")
+  val id: Long,
+  @get:Schema(description = "Licence version id", example = "42")
+  val licenceVersionId: Long,
+  @get:Schema(description = "Booking id", example = "987654")
+  val bookingId: Long,
+  @get:Schema(description = "Was the migration successful")
+  val success: Boolean,
+  @get:Schema(description = "Should this failure be retried")
+  val retry: Boolean,
+  @get:Schema(description = "Message for the log entry")
+  val message: String?,
+  @get:Schema(description = "Error source if failed", allowableValues = ["CVL", "HDC"], example = "CVL")
+  val errorSource: String?,
+)
 
 enum class MigrationErrorSource {
   CVL,
@@ -169,4 +190,42 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun getConditionsVersionFor(bookingId: Long): Int?
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  @Modifying
+  @Query(
+    value = "UPDATE licence_migration_log SET retry = :retry WHERE licence_version_id = :licenceVersionId",
+    nativeQuery = true,
+  )
+  fun updateRetryState(licenceVersionId: Long, retry: Boolean): Int
+
+  @Query(
+    value = """
+        SELECT 
+          id as id,
+          licence_version_id as licenceVersionId,
+          booking_id as bookingId,
+          success as success,
+          retry as retry,
+          message as message,
+          error_source::text as errorSource
+        FROM licence_migration_log
+        WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
+          AND (:bookingId IS NULL OR booking_id = :bookingId)
+          AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+    """,
+    countQuery = """
+        SELECT count(*) FROM licence_migration_log
+        WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
+          AND (:bookingId IS NULL OR booking_id = :bookingId)
+          AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+    """,
+    nativeQuery = true,
+  )
+  fun getMigrationLogs(
+    licenceVersionId: Long?,
+    bookingId: Long?,
+    errorSource: String?,
+    pageable: Pageable,
+  ): Page<LicenceMigrationLogEntry>
 }

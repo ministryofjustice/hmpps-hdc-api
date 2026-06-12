@@ -4,6 +4,8 @@ import io.netty.channel.unix.Errors
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -14,6 +16,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.Cv
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceMigrationLogEntry
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
@@ -33,7 +36,7 @@ class MigrationProcessService(
   private lateinit var entityManager: EntityManager
 
   @Async
-  fun migrateToCvl() {
+  fun migrateABatchOfLicences() {
     var lastProcessedId = 0L
     var batch = 1
 
@@ -104,7 +107,7 @@ class MigrationProcessService(
     }
   }
 
-  fun processLicence(licenceVersionId: Long) {
+  fun migrateALicence(licenceVersionId: Long) {
     val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceVersionId) ?: throw MigrationValidationException("No eligible licence found for licence version id $licenceVersionId")
     try {
       migrationRequestService.migrateLicenceToCvl(licenceVersionId)
@@ -120,13 +123,29 @@ class MigrationProcessService(
       throw e
     } catch (e: PrematureCloseException) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      throw e
     } catch (e: Errors.NativeIoException) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      throw e
     } catch (e: WebClientRequestException) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      throw e
     } catch (e: Exception) {
       logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      throw e
     }
+  }
+
+  fun getMigrationLogs(
+    licenceVersionId: Long?,
+    bookingId: Long?,
+    errorSource: String?,
+    pageable: Pageable,
+  ): Page<LicenceMigrationLogEntry> = migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
+
+  @Transactional
+  fun updateRetryState(licenceVersionId: Long, retry: Boolean) {
+    migrationRepository.updateRetryState(licenceVersionId, retry)
   }
 
   private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
