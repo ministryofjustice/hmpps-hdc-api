@@ -22,8 +22,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockS
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
 import java.util.concurrent.Executor
@@ -315,7 +315,15 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     assertThat(logs).hasSize(1)
     assertThat(logs).containsExactly(
-      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
+      LicenceMigrationLogEntryDto(
+        id = 2,
+        licenceVersionId = 2,
+        bookingId = 20,
+        success = false,
+        retry = true,
+        message = "Service has failed - retry",
+        errorSource = "CVL"
+      ),
     )
   }
 
