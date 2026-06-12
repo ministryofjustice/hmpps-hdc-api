@@ -315,15 +315,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     assertThat(logs).hasSize(1)
     assertThat(logs).containsExactly(
-      LicenceMigrationLogEntryDto(
-        id = 2,
-        licenceVersionId = 2,
-        bookingId = 20,
-        success = false,
-        retry = true,
-        message = "Service has failed - retry",
-        errorSource = "CVL"
-      ),
+      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
     )
   }
 
