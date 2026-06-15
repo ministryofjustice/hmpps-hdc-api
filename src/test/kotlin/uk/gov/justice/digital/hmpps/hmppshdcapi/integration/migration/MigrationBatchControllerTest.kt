@@ -423,7 +423,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
-      .expectStatus().isOk
+      .expectStatus().isNoContent
 
     // Then
     assertThat(migrationRepository.getMigrationLog(licenceVersionId, true, retry = true)).isEqualTo("migrated successfully")
