@@ -38,7 +38,7 @@ class MigrationController(
   @ApiResponses(
     value = [
       ApiResponse(
-        responseCode = "200",
+        responseCode = "204",
         description = "Licence migrated to CVL successfully",
       ),
       ApiResponse(
@@ -59,7 +59,7 @@ class MigrationController(
     @PathVariable activeLicenceId: Long,
   ): ResponseEntity<Void> {
     migrationProcessService.migrateALicence(activeLicenceId)
-    return ResponseEntity.ok().build()
+    return ResponseEntity.noContent().build()
   }
 
   @PostMapping("/batch/to-cvl")
@@ -136,7 +136,7 @@ class MigrationController(
   )
   @ApiResponses(
     value = [
-      ApiResponse(responseCode = "200", description = "Retry flag updated successfully"),
+      ApiResponse(responseCode = "204", description = "Retry flag updated successfully"),
       ApiResponse(responseCode = "401", description = "Unauthorized"),
       ApiResponse(responseCode = "403", description = "Forbidden"),
     ],
@@ -146,6 +146,6 @@ class MigrationController(
     @PathVariable retryValue: Boolean,
   ): ResponseEntity<Void> {
     migrationProcessService.updateRetryState(licenceVersionId, retryValue)
-    return ResponseEntity.ok().build()
+    return ResponseEntity.noContent().build()
   }
 }

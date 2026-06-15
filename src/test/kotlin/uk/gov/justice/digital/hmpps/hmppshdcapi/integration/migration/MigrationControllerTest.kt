@@ -65,7 +65,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
     assertThat(migrationRepository.getMigrationLog(licenceVersionId, true, retry = false)).isEqualTo("migrated successfully")
   }
@@ -87,7 +87,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
   }
 
   @Sql(
@@ -127,7 +127,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_when_multiple-licences-with-same-booking-id-present-in-audit.json")
   }
 
@@ -147,7 +147,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_with_specific_curfew_days.json")
   }
 
@@ -167,7 +167,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_when_approved_premises_is_required_over_proposed_address.json")
   }
 
@@ -187,7 +187,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_approved_premises_is_required_over_CAS2_address.json")
   }
 
@@ -207,7 +207,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_address_when_CAS2_address_requested_and_accepted.json")
   }
 
@@ -227,7 +227,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_when_no_other_address_is_available_then_use_proposed_curfew_address.json")
   }
 
@@ -289,7 +289,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val response = postLicenceVersionIdToMigrate(licenceVersionId)
 
     // Then
-    response.expectStatus().isOk
+    response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_when_no_appointment_date_time_given.json")
   }
 
