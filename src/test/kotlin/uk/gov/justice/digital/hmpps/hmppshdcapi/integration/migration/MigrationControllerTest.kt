@@ -5,7 +5,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -28,11 +30,23 @@ import java.util.stream.Stream
 
 class MigrationControllerTest : SqsIntegrationTestBase() {
 
+  private lateinit var cvlMockServer: CvlApiMockServer
+
   @Autowired
   private lateinit var migrationRepository: MigrationRepository
 
   private fun jsonFromFile(name: String): String = this.javaClass.getResourceAsStream("/test_data/migration/$name")!!
     .bufferedReader(UTF_8).readText()
+
+  @BeforeEach
+  fun resetMocks() {
+    cvlMockServer = CvlApiMockServer().apply { start() }
+  }
+
+  @AfterEach
+  fun tearDown() {
+    cvlMockServer.stop()
+  }
 
   @Sql(
     "classpath:test_data/reset.sql",
@@ -54,6 +68,26 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
     assertThat(migrationRepository.getMigrationLog(licenceVersionId, true, retry = false)).isEqualTo("migrated successfully")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licence-with-withdrawal-in-rejectedCas2Referral-missing-fields.sql",
+  )
+  @Test
+  fun `Migrate licence with bassWithdrawn and approvedPremises in RejectedCas2Referral to CVL successfully`() {
+    // Given
+    val licenceVersionId = 1L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+
+    // Then
+    response.expectStatus().isOk
   }
 
   @Sql(
@@ -335,7 +369,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234AA",
         bookingId = "54222",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = LocalDate.of(2028, 2, 10),
         licenceExpiryDate = LocalDate.of(2028, 3, 30),
         homeDetentionCurfewActualDate = LocalDate.of(2025, 4, 30),
@@ -373,7 +408,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234CC",
         bookingId = "30",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = null,
         licenceExpiryDate = LocalDate.of(2025, 4, 1),
         homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 30),
@@ -411,7 +447,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       Prisoner(
         prisonerNumber = "A1234EE",
         bookingId = "50",
-        prisonId = "MDI",
+        prisonId = "ADI",
+        lastPrisonId = "MDI",
         topupSupervisionExpiryDate = null,
         licenceExpiryDate = null,
         homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 30),
@@ -450,7 +487,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   )
 
   companion object {
-    private val cvlMockServer = CvlApiMockServer()
     private val prisonerSearchMockServer = PrisonerSearchMockServer()
     private val prisonApiMockServer = PrisonApiMockServer()
 
@@ -462,7 +498,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     fun startWireMocks() {
       hmppsAuthMockServer.start()
       hmppsAuthMockServer.stubGrantToken()
-      cvlMockServer.start()
       prisonerSearchMockServer.start()
       prisonApiMockServer.start()
     }
@@ -471,7 +506,6 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     @AfterAll
     fun stopWireMocks() {
       hmppsAuthMockServer.stop()
-      cvlMockServer.stop()
       prisonerSearchMockServer.stop()
       prisonApiMockServer.stop()
     }

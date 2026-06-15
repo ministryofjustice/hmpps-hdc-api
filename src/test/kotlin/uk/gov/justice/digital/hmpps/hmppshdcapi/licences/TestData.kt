@@ -736,6 +736,7 @@ object TestData {
     "A1234AA",
     "10",
     "MDI",
+    lastPrisonId = "MDI",
     topupSupervisionExpiryDate = LocalDate.now(),
     licenceExpiryDate = LocalDate.now().minusDays(1),
     homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2),

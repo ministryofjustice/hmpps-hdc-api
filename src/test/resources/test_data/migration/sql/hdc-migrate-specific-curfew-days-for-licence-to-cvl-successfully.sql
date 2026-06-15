@@ -96,7 +96,16 @@ VALUES
                 "undulyLenientSentence": {
                     "decision": "No"
                 }
+            },
+          "licenceConditions": {
+            "bespoke": [{"text": "Some other condition", "approved": "Yes"}],
+            "standard": {
+                "additionalConditionsRequired": "Yes"
+             },
+            "additional": {
+               "POLYGRAPH": {}
             }
+           }
         }'::jsonb,
         54222,
         1,

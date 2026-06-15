@@ -11,8 +11,7 @@
     "dateOfBirth" : "1985-05-20"
   },
   "prison" : {
-    "prisonCode" : "MDI",
-    "prisonDescription" : "Manchester Prison"
+    "prisonCode" : "MDI"
   },
   "sentence" : {
     "sentenceStartDate" : "2020-01-01",
@@ -153,7 +152,8 @@
     "addressLine1" : "Test Street",
     "addressLine2" : "",
     "townOrCity" : "Test Town",
-    "postcode" : "TT1 1TT"
+    "postcode" : "TT1 1TT",
+    "addressType" : "CAS"
   },
   "curfew" : {
     "curfewTimes" : [ {

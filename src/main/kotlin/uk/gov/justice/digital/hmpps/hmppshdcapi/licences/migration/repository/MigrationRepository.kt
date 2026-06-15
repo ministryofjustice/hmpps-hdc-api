@@ -161,4 +161,12 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun getMigratableLicenceDetails(activeLicenceId: Long): LicenceBookingDetail?
+
+  @Query(
+    value = """
+        SELECT max(additional_conditions_version) FROM licences lv  WHERE lv.booking_id = :bookingId GROUP BY lv.booking_id 
+     """,
+    nativeQuery = true,
+  )
+  fun getConditionsVersionFor(bookingId: Long): Int?
 }

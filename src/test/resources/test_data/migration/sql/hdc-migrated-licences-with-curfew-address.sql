@@ -39,7 +39,15 @@ VALUES
                 "decision": "hdc_ap",
                 "offenceCommittedBeforeFeb2015": "No"
             }
+        },
+      "licenceConditions": {
+        "standard": {
+            "additionalConditionsRequired": "Yes"
+         },
+        "additional": {
+           "POLYGRAPH": {}
         }
+       }
     }'::jsonb,
     10001,
     1,
@@ -81,7 +89,15 @@ VALUES
                 "decision": "hdc_ap",
                 "offenceCommittedBeforeFeb2015": "No"
             }
+        },
+      "licenceConditions": {
+        "standard": {
+            "additionalConditionsRequired": "Yes"
+         },
+        "additional": {
+           "POLYGRAPH": {}
         }
+       }
     }'::jsonb,
     10002,
     1,
@@ -102,7 +118,15 @@ VALUES
                 "decision": "hdc_ap",
                 "offenceCommittedBeforeFeb2015": "No"
             }
+        },
+      "licenceConditions": {
+        "standard": {
+            "additionalConditionsRequired": "Yes"
+         },
+        "additional": {
+           "POLYGRAPH": {}
         }
+       }
     }'::jsonb,
     10003,
     1,
@@ -147,7 +171,15 @@ VALUES
                 "decision": "hdc_ap",
                 "offenceCommittedBeforeFeb2015": "No"
             }
+        },
+      "licenceConditions": {
+        "standard": {
+            "additionalConditionsRequired": "Yes"
+         },
+        "additional": {
+           "POLYGRAPH": {}
         }
+       }
     }'::jsonb,
     10004,
     1,
@@ -191,7 +223,15 @@ VALUES
                 "decision": "hdc_ap",
                 "offenceCommittedBeforeFeb2015": "No"
             }
+        },
+      "licenceConditions": {
+        "standard": {
+            "additionalConditionsRequired": "Yes"
+         },
+        "additional": {
+           "POLYGRAPH": {}
         }
+       }
     }'::jsonb,
     10005,
     1,

@@ -11,8 +11,7 @@
     "dateOfBirth" : "1985-05-20"
   },
   "prison" : {
-    "prisonCode" : "MDI",
-    "prisonDescription" : "Manchester Prison"
+    "prisonCode" : "MDI"
   },
   "sentence" : {
     "sentenceStartDate" : "2020-01-01",
@@ -42,7 +41,8 @@
     "addressLine1" : "100 CAS2 Street",
     "addressLine2" : "The Avenue",
     "townOrCity" : "Test City",
-    "postcode" : "TS12 TST"
+    "postcode" : "TS12 TST",
+    "addressType" : "CAS"
   },
   "curfew" : {
     "curfewTimes" : [ {

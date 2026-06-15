@@ -37,6 +37,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.Migra
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.attemptToGuessVersion
 import java.time.DayOfWeek
 import java.time.DayOfWeek.FRIDAY
@@ -90,7 +91,7 @@ class MigrationRequestService(
 
     val licenceData: LicenceData = extractLicenceDataFromJson(licenceVersion)
 
-    validate(licenceData)
+    validate(licenceData, licenceVersion)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -103,7 +104,7 @@ class MigrationRequestService(
       licence = mapLicenceDetails(licenceVersion, prisoner),
       // See isApproved below should we be rejecting the license if not approved? I would say so!
       lifecycle = mapLifecycleDetails(audits, isApproved(licenceVersion)),
-      conditions = mapConditions(licenceData),
+      conditions = mapConditions(licenceData, licenceVersion),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
       appointment = mapAppointmentDetails(licenceData),
@@ -127,9 +128,7 @@ class MigrationRequestService(
   )
 
   private fun mapPrisonDetails(prisoner: Prisoner) = MigratePrisonDetails(
-    prisonCode = prisoner.prisonId,
-    prisonDescription = prisoner.prisonName ?: prisoner.locationDescription,
-    prisonTelephone = null,
+    prisonCode = prisoner.lastPrisonId ?: throw MigrationValidationException("Prison code not found for prisoner: ${prisoner.prisonerNumber}"),
   )
 
   private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(
@@ -161,9 +160,30 @@ class MigrationRequestService(
     }
   }
 
-  fun validate(licenceData: LicenceData) {
-    licenceData.licenceConditions?.additional?.let {
-      attemptToGuessVersion(it) ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+  fun validate(licenceData: LicenceData, licence: MigrationLicenceVersion) {
+    if (licenceData.licenceConditions?.additional?.isNotEmpty() == true) {
+      attemptToGuessVersion(licenceData.licenceConditions, licence)
+        ?: throw MigrationValidationException("Licence additional conditions version not determined!")
+    }
+  }
+
+  fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
+    licenceConditions.additional.let {
+      var version = attemptToGuessVersion(it)
+      if (version == null && it?.size == 1 && it.containsKey("POLYGRAPH")) {
+        // Text is the same on all versions
+        version = 2
+      }
+      if (version == null) {
+        // We should only get here when we have additional conditions of POLYGRAPH and DRUG_TESTING or just DRUG_TESTING
+        version = migrationRepository.getConditionsVersionFor(licence.bookingId)
+        log.debug(
+          "HDC migration: used licence to get conditions version {} for licence version id {}",
+          version,
+          licence.id,
+        )
+      }
+      return version
     }
   }
 
@@ -199,10 +219,10 @@ class MigrationRequestService(
     )
   }
 
-  private fun mapConditions(licenceData: LicenceData): MigrateConditions {
+  private fun mapConditions(licenceData: LicenceData, licenceVersion: MigrationLicenceVersion): MigrateConditions {
     licenceData.licenceConditions?.let { conditions ->
 
-      val additional = mapAdditionalConditions(conditions, licenceData)
+      val additional = mapAdditionalConditions(conditions, licenceData, licenceVersion)
 
       val bespoke = conditions.bespoke?.mapNotNull { it.text } ?: emptyList()
       return MigrateConditions(bespoke = bespoke, additional = additional)
@@ -214,11 +234,12 @@ class MigrationRequestService(
   private fun mapAdditionalConditions(
     conditions: LicenceConditions,
     licenceData: LicenceData,
+    licenceVersion: MigrationLicenceVersion,
   ): MutableList<MigrateAdditionalCondition> {
     val additional = mutableListOf<MigrateAdditionalCondition>()
 
-    conditions.additional?.let {
-      val conditionsVersion = attemptToGuessVersion(conditions.additional)!!
+    if (conditions.additional?.isNotEmpty() == true) {
+      val conditionsVersion = attemptToGuessVersion(conditions, licenceVersion)!!
       LicenceConditionRenderer.renderConditions(licenceData, conditionsVersion).forEach {
         additional.add(
           MigrateAdditionalCondition(
@@ -229,15 +250,8 @@ class MigrationRequestService(
         )
       }
     }
+
     return additional
-  }
-
-  private fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
-    val address = getAddress(licenceData)!!
-
-    return address.let {
-      MigrateAddress(it.addressLine1, it.addressLine2, it.townOrCity, it.postcode)
-    }
   }
 
   private fun mapCurfewDetails(licenceData: LicenceData): MigrateCurfewDetails? = licenceData.curfew?.let {
@@ -323,7 +337,7 @@ class MigrationRequestService(
       } else {
         if (allUntil != null && allFrom != null) {
           return DayOfWeek.entries.map { day ->
-            val crossesMidnight = allUntil!!.isBefore(allFrom!!)
+            val crossesMidnight = allUntil.isBefore(allFrom)
             MigrateCurfewTime(
               fromDay = day,
               fromTime = this.allFrom,
@@ -360,27 +374,32 @@ class MigrationRequestService(
     SUNDAY -> if (from) sundayFrom else sundayUntil
   }
 
-  fun getAddress(licenceData: LicenceData): MigrateAddress? {
-    var address: Address? = null
+  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
     with(licenceData) {
-      address = when {
-        curfew?.approvedPremisesAddress != null -> curfew.approvedPremisesAddress
-        bassReferral?.approvedPremisesAddress != null -> bassReferral.approvedPremisesAddress
-        proposedAddress?.curfewAddress != null -> proposedAddress.curfewAddress
-        bassReferral?.bassOffer != null -> bassReferral.bassOffer
-        else -> null
-      }
-    }
+      val (address, addressType) = listOf(
+        curfew?.approvedPremisesAddress to AddressType.CAS,
+        bassReferral?.approvedPremisesAddress to AddressType.CAS,
+        proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
+        bassReferral?.bassOffer to AddressType.CAS,
+      ).firstOrNull { (address, addressType) ->
+        address?.let(::isValidAddress) == true
+      } ?: throw MigrationValidationException("No valid curfew address found")
 
-    return address?.let {
-      MigrateAddress(
-        it.addressLine1,
-        it.addressLine2,
-        it.addressTown,
-        it.postCode,
+      return MigrateAddress(
+        addressLine1 = address!!.addressLine1,
+        addressLine2 = address.addressLine2,
+        townOrCity = address.addressTown,
+        postcode = address.postCode,
+        addressType = addressType,
       )
     }
   }
+
+  fun isValidAddress(address: Address): Boolean = listOf(
+    address.addressLine1,
+    address.addressTown,
+    address.postCode,
+  ).count { !it.isNullOrBlank() } > 0
 
   private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
     val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
