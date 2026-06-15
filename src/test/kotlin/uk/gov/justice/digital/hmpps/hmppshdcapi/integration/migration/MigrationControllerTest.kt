@@ -326,7 +326,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // When
     val response = webTestClient.get()
-      .uri("/licences/migrate/active/$licenceVersionId/to-cvl/preview")
+      .uri("/licences/migrate/$licenceVersionId/to-cvl/preview")
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
@@ -341,7 +341,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   }
 
   private fun postLicenceVersionIdToMigrate(licenceVersionId: Long): WebTestClient.ResponseSpec = webTestClient.post()
-    .uri("/licences/migrate/active/$licenceVersionId/to-cvl")
+    .uri("/licences/migrate/$licenceVersionId/to-cvl")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
     .accept(MediaType.APPLICATION_JSON)
     .exchange()

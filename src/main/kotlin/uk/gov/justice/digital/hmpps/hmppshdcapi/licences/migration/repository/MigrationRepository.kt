@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersion
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import java.time.LocalDateTime
 
 interface LicenceBookingDetail {
@@ -169,4 +172,42 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun getConditionsVersionFor(bookingId: Long): Int?
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  @Modifying
+  @Query(
+    value = "UPDATE licence_migration_log SET retry = :retry WHERE licence_version_id = :licenceVersionId",
+    nativeQuery = true,
+  )
+  fun updateRetryState(licenceVersionId: Long, retry: Boolean): Int
+
+  @Query(
+    value = """
+        SELECT 
+          id as id,
+          licence_version_id as licenceVersionId,
+          booking_id as bookingId,
+          success as success,
+          retry as retry,
+          message as message,
+          error_source::text as errorSource
+        FROM licence_migration_log
+        WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
+          AND (:bookingId IS NULL OR booking_id = :bookingId)
+          AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+    """,
+    countQuery = """
+        SELECT count(*) FROM licence_migration_log
+        WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
+          AND (:bookingId IS NULL OR booking_id = :bookingId)
+          AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+    """,
+    nativeQuery = true,
+  )
+  fun getMigrationLogs(
+    licenceVersionId: Long?,
+    bookingId: Long?,
+    errorSource: String?,
+    pageable: Pageable,
+  ): Page<LicenceMigrationLogEntryDto>
 }
