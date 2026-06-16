@@ -29,11 +29,11 @@ class MigrationController(
   private val migrationRequestService: MigrationRequestService,
 ) {
 
-  @PostMapping("/{activeLicenceId}/to-cvl")
+  @PostMapping("/{bookingId}/to-cvl")
   @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
     summary = "Migrate a single active licence to CVL",
-    description = "Triggers migration of the supplied licence ID into CVL",
+    description = "Triggers migration of licence for the supplied booking ID into CVL",
   )
   @ApiResponses(
     value = [
@@ -56,9 +56,9 @@ class MigrationController(
     ],
   )
   fun migrateALicence(
-    @PathVariable activeLicenceId: Long,
+    @PathVariable bookingId: Long,
   ): ResponseEntity<Void> {
-    migrationProcessService.migrateALicence(activeLicenceId)
+    migrationProcessService.migrateALicence(bookingId)
     return ResponseEntity.noContent().build()
   }
 

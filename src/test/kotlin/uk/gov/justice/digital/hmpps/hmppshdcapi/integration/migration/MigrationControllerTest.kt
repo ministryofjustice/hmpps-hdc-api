@@ -55,19 +55,19 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate licence to CVL successfully`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
   }
 
   @Sql(
@@ -77,14 +77,14 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate licence with bassWithdrawn and approvedPremises in RejectedCas2Referral to CVL successfully`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -97,18 +97,18 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `When licence has only unknown versioned conditions then do not migrate licence to CVL`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isBadRequest
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("Licence additional conditions version not determined!")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Licence additional conditions version not determined!")
   }
 
   @Sql(
@@ -118,13 +118,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate correct audit data when multiple licences with the same booking id present in audit`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -138,13 +138,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate a licence with day specific inputs for curfew times to CVL successfully`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -158,13 +158,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate correct curfew address when approved premises is required over proposed address`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 10001L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -178,13 +178,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate correct curfew address when approved premises is required over CAS2 address`() {
     // Given
-    val licenceVersionId = 2L
+    val bookingId = 10002L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -198,13 +198,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate correct curfew address when CAS2 address requested and accepted`() {
     // Given
-    val licenceVersionId = 4L
+    val bookingId = 10004L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -218,13 +218,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate correct curfew address when curfew address proposed`() {
     // Given
-    val licenceVersionId = 5L
+    val bookingId = 10005L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -238,18 +238,18 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate licence to CVL migration fails because of a http 400 error the migration is retryable`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     cvlMockServer.stubMigrateLicenceClient400Error()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT)
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("it does not exist")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("it does not exist")
   }
 
   @Sql(
@@ -259,18 +259,18 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate licence to CVL migration fails because of a http Other error the migration is retryable`() {
     // Given
-    val licenceVersionId = 1L
+    val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     cvlMockServer.stubMigrateLicenceClient500Error()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = true)).isEqualTo("Service has failed")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).isEqualTo("Service has failed")
   }
 
   @Sql(
@@ -280,13 +280,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Migrate appointment details when appointment time and date not given the process correctly`() {
     // Given
-    val licenceVersionId = 6L
+    val bookingId = 98765L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isNoContent
@@ -300,14 +300,14 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @ParameterizedTest
   @MethodSource("invalidLicenceVersionIds")
   fun `When SQL finds no valid licences to migrate, no licences are migrated to CVL`(
-    licenceVersionId: Long,
+    bookingId: Long,
   ) {
     // Given
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     // When
-    val response = postLicenceVersionIdToMigrate(licenceVersionId)
+    val response = postBookingIdForLicenceToMigrate(bookingId)
 
     // Then
     response.expectStatus().isBadRequest
@@ -320,13 +320,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Preview migration returns expected DTO`() {
     // Given
-    val licenceVersionId = 1
+    val bookingId = 1
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     // When
     val response = webTestClient.get()
-      .uri("/licences/migrate/$licenceVersionId/to-cvl/preview")
+      .uri("/licences/migrate/$bookingId/to-cvl/preview")
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
@@ -340,8 +340,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       )
   }
 
-  private fun postLicenceVersionIdToMigrate(licenceVersionId: Long): WebTestClient.ResponseSpec = webTestClient.post()
-    .uri("/licences/migrate/$licenceVersionId/to-cvl")
+  private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()
+    .uri("/licences/migrate/$bookingId/to-cvl")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
     .accept(MediaType.APPLICATION_JSON)
     .exchange()
