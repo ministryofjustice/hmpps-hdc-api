@@ -75,7 +75,7 @@ class MigrationProcessService(
         .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
         .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
         .forEach { (licenceDetail, prisoner) ->
-          processBatchedLicence(licenceDetail, prisoner)
+          processLicence(licenceDetail, prisoner)
           sleep(125.milliseconds.inWholeMilliseconds)
         }
     } finally {
@@ -84,55 +84,39 @@ class MigrationProcessService(
     }
   }
 
-  private fun processBatchedLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
+  fun migrateALicence(bookingId: Long) {
+    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId) ?: throw MigrationValidationException("No eligible licence version found for booking Id $bookingId")
+    val prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
+    processLicence(licenceBookingDetail, prisoner, true)
+  }
+
+  private fun processLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner, throwExceptions: Boolean = false) {
     log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
-      migrationRequestService.migrateBatchedLicenceToCvl(licenceDetail, prisoner)
+      migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
       logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId)
     } catch (e: CvlRetryMigrationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
+      if (throwExceptions) throw e
     } catch (e: CvlMigrationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
+      if (throwExceptions) throw e
     } catch (e: MigrationValidationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
+      if (throwExceptions) throw e
     } catch (e: PrematureCloseException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      if (throwExceptions) throw e
     } catch (e: Errors.NativeIoException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      if (throwExceptions) throw e
     } catch (e: WebClientRequestException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
+      if (throwExceptions) throw e
     } catch (e: Exception) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
-    }
-  }
-
-  fun migrateALicence(licenceVersionId: Long) {
-    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(licenceVersionId) ?: throw MigrationValidationException("No eligible licence found for licence version id $licenceVersionId")
-    try {
-      migrationRequestService.migrateLicenceToCvl(licenceVersionId)
-      logSuccess(licenceVersionId, licenceBookingDetail.bookingId)
-    } catch (e: CvlRetryMigrationException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.CVL)
-      throw e
-    } catch (e: CvlMigrationException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.CVL)
-      throw e
-    } catch (e: MigrationValidationException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
-      throw e
-    } catch (e: PrematureCloseException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
-      throw e
-    } catch (e: Errors.NativeIoException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
-      throw e
-    } catch (e: WebClientRequestException) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = true, MigrationErrorSource.HDC)
-      throw e
-    } catch (e: Exception) {
-      logFailure(licenceVersionId, licenceBookingDetail.bookingId, e, retry = false, MigrationErrorSource.HDC)
-      throw e
+      if (throwExceptions) throw e
     }
   }
 
