@@ -101,7 +101,7 @@ class MigrationController(
   fun previewMigrateLicenceToCvl(
     @PathVariable activeLicenceId: Long,
   ): ResponseEntity<MigrateFromHdcToCvlRequest> {
-    val response = migrationRequestService.buildMigrationRequest(activeLicenceId)
+    val response = migrationRequestService.buildMigrationRequestForPreview(activeLicenceId)
     return ResponseEntity.ok(response)
   }
 

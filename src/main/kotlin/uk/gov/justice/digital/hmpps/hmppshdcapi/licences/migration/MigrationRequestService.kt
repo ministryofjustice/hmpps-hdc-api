@@ -71,7 +71,7 @@ class MigrationRequestService(
     return cvlClient.migrateLicence(createMigrationRequest(licenceVersion, prisoner))
   }
 
-  fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
+  fun buildMigrationRequestForPreview(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
     val licenceVersion = getLicenceVersion(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     return createMigrationRequest(licenceVersion, prisoner)

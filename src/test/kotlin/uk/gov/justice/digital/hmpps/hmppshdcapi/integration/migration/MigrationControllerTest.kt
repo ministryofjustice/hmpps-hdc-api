@@ -298,7 +298,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     "classpath:test_data/migration/sql/hdc-migration-invalid-licences.sql",
   )
   @ParameterizedTest
-  @MethodSource("invalidLicenceVersionIds")
+  @MethodSource("invalidBookingIds")
   fun `When SQL finds no valid licences to migrate, no licences are migrated to CVL`(
     bookingId: Long,
   ) {
@@ -320,13 +320,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   @Test
   fun `Preview migration returns expected DTO`() {
     // Given
-    val bookingId = 1
+    val licenceVersionId = 1
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
 
     // When
     val response = webTestClient.get()
-      .uri("/licences/migrate/$bookingId/to-cvl/preview")
+      .uri("/licences/migrate/$licenceVersionId/to-cvl/preview")
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
@@ -491,7 +491,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     private val prisonApiMockServer = PrisonApiMockServer()
 
     @JvmStatic
-    fun invalidLicenceVersionIds(): Stream<Long> = IntStream.rangeClosed(1, 8).mapToLong { it.toLong() }.boxed()
+    fun invalidBookingIds(): Stream<Long> = IntStream.rangeClosed(1, 8).mapToLong { it.toLong() }.boxed()
 
     @JvmStatic
     @BeforeAll
