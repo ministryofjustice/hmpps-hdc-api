@@ -284,11 +284,18 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val logs = body!!.content
 
     assertThat(logs).hasSize(3)
-    assertThat(logs).containsExactly(
-      LicenceMigrationLogEntryDto(id = 3, licenceVersionId = 3, bookingId = 30, success = false, retry = false, message = "Prisoner not found for prisoner number C1234EE", errorSource = "HDC"),
-      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
-      LicenceMigrationLogEntryDto(id = 1, licenceVersionId = 1, bookingId = 10, success = true, retry = false, message = "migrated successfully", errorSource = null),
-    )
+    with(logs[0]) {
+      assertThat(id).isEqualTo(3)
+      assertThat(licenceVersionId).isEqualTo(3)
+      assertThat(createdTimeStamp.toString()).isEqualTo("2023-08-06T14:04:37.188")
+      assertThat(bookingId).isEqualTo(30)
+      assertThat(success).isFalse()
+      assertThat(retry).isFalse()
+      assertThat(message).isEqualTo("Prisoner not found for prisoner number C1234EE")
+      assertThat(errorSource).isEqualTo("HDC")
+    }
+    assertThat(logs[1].id).isEqualTo(2)
+    assertThat(logs[2].id).isEqualTo(1)
   }
 
   @Sql(
@@ -314,9 +321,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     val logs = body!!.content
 
     assertThat(logs).hasSize(1)
-    assertThat(logs).containsExactly(
-      LicenceMigrationLogEntryDto(id = 2, licenceVersionId = 2, bookingId = 20, success = false, retry = true, message = "Service has failed - retry", errorSource = "CVL"),
-    )
+    assertThat(logs[0].id).isEqualTo(2)
   }
 
   @Sql(

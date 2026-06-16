@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDateTime
 
 @Schema(description = "Licence migration log entry")
 data class LicenceMigrationLogEntryDto(
@@ -8,6 +9,8 @@ data class LicenceMigrationLogEntryDto(
   val id: Long,
   @get:Schema(description = "Licence version id", example = "42")
   val licenceVersionId: Long,
+  @get:Schema(description = "Timestamp of the log entry", example = "2024-06-01T12:34:56")
+  val createdTimeStamp: LocalDateTime,
   @get:Schema(description = "Booking id", example = "987654")
   val bookingId: Long,
   @get:Schema(description = "Was the migration successful")
