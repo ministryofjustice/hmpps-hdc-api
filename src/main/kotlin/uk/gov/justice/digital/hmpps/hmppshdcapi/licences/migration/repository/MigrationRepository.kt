@@ -183,10 +183,10 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @Modifying
   @Query(
-    value = "UPDATE licence_migration_log SET retry = :retry WHERE licence_version_id = :licenceVersionId",
+    value = "UPDATE licence_migration_log SET retry = :retry WHERE id = :logId",
     nativeQuery = true,
   )
-  fun updateRetryState(licenceVersionId: Long, retry: Boolean): Int
+  fun updateRetryState(logId: Long, retry: Boolean): Int
 
   @Query(
     value = """
@@ -203,12 +203,14 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+          AND (:success IS NULL OR success = CAST(:success AS boolean))           
     """,
     countQuery = """
         SELECT count(*) FROM licence_migration_log
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+          AND (:success IS NULL OR success = :success)       
     """,
     nativeQuery = true,
   )
@@ -216,6 +218,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     licenceVersionId: Long?,
     bookingId: Long?,
     errorSource: String?,
+    success: Boolean?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto>
 }

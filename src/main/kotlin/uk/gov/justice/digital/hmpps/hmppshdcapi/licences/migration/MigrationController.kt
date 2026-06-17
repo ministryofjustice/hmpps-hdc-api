@@ -122,17 +122,18 @@ class MigrationController(
     @RequestParam(required = false) licenceVersionId: Long?,
     @RequestParam(required = false) bookingId: Long?,
     @RequestParam(required = false) errorSource: String?,
+    @RequestParam(required = false) success: Boolean?,
     @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 100) pageable: Pageable,
   ): ResponseEntity<Page<LicenceMigrationLogEntryDto>> {
-    val response = migrationProcessService.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
+    val response = migrationProcessService.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
     return ResponseEntity.ok(response)
   }
 
-  @PutMapping("/{licenceVersionId}/retry/{retryValue}")
+  @PutMapping("/{logId}/retry/{retryValue}")
   @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
   @Operation(
-    summary = "Update the retry flag for a licence version",
-    description = "Updates the retry flag in the migration log for the given licence version ID",
+    summary = "Update the retry flag for a Log ID",
+    description = "Updates the retry flag in the migration log for the given Log ID",
   )
   @ApiResponses(
     value = [
@@ -142,10 +143,10 @@ class MigrationController(
     ],
   )
   fun updateRetryState(
-    @PathVariable licenceVersionId: Long,
+    @PathVariable logId: Long,
     @PathVariable retryValue: Boolean,
   ): ResponseEntity<Void> {
-    migrationProcessService.updateRetryState(licenceVersionId, retryValue)
+    migrationProcessService.updateRetryState(logId, retryValue)
     return ResponseEntity.noContent().build()
   }
 }

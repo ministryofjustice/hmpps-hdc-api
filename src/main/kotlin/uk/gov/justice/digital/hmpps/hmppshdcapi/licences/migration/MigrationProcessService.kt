@@ -124,12 +124,23 @@ class MigrationProcessService(
     licenceVersionId: Long?,
     bookingId: Long?,
     errorSource: String?,
+    success: Boolean?,
     pageable: Pageable,
-  ): Page<LicenceMigrationLogEntryDto> = migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, pageable)
+  ): Page<LicenceMigrationLogEntryDto> {
+    log.info(
+      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, success: {}",
+      licenceVersionId,
+      bookingId,
+      errorSource,
+      success,
+    )
+    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+  }
 
   @Transactional
-  fun updateRetryState(licenceVersionId: Long, retry: Boolean) {
-    migrationRepository.updateRetryState(licenceVersionId, retry)
+  fun updateRetryState(logId: Long, retry: Boolean) {
+    log.info("HDC migration: Updating retry state for log id: $logId, retry: $retry")
+    migrationRepository.updateRetryState(logId, retry)
   }
 
   private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
