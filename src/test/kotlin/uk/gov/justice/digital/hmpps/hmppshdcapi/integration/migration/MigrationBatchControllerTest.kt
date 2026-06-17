@@ -26,6 +26,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.Lice
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.concurrent.Executor
 
 class MigrationBatchControllerTest : SqsIntegrationTestBase() {
@@ -287,7 +288,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     with(logs[0]) {
       assertThat(id).isEqualTo(3)
       assertThat(licenceVersionId).isEqualTo(3)
-      assertThat(createdTimeStamp.toString()).isEqualTo("2023-08-06T14:04:37.188")
+      assertThat(createdTimeStamp).isEqualTo(LocalDateTime.parse("2023-08-06T15:04:37.188"))
       assertThat(bookingId).isEqualTo(30)
       assertThat(success).isFalse()
       assertThat(retry).isFalse()

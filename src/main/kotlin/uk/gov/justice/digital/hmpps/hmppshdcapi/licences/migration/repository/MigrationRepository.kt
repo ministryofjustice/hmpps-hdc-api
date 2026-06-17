@@ -193,7 +193,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         SELECT 
           id as id,
           licence_version_id as licenceVersionId,
-          created_at AT TIME ZONE 'UTC' as createdTimeStamp,
+          created_at::timestamp as createdTimeStamp,
           booking_id as bookingId,
           success as success,
           retry as retry,
