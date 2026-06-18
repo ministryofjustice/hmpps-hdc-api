@@ -149,21 +149,28 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
 
   @Query(
     value = """
-    SELECT EXISTS (
-      SELECT 1 FROM licence_migration_log WHERE licence_version_id = :licenceVersionId and success = :success
-    )
+        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 
+            FROM licence_versions lv
+            LEFT JOIN (
+                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log 
+                    WHERE  booking_id = :bookingId ORDER BY licence_version_id, id DESC
+            ) migration_log ON migration_log.licence_version_id = lv.id            
+            JOIN (    
+                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
+            WHERE l.deleted_at IS NULL
+                  AND l.booking_id = :bookingId
+                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
+                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
+                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
+            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
+        ) activeLicence ON activeLicence.id = lv.id 
+          WHERE  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)
+          ORDER BY lv.id
   """,
     nativeQuery = true,
   )
-  fun migrationLogExists(licenceVersionId: Long, success: Boolean): Boolean
-
-  @Query(
-    value = """
-        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber FROM licence_versions lv
-            WHERE lv.id = :activeLicenceId""",
-    nativeQuery = true,
-  )
-  fun getMigratableLicenceDetails(activeLicenceId: Long): LicenceBookingDetail?
+  fun getMigratableLicenceDetails(bookingId: Long): LicenceBookingDetail?
 
   @Query(
     value = """
@@ -176,16 +183,17 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @Modifying
   @Query(
-    value = "UPDATE licence_migration_log SET retry = :retry WHERE licence_version_id = :licenceVersionId",
+    value = "UPDATE licence_migration_log SET retry = :retry WHERE id = :logId",
     nativeQuery = true,
   )
-  fun updateRetryState(licenceVersionId: Long, retry: Boolean): Int
+  fun updateRetryState(logId: Long, retry: Boolean): Int
 
   @Query(
     value = """
         SELECT 
           id as id,
           licence_version_id as licenceVersionId,
+          created_at::timestamp as createdTimeStamp,
           booking_id as bookingId,
           success as success,
           retry as retry,
@@ -195,12 +203,14 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+          AND (:success IS NULL OR success = :success)            
     """,
     countQuery = """
         SELECT count(*) FROM licence_migration_log
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+          AND (:success IS NULL OR success = :success)       
     """,
     nativeQuery = true,
   )
@@ -208,6 +218,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     licenceVersionId: Long?,
     bookingId: Long?,
     errorSource: String?,
+    success: Boolean?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto>
 }
