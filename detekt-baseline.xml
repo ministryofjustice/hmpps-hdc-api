@@ -7,6 +7,7 @@
     <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSMessage$val Message: String</ID>
     <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSMessage$val MessageAttributes: HMPPSMessageAttributes</ID>
     <ID>CyclomaticComplexMethod:LicenceService.kt:LicenceService$fun CurfewHours?.getNullTimes: List&lt;String&gt;</ID>
+    <ID>CyclomaticComplexMethod:MigrationProcessService.kt:MigrationProcessService$private fun processLicence</ID>
     <ID>CyclomaticComplexMethod:MigrationRequestService.kt:MigrationRequestService$private fun CurfewHours.getTime: LocalTime?</ID>
     <ID>MagicNumber:LicenceConditionRenderer.kt:LicenceConditionRenderer$5</ID>
     <ID>MagicNumber:SoftDeleteMigrationsController.kt:SoftDeleteMigrationsController$1000</ID>
@@ -54,7 +55,7 @@
     <ID>ReturnCount:LicenceConditionRenderer.kt:LicenceConditionRenderer$fun renderConditions: List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>ReturnCount:MigrationRequestService.kt:MigrationRequestService$fun toMigrateCurfewTimes: List&lt;MigrateCurfewTime&gt;</ID>
     <ID>SwallowedException:MigrationRequestService.kt:MigrationRequestService$e: DatabindException</ID>
-    <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$fun migrateALicence</ID>
+    <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$private fun processLicence</ID>
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt:MigrationProcessService$e: Exception</ID>
     <ID>TooManyFunctions:MigrationRequestService.kt:MigrationRequestService</ID>
     <ID>TooManyFunctions:SARLicenceDataBuilder.kt:uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARLicenceDataBuilder.kt</ID>

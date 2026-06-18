@@ -65,21 +65,15 @@ class MigrationRequestService(
 
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-  fun migrateLicenceToCvl(activeLicenceVersionId: Long) {
-    val request = buildMigrationRequest(activeLicenceVersionId)
-    request?.let { cvlClient.migrateLicence(request) }
-  }
-
-  fun migrateBatchedLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
+  fun migrateLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
     log.info("HDC migration: Migrating licence version id {} to CVL", licenceDetail.licenceVersionId)
     val licenceVersion = migrationRepository.getLicenceVersion(licenceDetail.licenceVersionId)
     return cvlClient.migrateLicence(createMigrationRequest(licenceVersion, prisoner))
   }
 
-  fun buildMigrationRequest(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
+  fun buildMigrationRequestForPreview(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
     val licenceVersion = getLicenceVersion(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
-    validate(prisoner)
     return createMigrationRequest(licenceVersion, prisoner)
   }
 
@@ -351,7 +345,7 @@ class MigrationRequestService(
     }
   }
 
-  private fun performPrisonerSearch(bookingId: Long): Prisoner {
+  fun performPrisonerSearch(bookingId: Long): Prisoner {
     val bookingIds = listOf(bookingId)
     return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for booking id $bookingId")
   }
