@@ -264,7 +264,7 @@ GRANT ALL ON TABLE public.knex_migrations_lock TO licences;
 
 CREATE TABLE public.licence_migration_log (
                                               id bigserial NOT NULL,
-                                              licence_version_id int8 NOT NULL,
+                                              licence_version_id int8 NULL,
                                               created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
                                               success bool NULL,
                                               retry bool NULL,

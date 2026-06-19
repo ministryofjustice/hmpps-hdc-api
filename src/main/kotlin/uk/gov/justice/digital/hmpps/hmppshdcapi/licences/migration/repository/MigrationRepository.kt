@@ -129,7 +129,15 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceVersionId: Long, bookingId: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+
+  @Query(
+    value = """
+        SELECT message FROM licence_migration_log WHERE booking_id = :bookingId and success = :success and retry = :retry
+  """,
+    nativeQuery = true,
+  )
+  fun getMigrationLogByBookingId(bookingId: Long, success: Boolean, retry: Boolean): String?
 
   @Query(
     value = """
