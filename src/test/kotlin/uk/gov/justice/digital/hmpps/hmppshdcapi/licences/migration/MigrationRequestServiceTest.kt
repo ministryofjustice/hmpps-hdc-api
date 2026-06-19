@@ -483,7 +483,7 @@ class MigrationRequestServiceTest {
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.mapCurfewAddress(licenceData)
+      migrationRequestService.validateCurfewAddress(licenceData)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("No valid curfew address found")
@@ -513,7 +513,7 @@ class MigrationRequestServiceTest {
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.mapCurfewAddress(licenceData)
+      migrationRequestService.validateCurfewAddress(licenceData)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("No valid curfew address found")
@@ -573,6 +573,9 @@ class MigrationRequestServiceTest {
           "POLYGRAPH" to emptyMap(),
         ),
       ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
     )
 
     val licence = mock<MigrationLicenceVersion>()
@@ -595,6 +598,9 @@ class MigrationRequestServiceTest {
           "POLYGRAPH" to emptyMap(),
           "DRUG_TESTING" to emptyMap(),
         ),
+      ),
+      bassReferral = CurrentCas2Referral(
+        bassOffer = cas2Offer("FROM_BASS_OFFER"),
       ),
     )
 
@@ -659,10 +665,12 @@ class MigrationRequestServiceTest {
 
   private fun licenceData(
     licenceConditions: LicenceConditions? = null,
+    bassReferral: CurrentCas2Referral? = null,
+    proposedAddress: ProposedAddress? = null,
   ) = LicenceData(
     curfew = null,
-    bassReferral = null,
-    proposedAddress = null,
+    bassReferral = bassReferral,
+    proposedAddress = proposedAddress,
     eligibility = null,
     risk = null,
     reporting = null,
