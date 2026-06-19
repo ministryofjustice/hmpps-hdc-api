@@ -103,13 +103,8 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
             ) migration_log ON migration_log.licence_version_id = lv.id            
             JOIN (    
                 SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
-            WHERE l.deleted_at IS NULL
-                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
-            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
-        ) activeLicence ON activeLicence.id = lv.id 
+                    WHERE l.deleted_at IS NULL
+                        ORDER BY l.booking_id, l.version DESC, l.vary_version DESC) activeLicence ON activeLicence.id = lv.id 
           WHERE  lv.id > :lastProcessedId AND  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)  
           ORDER BY lv.id
           LIMIT :batchSize
@@ -161,18 +156,12 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
             FROM licence_versions lv
             LEFT JOIN (
                     SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log 
-                    WHERE  booking_id = :bookingId ORDER BY licence_version_id, id DESC
+                        WHERE  booking_id = :bookingId ORDER BY licence_version_id, id DESC
             ) migration_log ON migration_log.licence_version_id = lv.id            
-            JOIN (    
-                SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
-            WHERE l.deleted_at IS NULL
-                  AND l.booking_id = :bookingId
-                  AND (l.licence -> 'curfew' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'approvedPremisesAddress' IS NOT NULL
-                   OR  l.licence -> 'proposedAddress' -> 'curfewAddress' IS NOT NULL
-                   OR  l.licence -> 'bassReferral' -> 'bassOffer' IS NOT NULL)
-            ORDER BY l.booking_id, l.version DESC, l.vary_version DESC		    
-        ) activeLicence ON activeLicence.id = lv.id 
+            JOIN (
+             SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
+                    WHERE l.deleted_at IS NULL AND l.booking_id = :bookingId
+                        ORDER BY l.booking_id, l.version DESC, l.vary_version DESC) activeLicence ON activeLicence.id = lv.id 
           WHERE  (migration_log.licence_version_id IS NULL OR migration_log.retry = true)
           ORDER BY lv.id
   """,

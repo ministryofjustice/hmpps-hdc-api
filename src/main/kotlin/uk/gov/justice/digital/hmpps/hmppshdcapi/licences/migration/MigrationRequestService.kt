@@ -159,6 +159,11 @@ class MigrationRequestService(
       attemptToGuessVersion(licenceData.licenceConditions, licence)
         ?: throw MigrationValidationException("Licence additional conditions version not determined!")
     }
+    validateCurfewAddress(licenceData)
+  }
+
+  fun validateCurfewAddress(licenceData: LicenceData) {
+    findCurfewAddress(licenceData) ?: throw MigrationValidationException("No valid curfew address found")
   }
 
   fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
@@ -368,25 +373,29 @@ class MigrationRequestService(
     SUNDAY -> if (from) sundayFrom else sundayUntil
   }
 
-  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
-    with(licenceData) {
-      val (address, addressType) = listOf(
-        curfew?.approvedPremisesAddress to AddressType.CAS,
-        bassReferral?.approvedPremisesAddress to AddressType.CAS,
-        proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
-        bassReferral?.bassOffer to AddressType.CAS,
-      ).firstOrNull { (address, addressType) ->
-        address?.let(::isValidAddress) == true
-      } ?: throw MigrationValidationException("No valid curfew address found")
-
-      return MigrateAddress(
-        addressLine1 = address!!.addressLine1,
-        addressLine2 = address.addressLine2,
-        townOrCity = address.addressTown,
-        postcode = address.postCode,
-        addressType = addressType,
-      )
+  private fun findCurfewAddress(licenceData: LicenceData): Pair<Address, AddressType>? = with(licenceData) {
+    listOf(
+      curfew?.approvedPremisesAddress to AddressType.CAS,
+      bassReferral?.approvedPremisesAddress to AddressType.CAS,
+      proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
+      bassReferral?.bassOffer to AddressType.CAS,
+    ).firstOrNull { (address, _) ->
+      address?.let(::isValidAddress) == true
+    }?.let { (address, addressType) ->
+      requireNotNull(address) to addressType
     }
+  }
+
+  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
+    val (address, addressType) = findCurfewAddress(licenceData)!!
+
+    return MigrateAddress(
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      townOrCity = address.addressTown,
+      postcode = address.postCode,
+      addressType = addressType,
+    )
   }
 
   fun isValidAddress(address: Address): Boolean = listOf(
