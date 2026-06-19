@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import reactor.netty.http.client.PrematureCloseException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
@@ -85,9 +86,15 @@ class MigrationProcessService(
   }
 
   fun migrateALicence(bookingId: Long) {
-    val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId) ?: throw MigrationValidationException("No eligible licence version found for booking Id $bookingId")
-    val prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
-    processLicence(licenceBookingDetail, prisoner, true)
+    try {
+      val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId)
+        ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
+      val prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
+      processLicence(licenceBookingDetail, prisoner, true)
+    } catch (e: MigrationLicenceVersionNotFoundException) {
+      logFailure(null, bookingId, e, retry = true, MigrationErrorSource.HDC)
+      throw e
+    }
   }
 
   private fun processLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner, throwExceptions: Boolean = false) {
@@ -188,12 +195,12 @@ class MigrationProcessService(
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, true, retry = false, "migrated successfully")
   }
 
-  private fun logFailure(licenceVersionId: Long, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {
     log.debug("HDC migration: Licence version id: $licenceVersionId, error: ${e.message}", e)
     logFailure(licenceVersionId, bookingId, e.message ?: e::class.simpleName ?: "Unknown error", retry, source)
   }
 
-  private fun logFailure(licenceVersionId: Long, bookingId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, false, retry = retry, message, source.name)
   }
 
