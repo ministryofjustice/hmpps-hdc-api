@@ -72,7 +72,7 @@ class MigrationRequestService(
   }
 
   fun buildMigrationRequestForPreview(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
-    val licenceVersion = getLicenceVersion(activeLicenceId)
+    val licenceVersion = getMigratableLicenceVersionForPreview(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     return createMigrationRequest(licenceVersion, prisoner)
   }
@@ -160,6 +160,24 @@ class MigrationRequestService(
         ?: throw MigrationValidationException("Licence additional conditions version not determined!")
     }
     validateCurfewAddress(licenceData)
+    validateIfVariationHasUnapprovedChanges(licence)
+  }
+
+  private fun validateIfVariationHasUnapprovedChanges(licence: MigrationLicenceVersion) {
+    val licenceWithUnApprovedChanges = migrationRepository.findLicenceWithUnApprovedChanges(
+      licence.bookingId,
+      licence.version,
+      licence.varyVersion,
+    )
+    licenceWithUnApprovedChanges?.let {
+      val currentVersion = "${it.version}.${it.varyVersion}"
+      val approvedVersion = "${licence.version}.${licence.varyVersion}"
+
+      throw MigrationValidationException(
+        "Found a licence at stage ${it.stage} with unapproved changes " +
+          "(current version $currentVersion, approved version $approvedVersion).",
+      )
+    }
   }
 
   fun validateCurfewAddress(licenceData: LicenceData) {
@@ -404,8 +422,8 @@ class MigrationRequestService(
     address.postCode,
   ).count { !it.isNullOrBlank() } > 0
 
-  private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
-    val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
+  private fun getMigratableLicenceVersionForPreview(activeLicenceId: Long): MigrationLicenceVersion {
+    val licenceVersion = migrationRepository.getMigratableLicenceVersionForPreview(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
     return licenceVersion
   }
