@@ -57,6 +57,7 @@
     <ID>SwallowedException:MigrationRequestService.kt:MigrationRequestService$e: DatabindException</ID>
     <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$private fun processLicence</ID>
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt:MigrationProcessService$e: Exception</ID>
+    <ID>TooManyFunctions:MigrationRepository.kt:MigrationRepository : CrudRepository</ID>
     <ID>TooManyFunctions:MigrationRequestService.kt:MigrationRequestService</ID>
     <ID>TooManyFunctions:SARLicenceDataBuilder.kt:uk.gov.justice.digital.hmpps.hmppshdcapi.model.sar.SARLicenceDataBuilder.kt</ID>
   </CurrentIssues>

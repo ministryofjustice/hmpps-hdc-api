@@ -73,6 +73,25 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+    "classpath:test_data/migration/sql/hdc-varation-in-progress.sql",
+  )
+  @Test
+  fun `When approved licence has a variation in progress then migration will not happen `() {
+    // Given
+    val bookingId = 54222L
+    stubSearchPrisonersByBookingIds()
+
+    // When
+    val response = postBookingIdForLicenceToMigrate(bookingId)
+
+    // Then
+    response.expectStatus().isBadRequest
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0).")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
   )
   @Test
   fun `When there is no licence to migrate correct log is given`() {
