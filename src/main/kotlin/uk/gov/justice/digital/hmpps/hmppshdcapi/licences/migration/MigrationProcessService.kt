@@ -4,6 +4,7 @@ import io.netty.channel.unix.Errors
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.scheduling.annotation.Async
@@ -23,6 +24,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.Lice
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.lang.Thread.sleep
+import java.time.Clock
+import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds
 
 @Transactional(propagation = Propagation.NEVER)
@@ -31,6 +34,9 @@ class MigrationProcessService(
   private val migrationRepository: MigrationRepository,
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
+  @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
+  private val allowedMigrationDate: LocalDate?,
+  private val clock: Clock = Clock.systemDefaultZone(),
 ) {
 
   @PersistenceContext
@@ -38,6 +44,8 @@ class MigrationProcessService(
 
   @Async
   fun migrateABatchOfLicences() {
+    if (!checkIfMigrationIsAllowed()) return
+
     var lastProcessedId = 0L
     var batch = 1
 
@@ -203,6 +211,24 @@ class MigrationProcessService(
   private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, message: String, retry: Boolean, source: MigrationErrorSource) {
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, false, retry = retry, message, source.name)
   }
+
+  private fun checkIfMigrationIsAllowed(): Boolean {
+    if (allowedMigrationDate == null) {
+      log.info("HDC migration: Migration to cvl is skipped because migration date is not configured")
+      return false
+    }
+    if (!isMigrationAllowed()) {
+      log.info(
+        "HDC migration:  Migration to cvl is skipped because migration {} date has not been reached",
+        allowedMigrationDate,
+      )
+      return false
+    }
+    return true
+  }
+
+  fun isMigrationAllowed(): Boolean = allowedMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
+  private fun getCurrentDate(): LocalDate = LocalDate.now(clock)
 
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
