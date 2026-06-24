@@ -193,7 +193,7 @@ class MigrationProcessService(
   private fun logSuccess(licenceVersionId: Long, bookingId: Long) {
     log.info("HDC migration: Licence version id: $licenceVersionId, migrated successfully")
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, true, retry = false, "migrated successfully")
-    migrationRepository.updateMigrationStateById(licenceVersionId,"COMPLETED")
+    migrationRepository.updateMigrationStateById(licenceVersionId, "COMPLETED")
   }
 
   private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, e: Exception, retry: Boolean, source: MigrationErrorSource) {

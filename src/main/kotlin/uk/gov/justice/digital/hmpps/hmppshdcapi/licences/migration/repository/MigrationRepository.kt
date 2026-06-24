@@ -249,7 +249,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Transactional
   @Query(
     value = "UPDATE licence_versions SET migration_state = :migrationState WHERE id = :id",
-    nativeQuery = true
+    nativeQuery = true,
   )
   fun updateMigrationStateById(id: Long, migrationState: String): Int
 }
