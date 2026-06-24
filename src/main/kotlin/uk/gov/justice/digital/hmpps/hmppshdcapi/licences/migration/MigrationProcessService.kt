@@ -44,7 +44,7 @@ class MigrationProcessService(
 
   @Async
   fun migrateABatchOfLicences() {
-    if (checkIfMigrationIsAllowed()) return
+    if (!checkIfMigrationIsAllowed()) return
 
     var lastProcessedId = 0L
     var batch = 1
@@ -215,16 +215,16 @@ class MigrationProcessService(
   private fun checkIfMigrationIsAllowed(): Boolean {
     if (allowedMigrationDate == null) {
       log.info("HDC migration: Migration to cvl is skipped because migration date is not configured")
-      return true
+      return false
     }
     if (!isMigrationAllowed()) {
       log.info(
         "HDC migration:  Migration to cvl is skipped because migration {} date has not been reached",
         allowedMigrationDate,
       )
-      return true
+      return false
     }
-    return false
+    return true
   }
 
   fun isMigrationAllowed(): Boolean = allowedMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
