@@ -253,7 +253,6 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   )
   fun updateMigrationStateById(id: Long, migrationState: String): Int
 
-
   @Query(
     value = "SELECT migration_state FROM licence_versions WHERE id = :id",
     nativeQuery = true,
