@@ -299,7 +299,9 @@ CREATE TABLE public.licence_versions (
                                          prison_number varchar(7) NULL,
                                          deleted_at timestamp NULL,
                                          licence_in_cvl bool DEFAULT false NOT NULL,
-                                         CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
+                                         migration_state varchar(20) DEFAULT 'PENDING'::character varying NOT NULL,
+                                         CONSTRAINT licence_versions_migration_state_check CHECK (((migration_state)::text = ANY ((ARRAY['PENDING'::character varying, 'COMPLETED'::character varying, 'FAILED'::character varying])::text[]))),
+	                                     CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_version_by_booking_id ON public.licence_versions USING btree (booking_id, version, id, template);
 CREATE UNIQUE INDEX licence_versions_booking_id_version_vary_version_unique ON public.licence_versions USING btree (booking_id, version, vary_version) WHERE (deleted_at IS NULL);

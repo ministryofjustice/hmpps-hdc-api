@@ -69,6 +69,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
     assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
   }
 
   @Sql(
@@ -88,6 +89,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isBadRequest
     assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0).")
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
   }
 
   @Sql(

@@ -244,4 +244,18 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     success: Boolean?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto>
+
+  @Modifying
+  @Transactional
+  @Query(
+    value = "UPDATE licence_versions SET migration_state = :migrationState WHERE id = :id",
+    nativeQuery = true,
+  )
+  fun updateMigrationStateById(id: Long, migrationState: String): Int
+
+  @Query(
+    value = "SELECT migration_state FROM licence_versions WHERE id = :id",
+    nativeQuery = true,
+  )
+  fun findMigrationStateById(id: Long): String?
 }
