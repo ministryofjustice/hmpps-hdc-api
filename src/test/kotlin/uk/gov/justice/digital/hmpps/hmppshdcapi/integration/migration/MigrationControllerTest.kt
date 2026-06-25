@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
@@ -68,6 +69,44 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isNoContent
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
     assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+    "classpath:test_data/migration/sql/hdc-varation-in-progress.sql",
+  )
+  @Test
+  fun `When approved licence has a variation in progress then migration will not happen `() {
+    // Given
+    val bookingId = 54222L
+    stubSearchPrisonersByBookingIds()
+
+    // When
+    val response = postBookingIdForLicenceToMigrate(bookingId)
+
+    // Then
+    response.expectStatus().isBadRequest
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0).")
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+  )
+  @Test
+  fun `When there is no licence to migrate correct log is given`() {
+    // Given
+    val bookingId = 54222L
+
+    // When
+    val response = postBookingIdForLicenceToMigrate(bookingId)
+
+    // Then
+    response.expectStatus().isEqualTo(BAD_REQUEST)
+    assertThat(migrationRepository.getMigrationLogByBookingId(bookingId, false, retry = true))
+      .isEqualTo("No eligible licence version found for booking Id 54222")
   }
 
   @Sql(
