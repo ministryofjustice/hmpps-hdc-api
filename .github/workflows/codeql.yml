@@ -38,6 +38,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with: 
+          persist-credentials: false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@5c8a8a642e79153f5d047b10ec1cba1d1cc65699 # v3
