@@ -8,7 +8,7 @@ data class LicenceMigrationLogEntryDto(
   @get:Schema(description = "Log entry id", example = "123")
   val id: Long,
   @get:Schema(description = "Licence version id", example = "42")
-  val licenceVersionId: Long,
+  val licenceVersionId: Long? = null,
   @get:Schema(description = "Timestamp of the log entry", example = "2024-06-01T12:34:56")
   val createdTimeStamp: LocalDateTime,
   @get:Schema(description = "Booking id", example = "987654")

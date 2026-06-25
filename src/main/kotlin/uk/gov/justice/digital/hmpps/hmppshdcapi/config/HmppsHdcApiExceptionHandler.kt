@@ -15,6 +15,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 
 @RestControllerAdvice
@@ -116,6 +117,23 @@ class HmppsHdcApiExceptionHandler {
       .body(
         ErrorResponse(
           status = HttpStatus.CONFLICT.value(),
+          userMessage = "Retryable migration failed - ${migrationException.message}",
+          developerMessage = migrationException.message,
+        ),
+      )
+  }
+
+  @ExceptionHandler(MigrationLicenceVersionNotFoundException::class)
+  fun handleMigrationException(
+    migrationException: MigrationLicenceVersionNotFoundException,
+  ): ResponseEntity<ErrorResponse> {
+    log.warn("Migration failed: {}", migrationException.message)
+
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST.value(),
           userMessage = "Retryable migration failed - ${migrationException.message}",
           developerMessage = migrationException.message,
         ),

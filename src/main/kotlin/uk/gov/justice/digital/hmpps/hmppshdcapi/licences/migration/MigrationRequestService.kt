@@ -72,7 +72,7 @@ class MigrationRequestService(
   }
 
   fun buildMigrationRequestForPreview(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
-    val licenceVersion = getLicenceVersion(activeLicenceId)
+    val licenceVersion = getMigratableLicenceVersionForPreview(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     return createMigrationRequest(licenceVersion, prisoner)
   }
@@ -159,6 +159,29 @@ class MigrationRequestService(
       attemptToGuessVersion(licenceData.licenceConditions, licence)
         ?: throw MigrationValidationException("Licence additional conditions version not determined!")
     }
+    validateCurfewAddress(licenceData)
+    validateIfVariationHasUnapprovedChanges(licence)
+  }
+
+  private fun validateIfVariationHasUnapprovedChanges(licence: MigrationLicenceVersion) {
+    val licenceWithUnApprovedChanges = migrationRepository.findLicenceWithUnApprovedChanges(
+      licence.bookingId,
+      licence.version,
+      licence.varyVersion,
+    )
+    licenceWithUnApprovedChanges?.let {
+      val currentVersion = "${it.version}.${it.varyVersion}"
+      val approvedVersion = "${licence.version}.${licence.varyVersion}"
+
+      throw MigrationValidationException(
+        "Found a licence at stage ${it.stage} with unapproved changes " +
+          "(current version $currentVersion, approved version $approvedVersion).",
+      )
+    }
+  }
+
+  fun validateCurfewAddress(licenceData: LicenceData) {
+    findCurfewAddress(licenceData) ?: throw MigrationValidationException("No valid curfew address found")
   }
 
   fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
@@ -368,25 +391,29 @@ class MigrationRequestService(
     SUNDAY -> if (from) sundayFrom else sundayUntil
   }
 
-  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
-    with(licenceData) {
-      val (address, addressType) = listOf(
-        curfew?.approvedPremisesAddress to AddressType.CAS,
-        bassReferral?.approvedPremisesAddress to AddressType.CAS,
-        proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
-        bassReferral?.bassOffer to AddressType.CAS,
-      ).firstOrNull { (address, addressType) ->
-        address?.let(::isValidAddress) == true
-      } ?: throw MigrationValidationException("No valid curfew address found")
-
-      return MigrateAddress(
-        addressLine1 = address!!.addressLine1,
-        addressLine2 = address.addressLine2,
-        townOrCity = address.addressTown,
-        postcode = address.postCode,
-        addressType = addressType,
-      )
+  private fun findCurfewAddress(licenceData: LicenceData): Pair<Address, AddressType>? = with(licenceData) {
+    listOf(
+      curfew?.approvedPremisesAddress to AddressType.CAS,
+      bassReferral?.approvedPremisesAddress to AddressType.CAS,
+      proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
+      bassReferral?.bassOffer to AddressType.CAS,
+    ).firstOrNull { (address, _) ->
+      address?.let(::isValidAddress) == true
+    }?.let { (address, addressType) ->
+      requireNotNull(address) to addressType
     }
+  }
+
+  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
+    val (address, addressType) = findCurfewAddress(licenceData)!!
+
+    return MigrateAddress(
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      townOrCity = address.addressTown,
+      postcode = address.postCode,
+      addressType = addressType,
+    )
   }
 
   fun isValidAddress(address: Address): Boolean = listOf(
@@ -395,8 +422,8 @@ class MigrationRequestService(
     address.postCode,
   ).count { !it.isNullOrBlank() } > 0
 
-  private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
-    val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
+  private fun getMigratableLicenceVersionForPreview(activeLicenceId: Long): MigrationLicenceVersion {
+    val licenceVersion = migrationRepository.getMigratableLicenceVersionForPreview(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
     return licenceVersion
   }
