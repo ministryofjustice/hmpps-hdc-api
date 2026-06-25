@@ -182,7 +182,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   """,
     nativeQuery = true,
   )
-  fun getMigratableLicenceDetails(bookingId: Long, ignoreRetry : Boolean = false ): LicenceBookingDetail?
+  fun getMigratableLicenceDetails(bookingId: Long, ignoreRetry: Boolean = false): LicenceBookingDetail?
 
   @Query(
     value = """
