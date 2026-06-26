@@ -26,7 +26,7 @@ echo "Getting SYSTEM_CLIENT_SECRET..."
 export SYSTEM_CLIENT_SECRET=$(kubectl -n licences-dev get secrets hmpps-hdc-api -o json  | jq -r '.data.SYSTEM_CLIENT_SECRET | @base64d')
 
 # --- Booleans / Flags ---
-
+export ALLOWED_BULK_CVL_MIGRATION_DATE="2026-05-11"
 
 # --- Write to .env file ---
 fileDir=~/env-config/
@@ -51,6 +51,7 @@ cat > "$fileToAddVars" <<EOF
   SYSTEM_CLIENT_SECRET="${SYSTEM_CLIENT_SECRET}"
 
 # --- Flags ---
+  ALLOWED_BULK_CVL_MIGRATION_DATE="${ALLOWED_BULK_CVL_MIGRATION_DATE}"
 
 EOF
 

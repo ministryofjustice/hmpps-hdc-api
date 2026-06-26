@@ -95,7 +95,7 @@ class MigrationProcessService(
 
   fun migrateALicence(bookingId: Long) {
     try {
-      val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId)
+      val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       val prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
       processLicence(licenceBookingDetail, prisoner, true)
