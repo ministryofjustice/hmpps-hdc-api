@@ -74,6 +74,29 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-vary-licence-not-system.sql",
+  )
+  @Test
+  fun `Migrate licence created out of system to CVL successfully`() {
+    // Given
+    val bookingId = 54222L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    cvlMockServer.stubMigrateLicenceSuccess()
+
+    // When
+    val response = postBookingIdForLicenceToMigrate(bookingId)
+
+    // Then
+    response.expectStatus().isNoContent
+    verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
+    assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
     "classpath:test_data/migration/sql/hdc-varation-in-progress.sql",
   )
