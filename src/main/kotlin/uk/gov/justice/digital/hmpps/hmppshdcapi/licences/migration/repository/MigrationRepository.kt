@@ -135,11 +135,11 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Modifying
   @Query(
     value = """
-            INSERT INTO licence_migration_log(licence_version_id, booking_id, success, retry, message, error_source)  VALUES (:licenceVersionId,:bookingId,:success,:retry,:message,CAST(:source AS migration_error_source))
+            INSERT INTO licence_migration_log(licence_version_id, booking_id, prison_number, success, retry, message, error_source)  VALUES (:licenceVersionId,:bookingId,:prison_number,:success,:retry,:message,CAST(:source AS migration_error_source))
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, prison_number: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
 
   @Query(
     value = """
@@ -207,6 +207,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
           licence_version_id as licenceVersionId,
           created_at::timestamp as createdTimeStamp,
           booking_id as bookingId,
+          prison_number as prisonNumber,
           success as success,
           retry as retry,
           message as message,

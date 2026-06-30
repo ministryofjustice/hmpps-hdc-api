@@ -13,6 +13,8 @@ data class LicenceMigrationLogEntryDto(
   val createdTimeStamp: LocalDateTime,
   @get:Schema(description = "Booking id", example = "987654")
   val bookingId: Long,
+  @get:Schema(description = "Prison Number", example = "AA7654A")
+  val prisonNumber: String? = null,
   @get:Schema(description = "Was the migration successful")
   val success: Boolean,
   @get:Schema(description = "Should this failure be retried")
