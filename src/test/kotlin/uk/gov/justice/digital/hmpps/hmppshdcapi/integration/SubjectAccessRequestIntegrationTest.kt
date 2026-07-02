@@ -67,7 +67,7 @@ class SubjectAccessRequestIntegrationTest :
   fun `SAR template should render all fields in the data model`() {
     sarTestDataLoader.load()
 
-    val dataResponse = sarIntegrationTestHelper.requestSarData(getPrn(), getCrn(), getFromDate(), getToDate(), webTestClient)
+    val dataResponse = sarIntegrationTestHelper.requestSarData(getPrn(), getCrn(), getFromDate(), getToDate(), webTestClient, Map::class.java)
 
     val result = SarTemplateFieldTracker.check(
       content = dataResponse.content,

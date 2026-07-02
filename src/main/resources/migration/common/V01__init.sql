@@ -271,6 +271,7 @@ CREATE TABLE public.licence_migration_log (
                                               message text NULL,
                                               error_source public."migration_error_source" NULL,
                                               booking_id int4 NULL,
+                                              prison_number varchar(7) NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
 
@@ -436,7 +437,8 @@ AS SELECT id,
           vary_version,
           prison_number,
           deleted_at,
-          licence_in_cvl
+          licence_in_cvl,
+          migration_state
    FROM licence_versions
    WHERE deleted_at IS NULL;
 
