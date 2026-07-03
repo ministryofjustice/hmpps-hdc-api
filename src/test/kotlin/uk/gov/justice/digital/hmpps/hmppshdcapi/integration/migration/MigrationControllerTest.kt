@@ -90,7 +90,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isNoContent
-    verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
+    verifyRequestPayloadSentToCVL("test_hdc_to_cvl_out_of_system_licence.json")
     assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
   }

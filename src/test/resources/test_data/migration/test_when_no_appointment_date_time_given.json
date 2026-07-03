@@ -32,7 +32,14 @@
     "licenceVersion" : 1,
     "varyVersion" : 1
   },
-  "lifecycle" : { },
+  "lifecycle" : {
+    "approvedDate" : "2021-08-10T15:06:37.188",
+    "approvedByUsername" : "approver-6",
+    "submittedDate" : "2021-08-08T15:06:37.188",
+    "submittedByUserName" : "submitter-6",
+    "createdByUserName" : "creator-6",
+    "dateCreated" : "2021-08-06T15:20:37.188"
+  },
   "conditions" : {
     "bespoke" : [ "Some other condition" ],
     "additional" : [ {
