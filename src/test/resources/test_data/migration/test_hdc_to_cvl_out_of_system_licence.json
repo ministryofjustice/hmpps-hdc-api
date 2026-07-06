@@ -1,10 +1,10 @@
 {
   "bookingNo" : "64321",
-  "bookingId" : 10,
+  "bookingId" : 54222,
   "pnc" : "PNC123",
   "cro" : "CRO123",
   "prisoner" : {
-    "prisonerNumber" : "A1234EE",
+    "prisonerNumber" : "A1234AA",
     "forename" : "forename",
     "middleNames" : "middleNames",
     "surname" : "surname",
@@ -33,12 +33,12 @@
     "varyVersion" : 0
   },
   "lifecycle" : {
-    "approvedDate" : "2021-08-10T15:06:37.188",
-    "approvedByUsername" : "approver-1",
+    "approvedDate" : "2021-08-08T15:06:37.188",
+    "approvedByName" : "approver",
     "submittedDate" : "2021-08-08T15:06:37.188",
-    "submittedByUserName" : "submitter-1",
-    "createdByUserName" : "creator-1",
-    "dateCreated" : "2021-08-06T15:20:37.188"
+    "submittedByUserName" : "submitter",
+    "createdByUserName" : "creator",
+    "dateCreated" : "2021-08-06T15:05:37.188"
   },
   "conditions" : {
     "bespoke" : [ "Some other condition" ],

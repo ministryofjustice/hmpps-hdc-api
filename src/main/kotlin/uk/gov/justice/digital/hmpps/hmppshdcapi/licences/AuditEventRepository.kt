@@ -21,8 +21,16 @@ interface AuditEventRepository :
   @Query(
     nativeQuery = true,
     value = """
-      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" in ('LICENCE_RECORD_STARTED','VARY_NOMIS_LICENCE_CREATED') ORDER BY timestamp DESC LIMIT 1
+      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" = 'LICENCE_RECORD_STARTED' ORDER BY timestamp DESC LIMIT 1
   """,
   )
   fun findLicenceRecordStartedAuditId(bookingId: String): Long?
+
+  @Query(
+    nativeQuery = true,
+    value = """
+      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" = 'VARY_NOMIS_LICENCE_CREATED' ORDER BY timestamp DESC LIMIT 1
+  """,
+  )
+  fun findVaryLicenceFromOutOfSystemAuditId(bookingId: String): Long?
 }
