@@ -188,7 +188,7 @@ class MigrationRequestService(
       val missing = buildList {
         if (it.createdByUserName == null) add("creator")
         if (it.submittedByUserName == null) add("submitter")
-        if (it.approvedByUsername == null) add("approver")
+        if (it.approvedByUsername == null && it.approvedByName == null) add("approver")
       }
 
       if (missing.isNotEmpty()) {
@@ -271,17 +271,17 @@ class MigrationRequestService(
     audits: List<AuditEvent>,
   ): MigrateLicenceLifecycleDetails {
     val submitted = getLastAuditByDetails(audits, "UPDATE_SECTION", detailsContains = "/hdc/vary/approval/")
-    val createdBuy = getLastAuditByDetails(audits, "VARY_NOMIS_LICENCE_CREATED")
+    val createdBy = getLastAuditByDetails(audits, "VARY_NOMIS_LICENCE_CREATED")
 
     val approvedByName = (submitted?.details["userInput"] as? Map<*, *>)?.get("name") as? String
 
     return MigrateLicenceLifecycleDetails(
       approvedDate = submitted?.timestamp,
-      approvedByUsername = approvedByName,
+      approvedByName = approvedByName,
       submittedDate = submitted?.timestamp,
       submittedByUserName = submitted?.user,
-      createdByUserName = createdBuy?.user,
-      dateCreated = createdBuy?.timestamp,
+      createdByUserName = createdBy?.user,
+      dateCreated = createdBy?.timestamp,
     )
   }
 
