@@ -299,13 +299,6 @@ VALUES ('2021-04-05 15:06:37.188',
         '{
           "bookingId": "54222"
         }'::jsonb),
-       ('2021-08-06 15:06:37.188',
-        'aCaseManager',
-        'SEND',
-        '{
-          "bookingId": "54222",
-          "transitionType": "caToRo"
-        }'::jsonb),
        ('2021-08-06 15:20:37.188',
         'creator',
         'UPDATE_SECTION',
@@ -313,13 +306,19 @@ VALUES ('2021-04-05 15:06:37.188',
           "bookingId": "54222",
           "transitionType": "caToRo"
         }'::jsonb),
-       ('2021-08-08 15:06:37.188',
-        'submitter',
-        'SEND',
-        '{
-          "bookingId": "54222",
-          "transitionType": "roToCa"
-        }'::jsonb),
+       (
+       '2021-08-08 15:06:37.188',
+       'submitter',
+       'UPDATE_SECTION',
+       '{
+         "bookingId": "54222",
+         "path": "/hdc/vary/approval/54222",
+         "userInput": {
+           "name": "approver",
+           "jobTitle": "Approver Person"
+         }
+       }'::jsonb
+       ),
        ('2021-08-09 15:06:37.188',
         'updater',
         'UPDATE_SECTION',

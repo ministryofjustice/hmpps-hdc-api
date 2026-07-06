@@ -552,13 +552,14 @@ class MigrationRequestServiceTest {
         ),
       ),
     )
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
     whenever(licence.bookingId).thenReturn(bookingId)
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(null)
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.validate(licenceData, licence)
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("Licence additional conditions version not determined!")
@@ -577,11 +578,11 @@ class MigrationRequestServiceTest {
         curfewAddress = curfewAddress("test"),
       ),
     )
-
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
 
     // When
-    migrationRequestService.validate(licenceData, licence)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
 
     // Then
     verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
@@ -603,14 +604,14 @@ class MigrationRequestServiceTest {
         bassOffer = cas2Offer("FROM_BASS_OFFER"),
       ),
     )
-
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
 
     whenever(licence.bookingId).thenReturn(bookingId)
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
 
     // When
-    migrationRequestService.validate(licenceData, licence)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
 
     // Then
     verify(migrationRepository, times(1)).getConditionsVersionFor(bookingId)
