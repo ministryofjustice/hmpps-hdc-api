@@ -290,15 +290,15 @@ class MigrationRequestService(
   ): MigrateLicenceLifecycleDetails {
     val submitted = getLastAuditByTransitionType(audits, "SEND", "roToCa")
     val approved = getLastAuditByTransitionType(audits, "SEND", "dmToCa")
-    val createdBuy = getFirstUpdateAfterCaToRo(audits)
+    val createdBy = getFirstUpdateAfterCaToRo(audits)
 
     return MigrateLicenceLifecycleDetails(
       approvedDate = approved?.timestamp,
       approvedByUsername = approved?.user,
       submittedDate = submitted?.timestamp,
       submittedByUserName = submitted?.user,
-      createdByUserName = createdBuy?.user,
-      dateCreated = createdBuy?.timestamp,
+      createdByUserName = createdBy?.user,
+      dateCreated = createdBy?.timestamp,
     )
   }
 
