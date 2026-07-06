@@ -186,9 +186,9 @@ class MigrationRequestService(
 
     lifecycleDetails?.let {
       val missing = buildList {
-        if (it.createdByUserName == null) add("creator")
-        if (it.submittedByUserName == null) add("submitter")
-        if (it.approvedByUsername == null && it.approvedByName == null) add("approver")
+        if (it.createdByUserName.isNullOrBlank()) add("creator")
+        if (it.submittedByUserName.isNullOrBlank()) add("submitter")
+        if (it.approvedByUsername.isNullOrBlank() && it.approvedByName.isNullOrBlank()) add("approver")
       }
 
       if (missing.isNotEmpty()) {
