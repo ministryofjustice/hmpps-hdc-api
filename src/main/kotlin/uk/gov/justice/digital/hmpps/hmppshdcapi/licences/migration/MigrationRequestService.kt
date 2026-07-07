@@ -193,7 +193,7 @@ class MigrationRequestService(
 
       if (missing.isNotEmpty()) {
         throw MigrationValidationException(
-          "Missing lifecycle users: ${missing.joinToString(", ")}",
+          "Missing lifecycle for ${licenceTypeRecord.type.name}, users : ${missing.joinToString(", ")}",
         )
       }
     }
