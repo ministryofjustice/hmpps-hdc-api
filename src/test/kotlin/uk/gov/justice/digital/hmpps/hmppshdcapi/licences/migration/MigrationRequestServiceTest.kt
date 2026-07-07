@@ -685,6 +685,26 @@ class MigrationRequestServiceTest {
   }
 
   @Test
+  fun shouldReturnLicenceWhenVariationAuditIsOlderThanLicenceAudit() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(20L)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(10L)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.LICENCE)
+    assertThat(result.auditFromId).isEqualTo(20L)
+    assertThat(result.licenceRecordStarted).isEqualTo(20L)
+    assertThat(result.varyLicenceRecordStarted).isEqualTo(10L)
+  }
+
+  @Test
   fun shouldReturnLicenceWhenOnlyLicenceAuditExists() {
     // Given
     val bookingId = 123L
