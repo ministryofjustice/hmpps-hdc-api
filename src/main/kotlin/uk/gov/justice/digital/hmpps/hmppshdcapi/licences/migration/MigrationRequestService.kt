@@ -392,14 +392,14 @@ class MigrationRequestService(
   private fun getLicencesType(bookingId: Long): LicenceTypeRecord {
     val licenceRecordStarted = auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString())
     val varyLicenceRecordStarted = auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString())
-    val type = when {
-      licenceRecordStarted != null && varyLicenceRecordStarted != null -> LicenceType.VARIATION_LICENCE
-      varyLicenceRecordStarted != null -> LicenceType.VARIATION_LICENCE_FROM_OUT_OF_SYSTEM
-      licenceRecordStarted != null -> LicenceType.LICENCE
-      else -> LicenceType.NOT_KNOWN
+
+    val (type, auditFromId) = when {
+      licenceRecordStarted != null && varyLicenceRecordStarted != null && varyLicenceRecordStarted > licenceRecordStarted -> LicenceType.VARIATION_LICENCE to varyLicenceRecordStarted
+      licenceRecordStarted != null -> LicenceType.LICENCE to licenceRecordStarted
+      varyLicenceRecordStarted != null -> LicenceType.VARIATION_LICENCE_FROM_OUT_OF_SYSTEM to varyLicenceRecordStarted
+      else -> LicenceType.NOT_KNOWN to -1L
     }
 
-    val auditFromId = varyLicenceRecordStarted ?: licenceRecordStarted ?: -1
     return LicenceTypeRecord(type, auditFromId, licenceRecordStarted, varyLicenceRecordStarted)
   }
 
