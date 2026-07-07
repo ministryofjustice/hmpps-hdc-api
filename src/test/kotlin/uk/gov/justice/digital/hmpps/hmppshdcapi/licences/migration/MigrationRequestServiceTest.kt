@@ -664,6 +664,106 @@ class MigrationRequestServiceTest {
     assertThat(result).isEqualTo(versionId)
   }
 
+  @Test
+  fun shouldReturnVariationLicenceWhenVariationAuditIsNewerThanLicenceAudit() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(10L)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(20L)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.VARIATION_LICENCE)
+    assertThat(result.auditFromId).isEqualTo(20L)
+    assertThat(result.licenceRecordStarted).isEqualTo(10L)
+    assertThat(result.varyLicenceRecordStarted).isEqualTo(20L)
+  }
+
+  @Test
+  fun shouldReturnLicenceWhenVariationAuditIsOlderThanLicenceAudit() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(20L)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(10L)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.LICENCE)
+    assertThat(result.auditFromId).isEqualTo(20L)
+    assertThat(result.licenceRecordStarted).isEqualTo(20L)
+    assertThat(result.varyLicenceRecordStarted).isEqualTo(10L)
+  }
+
+  @Test
+  fun shouldReturnLicenceWhenOnlyLicenceAuditExists() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(10L)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(null)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.LICENCE)
+    assertThat(result.auditFromId).isEqualTo(10L)
+    assertThat(result.licenceRecordStarted).isEqualTo(10L)
+    assertThat(result.varyLicenceRecordStarted).isNull()
+  }
+
+  @Test
+  fun shouldReturnVariationLicenceFromOutOfSystemWhenOnlyVariationAuditExists() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(null)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(20L)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.VARIATION_LICENCE_FROM_OUT_OF_SYSTEM)
+    assertThat(result.auditFromId).isEqualTo(20L)
+    assertThat(result.licenceRecordStarted).isNull()
+    assertThat(result.varyLicenceRecordStarted).isEqualTo(20L)
+  }
+
+  @Test
+  fun shouldReturnNotKnownWhenNoAuditEventsExist() {
+    // Given
+    val bookingId = 123L
+
+    whenever(auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()))
+      .thenReturn(null)
+    whenever(auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString()))
+      .thenReturn(null)
+
+    // When
+    val result = migrationRequestService.getLicencesType(bookingId)
+
+    // Then
+    assertThat(result.type).isEqualTo(LicenceType.NOT_KNOWN)
+    assertThat(result.auditFromId).isEqualTo(-1L)
+    assertThat(result.licenceRecordStarted).isNull()
+    assertThat(result.varyLicenceRecordStarted).isNull()
+  }
+
   private fun licenceData(
     licenceConditions: LicenceConditions? = null,
     bassReferral: CurrentCas2Referral? = null,

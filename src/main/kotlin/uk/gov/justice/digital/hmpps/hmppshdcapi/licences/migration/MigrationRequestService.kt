@@ -389,7 +389,7 @@ class MigrationRequestService(
     .filter { audit -> audit.action == action && (detailsContains == null || audit.details.values.any { it.toString().contains(detailsContains) }) }
     .lastOrNull()
 
-  private fun getLicencesType(bookingId: Long): LicenceTypeRecord {
+  fun getLicencesType(bookingId: Long): LicenceTypeRecord {
     val licenceRecordStarted = auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString())
     val varyLicenceRecordStarted = auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString())
 
