@@ -1,14 +1,13 @@
-INSERT INTO licence_versions (
-    id,
-    template,
-    licence,
-    booking_id,
-    version,
-    vary_version,
-    prison_number,
-    deleted_at,
-    licence_in_cvl,
-    "timestamp")
+INSERT INTO licence_versions (id,
+                              template,
+                              licence,
+                              booking_id,
+                              version,
+                              vary_version,
+                              prison_number,
+                              deleted_at,
+                              licence_in_cvl,
+                              "timestamp")
 
 -- Create the data for a HDC licence with a preferred address
 VALUES (1,
@@ -28,6 +27,20 @@ VALUES (1,
                     "curfewHours": {
                       "allFrom": "19:00",
                       "allUntil": "07:00",
+                      "fridayFrom": "19:00",
+                      "mondayFrom": "19:00",
+                      "sundayFrom": "19:00",
+                      "fridayUntil": "07:00",
+                      "mondayUntil": "07:00",
+                      "sundayUntil": "07:00",
+                      "tuesdayFrom": "19:00",
+                      "saturdayFrom": "19:00",
+                      "thursdayFrom": "19:00",
+                      "tuesdayUntil": "07:00",
+                      "saturdayUntil": "07:00",
+                      "thursdayUntil": "07:00",
+                      "wednesdayFrom": "19:00",
+                      "wednesdayUntil": "07:00",
                       "daySpecificInputs": "No"
                     }
                   },
@@ -242,194 +255,81 @@ VALUES (1,
             "conditionsSummary": {
                 "additionalConditionsJustification": "adsas"
             }
-          }
-        }'::jsonb,
-        10,
+        }
+                }'::jsonb,
+        54222,
         1,
         0,
-        'A1234EE',
-        null,
-        false,
-        NOW()),
-
-       -- Create the data for a HDC licence with a CAS2 address
-       (2,
-        'hdc_ap',
-        '{
-               "document": {
-                 "template": {
-                   "decision": "hdc_ap",
-                   "offenceCommittedBeforeFeb2015": "No"
-                 }
-               },
-               "eligibility": {
-                 "crdTime": {
-                   "decision": "No"
-                 },
-                 "excluded": {
-                   "decision": "No"
-                 },
-                 "suitability": {
-                   "decision": "No"
-                 }
-               },
-               "bassReferral": {
-                 "bassOffer": {
-                  "bassArea": "Test City",
-                  "postCode": "TS12 TST",
-                  "telephone": "55000000000",
-                  "addressTown": "Test City",
-                  "addressLine1": "100 CAS2 Street",
-                  "addressLine2": "The Avenue",
-                  "bassAccepted": "Yes",
-                  "bassOfferDetails": ""
-                },
-                "bassRequest": {
-                 "specificArea": "No",
-                 "bassRequested": "Yes",
-                 "additionalInformation": ""
-                }
-               },
-               "curfew": {
-                 "firstNight":{
-                   "firstNightFrom": "15:00",
-                   "firstNightUntil": "07:00"
-                 },
-                 "curfewHours": {
-                   "fridayFrom": "19:00",
-                   "mondayFrom": "19:00",
-                   "sundayFrom": "19:00",
-                   "fridayUntil": "07:00",
-                   "mondayUntil": "07:00",
-                   "sundayUntil": "07:00",
-                   "tuesdayFrom": "19:00",
-                   "saturdayFrom": "19:00",
-                   "thursdayFrom": "19:00",
-                   "tuesdayUntil": "07:00",
-                   "saturdayUntil": "07:00",
-                   "thursdayUntil": "07:00",
-                   "wednesdayFrom": "19:00",
-                   "wednesdayUntil": "07:00",
-                   "daySpecificInputs": "Yes"
-                 }
-               },
-              "licenceConditions": {
-                "standard": {
-                    "additionalConditionsRequired": "Yes"
-                 }
-               }
-        }'::jsonb,
-        20,
-        1,
-        0,
-        'B1234EE',
-        null,
-        false,
-        NOW()),
-
-       -- Create the data for an approved preferred premises HDC licence
-       (3,
-        'hdc_ap',
-        '{
-               "document": {
-                 "template": {
-                   "decision": "hdc_ap",
-                   "offenceCommittedBeforeFeb2015": "No"
-                 }
-               },
-                  "eligibility": {
-                    "crdTime": {
-                      "decision": "No"
-                    },
-                    "excluded": {
-                      "decision": "No"
-                    },
-                    "suitability": {
-                      "decision": "No"
-                    }
-                  },
-                  "bassReferral": {
-                   "bassRequest": {
-                    "specificArea": "No",
-                    "bassRequested": "No",
-                    "additionalInformation": ""
-                   },
-                  "bassAreaCheck": {
-                    "approvedPremisesRequiredYesNo": "No"
-                   }
-                  },
-                  "curfew": {
-                    "firstNight":{
-                      "firstNightFrom": "15:00",
-                      "firstNightUntil": "07:00"
-                    },
-                    "curfewHours": {
-                      "fridayFrom": "19:00",
-                      "mondayFrom": "19:00",
-                      "sundayFrom": "19:00",
-                      "fridayUntil": "07:00",
-                      "mondayUntil": "07:00",
-                      "sundayUntil": "07:00",
-                      "tuesdayFrom": "19:00",
-                      "saturdayFrom": "19:00",
-                      "thursdayFrom": "19:00",
-                      "tuesdayUntil": "07:00",
-                      "saturdayUntil": "07:00",
-                      "thursdayUntil": "07:00",
-                      "wednesdayFrom": "19:00",
-                      "wednesdayUntil": "07:00",
-                      "daySpecificInputs": "Yes"
-                    },
-                    "approvedPremisesAddress": {
-                      "addressLine1": "1 Test Street",
-                      "addressLine2": "Test Area",
-                      "addressTown": "Test Town",
-                      "postCode": "T33 3ST"
-                    },
-                    "approvedPremises": {
-                      "required": "Yes"
-                    }
-                  },
-              "licenceConditions": {
-                "standard": {
-                    "additionalConditionsRequired": "Yes"
-                 },
-                "additional": {
-                   "POLYGRAPH": {}
-                }
-               }
-        }'::jsonb,
-                30,
-                1,
-                0,
-                'C1234EE',
-                null,
-                false,
-                NOW());
+        'A12345B',
+        NULL,
+        FALSE,
+        NOW());
 
 -- audit data
 
 INSERT INTO audit (timestamp, "user", action, details)
-SELECT
-    a.timestamp,
-    a."user" || '-' || lv.idx,
-    a.action,
-    jsonb_set(a.details, '{bookingId}', to_jsonb(lv.booking_id::text))
-FROM (
-         VALUES
-             ('2021-04-05 15:06:37.188'::timestamp, 'creator',      'LICENCE_RECORD_STARTED', '{"bookingId":"10"}'::jsonb),
-             ('2021-04-05 15:07:37.188'::timestamp, 'aCaseManager', 'SEND',                   '{"bookingId":"10","transitionType":"caToRo"}'::jsonb),
-             ('2021-08-06 15:04:37.188'::timestamp, 'creator',      'RESET',                  '{"bookingId":"10"}'::jsonb),
-             ('2021-08-06 15:05:37.188'::timestamp, 'creator',      'LICENCE_RECORD_STARTED', '{"bookingId":"10"}'::jsonb),
-             ('2021-08-06 15:06:37.188'::timestamp, 'aCaseManager', 'SEND',                   '{"bookingId":"10","transitionType":"caToRo"}'::jsonb),
-             ('2021-08-06 15:20:37.188'::timestamp, 'creator',      'UPDATE_SECTION',         '{"bookingId":"10","transitionType":"caToRo"}'::jsonb),
-             ('2021-08-08 15:06:37.188'::timestamp, 'submitter',    'SEND',                   '{"bookingId":"10","transitionType":"roToCa"}'::jsonb),
-             ('2021-08-09 15:06:37.188'::timestamp, 'updater',      'UPDATE_SECTION',         '{"bookingId":"10","transitionType":"caToRo"}'::jsonb),
-             ('2021-08-10 15:06:37.188'::timestamp, 'approver',     'SEND',                   '{"bookingId":"10","transitionType":"dmToCa"}'::jsonb)
-     ) AS a(timestamp, "user", action, details)
-         CROSS JOIN (
-    SELECT
-        booking_id,
-        ROW_NUMBER() OVER (ORDER BY booking_id) AS idx
-    FROM licence_versions
-) lv;
+VALUES ('2021-04-05 15:06:37.188',
+        'creator',
+        'LICENCE_RECORD_STARTED',
+        '{
+          "bookingId": "98765"
+        }'::jsonb),
+       ('2021-04-05 15:06:37.188',
+        'creator',
+        'VARY_NOMIS_LICENCE_CREATED',
+        '{
+          "bookingId": "54222"
+        }'::jsonb),
+       ('2021-04-05 15:07:37.188',
+        'aCaseManager',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb),
+       ('2021-08-06 15:04:37.188',
+        'creator',
+        'RESET',
+        '{
+          "bookingId": "54222"
+        }'::jsonb),
+       ('2021-08-06 15:05:37.188',
+        'creator',
+        'VARY_NOMIS_LICENCE_CREATED',
+        '{
+          "bookingId": "54222"
+        }'::jsonb),
+       ('2021-08-06 15:20:37.188',
+        'creator',
+        'UPDATE_SECTION',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb),
+       (
+       '2021-08-08 15:06:37.188',
+       'submitter',
+       'UPDATE_SECTION',
+       '{
+         "bookingId": "54222",
+         "path": "/hdc/vary/approval/54222",
+         "userInput": {
+           "name": "approver",
+           "jobTitle": "Approver Person"
+         }
+       }'::jsonb
+       ),
+       ('2021-08-09 15:06:37.188',
+        'updater',
+        'UPDATE_SECTION',
+        '{
+          "bookingId": "54222",
+          "transitionType": "caToRo"
+        }'::jsonb),
+       ('2021-08-10 15:06:37.188',
+        'approver',
+        'SEND',
+        '{
+          "bookingId": "54222",
+          "transitionType": "dmToCa"
+        }'::jsonb);

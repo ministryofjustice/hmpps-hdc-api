@@ -101,3 +101,9 @@ hmpps:
   cvl:
     api:
       url: ${HMPPS_CVL_API_URL}
+
+feature:
+  toggle:
+    cvl:
+      migration:
+        date: ${ALLOWED_BULK_CVL_MIGRATION_DATE:#{null}}

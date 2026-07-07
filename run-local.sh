@@ -44,6 +44,9 @@ export SERVER_PORT=8089
 export SYSTEM_CLIENT_ID=$(kubectl -n licences-dev get secrets hmpps-hdc-api -o json  | jq -r '.data.SYSTEM_CLIENT_ID | @base64d')
 export SYSTEM_CLIENT_SECRET=$(kubectl -n licences-dev get secrets hmpps-hdc-api -o json  | jq -r '.data.SYSTEM_CLIENT_SECRET | @base64d')
 
+#Bulk migration date toggle
+export ALLOWED_BULK_CVL_MIGRATION_DATE="2026-05-11"
+
 # Provide the DB connection details to local container-hosted Postgresql DB
 # Match with the credentials set in create-and-vary-a-licence/docker-compose.yml
 export DB_SERVER=localhost

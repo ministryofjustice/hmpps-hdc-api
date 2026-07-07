@@ -264,13 +264,14 @@ GRANT ALL ON TABLE public.knex_migrations_lock TO licences;
 
 CREATE TABLE public.licence_migration_log (
                                               id bigserial NOT NULL,
-                                              licence_version_id int8 NOT NULL,
+                                              licence_version_id int8 NULL,
                                               created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
                                               success bool NULL,
                                               retry bool NULL,
                                               message text NULL,
                                               error_source public."migration_error_source" NULL,
                                               booking_id int4 NULL,
+                                              prison_number varchar(7) NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
 
@@ -299,7 +300,9 @@ CREATE TABLE public.licence_versions (
                                          prison_number varchar(7) NULL,
                                          deleted_at timestamp NULL,
                                          licence_in_cvl bool DEFAULT false NOT NULL,
-                                         CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
+                                         migration_state varchar(20) DEFAULT 'PENDING'::character varying NOT NULL,
+                                         CONSTRAINT licence_versions_migration_state_check CHECK (((migration_state)::text = ANY ((ARRAY['PENDING'::character varying, 'COMPLETED'::character varying, 'FAILED'::character varying])::text[]))),
+	                                     CONSTRAINT licence_versions_pkey PRIMARY KEY (id)
 );
 CREATE INDEX licence_version_by_booking_id ON public.licence_versions USING btree (booking_id, version, id, template);
 CREATE UNIQUE INDEX licence_versions_booking_id_version_vary_version_unique ON public.licence_versions USING btree (booking_id, version, vary_version) WHERE (deleted_at IS NULL);
@@ -434,7 +437,8 @@ AS SELECT id,
           vary_version,
           prison_number,
           deleted_at,
-          licence_in_cvl
+          licence_in_cvl,
+          migration_state
    FROM licence_versions
    WHERE deleted_at IS NULL;
 

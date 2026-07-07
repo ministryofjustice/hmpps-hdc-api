@@ -53,6 +53,20 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
+enum class LicenceType {
+  LICENCE,
+  VARIATION_LICENCE,
+  VARIATION_LICENCE_FROM_OUT_OF_SYSTEM,
+  NOT_KNOWN,
+}
+
+class LicenceTypeRecord(
+  val type: LicenceType,
+  val auditFromId: Long,
+  val licenceRecordStarted: Long? = null,
+  val varyLicenceRecordStarted: Long? = null,
+)
+
 @Transactional(propagation = Propagation.NEVER)
 @Service
 class MigrationRequestService(
@@ -72,7 +86,7 @@ class MigrationRequestService(
   }
 
   fun buildMigrationRequestForPreview(activeLicenceId: Long): MigrateFromHdcToCvlRequest? {
-    val licenceVersion = getLicenceVersion(activeLicenceId)
+    val licenceVersion = getMigratableLicenceVersionForPreview(activeLicenceId)
     val prisoner = performPrisonerSearch(licenceVersion.bookingId)
     return createMigrationRequest(licenceVersion, prisoner)
   }
@@ -81,11 +95,11 @@ class MigrationRequestService(
     licenceVersion: MigrationLicenceVersion,
     prisoner: Prisoner,
   ): MigrateFromHdcToCvlRequest {
-    val audits = getAuditsForLatestLicence(licenceVersion.bookingId)
+    val licenceType = getLicencesType(licenceVersion.bookingId)
+    val licenceData = extractLicenceDataFromJson(licenceVersion)
+    val lifecycleDetails = if (licenceType.type != LicenceType.NOT_KNOWN) mapLifecycleDetails(licenceVersion, licenceType) else null
 
-    val licenceData: LicenceData = extractLicenceDataFromJson(licenceVersion)
-
-    validate(licenceData, licenceVersion)
+    validate(licenceData, licenceVersion, licenceType, lifecycleDetails)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -96,8 +110,7 @@ class MigrationRequestService(
       prison = mapPrisonDetails(prisoner),
       sentence = mapSentenceDetails(prisoner),
       licence = mapLicenceDetails(licenceVersion, prisoner),
-      // See isApproved below should we be rejecting the license if not approved? I would say so!
-      lifecycle = mapLifecycleDetails(audits, isApproved(licenceVersion)),
+      lifecycle = lifecycleDetails!!,
       conditions = mapConditions(licenceData, licenceVersion),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
@@ -154,11 +167,57 @@ class MigrationRequestService(
     }
   }
 
-  fun validate(licenceData: LicenceData, licence: MigrationLicenceVersion) {
+  fun validate(
+    licenceData: LicenceData,
+    licence: MigrationLicenceVersion,
+    licenceTypeRecord: LicenceTypeRecord,
+    lifecycleDetails: MigrateLicenceLifecycleDetails? = null,
+  ) {
     if (licenceData.licenceConditions?.additional?.isNotEmpty() == true) {
       attemptToGuessVersion(licenceData.licenceConditions, licence)
         ?: throw MigrationValidationException("Licence additional conditions version not determined!")
     }
+    validateCurfewAddress(licenceData)
+    validateIfVariationHasUnapprovedChanges(licence)
+
+    if (LicenceType.NOT_KNOWN == licenceTypeRecord.type) {
+      throw MigrationValidationException("No users information found in audit")
+    }
+
+    lifecycleDetails?.let {
+      val missing = buildList {
+        if (it.createdByUserName.isNullOrBlank()) add("creator")
+        if (it.submittedByUserName.isNullOrBlank()) add("submitter")
+        if (it.approvedByUsername.isNullOrBlank() && it.approvedByName.isNullOrBlank()) add("approver")
+      }
+
+      if (missing.isNotEmpty()) {
+        throw MigrationValidationException(
+          "Missing lifecycle for ${licenceTypeRecord.type.name}, users : ${missing.joinToString(", ")}",
+        )
+      }
+    }
+  }
+
+  private fun validateIfVariationHasUnapprovedChanges(licence: MigrationLicenceVersion) {
+    val licenceWithUnApprovedChanges = migrationRepository.findLicenceWithUnApprovedChanges(
+      licence.bookingId,
+      licence.version,
+      licence.varyVersion,
+    )
+    licenceWithUnApprovedChanges?.let {
+      val currentVersion = "${it.version}.${it.varyVersion}"
+      val approvedVersion = "${licence.version}.${licence.varyVersion}"
+
+      throw MigrationValidationException(
+        "Found a licence at stage ${it.stage} with unapproved changes " +
+          "(current version $currentVersion, approved version $approvedVersion).",
+      )
+    }
+  }
+
+  fun validateCurfewAddress(licenceData: LicenceData) {
+    findCurfewAddress(licenceData) ?: throw MigrationValidationException("No valid curfew address found")
   }
 
   fun attemptToGuessVersion(licenceConditions: LicenceConditions, licence: MigrationLicenceVersion): Int? {
@@ -196,20 +255,50 @@ class MigrationRequestService(
   )
 
   private fun mapLifecycleDetails(
-    audits: List<AuditEvent>,
-    approved: Boolean,
+    licenceVersion: MigrationLicenceVersion,
+    licenceType: LicenceTypeRecord,
   ): MigrateLicenceLifecycleDetails {
-    val submitted = getLastAudit(audits, "SEND", "roToCa")
-    val approved: AuditEvent? = if (approved) getLastAudit(audits, "SEND", "dmToCa") else null
-    val created = getFirstUpdateAfterCaToRo(audits)
+    val audits = getAuditsForLatestLicence(licenceVersion.bookingId, licenceType.auditFromId)
+
+    return if (LicenceType.LICENCE == licenceType.type) {
+      createLifecycleDetailsFromLicence(audits)
+    } else {
+      createLifecycleDetailsFromVariation(audits)
+    }
+  }
+
+  private fun createLifecycleDetailsFromVariation(
+    audits: List<AuditEvent>,
+  ): MigrateLicenceLifecycleDetails {
+    val submitted = getLastAuditByDetails(audits, "UPDATE_SECTION", detailsContains = "/hdc/vary/approval/")
+    val createdBy = getLastAuditByDetails(audits, "VARY_NOMIS_LICENCE_CREATED")
+
+    val approvedByName = (submitted?.details["userInput"] as? Map<*, *>)?.get("name") as? String
+
+    return MigrateLicenceLifecycleDetails(
+      approvedDate = submitted?.timestamp,
+      approvedByName = approvedByName,
+      submittedDate = submitted?.timestamp,
+      submittedByUserName = submitted?.user,
+      createdByUserName = createdBy?.user,
+      dateCreated = createdBy?.timestamp,
+    )
+  }
+
+  private fun createLifecycleDetailsFromLicence(
+    audits: List<AuditEvent>,
+  ): MigrateLicenceLifecycleDetails {
+    val submitted = getLastAuditByTransitionType(audits, "SEND", "roToCa")
+    val approved = getLastAuditByTransitionType(audits, "SEND", "dmToCa")
+    val createdBy = getFirstUpdateAfterCaToRo(audits)
 
     return MigrateLicenceLifecycleDetails(
       approvedDate = approved?.timestamp,
       approvedByUsername = approved?.user,
       submittedDate = submitted?.timestamp,
       submittedByUserName = submitted?.user,
-      createdByUserName = created?.user,
-      dateCreated = created?.timestamp,
+      createdByUserName = createdBy?.user,
+      dateCreated = createdBy?.timestamp,
     )
   }
 
@@ -290,15 +379,31 @@ class MigrationRequestService(
     return LocalDateTime.of(date, time)
   }
 
-  private fun getLastAudit(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
+  private fun getLastAuditByTransitionType(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
     .asSequence()
     .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
     .lastOrNull()
 
-  private fun getAuditsForLatestLicence(bookingId: Long): List<AuditEvent> {
-    val id = auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString()) ?: throw MigrationValidationException("LICENCE_RECORD_STARTED audit id not found for booking id $bookingId")
-    return auditEventRepository.findByBookingIdAndAuditId(bookingId.toString(), id)
+  private fun getLastAuditByDetails(allAudits: List<AuditEvent>, action: String, detailsContains: String? = null): AuditEvent? = allAudits
+    .asSequence()
+    .filter { audit -> audit.action == action && (detailsContains == null || audit.details.values.any { it.toString().contains(detailsContains) }) }
+    .lastOrNull()
+
+  private fun getLicencesType(bookingId: Long): LicenceTypeRecord {
+    val licenceRecordStarted = auditEventRepository.findLicenceRecordStartedAuditId(bookingId.toString())
+    val varyLicenceRecordStarted = auditEventRepository.findVaryLicenceFromOutOfSystemAuditId(bookingId.toString())
+
+    val (type, auditFromId) = when {
+      licenceRecordStarted != null && varyLicenceRecordStarted != null && varyLicenceRecordStarted > licenceRecordStarted -> LicenceType.VARIATION_LICENCE to varyLicenceRecordStarted
+      licenceRecordStarted != null -> LicenceType.LICENCE to licenceRecordStarted
+      varyLicenceRecordStarted != null -> LicenceType.VARIATION_LICENCE_FROM_OUT_OF_SYSTEM to varyLicenceRecordStarted
+      else -> LicenceType.NOT_KNOWN to -1L
+    }
+
+    return LicenceTypeRecord(type, auditFromId, licenceRecordStarted, varyLicenceRecordStarted)
   }
+
+  private fun getAuditsForLatestLicence(bookingId: Long, auditFromId: Long): List<AuditEvent> = auditEventRepository.findByBookingIdAndAuditId(bookingId.toString(), auditFromId)
 
   fun getFirstUpdateAfterCaToRo(allAudits: List<AuditEvent>): AuditEvent? {
     val indexOfTransition = allAudits.indexOfFirst { it.details["transitionType"]?.toString() == "caToRo" }
@@ -368,25 +473,29 @@ class MigrationRequestService(
     SUNDAY -> if (from) sundayFrom else sundayUntil
   }
 
-  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
-    with(licenceData) {
-      val (address, addressType) = listOf(
-        curfew?.approvedPremisesAddress to AddressType.CAS,
-        bassReferral?.approvedPremisesAddress to AddressType.CAS,
-        proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
-        bassReferral?.bassOffer to AddressType.CAS,
-      ).firstOrNull { (address, addressType) ->
-        address?.let(::isValidAddress) == true
-      } ?: throw MigrationValidationException("No valid curfew address found")
-
-      return MigrateAddress(
-        addressLine1 = address!!.addressLine1,
-        addressLine2 = address.addressLine2,
-        townOrCity = address.addressTown,
-        postcode = address.postCode,
-        addressType = addressType,
-      )
+  private fun findCurfewAddress(licenceData: LicenceData): Pair<Address, AddressType>? = with(licenceData) {
+    listOf(
+      curfew?.approvedPremisesAddress to AddressType.CAS,
+      bassReferral?.approvedPremisesAddress to AddressType.CAS,
+      proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
+      bassReferral?.bassOffer to AddressType.CAS,
+    ).firstOrNull { (address, _) ->
+      address?.let(::isValidAddress) == true
+    }?.let { (address, addressType) ->
+      requireNotNull(address) to addressType
     }
+  }
+
+  fun mapCurfewAddress(licenceData: LicenceData): MigrateAddress {
+    val (address, addressType) = findCurfewAddress(licenceData)!!
+
+    return MigrateAddress(
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      townOrCity = address.addressTown,
+      postcode = address.postCode,
+      addressType = addressType,
+    )
   }
 
   fun isValidAddress(address: Address): Boolean = listOf(
@@ -395,8 +504,8 @@ class MigrationRequestService(
     address.postCode,
   ).count { !it.isNullOrBlank() } > 0
 
-  private fun getLicenceVersion(activeLicenceId: Long): MigrationLicenceVersion {
-    val licenceVersion = migrationRepository.getMigratableLicenceVersion(activeLicenceId)
+  private fun getMigratableLicenceVersionForPreview(activeLicenceId: Long): MigrationLicenceVersion {
+    val licenceVersion = migrationRepository.getMigratableLicenceVersionForPreview(activeLicenceId)
       ?: throw MigrationValidationException("No eligible licence found for licence version id $activeLicenceId")
     return licenceVersion
   }

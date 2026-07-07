@@ -25,4 +25,12 @@ interface AuditEventRepository :
   """,
   )
   fun findLicenceRecordStartedAuditId(bookingId: String): Long?
+
+  @Query(
+    nativeQuery = true,
+    value = """
+      SELECT a.id FROM audit a WHERE a.details ->> 'bookingId' = :bookingId AND a."action" = 'VARY_NOMIS_LICENCE_CREATED' ORDER BY timestamp DESC LIMIT 1
+  """,
+  )
+  fun findVaryLicenceFromOutOfSystemAuditId(bookingId: String): Long?
 }

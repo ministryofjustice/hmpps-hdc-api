@@ -290,6 +290,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
       assertThat(licenceVersionId).isEqualTo(3)
       assertThat(createdTimeStamp).isEqualTo(LocalDateTime.parse("2023-08-06T15:04:37.188"))
       assertThat(bookingId).isEqualTo(30)
+      assertThat(prisonNumber).isEqualTo("AC1111C")
       assertThat(success).isFalse()
       assertThat(retry).isFalse()
       assertThat(message).isEqualTo("Prisoner not found for prisoner number C1234EE")

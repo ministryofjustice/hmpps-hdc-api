@@ -483,7 +483,7 @@ class MigrationRequestServiceTest {
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.mapCurfewAddress(licenceData)
+      migrationRequestService.validateCurfewAddress(licenceData)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("No valid curfew address found")
@@ -513,7 +513,7 @@ class MigrationRequestServiceTest {
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.mapCurfewAddress(licenceData)
+      migrationRequestService.validateCurfewAddress(licenceData)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("No valid curfew address found")
@@ -552,13 +552,14 @@ class MigrationRequestServiceTest {
         ),
       ),
     )
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
     whenever(licence.bookingId).thenReturn(bookingId)
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(null)
 
     // When / Then
     assertThatThrownBy {
-      migrationRequestService.validate(licenceData, licence)
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
     }
       .isInstanceOf(MigrationValidationException::class.java)
       .hasMessage("Licence additional conditions version not determined!")
@@ -573,12 +574,15 @@ class MigrationRequestServiceTest {
           "POLYGRAPH" to emptyMap(),
         ),
       ),
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
     )
-
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
 
     // When
-    migrationRequestService.validate(licenceData, licence)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
 
     // Then
     verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
@@ -596,15 +600,18 @@ class MigrationRequestServiceTest {
           "DRUG_TESTING" to emptyMap(),
         ),
       ),
+      bassReferral = CurrentCas2Referral(
+        bassOffer = cas2Offer("FROM_BASS_OFFER"),
+      ),
     )
-
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
 
     whenever(licence.bookingId).thenReturn(bookingId)
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
 
     // When
-    migrationRequestService.validate(licenceData, licence)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
 
     // Then
     verify(migrationRepository, times(1)).getConditionsVersionFor(bookingId)
@@ -659,10 +666,12 @@ class MigrationRequestServiceTest {
 
   private fun licenceData(
     licenceConditions: LicenceConditions? = null,
+    bassReferral: CurrentCas2Referral? = null,
+    proposedAddress: ProposedAddress? = null,
   ) = LicenceData(
     curfew = null,
-    bassReferral = null,
-    proposedAddress = null,
+    bassReferral = bassReferral,
+    proposedAddress = proposedAddress,
     eligibility = null,
     risk = null,
     reporting = null,
