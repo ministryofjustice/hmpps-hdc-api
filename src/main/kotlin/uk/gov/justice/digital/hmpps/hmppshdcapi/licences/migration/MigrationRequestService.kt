@@ -98,8 +98,9 @@ class MigrationRequestService(
     val licenceType = getLicencesType(licenceVersion.bookingId)
     val licenceData = extractLicenceDataFromJson(licenceVersion)
     val lifecycleDetails = if (licenceType.type != LicenceType.NOT_KNOWN) mapLifecycleDetails(licenceVersion, licenceType) else null
+    val appointmentDetails = mapAppointmentDetails(licenceData)
 
-    validate(licenceData, licenceVersion, licenceType, lifecycleDetails)
+    validate(licenceData, licenceVersion, licenceType, lifecycleDetails, appointmentDetails)
 
     return MigrateFromHdcToCvlRequest(
       bookingNo = prisoner.bookNumber,
@@ -114,7 +115,7 @@ class MigrationRequestService(
       conditions = mapConditions(licenceData, licenceVersion),
       curfewAddress = mapCurfewAddress(licenceData),
       curfew = mapCurfewDetails(licenceData),
-      appointment = mapAppointmentDetails(licenceData),
+      appointment = appointmentDetails,
     )
   }
 
@@ -172,6 +173,7 @@ class MigrationRequestService(
     licence: MigrationLicenceVersion,
     licenceTypeRecord: LicenceTypeRecord,
     lifecycleDetails: MigrateLicenceLifecycleDetails? = null,
+    appointmentDetails: MigrateAppointmentDetails? = null,
   ) {
     if (licenceData.licenceConditions?.additional?.isNotEmpty() == true) {
       attemptToGuessVersion(licenceData.licenceConditions, licence)
@@ -197,6 +199,24 @@ class MigrationRequestService(
         )
       }
     }
+
+    appointmentDetails?.let {
+      val missing = buildList {
+        if (it.person.isNullOrBlank()) add("person")
+        if (it.time == null) add("time")
+        if (it.telephone.isNullOrBlank()) add("telephone")
+
+        it.address?.let { address ->
+          if (!isValidAddress(address)) add("missing address details")
+        } ?: add("missing address")
+      }
+
+      if (missing.isNotEmpty()) {
+        throw MigrationValidationException(
+          "Missing appointment details: ${missing.joinToString(", ")}",
+        )
+      }
+    } ?: throw MigrationValidationException("Missing appointment details (all)")
   }
 
   private fun validateIfVariationHasUnapprovedChanges(licence: MigrationLicenceVersion) {
@@ -502,6 +522,12 @@ class MigrationRequestService(
     address.addressLine1,
     address.addressTown,
     address.postCode,
+  ).count { !it.isNullOrBlank() } > 0
+
+  fun isValidAddress(address: MigrateAppointmentAddress): Boolean = listOf(
+    address.firstLine,
+    address.townOrCity,
+    address.postcode,
   ).count { !it.isNullOrBlank() } > 0
 
   private fun getMigratableLicenceVersionForPreview(activeLicenceId: Long): MigrationLicenceVersion {

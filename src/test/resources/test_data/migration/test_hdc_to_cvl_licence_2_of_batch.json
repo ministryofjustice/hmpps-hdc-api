@@ -92,5 +92,16 @@
       "firstNightFrom" : "15:00:00",
       "firstNightUntil" : "07:00:00"
     }
+  },
+  "appointment" : {
+    "person" : "Officer Person",
+    "time" : "2025-09-12T21:00:00",
+    "telephone" : "000000000000",
+    "address" : {
+      "firstLine" : "Test Street",
+      "secondLine" : "",
+      "townOrCity" : "Test Town",
+      "postcode" : "TT1 1TT"
+    }
   }
 }

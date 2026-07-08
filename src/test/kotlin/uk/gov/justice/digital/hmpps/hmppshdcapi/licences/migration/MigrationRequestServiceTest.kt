@@ -28,6 +28,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationLicenceVersion
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAppointmentAddress
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateAppointmentDetails
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateCurfewTime
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
@@ -35,6 +37,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import uk.gov.justice.digital.hmpps.hmppshdcapi.model.AddressType
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class MigrationRequestServiceTest {
@@ -45,6 +48,16 @@ class MigrationRequestServiceTest {
   private var prisonApiClient: PrisonApiClient = mock()
   private var prisonSearchApiClient: PrisonSearchApiClient = mock()
   private var auditEventRepository: AuditEventRepository = mock()
+  val migrateAppointmentDetails = MigrateAppointmentDetails(
+    person = " Test",
+    time = LocalDateTime.of(2024, 1, 1, 10, 0),
+    telephone = "0123456789",
+    address = MigrateAppointmentAddress(
+      firstLine = null,
+      townOrCity = null,
+      postcode = "postcode",
+    ),
+  )
 
   @BeforeEach
   fun setUp() {
@@ -582,7 +595,7 @@ class MigrationRequestServiceTest {
     val licence = mock<MigrationLicenceVersion>()
 
     // When
-    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord, null, appointmentDetails = migrateAppointmentDetails)
 
     // Then
     verify(migrationRepository, never()).getConditionsVersionFor(any<Long>())
@@ -604,6 +617,7 @@ class MigrationRequestServiceTest {
         bassOffer = cas2Offer("FROM_BASS_OFFER"),
       ),
     )
+
     val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
     val licence = mock<MigrationLicenceVersion>()
 
@@ -611,10 +625,200 @@ class MigrationRequestServiceTest {
     whenever(migrationRepository.getConditionsVersionFor(bookingId)).thenReturn(versionId)
 
     // When
-    migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
 
     // Then
     verify(migrationRepository, times(1)).getConditionsVersionFor(bookingId)
+  }
+
+  @Test
+  fun shouldThrowWhenAppointmentDetailsAreMissing() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = null,
+      time = null,
+      telephone = null,
+      address = MigrateAppointmentAddress(
+        firstLine = null,
+        townOrCity = null,
+        postcode = null,
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing appointment details: person, time, telephone, missing address details")
+  }
+
+  @Test
+  fun shouldThrowWhenAppointmentDetailsAreBlank() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = "",
+      time = LocalDateTime.of(2024, 1, 1, 10, 0),
+      telephone = " ",
+      address = MigrateAppointmentAddress(
+        firstLine = " ",
+        townOrCity = " ",
+        postcode = " ",
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing appointment details: person, telephone, missing address details")
+  }
+
+  @Test
+  fun shouldThrowWhenAppointmentDetailsDonNotHaveAnyAddressInformation() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = " Test",
+      time = LocalDateTime.of(2024, 1, 1, 10, 0),
+      telephone = "0123456789",
+      address = null,
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing appointment details: missing address")
+  }
+
+  @Test
+  fun shouldNotThrowWhenAppointmentHasFirstLine() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = " Test",
+      time = LocalDateTime.of(2024, 1, 1, 10, 0),
+      telephone = "0123456789",
+      address = MigrateAppointmentAddress(
+        firstLine = "first Line",
+        townOrCity = null,
+        postcode = null,
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then - no Exception thrown
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+  }
+
+  @Test
+  fun shouldNotThrowWhenAppointmentHasTownOrCity() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = " Test",
+      time = LocalDateTime.of(2024, 1, 1, 10, 0),
+      telephone = "0123456789",
+      address = MigrateAppointmentAddress(
+        firstLine = null,
+        townOrCity = "townOrCity",
+        postcode = null,
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then - no Exception thrown
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+  }
+
+  @Test
+  fun shouldNotThrowWhenAppointmentHasPostCode() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val migrateAppointmentDetails = MigrateAppointmentDetails(
+      person = " Test",
+      time = LocalDateTime.of(2024, 1, 1, 10, 0),
+      telephone = "0123456789",
+      address = MigrateAppointmentAddress(
+        firstLine = null,
+        townOrCity = null,
+        postcode = "postcode",
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then - no Exception thrown
+    migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
+  }
+
+  @Test
+  fun shouldThrowWhenAppointmentAddressDetailsAreMissing() {
+    // Given
+    val licenceData = licenceData(
+      proposedAddress = ProposedAddress(
+        curfewAddress = curfewAddress("test"),
+      ),
+    )
+
+    val licence = mock<MigrationLicenceVersion>()
+    val licenceTypeRecord = LicenceTypeRecord(LicenceType.VARIATION_LICENCE, 0)
+
+    // When / Then
+    assertThatThrownBy {
+      migrationRequestService.validate(licenceData, licence, licenceTypeRecord)
+    }
+      .isInstanceOf(MigrationValidationException::class.java)
+      .hasMessage("Missing appointment details (all)")
   }
 
   @Test
@@ -768,6 +972,7 @@ class MigrationRequestServiceTest {
     licenceConditions: LicenceConditions? = null,
     bassReferral: CurrentCas2Referral? = null,
     proposedAddress: ProposedAddress? = null,
+    appointmentAddress: MigrateAppointmentDetails? = null,
   ) = LicenceData(
     curfew = null,
     bassReferral = bassReferral,

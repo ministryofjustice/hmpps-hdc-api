@@ -262,6 +262,19 @@ VALUES (1,
                    "offenceCommittedBeforeFeb2015": "No"
                  }
                },
+              "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              },
                "eligibility": {
                  "crdTime": {
                    "decision": "No"
@@ -337,6 +350,19 @@ VALUES (1,
                    "offenceCommittedBeforeFeb2015": "No"
                  }
                },
+              "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              },
                   "eligibility": {
                     "crdTime": {
                       "decision": "No"

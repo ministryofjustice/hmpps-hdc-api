@@ -288,7 +288,7 @@ data class MigrateAppointmentAddress(
   val firstLine: String?,
 
   @field:Schema(description = "Second line of address", example = "Magistrates Court")
-  val secondLine: String?,
+  val secondLine: String? = null,
 
   @field:Schema(description = "Town or city", example = "Cardiff Place")
   val townOrCity: String?,
