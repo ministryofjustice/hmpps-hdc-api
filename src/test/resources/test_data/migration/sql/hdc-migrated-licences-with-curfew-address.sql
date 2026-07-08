@@ -40,6 +40,19 @@ VALUES
                 "offenceCommittedBeforeFeb2015": "No"
             }
         },
+              "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              },
       "licenceConditions": {
         "standard": {
             "additionalConditionsRequired": "Yes"
@@ -97,7 +110,20 @@ VALUES
         "additional": {
            "POLYGRAPH": {}
         }
-       }
+       },
+              "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              }
     }'::jsonb,
     10002,
     1,
@@ -126,7 +152,20 @@ VALUES
         "additional": {
            "POLYGRAPH": {}
         }
-       }
+       },
+       "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              }
     }'::jsonb,
     10003,
     1,
@@ -179,7 +218,20 @@ VALUES
         "additional": {
            "POLYGRAPH": {}
         }
-       }
+       },
+       "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              }
     }'::jsonb,
     10004,
     1,
@@ -231,7 +283,20 @@ VALUES
         "additional": {
            "POLYGRAPH": {}
         }
-       }
+       },
+             "reporting": {
+                "reportingInstructions": {
+                  "name": "Officer Person",
+                  "postcode": "TT1 1TT",
+                  "telephone": "000000000000",
+                  "townOrCity": "Test Town",
+                  "organisation": "Test Organisation",
+                  "reportingDate": "12/09/2025",
+                  "reportingTime": "21:00",
+                  "buildingAndStreet1": "Test Street",
+                  "buildingAndStreet2": ""
+                }
+              }
     }'::jsonb,
     10005,
     1,
