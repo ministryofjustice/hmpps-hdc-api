@@ -203,7 +203,6 @@ class MigrationRequestService(
     appointmentDetails?.let {
       val missing = buildList {
         if (it.person.isNullOrBlank()) add("person")
-        if (it.time == null) add("time")
         if (it.telephone.isNullOrBlank()) add("telephone")
 
         it.address?.let { address ->
