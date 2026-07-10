@@ -659,7 +659,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(licenceData, licence, licenceTypeRecord, appointmentDetails = migrateAppointmentDetails)
     }
       .isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing appointment details: person, time, telephone, missing address details")
+      .hasMessage("Missing appointment details: person, telephone, missing address details")
   }
 
   @Test
