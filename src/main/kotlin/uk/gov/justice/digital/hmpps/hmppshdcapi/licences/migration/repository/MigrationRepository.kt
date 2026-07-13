@@ -16,6 +16,7 @@ interface LicenceBookingDetail {
   val licenceVersionId: Long
   val bookingId: Long
   val prisonNumber: String
+  val logId: Long?
 }
 
 enum class MigrationErrorSource {
@@ -111,10 +112,10 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
 
   @Query(
     value = """
-        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 
+        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber, migration_log.id as logId
             FROM licence_versions lv
             LEFT JOIN (
-                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log ORDER BY licence_version_id, id DESC
+                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry, id FROM licence_migration_log ORDER BY licence_version_id, id DESC
             ) migration_log ON migration_log.licence_version_id = lv.id            
             JOIN (    
                 SELECT DISTINCT ON (l.booking_id) l.id, l.booking_id FROM licence_versions l
@@ -167,10 +168,10 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
 
   @Query(
     value = """
-        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber 
+        SELECT lv.id AS licenceVersionId, lv.booking_id AS bookingId, lv.prison_number AS prisonNumber, migration_log.id as logId
             FROM licence_versions lv
             LEFT JOIN (
-                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry FROM licence_migration_log 
+                    SELECT DISTINCT ON (licence_version_id) licence_version_id, success, retry, id FROM licence_migration_log 
                         WHERE  booking_id = :bookingId ORDER BY licence_version_id, id DESC
             ) migration_log ON migration_log.licence_version_id = lv.id            
             JOIN (
