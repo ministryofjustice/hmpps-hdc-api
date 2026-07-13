@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.3.1"
-  id("org.owasp.dependencycheck") version "12.2.1"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "10.5.4"
+  id("org.owasp.dependencycheck") version "12.2.2"
   kotlin("plugin.spring") version "2.3.21"
   kotlin("plugin.jpa") version "2.3.21"
   id("io.gitlab.arturbosch.detekt") version "1.23.8"
