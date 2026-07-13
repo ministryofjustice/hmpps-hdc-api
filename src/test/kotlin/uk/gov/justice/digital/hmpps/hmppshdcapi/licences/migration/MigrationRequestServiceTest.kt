@@ -238,7 +238,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date")
+      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
   }
 
   @Test
@@ -257,7 +257,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has missing HDCAD date")
+      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT")
   }
 
   @Test
@@ -277,7 +277,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date")
+      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
   }
 
   @Test
@@ -334,7 +334,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has HDCAD in the future: $hdcad")
+      .hasMessage("Licence has HDCAD in the future: $hdcad, status: INACTIVE OUT")
   }
 
   @Test
@@ -354,7 +354,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence expiry date is in past: LED=$led")
+      .hasMessage("Licence expiry date is in past: LED=$led , status: INACTIVE OUT")
   }
 
   @ParameterizedTest
