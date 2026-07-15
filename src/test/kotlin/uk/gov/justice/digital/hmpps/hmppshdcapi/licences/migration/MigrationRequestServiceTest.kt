@@ -242,22 +242,25 @@ class MigrationRequestServiceTest {
   }
 
   @Test
-  fun `should return false when hdcad date are null`() {
+  fun `should throw exception when hdcad date are null`() {
     // Given
     val prisoner = mock<Prisoner>()
     val today = LocalDate.now()
+    val testDate = LocalDate.of(2026, 7, 15)
 
     whenever(prisoner.status).thenReturn("INACTIVE OUT")
     whenever(prisoner.isRestrictedPatient()).thenReturn(false)
     whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(null)
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.confirmedReleaseDate).thenReturn(testDate)
+    whenever(prisoner.conditionalReleaseDate).thenReturn(testDate.plusDays(1))
 
     // When
     assertThatThrownBy {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT")
+      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT, cfrd : 2026-07-15 crd : 2026-07-16")
   }
 
   @Test
