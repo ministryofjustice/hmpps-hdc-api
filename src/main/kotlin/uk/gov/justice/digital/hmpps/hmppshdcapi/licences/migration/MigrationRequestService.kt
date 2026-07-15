@@ -161,7 +161,7 @@ class MigrationRequestService(
       val today = LocalDate.now()
       homeDetentionCurfewActualDate?.let {
         if (it.isAfter(today)) notEligible("Licence has HDCAD in the future: $it, status: $status")
-      } ?: notEligible("Licence has missing HDCAD date, status: $status")
+      } ?: notEligible("Licence has missing HDCAD date, status: $status, cfrd : $confirmedReleaseDate crd : $conditionalReleaseDate")
       licenceExpiryDate?.let {
         if (it.isBefore(today)) notEligible("Licence expiry date is in past: LED=$it , status: $status")
       } ?: notEligible("Missing licence expiry date, status: $status")
