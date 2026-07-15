@@ -260,7 +260,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT, cfrd : 2026-07-15 crd : 2026-07-16")
+      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT, Ard: 2026-07-15 Crd: 2026-07-16")
   }
 
   @Test
