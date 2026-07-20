@@ -272,6 +272,7 @@ CREATE TABLE public.licence_migration_log (
                                               error_source public."migration_error_source" NULL,
                                               booking_id int4 NULL,
                                               prison_number varchar(7) NULL,
+                                              community_offender_manager_email varchar(255) NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
 
