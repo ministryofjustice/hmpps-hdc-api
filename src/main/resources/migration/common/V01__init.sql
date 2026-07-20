@@ -275,6 +275,7 @@ CREATE TABLE public.licence_migration_log (
                                               community_offender_manager_email varchar(255) NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
+
 CREATE INDEX idx_licence_migration_log_licence_id ON public.licence_migration_log USING btree (licence_version_id);
 
 -- Permissions
