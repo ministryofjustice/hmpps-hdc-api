@@ -15,6 +15,8 @@ data class LicenceMigrationLogEntryDto(
   val bookingId: Long,
   @get:Schema(description = "Prison Number", example = "AA7654A")
   val prisonNumber: String? = null,
+  @get:Schema(description = "Community Offender Manager email", example = "user@test.com")
+  val communityOffenderManagerEmail: String? = null,
   @get:Schema(description = "Was the migration successful")
   val success: Boolean,
   @get:Schema(description = "Should this failure be retried")

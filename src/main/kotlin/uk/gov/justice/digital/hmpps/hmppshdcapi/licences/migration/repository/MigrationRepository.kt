@@ -217,6 +217,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
           created_at::timestamp as createdTimeStamp,
           booking_id as bookingId,
           prison_number as prisonNumber,
+          community_offender_manager_email as communityOffenderManagerEmail,
           success as success,
           retry as retry,
           message as message,
