@@ -516,6 +516,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     private val prisonerSearchMockServer = PrisonerSearchMockServer()
     private val prisonApiMockServer = PrisonApiMockServer()
+
     @RegisterExtension
     private val deliusMockServer = DeliusMockServer()
 

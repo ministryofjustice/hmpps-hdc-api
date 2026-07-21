@@ -556,6 +556,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   companion object {
     private val prisonerSearchMockServer = PrisonerSearchMockServer()
     private val prisonApiMockServer = PrisonApiMockServer()
+
     @RegisterExtension
     private val deliusMockServer = DeliusMockServer()
 

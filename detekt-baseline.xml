@@ -13,8 +13,7 @@
     <ID>FunctionParameterNaming:MigrationRepository.kt:MigrationRepository$prison_number: String? = null</ID>
     <ID>MagicNumber:LicenceConditionRenderer.kt:LicenceConditionRenderer$5</ID>
     <ID>MagicNumber:SoftDeleteMigrationsController.kt:SoftDeleteMigrationsController$1000</ID>
-    <ID>MagicNumber:WebClientConfiguration.kt:WebClientConfiguration$10</ID>
-    <ID>MagicNumber:WebClientConfiguration.kt:WebClientConfiguration$10000</ID>
+    <ID>MaxLineLength:MigrationRepository.kt:MigrationRepository$fun</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour."</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process."</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately."</ID>

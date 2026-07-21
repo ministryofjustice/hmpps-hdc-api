@@ -24,7 +24,6 @@ class DeliusApiClient(@param:Qualifier("oauthDeliusApiClient") val deliusApiWebC
     .coerce404ToEmptyOrThrow()
     .block()
 
-
   fun <T : Any> Mono<T>.coerce404ToEmptyOrThrow() = this.onErrorResume {
     when {
       it is WebClientResponseException && it.statusCode == HttpStatus.NOT_FOUND -> {
@@ -37,4 +36,3 @@ class DeliusApiClient(@param:Qualifier("oauthDeliusApiClient") val deliusApiWebC
     }
   }
 }
-

@@ -204,7 +204,7 @@ class MigrationProcessService(
 
   private fun logSuccess(licenceVersionId: Long, bookingId: Long, prisonNumber: String) {
     log.info("HDC migration: Licence version id: $licenceVersionId, migrated successfully")
-   val communityOffenderManagerEmail = deliusApiClient.getOffenderManager(prisonNumber)?.email
+    val communityOffenderManagerEmail = deliusApiClient.getOffenderManager(prisonNumber)?.email
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, communityOffenderManagerEmail, true, retry = false, "migrated successfully")
     migrationRepository.updateMigrationStateById(licenceVersionId, "COMPLETED")
   }
