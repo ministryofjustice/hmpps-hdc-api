@@ -102,7 +102,6 @@ hmpps:
     api:
       url: ${HMPPS_CVL_API_URL}
 
-
 feature:
   toggle:
     cvl:
