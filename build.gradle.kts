@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.0-beta2"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.1"
   id("org.owasp.dependencycheck") version "12.2.2"
-  kotlin("plugin.spring") version "2.4.0"
-  kotlin("plugin.jpa") version "2.4.0"
+  kotlin("plugin.spring") version "2.4.10"
+  kotlin("plugin.jpa") version "2.4.10"
   id("dev.detekt") version "2.0.0-alpha.5"
 }
 
