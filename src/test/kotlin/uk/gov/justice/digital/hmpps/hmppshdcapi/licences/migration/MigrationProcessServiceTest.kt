@@ -7,6 +7,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.probation.DeliusApiClient
 import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneId
@@ -17,6 +18,7 @@ class MigrationProcessServiceTest {
   private val migrationRepository = mock<MigrationRepository>()
   private val migrationRequestService = mock<MigrationRequestService>()
   private val prisonSearchApiClient = mock<PrisonSearchApiClient>()
+  private val deliusApiClient = mock<DeliusApiClient>()
 
   @Test
   fun `should return immediately when migration is not allowed`() {
@@ -32,6 +34,7 @@ class MigrationProcessServiceTest {
       migrationRepository = migrationRepository,
       migrationRequestService = migrationRequestService,
       prisonSearchApiClient = prisonSearchApiClient,
+      deliusApiClient = deliusApiClient,
       allowedMigrationDate = LocalDate.of(2026, 6, 25),
       clock = clock,
     )
@@ -50,6 +53,7 @@ class MigrationProcessServiceTest {
       migrationRepository = migrationRepository,
       migrationRequestService = migrationRequestService,
       prisonSearchApiClient = prisonSearchApiClient,
+      deliusApiClient = deliusApiClient,
       allowedMigrationDate = null,
     )
 

@@ -16,6 +16,9 @@ hmpps:
   prisonersearch:
     api:
       url: http://localhost:8099/api
+  delius:
+    api:
+      url: http://localhost:8093
   cvl:
     api:
       url: http://localhost:8092

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,7 @@ import org.springframework.test.json.JsonCompareMode.LENIENT
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.DeliusMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
@@ -59,7 +61,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
-
+    deliusMockServer.stubGetOffenderManagerWithNomsId("A12345B")
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
@@ -70,6 +72,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl.json")
     assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
+    assertThat(migrationRepository.getMigrationLogWithComEmail(1L)).isEqualTo("user@test.com")
   }
 
   @Sql(
@@ -82,7 +85,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val bookingId = 54222L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
-
+    deliusMockServer.stubGetOffenderManagerWithNomsId("A12345B")
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
@@ -93,6 +96,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_out_of_system_licence.json")
     assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
+    assertThat(migrationRepository.getMigrationLogWithComEmail(1L)).isEqualTo("user@test.com")
   }
 
   @Sql(
@@ -223,6 +227,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     val bookingId = 10001L
     stubSearchPrisonersByBookingIds()
     stubGetHdcStatuses()
+    deliusMockServer.stubGetOffenderManagerWithNomsId("TST001")
     cvlMockServer.stubMigrateLicenceSuccess()
 
     // When
@@ -551,6 +556,8 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
   companion object {
     private val prisonerSearchMockServer = PrisonerSearchMockServer()
     private val prisonApiMockServer = PrisonApiMockServer()
+    @RegisterExtension
+    private val deliusMockServer = DeliusMockServer()
 
     @JvmStatic
     fun invalidBookingIds(): Stream<Long> = IntStream.rangeClosed(1, 8).mapToLong { it.toLong() }.boxed()

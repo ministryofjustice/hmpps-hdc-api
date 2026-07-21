@@ -23,6 +23,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.probation.DeliusApiClient
 import java.lang.Thread.sleep
 import java.time.Clock
 import java.time.LocalDate
@@ -34,6 +35,7 @@ class MigrationProcessService(
   private val migrationRepository: MigrationRepository,
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
+  private val deliusApiClient: DeliusApiClient,
   @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
   private val allowedMigrationDate: LocalDate?,
   private val clock: Clock = Clock.systemDefaultZone(),
@@ -202,7 +204,8 @@ class MigrationProcessService(
 
   private fun logSuccess(licenceVersionId: Long, bookingId: Long, prisonNumber: String) {
     log.info("HDC migration: Licence version id: $licenceVersionId, migrated successfully")
-    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, true, retry = false, "migrated successfully")
+   val communityOffenderManagerEmail = deliusApiClient.getOffenderManager(prisonNumber)?.email
+    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, communityOffenderManagerEmail, true, retry = false, "migrated successfully")
     migrationRepository.updateMigrationStateById(licenceVersionId, "COMPLETED")
   }
 
@@ -212,7 +215,7 @@ class MigrationProcessService(
   }
 
   private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, prisonNumber: String? = null, message: String, retry: Boolean, source: MigrationErrorSource) {
-    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, false, retry = retry, message, source.name)
+    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, success = false, retry = retry, message = message, source = source.name)
     licenceVersionId?.let {
       migrationRepository.updateMigrationStateById(licenceVersionId, "FAILED")
     }

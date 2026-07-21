@@ -19,6 +19,7 @@ class WebClientConfiguration(
   @param:Value("\${hmpps.auth.url}") private val oauthApiUrl: String,
   @param:Value("\${hmpps.prison.api.url}") private val prisonApiUrl: String,
   @param:Value("\${hmpps.prisonersearch.api.url}") private val prisonerSearchApiUrl: String,
+  @param:Value("\${hmpps.delius.api.url}") private val deliusApiUrl: String,
   @param:Value("\${hmpps.cvl.api.url}") private val cvlApiUrl: String,
 ) {
 
@@ -33,6 +34,12 @@ class WebClientConfiguration(
 
   @Bean
   fun oauthPrisonerSearchClient(authorizedClientManager: OAuth2AuthorizedClientManager, builder: WebClient.Builder) = getWebClient(prisonerSearchApiUrl, authorizedClientManager, builder)
+
+  @Bean
+  fun oauthDeliusApiClient(
+    authorizedClientManagerCvl: OAuth2AuthorizedClientManager,
+    builder: WebClient.Builder,
+  ): WebClient = getWebClient(deliusApiUrl, authorizedClientManagerCvl, builder)
 
   @Bean
   fun oauthCvlClient(

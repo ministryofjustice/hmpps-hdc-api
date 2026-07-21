@@ -136,11 +136,11 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Modifying
   @Query(
     value = """
-            INSERT INTO licence_migration_log(licence_version_id, booking_id, prison_number, success, retry, message, error_source)  VALUES (:licenceVersionId,:bookingId,:prison_number,:success,:retry,:message,CAST(:source AS migration_error_source))
+            INSERT INTO licence_migration_log(licence_version_id, booking_id, prison_number, community_offender_manager_email, success, retry, message, error_source)  VALUES (:licenceVersionId,:bookingId,:prison_number,:communityOffenderManagerEmail,:success,:retry,:message,CAST(:source AS migration_error_source))
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, prison_number: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, prison_number: String? = null, communityOffenderManagerEmail: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
 
   @Query(
     value = """
@@ -157,6 +157,14 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun getMigrationLog(licenceVersionId: Long, success: Boolean, retry: Boolean): String?
+
+  @Query(
+    value = """
+        SELECT community_offender_manager_email FROM licence_migration_log WHERE licence_version_id = :licenceVersionId
+  """,
+    nativeQuery = true,
+  )
+  fun getMigrationLogWithComEmail(licenceVersionId: Long): String?
 
   @Query(
     value = """
