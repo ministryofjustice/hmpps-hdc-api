@@ -94,7 +94,7 @@ management:
 
 hmpps:
   sar:
-    additionalAccessRole: HDC_ADMIN
+    additionalAccessRole: ROLE_HDC__SAR_REQUESTS__RO
     template:
       path: /templates/sar_hmpps-hdc-api.mustache
       enabled: true
