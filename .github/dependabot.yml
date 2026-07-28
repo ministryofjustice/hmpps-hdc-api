@@ -34,7 +34,7 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "helm"
-    directory: "/helm_deploy/create-and-vary-a-licence-api"
+    directory: "/helm_deploy/hmpps-hdc-api"
     cooldown:
       default-days: 7
     schedule:
