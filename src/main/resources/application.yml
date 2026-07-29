@@ -107,3 +107,10 @@ feature:
     cvl:
       migration:
         date: ${ALLOWED_BULK_CVL_MIGRATION_DATE:#{null}}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+    version: 5.32.11
