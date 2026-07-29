@@ -114,7 +114,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isAccepted
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("Licence additional conditions version not determined!")
+    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -222,9 +222,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isAccepted
 
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_2_of_batch.json")
-    assertThat(migrationRepository.getMigrationLog(1, false, retry = true)).isEqualTo("Service has failed - retry")
+    assertThat(migrationRepository.getMigrationLog(1, false, retry = true)).isEqualTo("Service has failed - retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
     assertThat(migrationRepository.getMigrationLog(2, true, retry = false)).isEqualTo("migrated successfully")
-    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Final failure - dont retry")
+    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Final failure - dont retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -282,7 +282,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
       .returnResult()
       .responseBody
 
-    val logs = body!!.content
+    val logs = body.content
 
     assertThat(logs).hasSize(3)
     with(logs[0]) {
@@ -320,7 +320,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
       .returnResult()
       .responseBody
 
-    val logs = body!!.content
+    val logs = body.content
 
     assertThat(logs).hasSize(1)
     assertThat(logs[0].id).isEqualTo(2)
@@ -343,7 +343,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
       .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
         val body = it.responseBody
-        assertThat(body!!.content).hasSize(1)
+        assertThat(body.content).hasSize(1)
         assertThat(body.content[0].licenceVersionId).isEqualTo(licenceVersionId)
       }
   }
@@ -364,7 +364,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
       .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
-        val body = it.responseBody!!
+        val body = it.responseBody
         assertThat(body.content).hasSize(1)
         assertThat(body.content[0].bookingId).isEqualTo(bookingId)
       }
@@ -386,7 +386,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isOk
       .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
-        val body = it.responseBody!!
+        val body = it.responseBody
         assertThat(body.content).hasSize(1)
         assertThat(body.content[0].errorSource).isEqualTo(errorSource)
       }
@@ -409,7 +409,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     multiResponse.expectStatus().isOk
       .expectBody<PageResponse<LicenceMigrationLogEntryDto>>()
       .consumeWith {
-        val body = it.responseBody!!
+        val body = it.responseBody
         assertThat(body.content).isEmpty()
       }
   }

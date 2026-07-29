@@ -155,16 +155,16 @@ class MigrationRequestService(
     fun notEligible(reason: String): Unit = throw MigrationValidationException(reason)
 
     with(prisoner) {
-      if (status != "INACTIVE OUT") notEligible("Licence has invalid status: $status")
-      if (isRestrictedPatient()) notEligible("Licence has restricted patient")
+      if (status != "INACTIVE OUT") notEligible("Prisoner has invalid status")
+      if (isRestrictedPatient()) notEligible("Prisoner is a restricted patient")
 
       val today = LocalDate.now()
       homeDetentionCurfewActualDate?.let {
-        if (it.isAfter(today)) notEligible("Licence has HDCAD in the future: $it, status: $status")
-      } ?: notEligible("Licence has missing HDCAD date, status: $status, Ard: $confirmedReleaseDate Crd: $conditionalReleaseDate")
+        if (it.isAfter(today)) notEligible("Prisoner has HDCAD in the future")
+      } ?: notEligible("Prisoner has missing HDCAD date")
       licenceExpiryDate?.let {
-        if (it.isBefore(today)) notEligible("Licence expiry date is in past: LED=$it , status: $status")
-      } ?: notEligible("Missing licence expiry date, status: $status")
+        if (it.isBefore(today)) notEligible("Prisoner has licence expiry date is in past")
+      } ?: notEligible("Prisoner has missing licence expiry date")
     }
   }
 
@@ -230,7 +230,7 @@ class MigrationRequestService(
 
       throw MigrationValidationException(
         "Found a licence at stage ${it.stage} with unapproved changes " +
-          "(current version $currentVersion, approved version $approvedVersion).",
+          "(current version $currentVersion, approved version $approvedVersion)",
       )
     }
   }
