@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 @Tag(name = "Jobs")
 @RestController
 class MigrationJobController(
-  private val migrationProcessService: MigrationProcessService
+  private val migrationProcessService: MigrationProcessService,
 ) {
 
   @PostMapping("/jobs/licences-migrate-batch-to-cvl")
@@ -38,5 +38,4 @@ class MigrationJobController(
     migrationProcessService.migrateABatchOfLicences()
     return ResponseEntity.accepted().body("Migration schedule started")
   }
-
 }
