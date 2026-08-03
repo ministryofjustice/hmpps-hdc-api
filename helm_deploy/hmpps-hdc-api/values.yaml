@@ -63,10 +63,3 @@ generic-prometheus-alerts:
   targetApplication: hmpps-hdc-api
   sqsAlertsTotalMessagesThreshold: 1
   sqsAlertsOldestThreshold: 10
-
-jobs:
-  - name: licences-migrate-batch-to-cvl-job
-    enabled: true
-    path: /licences-migrate-batch-to-cvl
-    cron: "0 1 * * *" # 1am UTC, every day
-    allowRetry: false
