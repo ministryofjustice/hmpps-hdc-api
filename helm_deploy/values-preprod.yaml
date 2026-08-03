@@ -34,3 +34,10 @@ cron:
   resetLicences:
     enabled: true
     schedule: "30 7 1 1 1-5"
+
+jobs:
+  - name: licences-migrate-batch-to-cvl-job
+    enabled: true
+    path: /licences-migrate-batch-to-cvl
+    cron: "0 10 * * *" # 1am UTC, every day
+    allowRetry: false
