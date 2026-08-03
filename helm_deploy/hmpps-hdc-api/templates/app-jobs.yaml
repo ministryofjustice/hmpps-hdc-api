@@ -1,6 +1,6 @@
-{{ $host := (index .Values "generic-service" "ingress" "host") }}
-  {{- range .Values.jobs }}
-  {{ if .enabled -}}
+{{- $host := index .Values "generic-service" "ingress" "host" -}}
+{{- range .Values.jobs }}
+{{ if .enabled -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -32,7 +32,7 @@ spec:
                 - curl --fail {{- if .allowRetry }} --retry 5 {{ end }} -X POST "https://$BASE_URL/jobs{{ .path }}"
               env:
                 - name: BASE_URL
-                  value: {{  index $ "Values" "generic-service" "ingress" "host" 0 }}
+                  value: {{ $host }}
   {{- end }}
 ---
 {{ end }}

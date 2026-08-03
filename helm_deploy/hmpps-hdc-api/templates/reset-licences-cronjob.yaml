@@ -1,3 +1,4 @@
+{{- $host := index .Values "generic-service" "ingress" "host" -}}
 {{- if .Values.cron.resetLicences.enabled -}}
 apiVersion: batch/v1
 kind: CronJob
@@ -26,5 +27,5 @@ spec:
                 - curl --fail --retry 2 -X POST "https://$BASE_URL/jobs/delete-inactive-licences"
               env:
                 - name: BASE_URL
-                  value: {{ index .Values "generic-service" "ingress" "host" }}
+                  value: {{ $host }}
 {{- end }}
