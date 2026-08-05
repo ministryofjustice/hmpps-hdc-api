@@ -102,7 +102,7 @@ class MigrationProcessService(
     var prisoner: Prisoner? = null
     var licenceBookingDetail: LicenceBookingDetail? = null
     try {
-      licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId,  ignoreRetry = true)
+      licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
       processLicence(licenceBookingDetail, prisoner, true)
