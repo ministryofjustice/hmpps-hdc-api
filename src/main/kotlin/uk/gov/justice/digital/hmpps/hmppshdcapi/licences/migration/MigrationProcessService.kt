@@ -16,6 +16,7 @@ import reactor.netty.http.client.PrematureCloseException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationPrisonerNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
@@ -28,6 +29,8 @@ import java.time.Clock
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds
 
+private const val DAY_FOR_RELEASE_WINDOW = 10L
+
 @Transactional(propagation = Propagation.NEVER)
 @Service
 class MigrationProcessService(
@@ -38,6 +41,8 @@ class MigrationProcessService(
   private val allowedMigrationDate: LocalDate?,
   private val clock: Clock = Clock.systemDefaultZone(),
 ) {
+
+  private val log = LoggerFactory.getLogger(this::class.java)
 
   @PersistenceContext
   private lateinit var entityManager: EntityManager
@@ -95,18 +100,54 @@ class MigrationProcessService(
 
   fun migrateALicence(bookingId: Long) {
     var prisoner: Prisoner? = null
+    var licenceBookingDetail: LicenceBookingDetail? = null
     try {
-      val licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, true)
+      licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
-      processLicence(licenceBookingDetail, prisoner, true)
+      processLicence(licenceBookingDetail, prisoner, throwExceptions = true)
     } catch (e: MigrationLicenceVersionNotFoundException) {
       logFailure(null, bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
+      throw e
+    } catch (e: MigrationPrisonerNotFoundException) {
+      logFailure(licenceBookingDetail?.licenceVersionId, bookingId, licenceBookingDetail?.prisonNumber, e.message!!, retry = true, MigrationErrorSource.HDC)
       throw e
     }
   }
 
-  private fun processLicence(licenceDetail: LicenceBookingDetail, prisoner: Prisoner, throwExceptions: Boolean = false) {
+  fun migrateALicenceForPrisonerReleaseEvent(prisonNumber: String) {
+    try {
+      val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
+        ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
+
+      if (!isWithinReleaseEventWindow(prisoner)) {
+        log.info("HDC migration event: Release Event, Prisoner {}, is not within the release event window. HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
+        return
+      }
+      log.info("HDC migration event: Release Event, Prisoner {}, is within the release event window. HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
+
+      val bookingId = prisoner.bookingId.toLong()
+      migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
+        processLicence(it, prisoner, throwExceptions = false)
+      }
+    } catch (e: MigrationPrisonerNotFoundException) {
+      log.info("HDC migration: Release Event, {}", e.message)
+    }
+  }
+
+  fun isWithinReleaseEventWindow(prisoner: Prisoner): Boolean {
+    val hdcad = prisoner.homeDetentionCurfewActualDate ?: return false
+    val crd = prisoner.conditionalReleaseDate ?: return false
+    val today = getCurrentDate()
+
+    return today >= hdcad && today <= crd.minusDays(DAY_FOR_RELEASE_WINDOW)
+  }
+
+  private fun processLicence(
+    licenceDetail: LicenceBookingDetail,
+    prisoner: Prisoner,
+    throwExceptions: Boolean = false,
+  ) {
     log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
@@ -207,7 +248,7 @@ class MigrationProcessService(
     migrationRepository.updateMigrationStateById(licenceVersionId, "COMPLETED")
   }
 
-  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, prisoner: Prisoner? = null, e: Exception, retry: Boolean, source: MigrationErrorSource) {
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisoner: Prisoner? = null, e: Exception, retry: Boolean, source: MigrationErrorSource) {
     log.debug("HDC migration: Licence version id: $licenceVersionId, error: ${e.message}", e)
     var message = e.message ?: e::class.simpleName ?: "Unknown error"
     prisoner?.let {
@@ -218,7 +259,7 @@ class MigrationProcessService(
     logFailure(licenceVersionId, bookingId, prisoner?.prisonerNumber, message, retry, source)
   }
 
-  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long, prisonNumber: String? = null, message: String, retry: Boolean, source: MigrationErrorSource) {
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisonNumber: String? = null, message: String, retry: Boolean, source: MigrationErrorSource) {
     migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, false, retry = retry, message, source.name)
     licenceVersionId?.let {
       migrationRepository.updateMigrationStateById(licenceVersionId, "FAILED")
@@ -244,8 +285,6 @@ class MigrationProcessService(
   private fun getCurrentDate(): LocalDate = LocalDate.now(clock)
 
   companion object {
-    private val log = LoggerFactory.getLogger(this::class.java)
-
     // The maximum number of licenses we can process is 999 as the prisoners by booking ids must have between 1 and 1000 {
     private const val BATCH_SIZE = 100
   }

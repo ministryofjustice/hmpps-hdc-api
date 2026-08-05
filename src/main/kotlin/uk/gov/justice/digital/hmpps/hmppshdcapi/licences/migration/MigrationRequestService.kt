@@ -15,6 +15,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceConditions
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceData
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions.LicenceConditionRenderer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.client.CvlApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationPrisonerNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationLicenceVersion
@@ -471,7 +472,7 @@ class MigrationRequestService(
 
   fun performPrisonerSearch(bookingId: Long): Prisoner {
     val bookingIds = listOf(bookingId)
-    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationValidationException("Prisoner not found for booking id $bookingId")
+    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationPrisonerNotFoundException("Prisoner not found for booking id $bookingId")
   }
 
   private fun isApproved(licenceVersion: MigrationLicenceVersion): Boolean {
