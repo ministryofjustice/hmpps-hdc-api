@@ -102,7 +102,7 @@ class MigrationProcessService(
     var prisoner: Prisoner? = null
     var licenceBookingDetail: LicenceBookingDetail? = null
     try {
-      licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, false)
+      licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId,  ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
       processLicence(licenceBookingDetail, prisoner, true)
@@ -127,7 +127,7 @@ class MigrationProcessService(
       log.info("HDC migration event: Release Event, Prisoner {}, is within the release event window. HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
 
       val bookingId = prisoner.bookingId.toLong()
-      migrationRepository.getMigratableLicenceDetails(bookingId, false)?.let {
+      migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
         processLicence(it, prisoner, false)
       }
     } catch (e: MigrationPrisonerNotFoundException) {
