@@ -105,7 +105,7 @@ class MigrationProcessService(
       licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
-      processLicence(licenceBookingDetail, prisoner, true)
+      processLicence(licenceBookingDetail, prisoner, throwExceptions = true)
     } catch (e: MigrationLicenceVersionNotFoundException) {
       logFailure(null, bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
       throw e
@@ -128,7 +128,7 @@ class MigrationProcessService(
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
-        processLicence(it, prisoner, false)
+        processLicence(it, prisoner, throwExceptions = false)
       }
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
