@@ -181,7 +181,7 @@ class MigrationProcessServiceTest {
     migrationRepository = migrationRepository,
     migrationRequestService = migrationRequestService,
     prisonSearchApiClient = prisonSearchApiClient,
-    allowedBulkMigrationDate = allowedMigrationDate,
+    allowedNroMigrationDate = allowedMigrationDate,
     clock = clock,
   )
 }

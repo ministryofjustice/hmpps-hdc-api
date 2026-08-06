@@ -38,7 +38,7 @@ class MigrationProcessService(
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
   @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
-  private val allowedBulkMigrationDate: LocalDate?,
+  private val allowedNroMigrationDate: LocalDate?,
   private val clock: Clock = Clock.systemDefaultZone(),
 ) {
 
@@ -269,21 +269,21 @@ class MigrationProcessService(
   }
 
   private fun checkIfNroMigrationIsAllowed(): Boolean {
-    if (allowedBulkMigrationDate == null) {
+    if (allowedNroMigrationDate == null) {
       log.info("HDC migration: NRO Migration to cvl is skipped because migration date is not configured")
       return false
     }
     if (!isMigrationAllowed()) {
       log.info(
         "HDC migration: NRO Migration to cvl is skipped because migration {} date has not been reached",
-        allowedBulkMigrationDate,
+        allowedNroMigrationDate,
       )
       return false
     }
     return true
   }
 
-  fun isMigrationAllowed(): Boolean = allowedBulkMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
+  fun isMigrationAllowed(): Boolean = allowedNroMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
   private fun getCurrentDate(): LocalDate = LocalDate.now(clock)
 
   companion object {
