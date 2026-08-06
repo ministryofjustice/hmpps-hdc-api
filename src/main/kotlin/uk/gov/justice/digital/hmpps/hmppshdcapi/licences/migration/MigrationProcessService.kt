@@ -38,7 +38,7 @@ class MigrationProcessService(
   private val migrationRequestService: MigrationRequestService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
   @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
-  private val allowedMigrationDate: LocalDate?,
+  private val allowedBulkMigrationDate: LocalDate?,
   private val clock: Clock = Clock.systemDefaultZone(),
 ) {
 
@@ -49,7 +49,7 @@ class MigrationProcessService(
 
   @Async
   fun migrateABatchOfLicences() {
-    if (!checkIfMigrationIsAllowed()) return
+    if (!checkIfNroMigrationIsAllowed()) return
 
     var lastProcessedId = 0L
     var batch = 1
@@ -116,6 +116,8 @@ class MigrationProcessService(
   }
 
   fun migrateALicenceForPrisonerReleaseEvent(prisonNumber: String) {
+    if (!checkIfNroMigrationIsAllowed()) return
+
     try {
       val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
         ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
@@ -266,22 +268,22 @@ class MigrationProcessService(
     }
   }
 
-  private fun checkIfMigrationIsAllowed(): Boolean {
-    if (allowedMigrationDate == null) {
-      log.info("HDC migration: Migration to cvl is skipped because migration date is not configured")
+  private fun checkIfNroMigrationIsAllowed(): Boolean {
+    if (allowedBulkMigrationDate == null) {
+      log.info("HDC migration: NRO Migration to cvl is skipped because migration date is not configured")
       return false
     }
     if (!isMigrationAllowed()) {
       log.info(
-        "HDC migration:  Migration to cvl is skipped because migration {} date has not been reached",
-        allowedMigrationDate,
+        "HDC migration: NRO Migration to cvl is skipped because migration {} date has not been reached",
+        allowedBulkMigrationDate,
       )
       return false
     }
     return true
   }
 
-  fun isMigrationAllowed(): Boolean = allowedMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
+  fun isMigrationAllowed(): Boolean = allowedBulkMigrationDate?.let { !getCurrentDate().isBefore(it) } ?: false
   private fun getCurrentDate(): LocalDate = LocalDate.now(clock)
 
   companion object {
