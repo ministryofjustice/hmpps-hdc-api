@@ -54,7 +54,7 @@
     <ID>ReturnCount:LicenceConditionFieldMerger.kt:LicenceConditionFieldMerger$fun mergeIfRequired: Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt:LicenceConditionRenderer$fun renderConditions: List&lt;ConvertedBespokeCondition&gt;</ID>
     <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$fun isWithinReleaseEventWindow: Boolean</ID>
-    <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$private fun checkIfMigrationIsAllowed: Boolean</ID>
+    <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$private fun checkIfNroMigrationIsAllowed: Boolean</ID>
     <ID>ReturnCount:MigrationRequestService.kt:MigrationRequestService$fun toMigrateCurfewTimes: List&lt;MigrateCurfewTime&gt;</ID>
     <ID>SwallowedException:MigrationRequestService.kt:MigrationRequestService$e: DatabindException</ID>
     <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$fun migrateALicence</ID>
