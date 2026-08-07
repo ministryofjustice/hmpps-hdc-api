@@ -6,6 +6,7 @@ import org.awaitility.kotlin.untilAsserted
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -68,6 +69,77 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
   }
 
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+  )
+  fun `When a non re-tryable exception is thrown sqs process will not retry`() {
+    // Given
+    val prisonNumber = "A12345B"
+    val reason = "RELEASED"
+
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(
+          bookingId = "54222",
+          prisonerNumber = "A1234EE",
+          homeDetentionCurfewActualDate = LocalDate.now(),
+          conditionalReleaseDate = LocalDate.now().plusDays(10),
+          status = "INACTIVE IN",
+        ),
+      ),
+    )
+
+    // When
+    publishDomainEventMessage(
+      HMPPSPrisonerUpdatedAdditionalInformation(nomsNumber = prisonNumber, reason = reason),
+    )
+
+    awaitAtMost30Secs untilAsserted {
+      verify(eventProcessingComplete, times(1)).complete()
+    }
+
+    // Then
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+  )
+  fun `When a re-tryable exception is thrown sqs process will retry`() {
+    // Given
+    val prisonNumber = "A12345B"
+    val reason = "RELEASED"
+
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(
+          bookingId = "54222",
+          prisonerNumber = "A1234EE",
+          homeDetentionCurfewActualDate = LocalDate.now(),
+          conditionalReleaseDate = LocalDate.now().plusDays(10),
+        ),
+      ),
+    )
+
+    cvlMockServer.stubMigrateLicenceClient500Error()
+
+    // When
+    publishDomainEventMessage(
+      HMPPSPrisonerUpdatedAdditionalInformation(nomsNumber = prisonNumber, reason = reason),
+    )
+
+    awaitAtMost30Secs untilAsserted {
+      verify(eventProcessingComplete, times(2)).complete()
+    }
+
+    // Then
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
+  }
+
   private fun publishDomainEventMessage(
     additionalInformation: HMPPSPrisonerUpdatedAdditionalInformation,
   ) {
@@ -100,6 +172,7 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
     dateOfBirth: LocalDate = LocalDate.of(1985, 5, 20),
     homeDetentionCurfewActualDate: LocalDate? = null,
     conditionalReleaseDate: LocalDate? = null,
+    status: String? = "INACTIVE OUT",
   ) = Prisoner(
     prisonerNumber = prisonerNumber,
     bookingId = bookingId,
@@ -110,7 +183,7 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
     homeDetentionCurfewActualDate = homeDetentionCurfewActualDate,
     homeDetentionCurfewEligibilityDate = LocalDate.of(2025, 3, 20),
     pncNumber = "PNC123",
-    status = "INACTIVE OUT",
+    status = status,
     mostSeriousOffence = "Theft",
     homeDetentionCurfewEndDate = LocalDate.of(2025, 4, 30),
     releaseDate = LocalDate.of(2025, 4, 16),

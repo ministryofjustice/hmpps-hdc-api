@@ -105,7 +105,7 @@ class MigrationProcessService(
       licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
-      processLicence(licenceBookingDetail, prisoner, throwExceptions = true)
+      processLicence(licenceBookingDetail, prisoner, throwAllExceptions = true)
     } catch (e: MigrationLicenceVersionNotFoundException) {
       logFailure(null, bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
       throw e
@@ -130,7 +130,7 @@ class MigrationProcessService(
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
-        processLicence(it, prisoner, throwExceptions = false)
+        processLicence(it, prisoner, throwRetryableExceptions = true)
       }
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
@@ -148,7 +148,8 @@ class MigrationProcessService(
   private fun processLicence(
     licenceDetail: LicenceBookingDetail,
     prisoner: Prisoner,
-    throwExceptions: Boolean = false,
+    throwAllExceptions: Boolean = false,
+    throwRetryableExceptions: Boolean = false,
   ) {
     log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
@@ -157,25 +158,25 @@ class MigrationProcessService(
       logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId, licenceDetail.prisonNumber)
     } catch (e: CvlRetryMigrationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL)
-      if (throwExceptions) throw e
+      if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: CvlMigrationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.CVL)
-      if (throwExceptions) throw e
+      if (throwAllExceptions) throw e
     } catch (e: MigrationValidationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC)
-      if (throwExceptions) throw e
+      if (throwAllExceptions) throw e
     } catch (e: PrematureCloseException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
-      if (throwExceptions) throw e
+      if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: Errors.NativeIoException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
-      if (throwExceptions) throw e
+      if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: WebClientRequestException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
-      if (throwExceptions) throw e
+      if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: Exception) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC)
-      if (throwExceptions) throw e
+      if (throwAllExceptions) throw e
     }
   }
 
