@@ -39,5 +39,5 @@ jobs:
   - name: licences-migrate-batch-to-cvl-job
     enabled: true
     path: /licences-migrate-batch-to-cvl
-    cron: "0 * * * *" # every hour
+    cron: "0 8 * * *" # 8:00am UTC, every day
     allowRetry: false
