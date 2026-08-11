@@ -102,6 +102,12 @@ hmpps:
     api:
       url: ${HMPPS_CVL_API_URL}
 
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
 feature:
   toggle:
     cvl:
