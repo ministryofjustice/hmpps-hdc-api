@@ -94,7 +94,7 @@ management:
 
 hmpps:
   sar:
-    additionalAccessRole: HDC_ADMIN
+    additionalAccessRole: ROLE_HDC__SAR_REQUESTS__RO
     template:
       path: /templates/sar_hmpps-hdc-api.mustache
       enabled: true
@@ -113,3 +113,10 @@ feature:
     cvl:
       migration:
         date: ${ALLOWED_BULK_CVL_MIGRATION_DATE:#{null}}
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+    version: 5.32.11

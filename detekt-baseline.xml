@@ -2,10 +2,10 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSEventType$val Type: String</ID>
-    <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSEventType$val Value: String</ID>
-    <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSMessage$val Message: String</ID>
-    <ID>ConstructorParameterNaming:PrisonOffenderEventListener.kt:HMPPSMessage$val MessageAttributes: HMPPSMessageAttributes</ID>
+    <ID>ConstructorParameterNaming:HMPPSMessage.kt:HMPPSEventType$val Type: String</ID>
+    <ID>ConstructorParameterNaming:HMPPSMessage.kt:HMPPSEventType$val Value: String</ID>
+    <ID>ConstructorParameterNaming:HMPPSMessage.kt:HMPPSMessage$val Message: String</ID>
+    <ID>ConstructorParameterNaming:HMPPSMessage.kt:HMPPSMessage$val MessageAttributes: HMPPSMessageAttributes</ID>
     <ID>CyclomaticComplexMethod:LicenceService.kt:LicenceService$fun CurfewHours?.getNullTimes: List&lt;String&gt;</ID>
     <ID>CyclomaticComplexMethod:MigrationProcessService.kt:MigrationProcessService$private fun processLicence</ID>
     <ID>CyclomaticComplexMethod:MigrationRequestService.kt:MigrationRequestService$fun validate</ID>
@@ -13,8 +13,6 @@
     <ID>FunctionParameterNaming:MigrationRepository.kt:MigrationRepository$prison_number: String? = null</ID>
     <ID>MagicNumber:LicenceConditionRenderer.kt:LicenceConditionRenderer$5</ID>
     <ID>MagicNumber:SoftDeleteMigrationsController.kt:SoftDeleteMigrationsController$1000</ID>
-    <ID>MagicNumber:WebClientConfiguration.kt:WebClientConfiguration$10</ID>
-    <ID>MagicNumber:WebClientConfiguration.kt:WebClientConfiguration$10000</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour."</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process."</ID>
     <ID>MaxLineLength:V1Conditions.kt:text = "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer. This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately."</ID>
@@ -55,9 +53,11 @@
     <ID>MaxLineLength:V2Conditions.kt:text = "You will be subject to trail monitoring. Your whereabouts will be electronically monitored by GPS Satellite Tagging, ending on [INSERT END DATE], and you must cooperate with the monitoring as directed by your supervising officer unless otherwise authorised by your supervising officer."</ID>
     <ID>ReturnCount:LicenceConditionFieldMerger.kt:LicenceConditionFieldMerger$fun mergeIfRequired: Map&lt;String, Any&gt;</ID>
     <ID>ReturnCount:LicenceConditionRenderer.kt:LicenceConditionRenderer$fun renderConditions: List&lt;ConvertedBespokeCondition&gt;</ID>
-    <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$private fun checkIfMigrationIsAllowed: Boolean</ID>
+    <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$fun isWithinReleaseEventWindow: Boolean</ID>
+    <ID>ReturnCount:MigrationProcessService.kt:MigrationProcessService$private fun checkIfNroMigrationIsAllowed: Boolean</ID>
     <ID>ReturnCount:MigrationRequestService.kt:MigrationRequestService$fun toMigrateCurfewTimes: List&lt;MigrateCurfewTime&gt;</ID>
     <ID>SwallowedException:MigrationRequestService.kt:MigrationRequestService$e: DatabindException</ID>
+    <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$fun migrateALicence</ID>
     <ID>ThrowsCount:MigrationProcessService.kt:MigrationProcessService$private fun processLicence</ID>
     <ID>ThrowsCount:MigrationRequestService.kt:MigrationRequestService$fun validate</ID>
     <ID>TooGenericExceptionCaught:MigrationProcessService.kt:MigrationProcessService$e: Exception</ID>

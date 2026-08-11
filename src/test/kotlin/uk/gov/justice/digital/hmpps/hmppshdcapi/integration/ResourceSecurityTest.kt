@@ -26,6 +26,7 @@ class ResourceSecurityTest : SqsIntegrationTestBase() {
     "/error",
     "PUT /queue-admin/retry-all-dlqs",
     "POST /jobs/delete-inactive-licences",
+    "POST /jobs/licences-migrate-batch-to-cvl",
   )
 
   @Test

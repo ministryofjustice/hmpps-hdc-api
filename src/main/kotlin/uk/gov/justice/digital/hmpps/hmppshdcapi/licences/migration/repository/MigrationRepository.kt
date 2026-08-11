@@ -140,7 +140,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, prison_number: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long? = null, prison_number: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
 
   @Query(
     value = """

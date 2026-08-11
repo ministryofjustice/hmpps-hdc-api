@@ -238,26 +238,29 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
+      .hasMessage("Prisoner has missing licence expiry date")
   }
 
   @Test
-  fun `should return false when hdcad date are null`() {
+  fun `should throw exception when hdcad date are null`() {
     // Given
     val prisoner = mock<Prisoner>()
     val today = LocalDate.now()
+    val testDate = LocalDate.of(2026, 7, 15)
 
     whenever(prisoner.status).thenReturn("INACTIVE OUT")
     whenever(prisoner.isRestrictedPatient()).thenReturn(false)
     whenever(prisoner.homeDetentionCurfewActualDate).thenReturn(null)
     whenever(prisoner.licenceExpiryDate).thenReturn(today.plusDays(1))
+    whenever(prisoner.confirmedReleaseDate).thenReturn(testDate)
+    whenever(prisoner.conditionalReleaseDate).thenReturn(testDate.plusDays(1))
 
     // When
     assertThatThrownBy {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT")
+      .hasMessage("Prisoner has missing HDCAD date")
   }
 
   @Test
@@ -277,7 +280,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
+      .hasMessage("Prisoner has missing licence expiry date")
   }
 
   @Test
@@ -295,7 +298,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has invalid status: ACTIVE")
+      .hasMessage("Prisoner has invalid status")
   }
 
   @Test
@@ -314,7 +317,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has restricted patient")
+      .hasMessage("Prisoner is a restricted patient")
   }
 
   @Test
@@ -334,7 +337,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has HDCAD in the future: $hdcad, status: INACTIVE OUT")
+      .hasMessage("Prisoner has HDCAD in the future")
   }
 
   @Test
@@ -354,7 +357,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence expiry date is in past: LED=$led , status: INACTIVE OUT")
+      .hasMessage("Prisoner has licence expiry date is in past")
   }
 
   @ParameterizedTest
