@@ -18,6 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
@@ -421,20 +422,13 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       .exchange()
 
     // Then
-    response.expectStatus().isOk
+    response
+      .expectStatus().isOk
       .expectBody()
-      .json(
-        """
-      [
-        {
-          "bookingId": 54222,
-          "prisonNumber": "A1234AA",
-          "errorCount": 3
-        }
-      ]
-        """.trimIndent(),
-        LENIENT,
-      )
+      .jsonPath("$.length()").isEqualTo(1)
+      .jsonPath("$[0].bookingId").isEqualTo(54222)
+      .jsonPath("$[0].prisonNumber").isEqualTo("A1234AA")
+      .jsonPath("$[0].errorCount").isEqualTo(3)
   }
 
   private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()
