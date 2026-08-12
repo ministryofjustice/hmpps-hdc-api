@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.Cv
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationPrisonerNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.FailedMigrationSummary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
@@ -202,6 +203,8 @@ class MigrationProcessService(
     log.info("HDC migration: Updating retry state for log id: $logId, retry: $retry")
     migrationRepository.updateRetryState(logId, retry)
   }
+
+  fun getRepeatedFailedMigrations(): List<FailedMigrationSummary> = migrationRepository.findRepeatedFailedMigrations()
 
   private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
     log.info("HDC migration: Fetching prisoner details for prison number {}", licenceDetails.map { it.bookingId })

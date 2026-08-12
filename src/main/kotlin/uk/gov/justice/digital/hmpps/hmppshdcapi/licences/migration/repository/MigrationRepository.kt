@@ -43,6 +43,12 @@ data class LicenceWithUnApprovedChanges(
   val varyVersion: Int,
 )
 
+interface FailedMigrationSummary {
+  val bookingId: Long?
+  val prisonNumber: String?
+  val errorCount: Long?
+}
+
 @Transactional(propagation = Propagation.NEVER)
 @Repository
 interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
@@ -249,4 +255,15 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun findMigrationStateById(id: Long): String?
+
+  @Query(
+    value = """
+    SELECT l.booking_id AS bookingId, l.prison_number AS prisonNumber, COUNT(*) AS errorCount
+        FROM licence_migration_log l
+            GROUP BY l.booking_id, l.prison_number HAVING COUNT(*) > 1 AND BOOL_AND(l.success = false)
+            ORDER BY COUNT(*) DESC
+    """,
+    nativeQuery = true,
+  )
+  fun findRepeatedFailedMigrations(): List<FailedMigrationSummary>
 }

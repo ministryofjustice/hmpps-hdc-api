@@ -404,6 +404,39 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       )
   }
 
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/repeated-failed-migrations.sql",
+  )
+  @Test
+  fun `Get repeated failed migrations returns only migrations that have repeatedly failed`() {
+    // Given
+    val uri = "/licences/migrate/repeated-failures"
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/repeated-failures")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response.expectStatus().isOk
+      .expectBody()
+      .json(
+        """
+      [
+        {
+          "bookingId": 54222,
+          "prisonNumber": "A1234AA",
+          "errorCount": 3
+        }
+      ]
+        """.trimIndent(),
+        LENIENT,
+      )
+  }
+
   private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()
     .uri("/licences/migrate/$bookingId/to-cvl")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
