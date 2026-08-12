@@ -18,6 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
@@ -402,6 +403,32 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
         jsonFromFile("test_hdc_to_cvl.json"),
         LENIENT,
       )
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/repeated-failed-migrations.sql",
+  )
+  @Test
+  fun `Get repeated failed migrations returns only migrations that have repeatedly failed`() {
+    // Given
+    val uri = "/licences/migrate/repeated-failures"
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/repeated-failures")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.length()").isEqualTo(1)
+      .jsonPath("$[0].bookingId").isEqualTo(54222)
+      .jsonPath("$[0].prisonNumber").isEqualTo("A1234AA")
+      .jsonPath("$[0].errorCount").isEqualTo(3)
   }
 
   private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()

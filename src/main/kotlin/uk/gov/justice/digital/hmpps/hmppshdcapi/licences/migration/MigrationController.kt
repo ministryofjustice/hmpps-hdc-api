@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.FailedMigrationSummary
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 
@@ -149,4 +150,21 @@ class MigrationController(
     migrationProcessService.updateRetryState(logId, retryValue)
     return ResponseEntity.noContent().build()
   }
+
+  @GetMapping("/repeated-failures")
+  @PreAuthorize("hasAnyRole('$ROLE_HDC_ADMIN')")
+  @Operation(
+    summary = "Get repeated failed migrations",
+    description = "Returns migrations that have failed more than once for the same booking and prison number",
+  )
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "Repeated failed migrations retrieved successfully"),
+      ApiResponse(responseCode = "401", description = "Unauthorized"),
+      ApiResponse(responseCode = "403", description = "Forbidden"),
+    ],
+  )
+  fun getRepeatedFailedMigrations(): ResponseEntity<List<FailedMigrationSummary>> = ResponseEntity.ok(
+    migrationProcessService.getRepeatedFailedMigrations(),
+  )
 }
