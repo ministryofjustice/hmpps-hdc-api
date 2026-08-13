@@ -6,6 +6,13 @@ CREATE TYPE public."migration_error_source" AS ENUM (
 	'CVL',
 	'HDC');
 
+-- DROP TYPE public.migration_trigger_enum;
+
+CREATE TYPE public.migration_trigger_enum AS ENUM (
+	'USER',
+	'BATCH',
+	'EVENT');
+
 -- DROP SEQUENCE public.active_local_delivery_units_id_seq;
 
 CREATE SEQUENCE public.active_local_delivery_units_id_seq
@@ -272,6 +279,7 @@ CREATE TABLE public.licence_migration_log (
                                               error_source public."migration_error_source" NULL,
                                               booking_id int4 NULL,
                                               prison_number varchar(7) NULL,
+                                              migration_trigger public.migration_trigger_enum DEFAULT 'USER'::migration_trigger_enum NOT NULL,
                                               CONSTRAINT licence_migration_log_pkey PRIMARY KEY (id)
 );
 

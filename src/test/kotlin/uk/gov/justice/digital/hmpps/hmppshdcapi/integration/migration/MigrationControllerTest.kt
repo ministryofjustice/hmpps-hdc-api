@@ -18,7 +18,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.json.JsonCompareMode.LENIENT
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
@@ -416,7 +415,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // When
     val response = webTestClient.get()
-      .uri("/licences/migrate/repeated-failures")
+      .uri(uri)
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
@@ -429,6 +428,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       .jsonPath("$[0].bookingId").isEqualTo(54222)
       .jsonPath("$[0].prisonNumber").isEqualTo("A1234AA")
       .jsonPath("$[0].errorCount").isEqualTo(3)
+      .jsonPath("$[0].migrationTrigger").isEqualTo("USER")
   }
 
   private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()
@@ -455,7 +455,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
   }
 
-  fun stubSearchPrisonersByBookingIds(restrictedPatient: Boolean = false) = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+  fun stubSearchPrisonersByBookingIds() = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
     listOf(
       Prisoner(
         prisonerNumber = "A1234AA",

@@ -22,6 +22,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Fa
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.LicenceBookingDetail
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationErrorSource
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationTrigger
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
@@ -86,11 +87,11 @@ class MigrationProcessService(
   private fun processBatch(licenceDetails: List<LicenceBookingDetail>) {
     try {
       val licenceDetailsMap = licenceDetails.associateBy { it.bookingId }
-      performPrisonerSearchByPrisonNumber(licenceDetails)
+      performPrisonerSearchByPrisonNumber(licenceDetails, migrationTrigger = MigrationTrigger.BATCH)
         .filter { (bookingId, _) -> licenceDetailsMap.containsKey(bookingId) }
         .mapNotNull { (bookingId, prisoner) -> licenceDetailsMap[bookingId]!! to prisoner }
         .forEach { (licenceDetail, prisoner) ->
-          processLicence(licenceDetail, prisoner)
+          processLicence(licenceDetail, prisoner, migrationTrigger = MigrationTrigger.BATCH)
           sleep(125.milliseconds.inWholeMilliseconds)
         }
     } finally {
@@ -106,12 +107,20 @@ class MigrationProcessService(
       licenceBookingDetail = migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)
         ?: throw MigrationLicenceVersionNotFoundException("No eligible licence version found for booking Id $bookingId")
       prisoner = migrationRequestService.performPrisonerSearch(licenceBookingDetail.bookingId)
-      processLicence(licenceBookingDetail, prisoner, throwAllExceptions = true)
+      processLicence(licenceBookingDetail, prisoner, throwAllExceptions = true, migrationTrigger = MigrationTrigger.USER)
     } catch (e: MigrationLicenceVersionNotFoundException) {
-      logFailure(null, bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
+      logFailure(null, bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC, migrationTrigger = MigrationTrigger.USER)
       throw e
     } catch (e: MigrationPrisonerNotFoundException) {
-      logFailure(licenceBookingDetail?.licenceVersionId, bookingId, licenceBookingDetail?.prisonNumber, e.message!!, retry = true, MigrationErrorSource.HDC)
+      logFailure(
+        licenceBookingDetail?.licenceVersionId,
+        bookingId,
+        licenceBookingDetail?.prisonNumber,
+        e.message!!,
+        retry = true,
+        MigrationErrorSource.HDC,
+        migrationTrigger = MigrationTrigger.USER,
+      )
       throw e
     }
   }
@@ -131,7 +140,7 @@ class MigrationProcessService(
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
-        processLicence(it, prisoner, throwRetryableExceptions = true)
+        processLicence(it, prisoner, throwRetryableExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
       }
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
@@ -151,32 +160,33 @@ class MigrationProcessService(
     prisoner: Prisoner,
     throwAllExceptions: Boolean = false,
     throwRetryableExceptions: Boolean = false,
+    migrationTrigger: MigrationTrigger,
   ) {
     log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
-      logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId, licenceDetail.prisonNumber)
+      logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId, licenceDetail.prisonNumber, migrationTrigger)
     } catch (e: CvlRetryMigrationException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL, migrationTrigger)
       if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: CvlMigrationException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.CVL)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.CVL, migrationTrigger)
       if (throwAllExceptions) throw e
     } catch (e: MigrationValidationException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC, migrationTrigger)
       if (throwAllExceptions) throw e
     } catch (e: PrematureCloseException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC, migrationTrigger)
       if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: Errors.NativeIoException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC, migrationTrigger)
       if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: WebClientRequestException) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.HDC, migrationTrigger)
       if (throwAllExceptions || throwRetryableExceptions) throw e
     } catch (e: Exception) {
-      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC)
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = false, MigrationErrorSource.HDC, migrationTrigger)
       if (throwAllExceptions) throw e
     }
   }
@@ -206,7 +216,10 @@ class MigrationProcessService(
 
   fun getRepeatedFailedMigrations(): List<FailedMigrationSummary> = migrationRepository.findRepeatedFailedMigrations()
 
-  private fun performPrisonerSearchByPrisonNumber(licenceDetails: List<LicenceBookingDetail>): Map<Long, Prisoner> {
+  private fun performPrisonerSearchByPrisonNumber(
+    licenceDetails: List<LicenceBookingDetail>,
+    migrationTrigger: MigrationTrigger,
+  ): Map<Long, Prisoner> {
     log.info("HDC migration: Fetching prisoner details for prison number {}", licenceDetails.map { it.bookingId })
     val prisonNumbers = licenceDetails.map { it.prisonNumber }
 
@@ -227,6 +240,7 @@ class MigrationProcessService(
               "Old booking id in hdc, ${licenceDetail.bookingId} != ${it.bookingId} prisoner booking id, status: ${it.status}",
               retry = false,
               MigrationErrorSource.HDC,
+              migrationTrigger,
             )
           }
         } ?: run {
@@ -237,6 +251,7 @@ class MigrationProcessService(
             "Prisoner not found for prisoner number ${licenceDetail.prisonNumber}",
             retry = false,
             MigrationErrorSource.HDC,
+            migrationTrigger,
           )
         }
       }
@@ -248,13 +263,21 @@ class MigrationProcessService(
     }
   }
 
-  private fun logSuccess(licenceVersionId: Long, bookingId: Long, prisonNumber: String) {
+  private fun logSuccess(licenceVersionId: Long, bookingId: Long, prisonNumber: String, migrationTrigger: MigrationTrigger) {
     log.info("HDC migration: Licence version id: $licenceVersionId, migrated successfully")
-    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, true, retry = false, "migrated successfully")
+    migrationRepository.insertMigrationLog(
+      licenceVersionId,
+      bookingId,
+      prisonNumber,
+      true,
+      retry = false,
+      "migrated successfully",
+      migrationTrigger = migrationTrigger.name,
+    )
     migrationRepository.updateMigrationStateById(licenceVersionId, "COMPLETED")
   }
 
-  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisoner: Prisoner? = null, e: Exception, retry: Boolean, source: MigrationErrorSource) {
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisoner: Prisoner? = null, e: Exception, retry: Boolean, source: MigrationErrorSource, migrationTrigger: MigrationTrigger) {
     log.debug("HDC migration: Licence version id: $licenceVersionId, error: ${e.message}", e)
     var message = e.message ?: e::class.simpleName ?: "Unknown error"
     prisoner?.let {
@@ -262,11 +285,11 @@ class MigrationProcessService(
         message += ", status:${it.status} Ard:$confirmedReleaseDate Crd:$conditionalReleaseDate Led:$licenceExpiryDate Hdcad:$homeDetentionCurfewActualDate"
       }
     }
-    logFailure(licenceVersionId, bookingId, prisoner?.prisonerNumber, message, retry, source)
+    logFailure(licenceVersionId, bookingId, prisoner?.prisonerNumber, message, retry, source, migrationTrigger)
   }
 
-  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisonNumber: String? = null, message: String, retry: Boolean, source: MigrationErrorSource) {
-    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, false, retry = retry, message, source.name)
+  private fun logFailure(licenceVersionId: Long? = null, bookingId: Long? = null, prisonNumber: String? = null, message: String, retry: Boolean, source: MigrationErrorSource, migrationTrigger: MigrationTrigger) {
+    migrationRepository.insertMigrationLog(licenceVersionId, bookingId, prisonNumber, false, retry = retry, message, source.name, migrationTrigger.name)
     licenceVersionId?.let {
       migrationRepository.updateMigrationStateById(licenceVersionId, "FAILED")
     }
