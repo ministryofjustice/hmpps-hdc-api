@@ -65,7 +65,7 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
     }
 
     // Then
-    assertThat(migrationRepository.getMigrationLog(1L, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(1L, true, retry = false, migrationTrigger = "EVENT")).isEqualTo("migrated successfully")
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("COMPLETED")
   }
 

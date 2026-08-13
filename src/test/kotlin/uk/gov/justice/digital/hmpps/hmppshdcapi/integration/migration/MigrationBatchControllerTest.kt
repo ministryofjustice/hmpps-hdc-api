@@ -90,9 +90,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_2_of_batch.json")
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_3_of_batch.json")
 
-    assertThat(migrationRepository.getMigrationLog(1, true, retry = false)).isEqualTo("migrated successfully")
-    assertThat(migrationRepository.getMigrationLog(2, true, retry = false)).isEqualTo("migrated successfully")
-    assertThat(migrationRepository.getMigrationLog(3, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(1, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(2, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(3, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
   }
 
   @Sql(
@@ -114,7 +114,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isAccepted
-    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false)).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(licenceVersionId, false, retry = false, "BATCH")).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -139,7 +139,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isAccepted
     assertThat(migrationRepository.getMigrationLogCount()).isEqualTo(1)
-    assertThat(migrationRepository.getMigrationLog(expectedLatestVersionId, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(expectedLatestVersionId, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
   }
 
   @Sql(
@@ -168,7 +168,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     cvlMockServer.verify(1, postRequestedFor(urlEqualTo("/licences/migrate/active")))
 
     assertThat(migrationRepository.getMigrationLogCount() - originalLogSize).isEqualTo(1)
-    assertThat(migrationRepository.getMigrationLog(2, true, retry = false)).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(2, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
   }
 
   @Sql(
@@ -194,7 +194,7 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
 
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
     assertThat(migrationRepository.getMigrationLogCount() - originalLogSize).isEqualTo(1)
-    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Old booking id in hdc, 11 != 666 prisoner booking id, status: INACTIVE OUT")
+    assertThat(migrationRepository.getMigrationLog(2, false, retry = false, "BATCH")).isEqualTo("Old booking id in hdc, 11 != 666 prisoner booking id, status: INACTIVE OUT")
   }
 
   @Sql(
@@ -222,9 +222,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     response.expectStatus().isAccepted
 
     verifyRequestPayloadSentToCVL("test_hdc_to_cvl_licence_2_of_batch.json")
-    assertThat(migrationRepository.getMigrationLog(1, false, retry = true)).isEqualTo("Service has failed - retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
-    assertThat(migrationRepository.getMigrationLog(2, true, retry = false)).isEqualTo("migrated successfully")
-    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Final failure - dont retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(1, false, retry = true, "BATCH")).isEqualTo("Service has failed - retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(2, true, retry = false, "BATCH")).isEqualTo("migrated successfully")
+    assertThat(migrationRepository.getMigrationLog(3, false, retry = false, "BATCH")).isEqualTo("Final failure - dont retry, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -242,9 +242,9 @@ class MigrationBatchControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isAccepted
     cvlMockServer.verify(0, postRequestedFor(urlEqualTo("/licences/migrate/active")))
-    assertThat(migrationRepository.getMigrationLog(1, false, retry = false)).isEqualTo("Prisoner not found for prisoner number A1234EE")
-    assertThat(migrationRepository.getMigrationLog(2, false, retry = false)).isEqualTo("Prisoner not found for prisoner number B1234EE")
-    assertThat(migrationRepository.getMigrationLog(3, false, retry = false)).isEqualTo("Prisoner not found for prisoner number C1234EE")
+    assertThat(migrationRepository.getMigrationLog(1, false, retry = false, "BATCH")).isEqualTo("Prisoner not found for prisoner number A1234EE")
+    assertThat(migrationRepository.getMigrationLog(2, false, retry = false, "BATCH")).isEqualTo("Prisoner not found for prisoner number B1234EE")
+    assertThat(migrationRepository.getMigrationLog(3, false, retry = false, "BATCH")).isEqualTo("Prisoner not found for prisoner number C1234EE")
   }
 
   @Sql(

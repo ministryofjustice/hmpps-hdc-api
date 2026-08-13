@@ -23,4 +23,6 @@ data class LicenceMigrationLogEntryDto(
   val message: String?,
   @get:Schema(description = "Error source if failed", allowableValues = ["CVL", "HDC"], example = "CVL")
   val errorSource: String?,
+  @get:Schema(description = "Migration trigger", allowableValues = ["BATCH", "USER", "EVENT"], example = "BATCH")
+  val migrationTrigger: String,
 )
