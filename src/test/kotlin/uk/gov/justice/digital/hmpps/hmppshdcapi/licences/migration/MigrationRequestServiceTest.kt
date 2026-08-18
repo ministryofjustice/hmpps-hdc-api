@@ -238,7 +238,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
+      .hasMessage("Prisoner has missing licence expiry date")
   }
 
   @Test
@@ -260,7 +260,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has missing HDCAD date, status: INACTIVE OUT, Ard: 2026-07-15 Crd: 2026-07-16")
+      .hasMessage("Prisoner has missing HDCAD date")
   }
 
   @Test
@@ -280,7 +280,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Missing licence expiry date, status: INACTIVE OUT")
+      .hasMessage("Prisoner has missing licence expiry date")
   }
 
   @Test
@@ -298,7 +298,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has invalid status: ACTIVE")
+      .hasMessage("Prisoner has invalid status")
   }
 
   @Test
@@ -317,7 +317,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has restricted patient")
+      .hasMessage("Prisoner is a restricted patient")
   }
 
   @Test
@@ -337,7 +337,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence has HDCAD in the future: $hdcad, status: INACTIVE OUT")
+      .hasMessage("Prisoner has HDCAD in the future")
   }
 
   @Test
@@ -357,7 +357,7 @@ class MigrationRequestServiceTest {
       migrationRequestService.validate(prisoner)
       // Then
     }.isInstanceOf(MigrationValidationException::class.java)
-      .hasMessage("Licence expiry date is in past: LED=$led , status: INACTIVE OUT")
+      .hasMessage("Prisoner has licence expiry date is in past")
   }
 
   @ParameterizedTest

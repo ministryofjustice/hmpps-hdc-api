@@ -111,7 +111,9 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isBadRequest
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0).")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo(
+      "Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0), status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30",
+    )
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
   }
 
@@ -170,7 +172,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isBadRequest
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Licence additional conditions version not determined!")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -311,7 +313,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT)
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("it does not exist")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("it does not exist, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -332,7 +334,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).isEqualTo("Service has failed")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).isEqualTo("Service has failed, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
   }
 
   @Sql(
@@ -402,6 +404,33 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
       )
   }
 
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/repeated-failed-migrations.sql",
+  )
+  @Test
+  fun `Get repeated failed migrations returns only migrations that have repeatedly failed`() {
+    // Given
+    val uri = "/licences/migrate/repeated-failures"
+
+    // When
+    val response = webTestClient.get()
+      .uri(uri)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.length()").isEqualTo(1)
+      .jsonPath("$[0].bookingId").isEqualTo(54222)
+      .jsonPath("$[0].prisonNumber").isEqualTo("A1234AA")
+      .jsonPath("$[0].errorCount").isEqualTo(3)
+      .jsonPath("$[0].migrationTrigger").isEqualTo("USER")
+  }
+
   private fun postBookingIdForLicenceToMigrate(bookingId: Long): WebTestClient.ResponseSpec = webTestClient.post()
     .uri("/licences/migrate/$bookingId/to-cvl")
     .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
@@ -426,7 +455,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
   }
 
-  fun stubSearchPrisonersByBookingIds(restrictedPatient: Boolean = false) = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
+  fun stubSearchPrisonersByBookingIds() = prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
     listOf(
       Prisoner(
         prisonerNumber = "A1234AA",

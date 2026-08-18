@@ -14,7 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.helpers.LocalStackContainer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.helpers.LocalStackContainer.setLocalStackProperties
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.EventProcessingComplete
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.EventProcessingComplete
 import uk.gov.justice.hmpps.sqs.HmppsQueue
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import uk.gov.justice.hmpps.sqs.HmppsSqsProperties
@@ -41,17 +41,17 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   protected val domainEventsTopicSnsClient by lazy { domainEventsTopic.snsClient }
   protected val domainEventsTopicArn by lazy { domainEventsTopic.arn }
 
-  protected val mergeOffenderQueue by lazy { hmppsQueueService.findByQueueId("domaineventsqueue") as HmppsQueue }
+  protected val domainEventsQueue by lazy { hmppsQueueService.findByQueueId("domaineventsqueue") as HmppsQueue }
 
   @BeforeEach
   fun cleanQueue() {
-    mergeOffenderQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(mergeOffenderQueue.queueUrl).build())
+    domainEventsQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(domainEventsQueue.queueUrl).build())
     await untilCallTo {
-      mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
+      domainEventsQueue.sqsClient.countMessagesOnQueue(domainEventsQueue.queueUrl).get()
     } matches { it == 0 }
   }
 
-  fun getNumberOfMessagesCurrentlyOnQueue(): Int? = mergeOffenderQueue.sqsClient.countMessagesOnQueue(mergeOffenderQueue.queueUrl).get()
+  fun getNumberOfMessagesCurrentlyOnQueue(): Int? = domainEventsQueue.sqsClient.countMessagesOnQueue(domainEventsQueue.queueUrl).get()
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance

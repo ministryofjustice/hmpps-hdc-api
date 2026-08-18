@@ -24,6 +24,12 @@ enum class MigrationErrorSource {
   HDC,
 }
 
+enum class MigrationTrigger {
+  BATCH,
+  USER,
+  EVENT,
+}
+
 data class MigrationLicenceVersion(
   val id: Long,
   val prisonNumber: String?,
@@ -42,6 +48,13 @@ data class LicenceWithUnApprovedChanges(
   val version: Int,
   val varyVersion: Int,
 )
+
+interface FailedMigrationSummary {
+  val bookingId: Long
+  val prisonNumber: String
+  val migrationTrigger: String
+  val errorCount: Long
+}
 
 @Transactional(propagation = Propagation.NEVER)
 @Repository
@@ -136,11 +149,21 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Modifying
   @Query(
     value = """
-            INSERT INTO licence_migration_log(licence_version_id, booking_id, prison_number, success, retry, message, error_source)  VALUES (:licenceVersionId,:bookingId,:prison_number,:success,:retry,:message,CAST(:source AS migration_error_source))
+            INSERT INTO licence_migration_log(licence_version_id, booking_id, prison_number, success, retry, message, error_source, migration_trigger) 
+             VALUES (:licenceVersionId,:bookingId,:prison_number,:success,:retry,:message,CAST(:source AS migration_error_source), CAST(:migrationTrigger AS migration_trigger_enum))
         """,
     nativeQuery = true,
   )
-  fun insertMigrationLog(licenceVersionId: Long? = null, bookingId: Long, prison_number: String? = null, success: Boolean, retry: Boolean, message: String? = null, source: String? = null): Int
+  fun insertMigrationLog(
+    licenceVersionId: Long? = null,
+    bookingId: Long? = null,
+    prison_number: String? = null,
+    success: Boolean,
+    retry: Boolean,
+    message: String? = null,
+    source: String? = null,
+    migrationTrigger: String? = null,
+  ): Int
 
   @Query(
     value = """
@@ -153,10 +176,11 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
   @Query(
     value = """
         SELECT message FROM licence_migration_log WHERE licence_version_id = :licenceVersionId and success = :success and retry = :retry
+            and migration_trigger = CAST(:migrationTrigger AS migration_trigger_enum)
   """,
     nativeQuery = true,
   )
-  fun getMigrationLog(licenceVersionId: Long, success: Boolean, retry: Boolean): String?
+  fun getMigrationLog(licenceVersionId: Long, success: Boolean, retry: Boolean, migrationTrigger: String? = "USER"): String?
 
   @Query(
     value = """
@@ -212,7 +236,8 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
           success as success,
           retry as retry,
           message as message,
-          error_source::text as errorSource
+          error_source::text as errorSource,
+          migration_trigger::text as migrationTrigger
         FROM licence_migration_log
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
@@ -249,4 +274,15 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     nativeQuery = true,
   )
   fun findMigrationStateById(id: Long): String?
+
+  @Query(
+    value = """
+    SELECT l.booking_id AS bookingId, l.prison_number AS prisonNumber, l.migration_trigger, COUNT(*) AS errorCount
+        FROM licence_migration_log l
+            GROUP BY l.booking_id, l.prison_number,l.migration_trigger HAVING COUNT(*) > 1 AND BOOL_AND(l.success = false)
+            ORDER BY COUNT(*) DESC, migration_trigger 
+    """,
+    nativeQuery = true,
+  )
+  fun findRepeatedFailedMigrations(): List<FailedMigrationSummary>
 }
