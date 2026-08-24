@@ -31,8 +31,6 @@ import java.time.Clock
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds
 
-private const val DAY_FOR_RELEASE_WINDOW = 10L
-
 @Transactional(propagation = Propagation.NEVER)
 @Service
 class MigrationProcessService(
@@ -131,12 +129,7 @@ class MigrationProcessService(
     try {
       val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
         ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
-
-      if (!isWithinReleaseEventWindow(prisoner)) {
-        log.info("HDC migration event: Release Event, Prisoner {}, is not within the release event window. HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
-        return
-      }
-      log.info("HDC migration event: Release Event, Prisoner {}, is within the release event window. HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
+      log.info("HDC migration event: Release Event, Prisoner {}", prisonNumber)
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
@@ -145,14 +138,6 @@ class MigrationProcessService(
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
     }
-  }
-
-  fun isWithinReleaseEventWindow(prisoner: Prisoner): Boolean {
-    val hdcad = prisoner.homeDetentionCurfewActualDate ?: return false
-    val crd = prisoner.conditionalReleaseDate ?: return false
-    val today = getCurrentDate()
-
-    return today >= hdcad && today <= crd.minusDays(DAY_FOR_RELEASE_WINDOW)
   }
 
   private fun processLicence(
