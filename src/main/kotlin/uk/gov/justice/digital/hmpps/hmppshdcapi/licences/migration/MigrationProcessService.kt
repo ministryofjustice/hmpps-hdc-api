@@ -129,7 +129,7 @@ class MigrationProcessService(
     try {
       val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
         ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
-      log.info("HDC migration event: Release Event, Prisoner {}", prisonNumber)
+      log.info("HDC migration event: Release Event, Prisoner {}, HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
