@@ -11,6 +11,7 @@ generic-service:
     HMPPS_PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk/api"
     HMPPS_PRISONERSEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
     HMPPS_CVL_API_URL: "https://create-and-vary-a-licence-api.hmpps.service.justice.gov.uk"
+    ALLOWED_BULK_CVL_MIGRATION_DATE: "2026-09-03" # Start 3rd (Thursday) of September 2026
 
   retryDlqCronjob:
     enabled: true
@@ -29,3 +30,10 @@ cron:
   resetLicences:
     enabled: true
     schedule: "30 2 * * *"
+
+jobs:
+  - name: licences-migrate-batch-to-cvl-job
+    enabled: true
+    path: /licences-migrate-batch-to-cvl
+    cron: "00 4 * * *" # Run daily at 4:00 AM
+    allowRetry: false
