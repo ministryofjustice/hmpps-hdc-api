@@ -181,6 +181,7 @@ class MigrationProcessService(
     bookingId: Long?,
     errorSource: String?,
     success: Boolean?,
+    migrationTrigger: String?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto> {
     log.info(
@@ -190,7 +191,7 @@ class MigrationProcessService(
       errorSource,
       success,
     )
-    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, migrationTrigger, success, pageable)
   }
 
   @Transactional
