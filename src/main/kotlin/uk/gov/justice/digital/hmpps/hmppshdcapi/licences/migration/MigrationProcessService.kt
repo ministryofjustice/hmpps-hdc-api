@@ -185,10 +185,11 @@ class MigrationProcessService(
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto> {
     log.info(
-      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, success: {}",
+      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, migrationTrigger: {}, success: {}",
       licenceVersionId,
       bookingId,
       errorSource,
+      migrationTrigger,
       success,
     )
     return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, migrationTrigger, success, pageable)

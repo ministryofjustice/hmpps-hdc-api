@@ -242,6 +242,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
         WHERE (:licenceVersionId IS NULL OR licence_version_id = :licenceVersionId)
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
+          AND (:migrationTrigger IS NULL OR migration_trigger = CAST(:migrationTrigger AS migration_trigger_enum))
           AND (:success IS NULL OR success = :success)            
     """,
     countQuery = """
