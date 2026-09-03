@@ -267,7 +267,7 @@ class MigrationProcessService(
     var message = e.message ?: e::class.simpleName ?: "Unknown error"
     prisoner?.let {
       with(it) {
-        message += ", status:${it.status} Ard:$confirmedReleaseDate Crd:$conditionalReleaseDate Led:$licenceExpiryDate Hdcad:$homeDetentionCurfewActualDate"
+        message += ", status:${it.status} Ard:$confirmedReleaseDate Crd:$conditionalReleaseDate Led:$licenceExpiryDate Hdcad:$homeDetentionCurfewActualDate PRRD:$postRecallReleaseDate"
       }
     }
     logFailure(licenceVersionId, bookingId, prisoner?.prisonerNumber, message, retry, source, migrationTrigger)
