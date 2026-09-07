@@ -124,9 +124,10 @@ class MigrationController(
     @RequestParam(required = false) bookingId: Long?,
     @RequestParam(required = false) errorSource: String?,
     @RequestParam(required = false) success: Boolean?,
+    @RequestParam(required = false) migrationTrigger: String?,
     @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 100) pageable: Pageable,
   ): ResponseEntity<Page<LicenceMigrationLogEntryDto>> {
-    val response = migrationProcessService.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+    val response = migrationProcessService.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, pageable)
     return ResponseEntity.ok(response)
   }
 

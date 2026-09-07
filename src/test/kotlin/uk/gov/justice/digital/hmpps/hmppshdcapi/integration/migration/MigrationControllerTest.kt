@@ -112,7 +112,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     // Then
     response.expectStatus().isBadRequest
     assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo(
-      "Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0), status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30",
+      "Found a licence at stage MODIFIED with unapproved changes (current version 2.1, approved version 1.0), status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30 PRRD:2025-04-21",
     )
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
   }
@@ -172,7 +172,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isBadRequest
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("Licence additional conditions version not determined!, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30 PRRD:2025-04-21")
   }
 
   @Sql(
@@ -313,7 +313,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT)
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("it does not exist, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = false)).isEqualTo("it does not exist, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30 PRRD:2025-04-21")
   }
 
   @Sql(
@@ -334,7 +334,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).isEqualTo("Service has failed, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).isEqualTo("Service has failed, status:INACTIVE OUT Ard:2025-04-17 Crd:2025-04-12 Led:2028-03-30 Hdcad:2025-04-30 PRRD:2025-04-21")
   }
 
   @Sql(

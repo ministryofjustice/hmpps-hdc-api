@@ -181,16 +181,18 @@ class MigrationProcessService(
     bookingId: Long?,
     errorSource: String?,
     success: Boolean?,
+    migrationTrigger: String?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto> {
     log.info(
-      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, success: {}",
+      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, migrationTrigger: {}, success: {}",
       licenceVersionId,
       bookingId,
       errorSource,
+      migrationTrigger,
       success,
     )
-    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, migrationTrigger, success, pageable)
   }
 
   @Transactional
@@ -267,7 +269,7 @@ class MigrationProcessService(
     var message = e.message ?: e::class.simpleName ?: "Unknown error"
     prisoner?.let {
       with(it) {
-        message += ", status:${it.status} Ard:$confirmedReleaseDate Crd:$conditionalReleaseDate Led:$licenceExpiryDate Hdcad:$homeDetentionCurfewActualDate"
+        message += ", status:${it.status} Ard:$confirmedReleaseDate Crd:$conditionalReleaseDate Led:$licenceExpiryDate Hdcad:$homeDetentionCurfewActualDate PRRD:$postRecallReleaseDate"
       }
     }
     logFailure(licenceVersionId, bookingId, prisoner?.prisonerNumber, message, retry, source, migrationTrigger)
