@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationPrisonerReleasedOnExistingCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 @Service
@@ -64,6 +65,11 @@ class CvlApiClient(
       CvlRetryMigrationException(
         bookingId = request.bookingId,
         status = status.value(),
+        message = message,
+      )
+    } else if (body?.moreInfo?.contains("PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE") == true) {
+      CvlMigrationPrisonerReleasedOnExistingCvlLicenceException(
+        bookingId = request.bookingId,
         message = message,
       )
     } else {

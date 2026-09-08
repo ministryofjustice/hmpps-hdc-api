@@ -150,6 +150,22 @@ class SoftDeleteService(
     return licencesToSoftDelete
   }
 
+  @Transactional
+  fun applySoftDelete(bookingId: Long) {
+    val now = LocalDateTime.now()
+    licenceVersionRepository.softDeleteLicenceVersions(now, bookingId)
+    licenceRepository.softDeleteLicence(now, bookingId)
+
+    auditEventRepository.save(
+      AuditEvent(
+        user = AuditEventType.SYSTEM_EVENT.eventType,
+        action = "SOFT_DELETED",
+        timestamp = LocalDateTime.now(),
+        details = mapOf("bookingId" to bookingId, "reason" to "existing licence in cvl"),
+      ),
+    )
+  }
+
   data class JobResponse(
     /* How many licences seen, deleted or otherwise */
     val totalProcessed: Int,

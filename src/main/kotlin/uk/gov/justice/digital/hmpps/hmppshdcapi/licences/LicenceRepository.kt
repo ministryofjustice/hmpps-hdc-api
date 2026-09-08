@@ -30,6 +30,10 @@ interface LicenceRepository : JpaRepository<Licence, Long> {
   @Query("update Licence l set l.deletedAt = ?1 where l.id in ?2 and l.deletedAt is null")
   fun softDeleteLicence(now: LocalDateTime, ids: List<Long>): Unit
 
+  @Modifying
+  @Query("update Licence l set l.deletedAt = ?1 where l.bookingId = ?2 and l.deletedAt is null")
+  fun softDeleteLicence(now: LocalDateTime, bookingId: Long)
+
   @Query("select l from Licence l where l.deletedAt is null order by l.id asc")
   fun findAllByDeletedAtOrderByIdAsc(pageable: Pageable): Page<Licence>
 

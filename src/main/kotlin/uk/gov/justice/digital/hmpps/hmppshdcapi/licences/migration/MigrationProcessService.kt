@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import reactor.netty.http.client.PrematureCloseException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationPrisonerReleasedOnExistingCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationPrisonerNotFoundException
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.response.LicenceMigrationLogEntryDto
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService
 import java.lang.Thread.sleep
 import java.time.Clock
 import java.time.LocalDate
@@ -36,6 +38,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class MigrationProcessService(
   private val migrationRepository: MigrationRepository,
   private val migrationRequestService: MigrationRequestService,
+  private val softDeleteService: SoftDeleteService,
   private val prisonSearchApiClient: PrisonSearchApiClient,
   @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
   private val allowedNroMigrationDate: LocalDate?,
@@ -129,12 +132,20 @@ class MigrationProcessService(
     try {
       val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
         ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
-      log.info("HDC migration event: Release Event, Prisoner {}, HDCAD: {}, CRD: {}", prisonNumber, prisoner.homeDetentionCurfewActualDate, prisoner.conditionalReleaseDate)
+      log.info(
+        "HDC migration event: Release Event, Prisoner {}, HDCAD: {}, CRD: {}",
+        prisonNumber,
+        prisoner.homeDetentionCurfewActualDate,
+        prisoner.conditionalReleaseDate,
+      )
 
       val bookingId = prisoner.bookingId.toLong()
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
-        processLicence(it, prisoner, throwRetryableExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
+        processLicence(it, prisoner, throwRetryableExceptions = true, throwEventProcessingExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
       }
+    } catch (e: CvlMigrationPrisonerReleasedOnExistingCvlLicenceException) {
+      log.info("HDC migration: Release Event, {}", e.message)
+      softDeleteService.applySoftDelete(e.bookingId)
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
     }
@@ -145,6 +156,7 @@ class MigrationProcessService(
     prisoner: Prisoner,
     throwAllExceptions: Boolean = false,
     throwRetryableExceptions: Boolean = false,
+    throwEventProcessingExceptions: Boolean = false,
     migrationTrigger: MigrationTrigger,
   ) {
     log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
@@ -152,6 +164,9 @@ class MigrationProcessService(
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
       logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId, licenceDetail.prisonNumber, migrationTrigger)
+    } catch (e: CvlMigrationPrisonerReleasedOnExistingCvlLicenceException) {
+      logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL, migrationTrigger)
+      if (throwAllExceptions || throwEventProcessingExceptions) throw e
     } catch (e: CvlRetryMigrationException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL, migrationTrigger)
       if (throwAllExceptions || throwRetryableExceptions) throw e

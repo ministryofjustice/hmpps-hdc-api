@@ -7,6 +7,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.MigrationRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.softdelete.SoftDeleteService
 import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneId
@@ -17,6 +18,7 @@ class MigrationProcessServiceTest {
   private val migrationRepository = mock<MigrationRepository>()
   private val migrationRequestService = mock<MigrationRequestService>()
   private val prisonSearchApiClient = mock<PrisonSearchApiClient>()
+  private val softDeleteService = mock<SoftDeleteService>()
 
   private val clock = Clock.fixed(
     LocalDate.of(2026, 8, 5)
@@ -68,5 +70,6 @@ class MigrationProcessServiceTest {
     prisonSearchApiClient = prisonSearchApiClient,
     allowedNroMigrationDate = allowedMigrationDate,
     clock = clock,
+    softDeleteService = softDeleteService,
   )
 }

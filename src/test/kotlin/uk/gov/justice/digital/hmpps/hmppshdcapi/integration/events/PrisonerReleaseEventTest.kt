@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration.events
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.untilAsserted
 import org.junit.jupiter.api.AfterAll
@@ -16,6 +17,8 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.CvlApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonApiMockServer
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.wiremock.PrisonerSearchMockServer
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceRepository
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.LicenceVersionRepository
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.PRISONER_RELEASED_EVENT
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto.HMPPSPrisonerUpdateEvent
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto.HMPPSPrisonerUpdatedAdditionalInformation
@@ -23,11 +26,19 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.repository.Mi
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.Prisoner
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
 
   @Autowired
   private lateinit var migrationRepository: MigrationRepository
+
+  @Autowired
+  private lateinit var licenceRepository: LicenceRepository
+
+  @Autowired
+  private lateinit var licenceVersionRepository: LicenceVersionRepository
 
   private val awaitAtMost30Secs
     get() = await.atMost(Duration.ofSeconds(30))
@@ -102,6 +113,44 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
 
     // Then
     assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-soft-delete-licences.sql",
+  )
+  fun `Migrate licence to CVL migration fails because the prisoner has already been release on a CVL Licence and licence is soft deleted`() {
+    // Given
+    val prisonNumber = "A1234EE"
+    val reason = "RELEASED"
+
+    cvlMockServer.stubMigrateLicenceWhenPrisonerIsReleasedOnCvlLicenceError()
+
+    prisonerSearchMockServer.stubSearchPrisonersByPrisonerNumbers(
+      listOf(
+        defaultPrisoner(
+          bookingId = "54222",
+          prisonerNumber = "A1234EE",
+          homeDetentionCurfewActualDate = LocalDate.now(),
+          conditionalReleaseDate = LocalDate.now().plusDays(10),
+        ),
+      ),
+    )
+
+    // When
+    publishDomainEventMessage(
+      HMPPSPrisonerUpdatedAdditionalInformation(nomsNumber = prisonNumber, reason = reason),
+    )
+
+    awaitAtMost30Secs untilAsserted {
+      verify(eventProcessingComplete, times(1)).complete()
+    }
+
+    // Then
+    assertThat(migrationRepository.findMigrationStateById(1L)).isEqualTo("FAILED")
+    assertThat(licenceRepository.findById(1L).get().deletedAt).isCloseTo(LocalDateTime.now(), within(35, ChronoUnit.SECONDS))
+    assertThat(licenceVersionRepository.findById(1L).get().deletedAt).isCloseTo(LocalDateTime.now(), within(35, ChronoUnit.SECONDS))
   }
 
   @Test

@@ -4,4 +4,5 @@ enum class AuditEventType(val eventType: String) {
   SYSTEM_API("SYSTEM:API"),
   SYSTEM_JOB("SYSTEM:JOB"),
   SYSTEM_MIGRATION("SYSTEM:MIGRATION"),
+  SYSTEM_EVENT("SYSTEM:EVENT"),
 }
