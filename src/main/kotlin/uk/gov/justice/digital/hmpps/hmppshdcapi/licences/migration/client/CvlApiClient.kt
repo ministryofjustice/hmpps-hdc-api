@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.HdcLicenceSupersededByCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.HdcLicenceSupersededByCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
 
 private const val HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE = "HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE"
