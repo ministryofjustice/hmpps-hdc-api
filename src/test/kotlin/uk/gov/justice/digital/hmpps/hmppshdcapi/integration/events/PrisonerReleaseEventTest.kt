@@ -120,7 +120,7 @@ class PrisonerReleaseEventTest : SqsIntegrationTestBase() {
     "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrated-soft-delete-licences.sql",
   )
-  fun `Migrate licence to CVL migration fails because the prisoner has already been release on a CVL Licence and licence is soft deleted`() {
+  fun `Migrate licence to CVL migration fails because Hdc licence has been superseded by a Cvl licence and then licence is soft deleted`() {
     // Given
     val prisonNumber = "A1234EE"
     val reason = "RELEASED"

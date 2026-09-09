@@ -355,7 +355,7 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
     // Then
     response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
-    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).startsWith("HDC Licence should not be used, the prisoner has already been release on a CVL Licence!")
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).startsWith("NoRetryMigration error: HDC Licence is superseded by a CVL Licence with a release date")
   }
 
   @Sql(

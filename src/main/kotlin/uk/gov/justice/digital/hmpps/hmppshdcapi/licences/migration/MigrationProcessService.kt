@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import reactor.netty.http.client.PrematureCloseException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationPrisonerReleasedOnExistingCvlLicenceException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.HdcLicenceSupersededByCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationPrisonerNotFoundException
@@ -143,8 +143,8 @@ class MigrationProcessService(
       migrationRepository.getMigratableLicenceDetails(bookingId, ignoreRetry = true)?.let {
         processLicence(it, prisoner, throwRetryableExceptions = true, throwEventProcessingExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
       }
-    } catch (e: CvlMigrationPrisonerReleasedOnExistingCvlLicenceException) {
-      log.info("HDC migration: Release Event, {}", e.message)
+    } catch (e: HdcLicenceSupersededByCvlLicenceException) {
+      log.info("HDC migration: Release Event,  hdc licence superseded by cvl licence {}", e.message)
       softDeleteService.applySoftDelete(e.bookingId)
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
@@ -164,7 +164,7 @@ class MigrationProcessService(
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
       logSuccess(licenceDetail.licenceVersionId, licenceDetail.bookingId, licenceDetail.prisonNumber, migrationTrigger)
-    } catch (e: CvlMigrationPrisonerReleasedOnExistingCvlLicenceException) {
+    } catch (e: HdcLicenceSupersededByCvlLicenceException) {
       logFailure(licenceDetail.licenceVersionId, licenceDetail.bookingId, prisoner, e, retry = true, MigrationErrorSource.CVL, migrationTrigger)
       if (throwAllExceptions || throwEventProcessingExceptions) throw e
     } catch (e: CvlRetryMigrationException) {

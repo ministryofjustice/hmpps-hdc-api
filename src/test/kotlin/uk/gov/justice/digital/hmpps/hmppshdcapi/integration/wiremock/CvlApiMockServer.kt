@@ -34,13 +34,13 @@ class CvlApiMockServer(port: Int = 8092) : WireMockServer(port) {
   }
 
   fun stubMigrateLicenceWhenPrisonerIsReleasedOnCvlLicenceError() {
-    val message = "HDC Licence should not be used, the prisoner has already been release on a CVL Licence!"
+    val message = "NoRetryMigration error: HDC Licence is superseded by a CVL Licence with a release date"
     stubMigrateLicenceClientError(
       "/licences/migrate/active",
       HttpStatus.CONFLICT,
       "NoRetryMigration error: $message",
       developerMessage = message,
-      moreInfo = "PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE",
+      moreInfo = "HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE",
     )
   }
 
