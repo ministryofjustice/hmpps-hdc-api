@@ -14,6 +14,9 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.Cv
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationPrisonerReleasedOnExistingCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
+
+private const val PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE = "PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE"
+
 @Service
 class CvlApiClient(
   @param:Qualifier("oauthCvlClient") val cvlWebClient: WebClient,
@@ -67,7 +70,7 @@ class CvlApiClient(
         status = status.value(),
         message = message,
       )
-    } else if (body?.moreInfo?.contains("PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE") == true) {
+    } else if (body?.moreInfo?.contains(PRISONER_RELEASED_ON_EXISTING_CVL_LICENCE) == true) {
       CvlMigrationPrisonerReleasedOnExistingCvlLicenceException(
         bookingId = request.bookingId,
         message = message,
