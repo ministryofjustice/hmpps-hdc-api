@@ -243,6 +243,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
           AND (:migrationTrigger IS NULL OR migration_trigger = CAST(:migrationTrigger AS migration_trigger_enum))
+          AND (:prisonerNumber IS NULL OR prison_number = :prisonerNumber)
           AND (:success IS NULL OR success = :success)            
     """,
     countQuery = """
@@ -251,6 +252,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
           AND (:bookingId IS NULL OR booking_id = :bookingId)
           AND (:errorSource IS NULL OR error_source = CAST(:errorSource AS migration_error_source))
           AND (:migrationTrigger IS NULL OR migration_trigger = CAST(:migrationTrigger AS migration_trigger_enum))
+          AND (:prisonerNumber IS NULL OR prison_number = :prisonerNumber)
           AND (:success IS NULL OR success = :success)       
     """,
     nativeQuery = true,
@@ -261,6 +263,7 @@ interface MigrationRepository : CrudRepository<LicenceVersion, Long> {
     errorSource: String?,
     migrationTrigger: String?,
     success: Boolean?,
+    prisonerNumber: String?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto>
 
