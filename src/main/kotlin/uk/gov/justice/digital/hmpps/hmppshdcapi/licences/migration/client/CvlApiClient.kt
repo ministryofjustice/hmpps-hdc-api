@@ -12,7 +12,11 @@ import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.HdcLicenceSupersededByCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.request.MigrateFromHdcToCvlRequest
+
+private const val HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE = "HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE"
+
 @Service
 class CvlApiClient(
   @param:Qualifier("oauthCvlClient") val cvlWebClient: WebClient,
@@ -64,6 +68,11 @@ class CvlApiClient(
       CvlRetryMigrationException(
         bookingId = request.bookingId,
         status = status.value(),
+        message = message,
+      )
+    } else if (body?.moreInfo?.contains(HDC_LICENCE_SUPERSEDED_BY_CVL_LICENCE) == true) {
+      HdcLicenceSupersededByCvlLicenceException(
+        bookingId = request.bookingId,
         message = message,
       )
     } else {
