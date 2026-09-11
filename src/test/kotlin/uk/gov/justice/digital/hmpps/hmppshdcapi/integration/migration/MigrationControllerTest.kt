@@ -318,6 +318,131 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
 
   @Sql(
     "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filters by licence version id`() {
+    // Given
+    val licenceVersionId = 2L
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/logs?licenceVersionId=$licenceVersionId")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(1)
+      .jsonPath("$.content[0].licenceVersionId").isEqualTo(2)
+      .jsonPath("$.content[0].bookingId").isEqualTo(20)
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filters by booking id`() {
+    // Given
+    val bookingId = 30L
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/logs?bookingId=$bookingId")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(1)
+      .jsonPath("$.content[0].licenceVersionId").isEqualTo(3)
+      .jsonPath("$.content[0].bookingId").isEqualTo(30)
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filters by error source`() {
+    // Given
+    val errorSource = "CVL"
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/logs?errorSource=$errorSource")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(1)
+      .jsonPath("$.content[0].licenceVersionId").isEqualTo(2)
+      .jsonPath("$.content[0].errorSource").isEqualTo("CVL")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filters by success`() {
+    // Given
+    val success = false
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/logs?success=$success")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(1)
+      .jsonPath("$.content[0].licenceVersionId").isEqualTo(3)
+      .jsonPath("$.content[0].success").isEqualTo(false)
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migration-logs.sql",
+  )
+  @Test
+  fun `Get migration logs filters by prisoner number`() {
+    // Given
+    val prisonerNumber = "AC1111C"
+
+    // When
+    val response = webTestClient.get()
+      .uri("/licences/migrate/logs?prisonerNumber=$prisonerNumber")
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+
+    // Then
+    response
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(1)
+      .jsonPath("$.content[0].licenceVersionId").isEqualTo(3)
+      .jsonPath("$.content[0].prisonNumber").isEqualTo("AC1111C")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
     "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test

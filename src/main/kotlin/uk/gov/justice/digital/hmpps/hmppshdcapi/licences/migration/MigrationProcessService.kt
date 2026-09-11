@@ -182,17 +182,19 @@ class MigrationProcessService(
     errorSource: String?,
     success: Boolean?,
     migrationTrigger: String?,
+    prisonerNumber: String?,
     pageable: Pageable,
   ): Page<LicenceMigrationLogEntryDto> {
     log.info(
-      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, migrationTrigger: {}, success: {}",
+      "HDC migration: Fetching migration logs with filters - licenceVersionId: {}, bookingId: {}, errorSource: {}, migrationTrigger: {}, success: {}, prisonerNumber: {}",
       licenceVersionId,
       bookingId,
       errorSource,
       migrationTrigger,
       success,
+      prisonerNumber,
     )
-    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, migrationTrigger, success, pageable)
+    return migrationRepository.getMigrationLogs(licenceVersionId, bookingId, errorSource, migrationTrigger, success, prisonerNumber, pageable)
   }
 
   @Transactional
