@@ -8,10 +8,7 @@ on:
 
 jobs:
   analyze:
-    # This is disabled for now, as it's not working properly yet with this version of CodeQL.'
-    # see https://mojdt.slack.com/archives/C69NWE339/p1767612401461359
-    # in feb we should have an updated version of CodeQL that can work with the later versions of Kotlin 23+
-    if: false
+    if: true
     name: CodeQL analyse (${{ matrix.language }})
     permissions:
       contents: read
@@ -34,7 +31,7 @@ jobs:
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
 
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -42,12 +39,12 @@ jobs:
           persist-credentials: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v3
+        uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v3
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@5c8a8a642e79153f5d047b10ec1cba1d1cc65699 # v3
+        uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
         with:
           category: "/language:${{matrix.language}}"
