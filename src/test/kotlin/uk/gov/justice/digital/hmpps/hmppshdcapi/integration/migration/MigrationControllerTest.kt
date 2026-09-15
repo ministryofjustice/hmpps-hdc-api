@@ -467,6 +467,27 @@ class MigrationControllerTest : SqsIntegrationTestBase() {
     "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
   )
   @Test
+  fun `Migrate licence to CVL migration fails because the prisoner has already been release on a CVL Licence`() {
+    // Given
+    val bookingId = 54222L
+    stubSearchPrisonersByBookingIds()
+    stubGetHdcStatuses()
+
+    cvlMockServer.stubMigrateLicenceWhenPrisonerIsReleasedOnCvlLicenceError()
+
+    // When
+    val response = postBookingIdForLicenceToMigrate(bookingId)
+
+    // Then
+    response.expectStatus().isEqualTo(HttpStatus.CONFLICT)
+    assertThat(migrationRepository.getMigrationLog(1L, false, retry = true)).startsWith("NoRetryMigration error: HDC Licence is superseded by a CVL Licence with a release date")
+  }
+
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/migration/sql/hdc-migrated-licences.sql",
+  )
+  @Test
   fun `Migrate appointment details when appointment time and date not given the process correctly`() {
     // Given
     val bookingId = 98765L
