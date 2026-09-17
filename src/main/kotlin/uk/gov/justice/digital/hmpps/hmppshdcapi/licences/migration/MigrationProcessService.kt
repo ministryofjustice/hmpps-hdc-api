@@ -146,11 +146,10 @@ class MigrationProcessService(
         processLicence(it, prisoner, throwRetryableExceptions = true, throwEventProcessingExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
       }
     } catch (e: HdcLicenceSupersededByCvlLicenceException) {
+      log.info("HDC migration: Release Event, {} softDeleteDuplicates {}", e.message, softDeleteDuplicates)
       if (softDeleteDuplicates) {
         log.info("HDC migration: Release Event,  hdc licence superseded by cvl licence {}", e.message)
         softDeleteService.applySoftDelete(e.bookingId)
-      } else {
-        log.info("HDC migration: Release Event, {}", e.message)
       }
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
