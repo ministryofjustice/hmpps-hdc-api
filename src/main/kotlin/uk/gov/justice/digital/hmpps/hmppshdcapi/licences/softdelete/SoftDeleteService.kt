@@ -134,7 +134,7 @@ class SoftDeleteService(
     log.info("found {} out of {} licences to delete", licencesToSoftDelete.size, licencesRecords.numberOfElements)
     val today = LocalDateTime.now()
     licenceRepository.softDeleteLicence(today, licencesToSoftDelete.map { it.id })
-    licenceVersionRepository.softDeleteLicenceVersions(today, licencesToSoftDelete.map { it.bookingId })
+    licenceVersionRepository.softDeleteAllLicencesByBookingID(today, licencesToSoftDelete.map { it.bookingId })
 
     licencesToSoftDelete.forEach {
       auditEventRepository.save(
@@ -154,7 +154,7 @@ class SoftDeleteService(
   fun applySoftDelete(bookingId: Long) {
     log.info("Applying soft delete for bookingId: {}", bookingId)
     val today = LocalDateTime.now()
-    licenceVersionRepository.softDeleteLicenceVersions(today, bookingId)
+    licenceVersionRepository.softDeleteAllLicencesByBookingID(today, bookingId)
     licenceRepository.softDeleteLicence(today, bookingId)
 
     auditEventRepository.save(
