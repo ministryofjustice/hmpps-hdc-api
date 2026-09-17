@@ -69,6 +69,7 @@ class MigrationProcessServiceTest {
     migrationRequestService = migrationRequestService,
     prisonSearchApiClient = prisonSearchApiClient,
     allowedNroMigrationDate = allowedMigrationDate,
+    softDeleteDuplicates = true,
     clock = clock,
     softDeleteService = softDeleteService,
   )

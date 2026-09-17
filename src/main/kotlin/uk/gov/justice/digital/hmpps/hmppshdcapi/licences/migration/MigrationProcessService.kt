@@ -42,6 +42,8 @@ class MigrationProcessService(
   private val prisonSearchApiClient: PrisonSearchApiClient,
   @param:Value("\${feature.toggle.cvl.migration.date:#{null}}")
   private val allowedNroMigrationDate: LocalDate?,
+  @param:Value("\${feature.toggle.cvl.migration.softDeleteDuplicates:false}")
+  private val softDeleteDuplicates: Boolean,
   private val clock: Clock = Clock.systemDefaultZone(),
 ) {
 
@@ -144,8 +146,12 @@ class MigrationProcessService(
         processLicence(it, prisoner, throwRetryableExceptions = true, throwEventProcessingExceptions = true, migrationTrigger = MigrationTrigger.EVENT)
       }
     } catch (e: HdcLicenceSupersededByCvlLicenceException) {
-      log.info("HDC migration: Release Event,  hdc licence superseded by cvl licence {}", e.message)
-      softDeleteService.applySoftDelete(e.bookingId)
+      if (softDeleteDuplicates) {
+        log.info("HDC migration: Release Event,  hdc licence superseded by cvl licence {}", e.message)
+        softDeleteService.applySoftDelete(e.bookingId)
+      } else {
+        log.info("HDC migration: Release Event, {}", e.message)
+      }
     } catch (e: MigrationPrisonerNotFoundException) {
       log.info("HDC migration: Release Event, {}", e.message)
     }

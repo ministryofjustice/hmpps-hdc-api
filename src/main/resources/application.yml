@@ -107,6 +107,7 @@ feature:
     cvl:
       migration:
         date: ${ALLOWED_BULK_CVL_MIGRATION_DATE:#{null}}
+        softDeleteDuplicates: ${DELETE_DUPLICATES_WHEN_EVENT_RELEASE_MIGRATION:false}
 
 springdoc:
   api-docs:
