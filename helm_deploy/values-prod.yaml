@@ -12,6 +12,7 @@ generic-service:
     HMPPS_PRISONERSEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
     HMPPS_CVL_API_URL: "https://create-and-vary-a-licence-api.hmpps.service.justice.gov.uk"
     ALLOWED_BULK_CVL_MIGRATION_DATE: "2026-09-03" # Start 3rd (Thursday) of September 2026
+    DELETE_DUPLICATES_WHEN_EVENT_RELEASE_MIGRATION: "true"
 
   retryDlqCronjob:
     enabled: true

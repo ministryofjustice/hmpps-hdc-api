@@ -68,3 +68,4 @@ feature:
     cvl:
       migration:
         date: "2026-05-16"
+        softDeleteDuplicates: true

@@ -26,5 +26,9 @@ interface LicenceVersionRepository :
 
   @Modifying
   @Query("update LicenceVersion lv set lv.deletedAt = ?1 where lv.bookingId in ?2 and lv.deletedAt is null")
-  fun softDeleteLicenceVersions(now: LocalDateTime, bookingIds: List<Long>)
+  fun softDeleteAllLicencesByBookingID(now: LocalDateTime, bookingIds: List<Long>)
+
+  @Modifying
+  @Query("update LicenceVersion lv set lv.deletedAt = ?1 where lv.bookingId = ?2 and lv.deletedAt is null")
+  fun softDeleteAllLicencesByBookingID(now: LocalDateTime, bookingId: Long)
 }

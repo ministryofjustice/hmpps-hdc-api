@@ -15,6 +15,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlRetryMigrationException
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.HdcLicenceSupersededByCvlLicenceException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationLicenceVersionNotFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.MigrationValidationException
 
@@ -86,12 +87,14 @@ class HmppsHdcApiExceptionHandler {
   @ExceptionHandler(
     CvlMigrationException::class,
     MigrationValidationException::class,
+    HdcLicenceSupersededByCvlLicenceException::class,
   )
   fun handleMigrationException(migrationException: Exception): ResponseEntity<ErrorResponse> {
     log.warn("Migration failed : {}", migrationException.message)
 
     val status = when (migrationException) {
       is MigrationValidationException -> BAD_REQUEST
+      is HdcLicenceSupersededByCvlLicenceException -> HttpStatus.CONFLICT
       else -> UNPROCESSABLE_CONTENT
     }
 
