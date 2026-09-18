@@ -50,6 +50,7 @@ jobs:
       #postgres-username: licences
       #postgres-password: hmpps-hdc-api
       java-version: "25"
+      postgres-tag: "15.11"
     needs:
       - app_version
   gradle_integration_tests:
