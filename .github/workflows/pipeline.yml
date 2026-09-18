@@ -59,7 +59,7 @@ jobs:
     with:
       gradle-command: ' ./gradlew check integrationTest'
       localstack-tag: 'community-archive'
-      postgres-tag: "16.3"
+      postgres-tag: "15.19"
       upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
       postgres-db: hmpps-hdc-api
       postgres-username: licences
