@@ -78,11 +78,11 @@ class HdcCvlEventControllerTest {
         .accept(MediaType.APPLICATION_JSON)
         .content("""{"eventType":"OPT_OUT"}"""),
     )
-      .andExpect(status().isInternalServerError)
+      .andExpect(status().isBadRequest)
       .andReturn()
 
     val response: Map<String, Any?> = mapper.readValue(result.response.contentAsString)
-    assertThat(response["userMessage"] as String).contains("Unexpected error")
+    assertThat(response["userMessage"] as String).contains("Validation failed for one or more fields.")
   }
 
   private companion object {
