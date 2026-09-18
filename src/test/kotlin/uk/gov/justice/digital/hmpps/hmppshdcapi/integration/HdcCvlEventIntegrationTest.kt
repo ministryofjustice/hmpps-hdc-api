@@ -92,7 +92,7 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .expectStatus().isBadRequest
       .expectBody(ErrorResponse::class.java)
       .returnResult().responseBody
- 
+
     assertThat(result?.userMessage).isEqualTo("Validation failed for one or more fields.")
     assertThat(result?.developerMessage).contains("bookingId must be supplied")
     assertThat(result?.developerMessage).contains("licenceId must be supplied")
