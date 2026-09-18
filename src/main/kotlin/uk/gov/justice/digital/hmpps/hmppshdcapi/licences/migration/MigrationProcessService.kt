@@ -135,10 +135,11 @@ class MigrationProcessService(
       val prisoner = prisonSearchApiClient.getPrisonersByPrisonNumber(listOf(prisonNumber)).firstOrNull()
         ?: throw MigrationPrisonerNotFoundException("Prisoner not found for prison number $prisonNumber")
       log.info(
-        "HDC migration event: Release Event, Prisoner {}, HDCAD: {}, CRD: {}",
+        "HDC migration event: Release Event, Prisoner {}, HDCAD: {}, CRD: {} Booking ID {}",
         prisonNumber,
         prisoner.homeDetentionCurfewActualDate,
         prisoner.conditionalReleaseDate,
+        prisoner.bookingId,
       )
 
       val bookingId = prisoner.bookingId.toLong()
@@ -164,7 +165,7 @@ class MigrationProcessService(
     throwEventProcessingExceptions: Boolean = false,
     migrationTrigger: MigrationTrigger,
   ) {
-    log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
+    log.info("git checkout -: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
