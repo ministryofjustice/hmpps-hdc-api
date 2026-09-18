@@ -92,8 +92,12 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .expectStatus().isBadRequest
       .expectBody(ErrorResponse::class.java)
       .returnResult().responseBody
-
-    assertThat(result?.userMessage).contains("Validation failure")
+ 
+    assertThat(result?.userMessage).isEqualTo("Validation failed for one or more fields.")
+    assertThat(result?.developerMessage).contains("bookingId must be supplied")
+    assertThat(result?.developerMessage).contains("licenceId must be supplied")
+    assertThat(result?.developerMessage).contains("nomsNumber must be supplied")
+    assertThat(result?.developerMessage).contains("triggeredBy must be supplied")
   }
 
   private fun validRequestBody() = mapOf(

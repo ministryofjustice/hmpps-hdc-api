@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.method.annotation.HandlerMethodValidationException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.migration.exceptions.CvlMigrationException
@@ -37,11 +38,11 @@ class HmppsHdcApiExceptionHandler {
   }
 
   @ExceptionHandler(ValidationException::class)
-  fun handleValidationException(e: Exception): ResponseEntity<ErrorResponse> = ResponseEntity
+  fun handleValidationException(e: ValidationException): ResponseEntity<ErrorResponse> = ResponseEntity
     .status(BAD_REQUEST)
     .body(
       ErrorResponse(
-        status = BAD_REQUEST,
+        status = BAD_REQUEST.value(),
         userMessage = "Validation failure: ${e.message}",
         developerMessage = e.message,
       ),
@@ -71,6 +72,21 @@ class HmppsHdcApiExceptionHandler {
           developerMessage = "${e.message} $validationErrors",
         ),
       ).also { log.info("Validation exception: $validationErrors\n {}", e.message) }
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException::class)
+  fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+    log.error("Method argument exception, validation failed: {}", e.stackTraceToString())
+    val message = e.bindingResult.allErrors.mapNotNull { it.defaultMessage }.distinct().sorted().joinToString("; ")
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST.value(),
+          userMessage = "Validation failed for one or more fields.",
+          developerMessage = message,
+        ),
+      )
   }
 
   @ExceptionHandler(Exception::class)

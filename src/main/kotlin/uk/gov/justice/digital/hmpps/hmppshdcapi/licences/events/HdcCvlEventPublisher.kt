@@ -23,17 +23,17 @@ class HdcCvlEventPublisher(
     val event = HdcCvlQueueEvent(
       version = HDC_CVL_EVENT_VERSION,
       occurredAt = LocalDateTime.now(),
-      licenceId = request.licenceId,
-      bookingId = request.bookingId,
-      nomsNumber = request.nomsNumber,
-      triggeredBy = request.triggeredBy,
+      licenceId = requireNotNull(request.licenceId),
+      bookingId = requireNotNull(request.bookingId),
+      nomsNumber = requireNotNull(request.nomsNumber),
+      triggeredBy = requireNotNull(request.triggeredBy),
       reason = request.reason,
     )
 
     val queue = hmppsQueueService.findByQueueId(HDC_CVL_EVENTS_QUEUE_ID)
       ?: throw MissingQueueException("HmppsQueue $HDC_CVL_EVENTS_QUEUE_ID not found")
 
-    val eventType = request.eventType.name
+    val eventType = requireNotNull(request.eventType).name
     queue.sqsClient.sendMessage(
       SendMessageRequest.builder()
         .queueUrl(queue.queueUrl)
