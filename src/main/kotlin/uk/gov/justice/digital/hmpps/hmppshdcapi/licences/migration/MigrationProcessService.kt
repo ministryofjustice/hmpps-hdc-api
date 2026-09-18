@@ -165,7 +165,7 @@ class MigrationProcessService(
     throwEventProcessingExceptions: Boolean = false,
     migrationTrigger: MigrationTrigger,
   ) {
-    log.info("git checkout -: Processing licence version id {}", licenceDetail.licenceVersionId)
+    log.info("HDC migration: Processing licence version id {}", licenceDetail.licenceVersionId)
     try {
       migrationRequestService.validate(prisoner)
       migrationRequestService.migrateLicenceToCvl(licenceDetail, prisoner)
