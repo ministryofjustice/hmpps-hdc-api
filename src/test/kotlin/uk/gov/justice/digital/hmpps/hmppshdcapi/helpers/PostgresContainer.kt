@@ -1,15 +1,15 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.helpers
 
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.postgresql.PostgreSQLContainer
 import java.io.IOException
 import java.net.ServerSocket
 
 object PostgresContainer {
-  val instance: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
+  val instance: PostgreSQLContainer? by lazy { startPostgresqlContainer() }
 
-  private fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? = if (checkPostgresRunning().not()) {
-    PostgreSQLContainer<Nothing>("postgres:14.3").apply {
+  private fun startPostgresqlContainer(): PostgreSQLContainer? = if (checkPostgresRunning().not()) {
+    PostgreSQLContainer("postgres:15.19").apply {
       withEnv("HOSTNAME_EXTERNAL", "localhost")
       withExposedPorts(5432)
       withDatabaseName("hmpps-hdc-api")
