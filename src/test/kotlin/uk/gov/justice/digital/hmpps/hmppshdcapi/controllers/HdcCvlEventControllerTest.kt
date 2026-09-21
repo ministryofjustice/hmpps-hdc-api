@@ -82,7 +82,7 @@ class HdcCvlEventControllerTest {
       .andReturn()
 
     val response: Map<String, Any?> = mapper.readValue(result.response.contentAsString)
-    assertThat(response["userMessage"] as String).contains("Validation failed for one or more fields.")
+    assertThat(response["userMessage"] as String).contains("Malformed JSON request:")
   }
 
   private companion object {

@@ -42,7 +42,7 @@ class HdcCvlEventPublisher(
           ),
         )
         .build(),
-    )
+    ).get()
 
     log.info("Published HDC to CVL event {} for licence {}", eventType, event.licenceId)
     return event
