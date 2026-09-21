@@ -86,7 +86,6 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result?.userMessage).contains("Malformed JSON request:")
-    assertThat(result?.developerMessage).contains("licenceId")
   }
 
   @Test
