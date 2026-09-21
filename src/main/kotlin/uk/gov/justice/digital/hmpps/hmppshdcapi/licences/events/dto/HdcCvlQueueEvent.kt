@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto
 import java.time.LocalDateTime
 
 data class HdcCvlQueueEvent(
-  val version: Int,
   val occurredAt: LocalDateTime,
   val licenceId: Long,
   val bookingId: Long,

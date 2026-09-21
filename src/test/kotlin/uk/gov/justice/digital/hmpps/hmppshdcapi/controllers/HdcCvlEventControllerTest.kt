@@ -96,7 +96,6 @@ class HdcCvlEventControllerTest {
     )
 
     val publishedEvent = HdcCvlQueueEvent(
-      version = 1,
       occurredAt = LocalDateTime.of(2026, 9, 17, 11, 30, 0),
       licenceId = 123L,
       bookingId = 456L,

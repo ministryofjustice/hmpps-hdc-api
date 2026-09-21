@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
-import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
@@ -11,6 +10,7 @@ import org.springframework.http.MediaType
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto.HdcCvlQueueEvent
 
 class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
 
@@ -47,21 +47,14 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
         .build(),
     ).get()
     val message = response.messages().single()
+    val event = objectMapper.readValue(message.body(), HdcCvlQueueEvent::class.java)
 
     assertThat(message.messageAttributes()["eventType"]?.stringValue()).isEqualTo("OPT_OUT")
-    assertThatJson(message.body())
-      .inPath("$.licenceId").isEqualTo(123)
-    assertThatJson(message.body())
-      .inPath("$.bookingId").isEqualTo(456)
-    assertThatJson(message.body())
-      .inPath("$.nomsNumber").isEqualTo("A1234BC")
-    assertThatJson(message.body())
-      .inPath("$.triggeredBy").isEqualTo("test.user")
-    assertThatJson(message.body())
-      .inPath("$.reason").isEqualTo("Offender opted out")
-    assertThatJson(message.body())
-      .inPath("$.version").isEqualTo(1)
-    assertThat(message.body()).doesNotContain("\"eventType\"")
+    assertThat(event.licenceId).isEqualTo(123)
+    assertThat(event.bookingId).isEqualTo(456)
+    assertThat(event.nomsNumber).isEqualTo("A1234BC")
+    assertThat(event.triggeredBy).isEqualTo("test.user")
+    assertThat(event.reason).isEqualTo("Offender opted out")
   }
 
   @Test

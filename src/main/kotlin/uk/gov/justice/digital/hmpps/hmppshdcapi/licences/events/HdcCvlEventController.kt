@@ -84,7 +84,7 @@ class HdcCvlEventController(
     val event = hdcCvlEventPublisher.publish(request)
     return HdcCvlEventResponse(
       eventType = requireNotNull(request.eventType).name,
-      version = event.version,
+      version = 1,
       occurredAt = event.occurredAt,
     )
   }

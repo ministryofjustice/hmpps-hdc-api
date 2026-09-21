@@ -12,7 +12,6 @@ import uk.gov.justice.hmpps.sqs.MissingQueueException
 import java.time.LocalDateTime
 
 private const val HDC_CVL_EVENTS_QUEUE_ID = "hdccvleventsqueue"
-private const val HDC_CVL_EVENT_VERSION = 1
 
 @Service
 class HdcCvlEventPublisher(
@@ -21,7 +20,6 @@ class HdcCvlEventPublisher(
 ) {
   fun publish(request: HdcCvlEventRequest): HdcCvlQueueEvent {
     val event = HdcCvlQueueEvent(
-      version = HDC_CVL_EVENT_VERSION,
       occurredAt = LocalDateTime.now(),
       licenceId = requireNotNull(request.licenceId),
       bookingId = requireNotNull(request.bookingId),
