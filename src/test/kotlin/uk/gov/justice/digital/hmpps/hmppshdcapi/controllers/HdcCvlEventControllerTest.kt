@@ -65,7 +65,7 @@ class HdcCvlEventControllerTest {
       .andReturn()
 
     assertThat(result.response.contentAsString)
-      .isEqualTo(mapper.writeValueAsString(mapOf("eventType" to "OPT_OUT", "version" to 1, "occurredAt" to "2026-09-17T11:30:00")))
+      .isEqualTo(mapper.writeValueAsString(mapOf("eventType" to "OPT_OUT", "occurredAt" to "2026-09-17T11:30:00")))
 
     verify(hdcCvlEventPublisher, times(1)).publish(request)
   }

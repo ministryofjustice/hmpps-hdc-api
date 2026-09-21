@@ -4,6 +4,5 @@ import java.time.LocalDateTime
 
 data class HdcCvlEventResponse(
   val eventType: String,
-  val version: Int,
   val occurredAt: LocalDateTime,
 )

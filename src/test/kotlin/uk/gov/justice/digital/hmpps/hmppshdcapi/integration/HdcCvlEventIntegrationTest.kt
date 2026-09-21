@@ -35,7 +35,6 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .expectStatus().isAccepted
       .expectBody()
       .jsonPath("$.eventType").isEqualTo("OPT_OUT")
-      .jsonPath("$.version").isEqualTo(1)
 
     await untilCallTo { getNumberOfMessagesCurrentlyOnHdcCvlQueue() } matches { it == 1 }
 
