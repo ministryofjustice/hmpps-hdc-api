@@ -100,7 +100,7 @@ class HmppsHdcApiExceptionHandler {
     .body(
       ErrorResponse(
         status = BAD_REQUEST.value(),
-        userMessage = "Malformed JSON request: ${e.message}",
+        userMessage = "Malformed JSON request.",
         developerMessage = e.message,
       ),
     ).also { log.info("HttpMessageNotReadableException: {}", e.message, e) }
