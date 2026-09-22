@@ -89,6 +89,32 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
   }
 
   @Test
+  fun `return bad request when required string fields are blank`() {
+    val result = webTestClient.post()
+      .uri("/licences/cvl-events")
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .bodyValue(
+        mapOf(
+          "eventType" to "OPT_OUT",
+          "licenceId" to 123,
+          "bookingId" to 456,
+          "nomsNumber" to "   ",
+          "triggeredBy" to "   ",
+        ),
+      )
+      .exchange()
+      .expectStatus().isBadRequest
+      .expectBody(ErrorResponse::class.java)
+      .returnResult().responseBody
+
+    assertThat(result?.userMessage).isEqualTo("Validation failed for one or more fields.")
+    assertThat(result?.developerMessage).contains("nomsNumber must be supplied")
+    assertThat(result?.developerMessage).contains("triggeredBy must be supplied")
+  }
+
+  @Test
   fun `return bad request when event type is invalid`() {
     val result = webTestClient.post()
       .uri("/licences/cvl-events")

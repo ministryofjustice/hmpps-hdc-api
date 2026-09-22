@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
@@ -72,6 +73,25 @@ class HmppsHdcApiExceptionHandler {
           developerMessage = "${e.message} $validationErrors",
         ),
       ).also { log.info("Validation exception: $validationErrors\n {}", e.message) }
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException::class)
+  fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+    val validationErrors = e.bindingResult.allErrors
+      .mapNotNull { it.defaultMessage }
+      .distinct()
+      .sorted()
+      .joinToString("; ")
+
+    return ResponseEntity
+      .status(BAD_REQUEST)
+      .body(
+        ErrorResponse(
+          status = BAD_REQUEST.value(),
+          userMessage = "Validation failed for one or more fields.",
+          developerMessage = validationErrors.ifEmpty { e.message },
+        ),
+      ).also { log.info("Validation exception: {}", validationErrors, e) }
   }
 
   @ExceptionHandler(HttpMessageNotReadableException::class)

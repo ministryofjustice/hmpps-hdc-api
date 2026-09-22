@@ -105,8 +105,9 @@ class HdcCvlEventControllerTest {
       .andReturn()
 
     val response: Map<String, Any?> = mapper.readValue(result.response.contentAsString)
-    assertThat(response["userMessage"] as String).contains("nomsNumber must be supplied")
-    assertThat(response["userMessage"] as String).contains("triggeredBy must be supplied")
+    assertThat(response["userMessage"] as String).isEqualTo("Validation failed for one or more fields.")
+    assertThat(response["developerMessage"] as String).contains("nomsNumber must be supplied")
+    assertThat(response["developerMessage"] as String).contains("triggeredBy must be supplied")
   }
 
   private companion object {
