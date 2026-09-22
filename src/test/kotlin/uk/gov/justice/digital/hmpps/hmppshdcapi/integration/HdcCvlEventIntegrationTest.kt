@@ -32,9 +32,7 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
       .bodyValue(requestBody)
       .exchange()
-      .expectStatus().isAccepted
-      .expectBody()
-      .jsonPath("$.eventType").isEqualTo("OPT_OUT")
+      .expectStatus().isOk
 
     await untilCallTo { getNumberOfMessagesCurrentlyOnHdcCvlQueue() } matches { it == 1 }
 

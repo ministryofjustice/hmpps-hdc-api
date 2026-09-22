@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
@@ -54,18 +53,13 @@ class HdcCvlEventControllerTest {
   fun `queue an HDC to CVL event`() {
     whenever(hdcCvlEventPublisher.publish(request)).thenReturn(publishedEvent)
 
-    val result = mvc.perform(
+    mvc.perform(
       post("/licences/cvl-events")
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsString(request)),
     )
-      .andExpect(status().isAccepted)
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andReturn()
-
-    assertThat(result.response.contentAsString)
-      .isEqualTo(mapper.writeValueAsString(mapOf("eventType" to "OPT_OUT", "occurredAt" to "2026-09-17T11:30:00")))
+      .andExpect(status().isOk)
 
     verify(hdcCvlEventPublisher, times(1)).publish(request)
   }

@@ -19,7 +19,6 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ROLE_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.SCHEME_HDC_ADMIN
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.request.HdcCvlEventRequest
-import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.response.HdcCvlEventResponse
 
 @RestController
 @RequestMapping("/licences/cvl-events", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -28,7 +27,7 @@ class HdcCvlEventController(
   private val hdcCvlEventPublisher: HdcCvlEventPublisher,
 ) {
   @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Queue an HDC to CVL event",
     description = "Receives an HDC action request and publishes an event to the HDC to CVL queue. Requires ROLE_$ROLE_HDC_ADMIN.",
@@ -37,14 +36,8 @@ class HdcCvlEventController(
   @ApiResponses(
     value = [
       ApiResponse(
-        responseCode = "202",
-        description = "Event accepted and queued",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = HdcCvlEventResponse::class),
-          ),
-        ],
+        responseCode = "200",
+        description = "Event queued successfully",
       ),
       ApiResponse(
         responseCode = "400",
@@ -80,11 +73,7 @@ class HdcCvlEventController(
   )
   fun createEvent(
     @Valid @RequestBody request: HdcCvlEventRequest,
-  ): HdcCvlEventResponse {
-    val event = hdcCvlEventPublisher.publish(request)
-    return HdcCvlEventResponse(
-      eventType = requireNotNull(request.eventType).name,
-      occurredAt = event.occurredAt,
-    )
+  ) {
+    hdcCvlEventPublisher.publish(request)
   }
 }
