@@ -85,7 +85,7 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .expectBody(ErrorResponse::class.java)
       .returnResult().responseBody
 
-    assertThat(result?.userMessage).contains("Malformed JSON request:")
+    assertThat(result?.userMessage).contains("Malformed JSON request.")
   }
 
   @Test
@@ -135,7 +135,7 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
       .expectBody(ErrorResponse::class.java)
       .returnResult().responseBody
 
-    assertThat(result?.userMessage).contains("Malformed JSON request:")
+    assertThat(result?.userMessage).contains("Malformed JSON request.")
     assertThat(result?.developerMessage).contains("HdcCvlEventType")
   }
 

@@ -82,7 +82,8 @@ class HdcCvlEventControllerTest {
       .andReturn()
 
     val response: Map<String, Any?> = mapper.readValue(result.response.contentAsString)
-    assertThat(response["userMessage"] as String).contains("Malformed JSON request:")
+    assertThat(response["userMessage"] as String).contains("Malformed JSON request.")
+    assertThat(response["developerMessage"] as String).contains("licenceId")
   }
 
   @Test
