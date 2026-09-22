@@ -42,6 +42,7 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
   protected val domainEventsTopicArn by lazy { domainEventsTopic.arn }
 
   protected val domainEventsQueue by lazy { hmppsQueueService.findByQueueId("domaineventsqueue") as HmppsQueue }
+  protected val hdcCvlEventsQueue by lazy { hmppsQueueService.findByQueueId("hdccvleventsqueue") as HmppsQueue }
 
   @BeforeEach
   fun cleanQueue() {
@@ -49,9 +50,14 @@ class SqsIntegrationTestBase : IntegrationTestBase() {
     await untilCallTo {
       domainEventsQueue.sqsClient.countMessagesOnQueue(domainEventsQueue.queueUrl).get()
     } matches { it == 0 }
+    hdcCvlEventsQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(hdcCvlEventsQueue.queueUrl).build())
+    await untilCallTo {
+      hdcCvlEventsQueue.sqsClient.countMessagesOnQueue(hdcCvlEventsQueue.queueUrl).get()
+    } matches { it == 0 }
   }
 
   fun getNumberOfMessagesCurrentlyOnQueue(): Int? = domainEventsQueue.sqsClient.countMessagesOnQueue(domainEventsQueue.queueUrl).get()
+  fun getNumberOfMessagesCurrentlyOnHdcCvlQueue(): Int? = hdcCvlEventsQueue.sqsClient.countMessagesOnQueue(hdcCvlEventsQueue.queueUrl).get()
 
   companion object {
     private val localStackContainer = LocalStackContainer.instance
