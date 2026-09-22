@@ -85,6 +85,30 @@ class HdcCvlEventControllerTest {
     assertThat(response["userMessage"] as String).contains("Malformed JSON request:")
   }
 
+  @Test
+  fun `return bad request when required string fields are blank`() {
+    val result = mvc.perform(
+      post("/licences/cvl-events")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(
+          """{
+            "eventType":"OPT_OUT",
+            "licenceId":123,
+            "bookingId":456,
+            "nomsNumber":"   ",
+            "triggeredBy":"   "
+          }""",
+        ),
+    )
+      .andExpect(status().isBadRequest)
+      .andReturn()
+
+    val response: Map<String, Any?> = mapper.readValue(result.response.contentAsString)
+    assertThat(response["userMessage"] as String).contains("nomsNumber must be supplied")
+    assertThat(response["userMessage"] as String).contains("triggeredBy must be supplied")
+  }
+
   private companion object {
     val request = HdcCvlEventRequest(
       eventType = HdcCvlEventType.OPT_OUT,
