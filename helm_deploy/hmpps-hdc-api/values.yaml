@@ -55,10 +55,6 @@ generic-service:
       HMPPS_SQS_QUEUES_DOMAINEVENTSQUEUE_QUEUE_NAME: "sqs_queue_name"
     hdc-domain-events-sqs-dl-instance-output:
       HMPPS_SQS_QUEUES_DOMAINEVENTSQUEUE_DLQ_NAME: "sqs_queue_name"
-    sqs-hmpps-hdc-api-queue-secret:
-      HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_QUEUE_NAME: "sqs_queue_name"
-    sqs-hmpps-hdc-api-queue-dl-secret:
-      HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_DLQ_NAME: "sqs_queue_name"
   allowlist:
     groups:
       - internal
