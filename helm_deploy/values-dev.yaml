@@ -7,6 +7,12 @@ generic-service:
   ingress:
     host: hdc-api-dev.hmpps.service.justice.gov.uk
 
+  namespace_secrets:
+    sqs-hmpps-hdc-api-queue-secret:
+      HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_QUEUE_NAME: "sqs_queue_name"
+    sqs-hmpps-hdc-api-queue-dl-secret:
+      HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_DLQ_NAME: "sqs_queue_name"
+
   env:
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.dev.json
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
@@ -18,8 +24,6 @@ generic-service:
     DELETE_DUPLICATES_WHEN_EVENT_RELEASE_MIGRATION: true
     SPRINGDOC_API-DOCS_ENABLED: "true"
     SPRINGDOC_SWAGGER-UI_ENABLED: "true"
-    HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_QUEUE_NAME: "hmpps_hdc_api_queue"
-    HMPPS_SQS_QUEUES_HDCCVLEVENTSQUEUE_DLQ_NAME: "hmpps_hdc_api_dead_letter_queue"
 
   retryDlqCronjob:
     enabled: true
