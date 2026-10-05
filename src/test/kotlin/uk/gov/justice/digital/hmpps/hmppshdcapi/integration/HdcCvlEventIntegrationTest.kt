@@ -5,6 +5,8 @@ import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
@@ -14,10 +16,11 @@ import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto.HdcCvlQueueE
 
 class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
 
-  @Test
-  fun `receive request from HDC and raise event to queue`() {
+  @ParameterizedTest
+  @ValueSource(strings = ["OPT_OUT", "POSTPONE", "RESUME"])
+  fun `receive request from HDC and raise event to queue`(eventType: String) {
     val requestBody = mapOf(
-      "eventType" to "OPT_OUT",
+      "eventType" to eventType,
       "licenceId" to 123,
       "bookingId" to 456,
       "nomsNumber" to "A1234BC",
@@ -46,7 +49,7 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
     val message = response.messages().single()
     val event = objectMapper.readValue(message.body(), HdcCvlQueueEvent::class.java)
 
-    assertThat(message.messageAttributes()["eventType"]?.stringValue()).isEqualTo("OPT_OUT")
+    assertThat(message.messageAttributes()["eventType"]?.stringValue()).isEqualTo(eventType)
     assertThat(event.licenceId).isEqualTo(123)
     assertThat(event.bookingId).isEqualTo(456)
     assertThat(event.nomsNumber).isEqualTo("A1234BC")
