@@ -151,6 +151,10 @@ tasks {
   }
 }
 
+dependencyCheck {
+  skipConfigurations.add("detekt")
+}
+
 allOpen {
   annotation("jakarta.persistence.Entity")
 }
