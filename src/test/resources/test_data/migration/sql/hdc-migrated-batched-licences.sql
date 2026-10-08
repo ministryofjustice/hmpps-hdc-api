@@ -12,7 +12,7 @@ INSERT INTO licence_versions (
 
 -- Create the data for a HDC licence with a preferred address
 VALUES (1,
-        'hdc_ap',
+        'hdc_ap_pss',
         '{
                   "document": {
                     "template": {
@@ -254,7 +254,7 @@ VALUES (1,
 
        -- Create the data for a HDC licence with a CAS2 address
        (2,
-        'hdc_ap',
+        'hdc_pss',
         '{
                "document": {
                  "template": {

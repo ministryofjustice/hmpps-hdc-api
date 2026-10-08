@@ -91,10 +91,6 @@
       "conditionCode" : "NO_WORK_WITH_AGE",
       "conditionsVersion" : 2
     }, {
-      "text" : "Attend Smith Street S1 1AA on 12/03/2026 at 12:21, as directed, to address your dependency on, or propensity to misuse, a controlled drug.",
-      "conditionCode" : "ATTEND_DEPENDENCY",
-      "conditionsVersion" : 2
-    }, {
       "text" : "Not to enter The Crown on Smith Street, LS1 3GH without the prior approval of your supervising officer.",
       "conditionCode" : "EXCLUSION_ADDRESS",
       "conditionsVersion" : 2

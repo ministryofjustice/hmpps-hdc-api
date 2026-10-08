@@ -78,6 +78,7 @@ class MigrationRequestService(
   private val auditEventRepository: AuditEventRepository,
 ) {
 
+  private val conditionsToExclude = listOf("ATTEND_SAMPLE", "ATTEND_DEPENDENCY", "ATTENDSAMPLE", "ATTENDDEPENDENCY")
   private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   fun migrateLicenceToCvl(licenceDetail: LicenceBookingDetail, prisoner: Prisoner) {
@@ -98,7 +99,8 @@ class MigrationRequestService(
   ): MigrateFromHdcToCvlRequest {
     val licenceType = getLicencesType(licenceVersion.bookingId)
     val licenceData = extractLicenceDataFromJson(licenceVersion)
-    val lifecycleDetails = if (licenceType.type != LicenceType.NOT_KNOWN) mapLifecycleDetails(licenceVersion, licenceType) else null
+    val lifecycleDetails =
+      if (licenceType.type != LicenceType.NOT_KNOWN) mapLifecycleDetails(licenceVersion, licenceType) else null
     val appointmentDetails = mapAppointmentDetails(licenceData)
 
     validate(licenceData, licenceVersion, licenceType, lifecycleDetails, appointmentDetails)
@@ -137,7 +139,8 @@ class MigrationRequestService(
   )
 
   private fun mapPrisonDetails(prisoner: Prisoner) = MigratePrisonDetails(
-    prisonCode = prisoner.lastPrisonId ?: throw MigrationValidationException("Prison code not found for prisoner: ${prisoner.prisonerNumber}"),
+    prisonCode = prisoner.lastPrisonId
+      ?: throw MigrationValidationException("Prison code not found for prisoner: ${prisoner.prisonerNumber}"),
   )
 
   private fun mapSentenceDetails(prisoner: Prisoner) = MigrateSentenceDetails(
@@ -265,8 +268,9 @@ class MigrationRequestService(
     prisoner: Prisoner,
   ): MigrateLicenceDetails = MigrateLicenceDetails(
     licenceVersionId = licenceVersion.id,
-    typeCode = MigrateLicenceType.from(licenceVersion.template),
-    licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate ?: prisoner.releaseDate,
+    typeCode = MigrateLicenceType.AP,
+    licenceActivationDate = prisoner.homeDetentionCurfewActualDate ?: prisoner.confirmedReleaseDate
+      ?: prisoner.releaseDate,
     licenceExpiryDate = prisoner.licenceExpiryDate,
     homeDetentionCurfewActualDate = prisoner.homeDetentionCurfewActualDate,
     homeDetentionCurfewEndDate = prisoner.homeDetentionCurfewEndDate,
@@ -344,13 +348,15 @@ class MigrationRequestService(
     if (conditions.additional?.isNotEmpty() == true) {
       val conditionsVersion = attemptToGuessVersion(conditions, licenceVersion)!!
       LicenceConditionRenderer.renderConditions(licenceData, conditionsVersion).forEach {
-        additional.add(
-          MigrateAdditionalCondition(
-            text = it.text!!,
-            conditionCode = it.code!!,
-            conditionsVersion = conditionsVersion,
-          ),
-        )
+        if (it.code !in conditionsToExclude) {
+          additional.add(
+            MigrateAdditionalCondition(
+              text = it.text!!,
+              conditionCode = it.code!!,
+              conditionsVersion = conditionsVersion,
+            ),
+          )
+        }
       }
     }
 
@@ -399,14 +405,30 @@ class MigrationRequestService(
     return LocalDateTime.of(date, time)
   }
 
-  private fun getLastAuditByTransitionType(allAudits: List<AuditEvent>, action: String, transitionType: String): AuditEvent? = allAudits
+  private fun getLastAuditByTransitionType(
+    allAudits: List<AuditEvent>,
+    action: String,
+    transitionType: String,
+  ): AuditEvent? = allAudits
     .asSequence()
     .filter { audit -> audit.action == action && audit.details["transitionType"]?.toString() == transitionType }
     .lastOrNull()
 
-  private fun getLastAuditByDetails(allAudits: List<AuditEvent>, action: String, detailsContains: String? = null): AuditEvent? = allAudits
+  private fun getLastAuditByDetails(
+    allAudits: List<AuditEvent>,
+    action: String,
+    detailsContains: String? = null,
+  ): AuditEvent? = allAudits
     .asSequence()
-    .filter { audit -> audit.action == action && (detailsContains == null || audit.details.values.any { it.toString().contains(detailsContains) }) }
+    .filter { audit ->
+      audit.action == action &&
+        (
+          detailsContains == null ||
+            audit.details.values.any {
+              it.toString().contains(detailsContains)
+            }
+          )
+    }
     .lastOrNull()
 
   fun getLicencesType(bookingId: Long): LicenceTypeRecord {
@@ -472,7 +494,8 @@ class MigrationRequestService(
 
   fun performPrisonerSearch(bookingId: Long): Prisoner {
     val bookingIds = listOf(bookingId)
-    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull() ?: throw MigrationPrisonerNotFoundException("Prisoner not found for booking id $bookingId")
+    return prisonSearchApiClient.getPrisonersByBookingIds(bookingIds).firstOrNull()
+      ?: throw MigrationPrisonerNotFoundException("Prisoner not found for booking id $bookingId")
   }
 
   private fun isApproved(licenceVersion: MigrationLicenceVersion): Boolean {

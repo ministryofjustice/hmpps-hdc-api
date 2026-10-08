@@ -13,16 +13,7 @@ import java.time.LocalTime
 enum class MigrateLicenceType {
   AP,
   PSS,
-  AP_PSS, ;
-
-  companion object {
-    fun from(decision: String?): MigrateLicenceType = when (decision) {
-      "hdc_ap" -> AP
-      "hdc_pss" -> PSS
-      "hdc_ap_pss" -> AP_PSS
-      else -> error("Licence type not supported in migration: $decision")
-    }
-  }
+  AP_PSS,
 }
 
 enum class MigrateStatus {
