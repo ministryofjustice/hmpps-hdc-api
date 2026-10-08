@@ -46,9 +46,6 @@ jobs:
     with:
       gradle-command: 'BUILD_NUMBER=${{ needs.app_version.outputs.version}} ./gradlew assemble check'
       upload-build-artifacts: ${{ github.ref == 'refs/heads/main' }}
-      #postgres-db: hmpps-hdc-api
-      #postgres-username: licences
-      #postgres-password: hmpps-hdc-api
       java-version: "25"
     needs:
       - app_version
