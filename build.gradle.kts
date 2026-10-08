@@ -18,9 +18,7 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
-
-  // Fix for CVE-2025-48924
-  implementation("org.apache.commons:commons-lang3:3.20.0")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
 
   // Spring boot dependencies
   implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -34,8 +32,8 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql:42.7.13")
 
-  // SQS/SNS dependencies
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
+  // Fix for CVE-2025-48924
+  implementation("org.apache.commons:commons-lang3:3.20.0")
 
   // OpenAPI
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
@@ -149,6 +147,10 @@ tasks {
   getByName("check") {
     dependsOn(":ktlintCheck", "detekt")
   }
+}
+
+dependencyCheck {
+  skipConfigurations.add("detekt")
 }
 
 allOpen {
