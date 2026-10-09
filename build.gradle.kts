@@ -17,7 +17,7 @@ ext["logback.version"] = "1.5.37"
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:3.0.3")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
 
   // Spring boot dependencies
@@ -30,7 +30,7 @@ dependencies {
 
   // Database dependencies
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
-  runtimeOnly("org.postgresql:postgresql:42.7.13")
+  runtimeOnly("org.postgresql:postgresql:42.7.14")
 
   // Fix for CVE-2025-48924
   implementation("org.apache.commons:commons-lang3:3.20.0")
@@ -39,7 +39,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
 
   // To help override SAR
-  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.8.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-lib:2.8.4")
 
   // New in Spring Boot 4: Dedicated starter for HTTP clients
   implementation("org.springframework.boot:spring-boot-starter-webclient")
@@ -55,13 +55,13 @@ dependencies {
   testImplementation("io.jsonwebtoken:jjwt-api:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.13.0")
   testImplementation("io.jsonwebtoken:jjwt-orgjson:0.13.0")
-  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.1")
+  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:6.3.0")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("com.h2database:h2")
-  testImplementation("org.testcontainers:testcontainers-localstack:2.0.3")
-  testImplementation("org.testcontainers:testcontainers-postgresql:2.0.3")
+  testImplementation("org.testcontainers:testcontainers-localstack:2.0.5")
+  testImplementation("org.testcontainers:testcontainers-postgresql:2.0.5")
   testImplementation("uk.gov.justice.service.hmpps:hmpps-subject-access-request-test-support:2.6.0")
-  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.5.0")
+  testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:3.0.3")
   testImplementation("org.wiremock:wiremock-standalone:3.13.1")
   testImplementation("org.springframework.boot:spring-boot-webtestclient")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
