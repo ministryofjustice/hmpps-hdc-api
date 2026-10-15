@@ -6,26 +6,27 @@ import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import uk.gov.justice.digital.hmpps.hmppshdcapi.config.ErrorResponse
 import uk.gov.justice.digital.hmpps.hmppshdcapi.integration.base.SqsIntegrationTestBase
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.events.dto.HdcCvlQueueEvent
+import uk.gov.justice.digital.hmpps.hmppshdcapi.util.HdcCvlEventType
 
 class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
 
   @ParameterizedTest
-  @ValueSource(strings = ["OPT_OUT", "POSTPONE", "RESUME"])
-  fun `receive request from HDC and raise event to queue`(eventType: String) {
+  @EnumSource(HdcCvlEventType::class)
+  fun `receive request from HDC and raise event to queue`(eventType: HdcCvlEventType) {
     val requestBody = mapOf(
       "eventType" to eventType,
       "licenceId" to 123,
       "bookingId" to 456,
       "nomsNumber" to "A1234BC",
       "triggeredBy" to "test.user",
-      "reason" to "Offender opted out",
+      "reason" to "Offender ${eventType.name.lowercase()}",
     )
 
     webTestClient.post()
@@ -49,12 +50,12 @@ class HdcCvlEventIntegrationTest : SqsIntegrationTestBase() {
     val message = response.messages().single()
     val event = objectMapper.readValue(message.body(), HdcCvlQueueEvent::class.java)
 
-    assertThat(message.messageAttributes()["eventType"]?.stringValue()).isEqualTo(eventType)
+    assertThat(message.messageAttributes()["eventType"]?.stringValue()).isEqualTo(eventType.name)
     assertThat(event.licenceId).isEqualTo(123)
     assertThat(event.bookingId).isEqualTo(456)
     assertThat(event.nomsNumber).isEqualTo("A1234BC")
     assertThat(event.triggeredBy).isEqualTo("test.user")
-    assertThat(event.reason).isEqualTo("Offender opted out")
+    assertThat(event.reason).isEqualTo("Offender ${eventType.name.lowercase()}")
   }
 
   @Test
