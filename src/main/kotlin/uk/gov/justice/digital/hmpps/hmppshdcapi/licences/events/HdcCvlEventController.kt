@@ -30,7 +30,7 @@ class HdcCvlEventController(
   @ResponseStatus(HttpStatus.OK)
   @Operation(
     summary = "Queue an HDC to CVL event",
-    description = "Receives an HDC action request and publishes an event to the HDC to CVL queue. Requires ROLE_$ROLE_HDC_ADMIN.",
+    description = "Receives an HDC action request (OPT_IN, OPT_OUT, POSTPONE, RESUME or REFUSE) and publishes an event to the HDC to CVL queue. Requires ROLE_$ROLE_HDC_ADMIN.",
     security = [SecurityRequirement(name = SCHEME_HDC_ADMIN)],
   )
   @ApiResponses(
