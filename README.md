@@ -77,7 +77,11 @@ Any changes to data models or API responses that will affect the SAR responses s
 These are stored in `src/test/resources/sar` and are used to compare against the actual responses received
 from the API when running the SAR integration tests.
 
-To regenerate SAR snapshots - use the following command, which will run the SAR integration tests and update the
+The simplest way to regenerate the snapshots is `./gradlew updateSarSnapshots`, which runs the SAR integration test with
+`SAR_GENERATE_ACTUAL=true` and copies the results into `src/test/resources/sar`. Review the diff before committing.
+See the `update-sar-template` skill in `.github/skills` for more detail.
+
+To do it manually - use the following command, which will run the SAR integration tests and update the
 snapshots with the actual responses received from the API. This is useful to do if you have made changes to the API that
 will affect the SAR responses, and you want to make sure the snapshots are up to date with the new expected responses.
 ```bash
