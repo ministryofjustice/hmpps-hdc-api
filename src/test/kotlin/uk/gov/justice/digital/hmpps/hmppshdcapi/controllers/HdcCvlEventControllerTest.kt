@@ -5,6 +5,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -49,8 +51,10 @@ class HdcCvlEventControllerTest {
       .build()
   }
 
-  @Test
-  fun `queue an HDC to CVL event`() {
+  @ParameterizedTest
+  @EnumSource(HdcCvlEventType::class)
+  fun `queue an HDC to CVL event`(eventType: HdcCvlEventType) {
+    val request = request.copy(eventType = eventType, reason = "Offender ${eventType.name.lowercase()}")
     whenever(hdcCvlEventPublisher.publish(request)).thenReturn(publishedEvent)
 
     mvc.perform(
