@@ -6,4 +6,5 @@ enum class HdcCvlEventType {
   POSTPONE,
   RESUME,
   REFUSE,
+  ADDRESS_WITHDRAWN,
 }
