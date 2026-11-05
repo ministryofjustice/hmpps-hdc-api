@@ -434,7 +434,7 @@ class MigrationRequestServiceTest {
 
     // Then
     assertThat(result.addressLine1).isEqualTo("FROM_CURFEW_APPROVED_PREMISES")
-    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+    assertThat(result.addressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISE)
   }
 
   @Test
@@ -455,7 +455,7 @@ class MigrationRequestServiceTest {
 
     // Then
     assertThat(result.addressLine1).isEqualTo("FROM_BASS_APPROVED_PREMISES")
-    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+    assertThat(result.addressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISE)
   }
 
   @Test
@@ -489,7 +489,7 @@ class MigrationRequestServiceTest {
 
     // Then
     assertThat(result.addressLine1).isEqualTo("FROM_BASS_OFFER")
-    assertThat(result.addressType).isEqualTo(AddressType.CAS)
+    assertThat(result.addressType).isEqualTo(AddressType.CAS_2)
   }
 
   @Test

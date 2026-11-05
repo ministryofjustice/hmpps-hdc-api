@@ -49,7 +49,7 @@ class LicenceServiceTest {
         "Town 4",
         null,
         "TS4 4TS",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISE,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -122,7 +122,7 @@ class LicenceServiceTest {
         "Town 3",
         null,
         "TS5 5TS",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISE,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -197,7 +197,7 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "TS6 6TS",
-        AddressType.CAS,
+        AddressType.CAS_2,
       ),
     )
     assertThat(result?.firstNightCurfewHours).isEqualTo(
@@ -348,7 +348,7 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "TS6 6TS",
-        AddressType.CAS,
+        AddressType.CAS_2,
       ),
     )
 

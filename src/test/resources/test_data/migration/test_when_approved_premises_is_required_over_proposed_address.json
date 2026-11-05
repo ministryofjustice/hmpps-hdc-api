@@ -53,7 +53,7 @@
     "addressLine2" : "TEST_APPROVED_PRIMARY_2",
     "townOrCity" : "TEST_TOWN",
     "postcode" : "ZZ1 1ZZ",
-    "addressType" : "CAS"
+    "addressType" : "CAS_1_APPROVED_PREMISE"
   },
   "curfew" : { },
   "appointment" : {
