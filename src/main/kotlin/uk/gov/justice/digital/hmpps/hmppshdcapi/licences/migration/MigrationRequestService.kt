@@ -518,8 +518,8 @@ class MigrationRequestService(
 
   private fun findCurfewAddress(licenceData: LicenceData): Pair<Address, AddressType>? = with(licenceData) {
     listOf(
-      curfew?.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISE,
-      bassReferral?.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISE,
+      curfew?.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES,
+      bassReferral?.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES,
       proposedAddress?.curfewAddress to AddressType.RESIDENTIAL,
       bassReferral?.bassOffer to AddressType.CAS_2,
     ).firstOrNull { (address, _) ->

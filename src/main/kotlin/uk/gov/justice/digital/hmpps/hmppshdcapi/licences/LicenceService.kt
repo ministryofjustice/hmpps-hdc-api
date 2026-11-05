@@ -115,8 +115,8 @@ class LicenceService(
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.let { it.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISE }
-      isCas2ApprovedPremisesRequired -> cas2Referral.let { it.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISE }
+      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.let { it.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES }
+      isCas2ApprovedPremisesRequired -> cas2Referral.let { it.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES }
       isCas2Requested && isCas2Accepted -> cas2Referral.let { it.bassOffer to AddressType.CAS_2 }
       // if proposedAddress is null then returns a null pair
       else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }

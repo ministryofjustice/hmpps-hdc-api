@@ -149,7 +149,7 @@
     "addressLine2" : "",
     "townOrCity" : "Test Town",
     "postcode" : "TT1 1TT",
-    "addressType" : "CAS_1_APPROVED_PREMISE"
+    "addressType" : "CAS_1_APPROVED_PREMISES"
   },
   "curfew" : {
     "curfewTimes" : [ {
