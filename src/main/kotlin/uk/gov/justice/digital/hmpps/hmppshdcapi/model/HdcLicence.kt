@@ -19,4 +19,7 @@ data class HdcLicence(
 
   @field:Schema(description = "The HDC status for the person")
   val status: HdcStatus,
+
+  @field:Schema(description = "The proposed address type")
+  val proposeAddressType: AddressType? = null,
 )

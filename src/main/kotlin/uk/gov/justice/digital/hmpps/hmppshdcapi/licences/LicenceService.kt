@@ -49,6 +49,7 @@ class LicenceService(
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
       status = hdcStatusService.getForBooking(bookingId, licence),
+      proposeAddressType = getProposeAddressType(curfew, cas2Referral, proposedAddress),
     )
   }
 
@@ -149,6 +150,18 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
+  }
+
+  fun getProposeAddressType(curfew: Curfew?, cas2Referral: CurrentCas2Referral?, proposedAddress: ProposedAddress?): AddressType? {
+    val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
+    val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
+    val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
+    val isProposedAddress = proposedAddress?.addressProposed?.decision == Decision.YES
+
+    if (isCurfewApprovedPremisesRequired || isCas2ApprovedPremisesRequired) return AddressType.CAS_1_APPROVED_PREMISES
+    if (isCas2Requested) return AddressType.CAS_2
+    if (isProposedAddress) return AddressType.RESIDENTIAL
+    return null
   }
 
   private companion object {
