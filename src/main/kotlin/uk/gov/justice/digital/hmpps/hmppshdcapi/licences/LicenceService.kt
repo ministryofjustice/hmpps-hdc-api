@@ -120,10 +120,10 @@ class LicenceService(
       isApprovedPremisesRequiredWasCas2 -> cas2Referral.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES
       isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer to AddressType.CAS_2
       // if proposedAddress is null then returns a null pair
-      else -> proposedAddress?.curfewAddress to AddressType.RESIDENTIAL
+      else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
 
-    if (address.first == null) {
+    if (address?.first == null) {
       log.info("Missing curfew address for $licenceId")
       return null
     }
