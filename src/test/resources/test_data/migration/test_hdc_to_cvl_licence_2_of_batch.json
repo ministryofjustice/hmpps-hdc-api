@@ -49,7 +49,7 @@
     "addressLine2" : "The Avenue",
     "townOrCity" : "Test City",
     "postcode" : "TS12 TST",
-    "addressType" : "CAS"
+    "addressType" : "CAS_2"
   },
   "curfew" : {
     "curfewTimes" : [ {
