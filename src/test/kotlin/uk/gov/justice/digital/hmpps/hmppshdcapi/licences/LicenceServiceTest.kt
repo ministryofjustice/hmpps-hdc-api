@@ -680,7 +680,7 @@ class LicenceServiceTest {
     @Test
     fun `test getProposeAddressType when opted out`() {
       val optedOut = aProposedAddress.copy(
-        optOut =  DecisionMade(Decision.YES),
+        optOut = DecisionMade(Decision.YES),
         addressProposed = DecisionMade(Decision.NO),
       )
       val noCas2Referral = aCas2Referral.copy(
