@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonApiClient
 import uk.gov.justice.digital.hmpps.hmppshdcapi.licences.prison.PrisonSearchApiClient
@@ -12,6 +13,9 @@ class HdcStatusService(
   private val prisonSearchApiClient: PrisonSearchApiClient,
   private val prisonApiClient: PrisonApiClient,
 ) {
+
+  val log = LoggerFactory.getLogger(this::class.java)
+
   private val nonReleaseStatuses: Set<String> = setOf(
     "REJECTED",
     "INELIGIBLE",
@@ -63,6 +67,7 @@ class HdcStatusService(
     prisonerHdcStatus: PrisonerHdcStatus?,
     hdcStage: HdcStage?,
   ): HdcStatus {
+    log.debug("Determining HDC status for bookingId: {}, hdced: {}, hdcStage: {}, prisonerHdcStatus: {}", hdced, hdcStage, prisonerHdcStatus)
     val approvalStatus = prisonerHdcStatus?.approvalStatus.toNormalizedStatus()
     return when {
       hdced == null -> HdcStatus.NOT_A_HDC_RELEASE
