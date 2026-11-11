@@ -14,7 +14,7 @@ class HdcStatusService(
   private val prisonApiClient: PrisonApiClient,
 ) {
 
-  val log = LoggerFactory.getLogger(this::class.java)
+  private val log = LoggerFactory.getLogger(this::class.java)
 
   private val nonReleaseStatuses: Set<String> = setOf(
     "REJECTED",
