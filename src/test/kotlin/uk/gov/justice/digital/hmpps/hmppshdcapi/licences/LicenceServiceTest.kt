@@ -49,9 +49,10 @@ class LicenceServiceTest {
         "Town 4",
         null,
         "TS4 4TS",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISES,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(16, 0),
@@ -122,9 +123,10 @@ class LicenceServiceTest {
         "Town 3",
         null,
         "TS5 5TS",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISES,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(15, 0),
@@ -197,9 +199,10 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "TS6 6TS",
-        AddressType.CAS,
+        AddressType.CAS_2,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_2)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(15, 0),
@@ -278,6 +281,7 @@ class LicenceServiceTest {
         AddressType.RESIDENTIAL,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.RESIDENTIAL)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       ModelFirstNight(
         LocalTime.of(16, 0),
@@ -348,7 +352,7 @@ class LicenceServiceTest {
         "Town 2",
         null,
         "TS6 6TS",
-        AddressType.CAS,
+        AddressType.CAS_2,
       ),
     )
 
@@ -413,7 +417,7 @@ class LicenceServiceTest {
   @Nested
   inner class GetAddress {
     @Test
-    fun `test getAddress when curfew approved premise is required`() {
+    fun `test getAddress when curfew approved premises is required`() {
       val result = service.getAddress(aCurfew, aCas2Referral, aProposedAddress, 1L)!!
 
       with(aCurfew.approvedPremisesAddress!!) {
@@ -425,7 +429,7 @@ class LicenceServiceTest {
     }
 
     @Test
-    fun `test getAddress when cas2 approved premise is required`() {
+    fun `test getAddress when cas2 approved premises is required`() {
       val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.YES))
       val result = service.getAddress(aCurfew, anApprovedCas2Referral, aProposedAddress, 1L)!!
 
@@ -615,6 +619,83 @@ class LicenceServiceTest {
       val result = service.getAddress(aCurfewWithWhitespaceAddress, aCas2Referral, aProposedAddress, 1L)
 
       // Then
+      assertThat(result).isNull()
+    }
+  }
+
+  @Nested
+  inner class GetProposedAddressType {
+    @Test
+    fun `test getProposeAddressType when curfew approved premises is required`() {
+      val noCas2Requested = CurrentCas2Referral(
+        null,
+        Cas2Request(
+          Decision.NO,
+        ),
+      )
+
+      val result = service.getProposeAddressType(aCurfew, noCas2Requested, aProposedAddress)!!
+
+      assertThat(result).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
+    }
+
+    @Test
+    fun `test getProposeAddressType when cas2 approved premises is required`() {
+      val anApprovedCas2Referral = aCas2Referral.copy(bassAreaCheck = Cas2AreaCheck(Decision.YES))
+      val noCurfewProposedAddressRequested = aProposedAddress.copy(
+        addressProposed = DecisionMade(Decision.NO),
+      )
+
+      val result = service.getProposeAddressType(null, anApprovedCas2Referral, noCurfewProposedAddressRequested)!!
+
+      assertThat(result).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
+    }
+
+    @Test
+    fun `test getProposeAddressType when cas2 address is requested`() {
+      val noCurfewProposedAddressRequested = aProposedAddress.copy(
+        addressProposed = DecisionMade(Decision.NO),
+      )
+
+      val result = service.getProposeAddressType(null, aCas2Referral, noCurfewProposedAddressRequested)!!
+
+      assertThat(result).isEqualTo(AddressType.CAS_2)
+    }
+
+    @Test
+    fun `test getProposeAddressType when curfew address is proposed`() {
+      val noCas2Requested = CurrentCas2Referral(
+        null,
+        Cas2Request(
+          Decision.NO,
+        ),
+      )
+
+      val result = service.getProposeAddressType(null, noCas2Requested, aProposedAddress)!!
+
+      assertThat(result).isNotNull
+      assertThat(result).isEqualTo(AddressType.RESIDENTIAL)
+    }
+
+    @Test
+    fun `test getProposeAddressType when opted out`() {
+      val optedOut = aProposedAddress.copy(
+        optOut = DecisionMade(Decision.YES),
+        addressProposed = DecisionMade(Decision.NO),
+      )
+      val noCas2Referral = aCas2Referral.copy(
+        bassRequest = Cas2Request(Decision.NO),
+      )
+
+      val result = service.getProposeAddressType(null, noCas2Referral, optedOut)
+
+      assertThat(result).isNull()
+    }
+
+    @Test
+    fun `test getProposeAddressType given no matching conditions then return null`() {
+      val result = service.getProposeAddressType(null, null, null)
+
       assertThat(result).isNull()
     }
   }

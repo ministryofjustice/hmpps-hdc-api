@@ -51,9 +51,10 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Test Town",
         null,
         "T33 3ST",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISES,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         LocalTime.of(15, 0),
@@ -107,9 +108,10 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Another Town",
         null,
         "TS7 7TS",
-        AddressType.CAS,
+        AddressType.CAS_1_APPROVED_PREMISES,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_1_APPROVED_PREMISES)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         LocalTime.of(15, 0),
@@ -145,9 +147,10 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         "Test City",
         null,
         "TS12 TST",
-        AddressType.CAS,
+        AddressType.CAS_2,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.CAS_2)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         LocalTime.of(15, 0),
@@ -186,6 +189,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
         AddressType.RESIDENTIAL,
       ),
     )
+    assertThat(result?.proposeAddressType).isEqualTo(AddressType.RESIDENTIAL)
     assertThat(result?.firstNightCurfewHours).isEqualTo(
       FirstNight(
         LocalTime.of(15, 0),
