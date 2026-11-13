@@ -61,8 +61,8 @@ class HdcStatusService(
     log.debug("Determining HDC status for hdced: {}, hdcStage: {}", hdced, hdcStage)
 
     return when {
-      hdced == null || licenceData.isNonRelease() -> HdcStatus.NOT_A_HDC_RELEASE
       hdcStage == null || hdcStage == HdcStage.ELIGIBILITY -> HdcStatus.NOT_STARTED
+      hdced == null || licenceData.isNonRelease() -> HdcStatus.NOT_A_HDC_RELEASE
       hdcStage == HdcStage.PROCESSING_RO -> HdcStatus.ELIGIBILITY_CHECKS_COMPLETE
       licenceData?.approval?.release?.decision == Decision.YES -> HdcStatus.APPROVED
       else -> HdcStatus.RISK_CHECKS_COMPLETE

@@ -251,7 +251,7 @@ class HdcStatusServiceTest {
     )
 
     // When
-    val result = service.determineHdcStatus(hdced, data, HdcStage.ELIGIBILITY)
+    val result = service.determineHdcStatus(hdced, data, HdcStage.PROCESSING_RO)
 
     // Then
     assertThat(result).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)

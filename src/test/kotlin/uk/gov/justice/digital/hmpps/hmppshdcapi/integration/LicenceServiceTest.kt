@@ -312,15 +312,15 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     assertThat(result.first()?.bookingId).isEqualTo(12345L)
     assertThat(result.first()?.status).isEqualTo(HdcStatus.APPROVED)
     assertThat(result.last()?.bookingId).isEqualTo(11111L)
-    assertThat(result.last()?.status).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
+    assertThat(result.last()?.status).isEqualTo(HdcStatus.NOT_STARTED)
   }
 
   @Test
   @Sql(
     "classpath:test_data/reset.sql",
     "classpath:test_data/hdc-licences.sql",
+    "classpath:test_data/hdc-licence-status-opt-out.sql",
   )
-  @Sql(statements = ["UPDATE licences SET licence = jsonb_set(licence, '{proposedAddress,optOut,decision}', '\"Yes\"') WHERE booking_id = 43210"])
   fun `Bulk HDC status reflects current opt out`() {
     prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(listOf(43210L))
 
@@ -339,8 +339,8 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
   @Sql(
     "classpath:test_data/reset.sql",
     "classpath:test_data/hdc-licences.sql",
+    "classpath:test_data/hdc-licence-status-postponed.sql",
   )
-  @Sql(statements = ["UPDATE licences SET licence = jsonb_set(licence, '{finalChecks}', '{\"postpone\":{\"decision\":\"Yes\"}}') WHERE booking_id = 43210"])
   fun `Bulk HDC status reflects opt in despite stale NOMIS opt out and postponement`() {
     prisonApiMockServer.getHdcStatuses(listOf(43210L to "OPT_OUT OTH"))
     prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(listOf(43210L))
