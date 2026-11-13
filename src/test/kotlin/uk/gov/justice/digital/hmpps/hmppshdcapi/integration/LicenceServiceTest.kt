@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.hmpps.hmppshdcapi.integration
 
+import com.github.tomakehurst.wiremock.client.WireMock.anyRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.groups.Tuple
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -25,13 +28,18 @@ import java.time.LocalTime
 
 class LicenceServiceTest : SqsIntegrationTestBase() {
 
+  @AfterEach
+  fun `should not call NOMIS to determine HDC status`() {
+    prisonApiMockServer.verify(0, anyRequestedFor(anyUrl()))
+  }
+
   @Test
   @Sql(
     "classpath:test_data/reset.sql",
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with an approved preferred address`() {
-    stubPrisonersAndHdc(12345L, "APPROVED")
+    stubPrisoners(12345L)
     val result = webTestClient.get()
       .uri("/licence/hdc/12345")
       .accept(MediaType.APPLICATION_JSON)
@@ -87,7 +95,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with an approved CAS2 address`() {
-    stubPrisonersAndHdc(43210L, "ELIGIBILITY")
+    stubPrisoners(43210L)
     val result = webTestClient.get()
       .uri("/licence/hdc/43210")
       .accept(MediaType.APPLICATION_JSON)
@@ -125,7 +133,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with cas2 address`() {
-    stubPrisonersAndHdc(98765L, "REJECTED")
+    stubPrisoners(98765L)
     val result = webTestClient.get()
       .uri("/licence/hdc/98765")
       .accept(MediaType.APPLICATION_JSON)
@@ -163,7 +171,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
     "classpath:test_data/hdc-licences.sql",
   )
   fun `Retrieve licence with preferred address`() {
-    stubPrisonersAndHdc(54321L, "OTHER")
+    stubPrisoners(54321L)
     val result = webTestClient.get()
       .uri("/licence/hdc/54321")
       .accept(MediaType.APPLICATION_JSON)
@@ -254,7 +262,6 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
   fun `Bulk HDC statuses returns statuses for all available booking ids`() {
     val requestBody = listOf(12345L, 54321L, 98765L)
 
-    prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED", 54321L to "OTHER", 98765L to "REJECTED"))
     prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(requestBody)
 
     val result = webTestClient.post()
@@ -270,9 +277,9 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
-    assertThat(result?.size).isEqualTo(3)
+    assertThat(result.size).isEqualTo(3)
 
-    val mapById = result!!.associateBy { it.bookingId }
+    val mapById = result.associateBy { it.bookingId }
     assertThat(mapById[12345L]?.status).isEqualTo(HdcStatus.APPROVED)
     assertThat(mapById[54321L]?.status).isEqualTo(HdcStatus.NOT_STARTED)
     assertThat(mapById[98765L]?.status).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
@@ -286,7 +293,6 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
   fun `Bulk HDC statuses should not omit booking ids with no licence data`() {
     val requestBody = listOf(12345L, 11111L)
 
-    prisonApiMockServer.getHdcStatuses(listOf(12345L to "APPROVED"))
     prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(listOf(requestBody.first()))
 
     val result = webTestClient.post()
@@ -302,11 +308,52 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       .returnResult().responseBody
 
     assertThat(result).isNotNull
-    assertThat(result?.size).isEqualTo(2)
-    assertThat(result?.first()?.bookingId).isEqualTo(12345L)
-    assertThat(result?.first()?.status).isEqualTo(HdcStatus.APPROVED)
-    assertThat(result?.last()?.bookingId).isEqualTo(11111L)
-    assertThat(result?.last()?.status).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
+    assertThat(result.size).isEqualTo(2)
+    assertThat(result.first()?.bookingId).isEqualTo(12345L)
+    assertThat(result.first()?.status).isEqualTo(HdcStatus.APPROVED)
+    assertThat(result.last()?.bookingId).isEqualTo(11111L)
+    assertThat(result.last()?.status).isEqualTo(HdcStatus.NOT_STARTED)
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-licences.sql",
+    "classpath:test_data/hdc-licence-status-opt-out.sql",
+  )
+  fun `Bulk HDC status reflects current opt out`() {
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(listOf(43210L))
+
+    webTestClient.post()
+      .uri("/licence/hdc/status")
+      .contentType(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .bodyValue(listOf(43210L))
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$[0].status").isEqualTo("NOT_A_HDC_RELEASE")
+  }
+
+  @Test
+  @Sql(
+    "classpath:test_data/reset.sql",
+    "classpath:test_data/hdc-licences.sql",
+    "classpath:test_data/hdc-licence-status-postponed.sql",
+  )
+  fun `Bulk HDC status reflects opt in despite stale NOMIS opt out and postponement`() {
+    prisonApiMockServer.getHdcStatuses(listOf(43210L to "OPT_OUT OTH"))
+    prisonerSearchMockServer.stubSearchPrisonersByBookingIdsList(listOf(43210L))
+
+    webTestClient.post()
+      .uri("/licence/hdc/status")
+      .contentType(MediaType.APPLICATION_JSON)
+      .headers(setAuthorisation(roles = listOf("ROLE_HDC_ADMIN")))
+      .bodyValue(listOf(43210L))
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$[0].status").isEqualTo("ELIGIBILITY_CHECKS_COMPLETE")
   }
 
   private companion object {
@@ -330,7 +377,7 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
       prisonApiMockServer.stop()
     }
 
-    private fun stubPrisonersAndHdc(bookingId: Long, approvalStatus: String) {
+    private fun stubPrisoners(bookingId: Long) {
       prisonerSearchMockServer.stubSearchPrisonersByBookingIds(
         listOf(
           Prisoner(
@@ -346,7 +393,6 @@ class LicenceServiceTest : SqsIntegrationTestBase() {
           Prisoner("A1234EE", "50", "MDI", "MDI", topupSupervisionExpiryDate = null, licenceExpiryDate = null, homeDetentionCurfewEligibilityDate = LocalDate.now().minusDays(2)),
         ),
       )
-      prisonApiMockServer.getHdcStatuses(listOf(bookingId to approvalStatus))
     }
   }
 }
