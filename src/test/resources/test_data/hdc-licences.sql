@@ -73,6 +73,11 @@ VALUES (1,
        -- Create the data for a HDC licence with a CAS2 address
        (2,
         '{
+                  "approval": {
+                    "release": {
+                      "decision": "No"
+                    }
+                  },
                   "eligibility": {
                     "crdTime": {
                       "decision": "No"
@@ -137,6 +142,11 @@ VALUES (1,
        -- Create the data for an approved preferred premises HDC licence
        (3,
         '{
+                  "approval": {
+                    "release": {
+                      "decision": "Yes"
+                    }
+                  },
                   "eligibility": {
                     "crdTime": {
                       "decision": "No"
@@ -198,7 +208,7 @@ VALUES (1,
                     }
                   }
                 }'::jsonb,
-        12345, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null, false),
+        12345, 'PROCESSING_CA', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'E01234F', null, false),
 
        -- Create the data for a CAS2 approved premises HDC licence
        (4,
@@ -266,4 +276,3 @@ VALUES (1,
        (5,
         null,
         22222, 'PROCESSING_RO', 1, '2021-08-06 15:06:37.188', 0, '1', '2', 'I12345J', null, false);
-
