@@ -1,10 +1,12 @@
 # hmpps-hdc-api
 [![repo standards badge](https://img.shields.io/badge/dynamic/json?color=blue&style=flat&logo=github&label=MoJ%20Compliant&query=%24.result&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-hdc-api)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-hdc-api "Link to report")
-[![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-hdc-api/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-hdc-api)
-[![Docker Repository on Quay](https://quay.io/repository/hmpps/hmpps-hdc-api/status "Docker Repository on Quay")](https://quay.io/repository/hmpps/hmpps-hdc-api)
+[![Pipeline](https://github.com/ministryofjustice/hmpps-hdc-api/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-hdc-api/actions/workflows/pipeline.yml)
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hdc-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html?configUrl=/v3/api-docs)
 
-This is an API for accessing HDC data.
+This is an API for accessing HDC (Home Detention Curfew) data. It is a Kotlin / Spring Boot service (Java 25) backed by PostgreSQL,
+and also consumes domain events from SQS.
+
+## Database
 
 Currently, the main DB definition exists in the [licences](https://github.com/ministryofjustice/licences) repo and the schema is managed by knex migrations.
 Any schema changes need to be applied to that repo. 
@@ -16,29 +18,44 @@ The aim is to make this project manage migrations in the mid/long term.
 
 ## Running locally
 
-There is a `run-local.sh` script that can be run to start and stop docker containers and build and run the application.
+Prerequisites: Docker, a Java 25 JDK, and `kubectl` + `jq` configured with access to the `licences-dev` namespace
+(client credentials are read from the `hmpps-hdc-api` k8s secret).
 
-There are currently 3 modes:
+A `Makefile` starts and stops the docker containers and builds and runs the application (see its header for details).
 
-1. `./run-local.sh --start-docker` - starts docker images, waits for them to start and then runs the app against a standalone licences DB 
-2. `./run-local.sh` - waits/checks that the requisite docker images exist and then runs the app against a standalone licences DB
-3. `./run-local.sh --connect-db` - runs the app against the frontend local licences DB docker image (requires localstack running) 
+* `make run` - starts any missing containers, waits for them to be ready and then runs the app against a standalone licences DB
+* `make run-skip-docker` - runs the app only, without touching docker
+* `make run-skip-docker MODE=db` - runs the app against the frontend local licences DB docker image (requires localstack running)
+* `make run-skip-docker MODE=t3` - runs the app against the dev DB (port-forward needs to be running)
+* `make stop` / `make clean` / `make prune` - stop containers / also remove volumes and gradle build output / also remove images
+* `make update` - updates the gradle wrapper and dependency versions
+* Add `DEBUG=1` to run with `--debug-jvm` (this also enables LocalStack debug logging)
 
-### Linting
+The app runs on port 8089.
+
+## Testing
+
+* `./gradlew test` - unit tests
+* `./gradlew integrationTest` - integration tests (everything in the `integration` package); requires Docker as Testcontainers starts PostgreSQL and LocalStack
+* `./gradlew test --tests "<fully qualified class>"` runs a single test class (use `integrationTest` for integration tests)
+
+## Linting
 
 To locate any linting issues
 
-`$ ./gradlew ktlintcheck`
+`$ ./gradlew ktlintCheck`
 
 To apply some fixes following linting
 
-`$ ./gradlew ktlintformat` 
+`$ ./gradlew ktlintFormat`
 
-### Static Code Analysis
+To run ktlint and detekt automatically before each commit, install the git hook with `./gradlew installLocalGitHook`.
+
+## Static code analysis
 
 We use a tool called Detekt locally to provide code smell
 analysis for the project. A baseline currently exists with all the existing
-issues at `detekt-baseline.yml`.
+issues at `detekt-baseline.xml`.
 
 To generate/re-generate the baseline:
 
@@ -51,7 +68,7 @@ To run Detekt:
 Detekt provides some helpful reports in HTML as well which can be opened in any
 browser. These are available at `build/reports/detekt`.
 
-### Re-generate the schema
+## Re-generating the schema
 
 In DBeaver or whichever database tool you are using, establish a database connection then go to the navigator panel on the left. 
 Go into `Tables`, select the `Tables` folder and all tables within it. Then right click and Choose `Generate SQL` >> `DDL`. Make 
@@ -64,7 +81,7 @@ sure you select the following options:
 
 Then `Copy` and paste the generated SQL into `src/main/resources/migration/common/V01__init.sql`. Compare the commit changes in 
 the file to make sure all looks as expected and there are just the additions required made. Also make sure there are no passwords 
-in there before you commit. Replaces all of these passwords with `licences`.
+in there before you commit. Replace all of these passwords with `licences`.
 
 ## Subject access requests
 

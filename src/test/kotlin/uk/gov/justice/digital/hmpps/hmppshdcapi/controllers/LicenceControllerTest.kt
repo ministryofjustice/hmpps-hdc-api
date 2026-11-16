@@ -126,6 +126,7 @@ class LicenceControllerTest {
         ),
       ),
       status = HdcStatus.APPROVED,
+      proposeAddressType = AddressType.RESIDENTIAL,
     )
   }
 }
