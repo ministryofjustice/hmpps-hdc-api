@@ -151,7 +151,10 @@ class HdcStatusServiceTest {
   fun `should handle exclusion decision`(decision: String?, expected: HdcStatus) {
     // Given
     val data = licenceData.copy(
-      eligibility = Eligibility(excluded = Excluded(decision.toDecision())),
+      eligibility = Eligibility(
+        excluded = Excluded(decision.toDecision()),
+        suitability = Suitability(Decision.NO),
+      ),
     )
 
     // When
@@ -182,6 +185,7 @@ class HdcStatusServiceTest {
     val data = licenceData.copy(
       eligibility = Eligibility(
         crdTime = CrdTime(decision.toDecision(), dmApproval.toDecision()),
+        suitability = Suitability(Decision.NO),
       ),
     )
 
@@ -194,25 +198,25 @@ class HdcStatusServiceTest {
 
   @ParameterizedTest
   @CsvSource(
-    "Yes, Yes, ELIGIBILITY_CHECKS_COMPLETE",
-    "Yes, No, NOT_A_HDC_RELEASE",
-    "Yes, , ELIGIBILITY_CHECKS_COMPLETE",
-    "No, Yes, ELIGIBILITY_CHECKS_COMPLETE",
     "No, No, ELIGIBILITY_CHECKS_COMPLETE",
+    "No, Yes, ELIGIBILITY_CHECKS_COMPLETE",
     "No, , ELIGIBILITY_CHECKS_COMPLETE",
+    "Yes, No, NOT_A_HDC_RELEASE",
+    "Yes, Yes, ELIGIBILITY_CHECKS_COMPLETE",
+    "Yes, , NOT_A_HDC_RELEASE",
+    ", , NOT_A_HDC_RELEASE",
     ", Yes, ELIGIBILITY_CHECKS_COMPLETE",
-    ", No, ELIGIBILITY_CHECKS_COMPLETE",
-    ", , ELIGIBILITY_CHECKS_COMPLETE",
+    ", No, NOT_A_HDC_RELEASE",
   )
-  fun `should handle presumptive unsuitability and exceptional circumstances`(
-    decision: String?,
+  fun `should handle suitability and exceptional circumstances decisions`(
+    suitability: String?,
     exceptionalCircumstances: String?,
     expected: HdcStatus,
   ) {
     // Given
     val data = licenceData.copy(
       eligibility = Eligibility(
-        suitability = Suitability(decision.toDecision()),
+        suitability = Suitability(suitability.toDecision()),
         exceptionalCircumstances = DecisionMade(exceptionalCircumstances.toDecision()),
       ),
     )
@@ -225,7 +229,7 @@ class HdcStatusServiceTest {
   }
 
   @Test
-  fun `should use stage based status when exceptional circumstances section is missing`() {
+  fun `should return non release when exceptional circumstances decision is missing`() {
     // Given
     val data = licenceData.copy(
       eligibility = Eligibility(suitability = Suitability(Decision.YES)),
@@ -235,7 +239,19 @@ class HdcStatusServiceTest {
     val result = service.determineHdcStatus(hdced, data, HdcStage.PROCESSING_RO)
 
     // Then
-    assertThat(result).isEqualTo(HdcStatus.ELIGIBILITY_CHECKS_COMPLETE)
+    assertThat(result).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
+  }
+
+  @Test
+  fun `should return non release when suitability and exceptional circumstances are missing`() {
+    // Given
+    val data = licenceData.copy(eligibility = Eligibility())
+
+    // When
+    val result = service.determineHdcStatus(hdced, data, HdcStage.PROCESSING_RO)
+
+    // Then
+    assertThat(result).isEqualTo(HdcStatus.NOT_A_HDC_RELEASE)
   }
 
   @Test

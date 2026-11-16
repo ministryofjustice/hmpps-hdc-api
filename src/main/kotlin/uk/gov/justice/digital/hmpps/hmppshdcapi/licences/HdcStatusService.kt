@@ -20,7 +20,7 @@ class HdcStatusService(
 
   private fun Eligibility.isNonRelease(): Boolean = excluded?.decision == Decision.YES ||
     (crdTime?.decision == Decision.YES && crdTime.dmApproval == Decision.NO) ||
-    (suitability?.decision == Decision.YES && exceptionalCircumstances?.decision == Decision.NO)
+    !(suitability?.decision == Decision.NO || exceptionalCircumstances?.decision == Decision.YES)
 
   fun getForBooking(bookingId: Long, licence: Licence): HdcStatus = getForBookingIds(listOf(bookingId), listOf(licence)).first().status
 
