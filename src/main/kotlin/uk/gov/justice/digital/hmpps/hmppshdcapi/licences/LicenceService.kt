@@ -49,6 +49,7 @@ class LicenceService(
       // curfewHours referred to as curfewTimes in CVL as going forward a more suitable name and had to distinguish between the two different curfew data formats
       curfewTimes = curfewTimes,
       status = hdcStatusService.getForBooking(bookingId, licence),
+      proposeAddressType = getProposeAddressType(curfew, cas2Referral, proposedAddress),
     )
   }
 
@@ -109,15 +110,15 @@ class LicenceService(
   }
 
   fun getAddress(curfew: Curfew?, cas2Referral: CurrentCas2Referral?, proposedAddress: ProposedAddress?, licenceId: Long?): ModelCurfewAddress? {
-    val isCurfewApprovedPremisesRequired = curfew?.approvedPremises?.required == Decision.YES
-    val isCas2ApprovedPremisesRequired = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
+    val isApprovedPremisesRequiredWasCurfew = curfew?.approvedPremises?.required == Decision.YES
+    val isApprovedPremisesRequiredWasCas2 = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
     val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
     val isCas2Accepted = cas2Referral?.bassOffer?.bassAccepted == OfferAccepted.YES
 
     val address = when {
-      isCurfewApprovedPremisesRequired && !isCas2ApprovedPremisesRequired -> curfew.let { it.approvedPremisesAddress to AddressType.CAS }
-      isCas2ApprovedPremisesRequired -> cas2Referral.let { it.approvedPremisesAddress to AddressType.CAS }
-      isCas2Requested && isCas2Accepted -> cas2Referral.let { it.bassOffer to AddressType.CAS }
+      isApprovedPremisesRequiredWasCurfew && !isApprovedPremisesRequiredWasCas2 -> curfew.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES
+      isApprovedPremisesRequiredWasCas2 -> cas2Referral.approvedPremisesAddress to AddressType.CAS_1_APPROVED_PREMISES
+      isCas2Requested && isCas2Accepted -> cas2Referral.bassOffer to AddressType.CAS_2
       // if proposedAddress is null then returns a null pair
       else -> proposedAddress?.let { it.curfewAddress to AddressType.RESIDENTIAL }
     }
@@ -149,6 +150,18 @@ class LicenceService(
       missingFields += "postCode"
     }
     return missingFields
+  }
+
+  fun getProposeAddressType(curfew: Curfew?, cas2Referral: CurrentCas2Referral?, proposedAddress: ProposedAddress?): AddressType? {
+    val isApprovedPremisesRequiredWasCurfew = curfew?.approvedPremises?.required == Decision.YES
+    val isApprovedPremisesRequiredWasCas2 = cas2Referral?.bassAreaCheck?.approvedPremisesRequiredYesNo == Decision.YES
+    val isCas2Requested = cas2Referral?.bassRequest?.bassRequested == Decision.YES
+    val isProposedAddress = proposedAddress?.addressProposed?.decision == Decision.YES
+
+    if (isApprovedPremisesRequiredWasCurfew || isApprovedPremisesRequiredWasCas2) return AddressType.CAS_1_APPROVED_PREMISES
+    if (isCas2Requested) return AddressType.CAS_2
+    if (isProposedAddress) return AddressType.RESIDENTIAL
+    return null
   }
 
   private companion object {
