@@ -8,4 +8,6 @@ enum class HdcCvlEventType {
   REFUSE,
   ADDRESS_WITHDRAWN,
   RISK_CHECKS_SUBMITTED,
+  ELIGIBLE,
+  INELIGIBLE,
 }
