@@ -139,6 +139,51 @@ tasks {
     }
   }
 
+  val sarSnapshotFiles = listOf(
+    "sar-api-response.json",
+    "sar-generated-report.html",
+    "entity-schema.json",
+  )
+
+  register<Test>("generateSarSnapshots") {
+    description =
+      "INTERNAL: only writes raw *.log files to src/test/resources (does not update snapshots). Run updateSarSnapshots instead"
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnitPlatform()
+    filter {
+      includeTestsMatching("*SubjectAccessRequestIntegrationTest*")
+    }
+    environment("SAR_GENERATE_ACTUAL", "true")
+    outputs.upToDateWhen { false }
+  }
+
+  register<Copy>("updateSarSnapshots") {
+    description =
+      "Generates and copies updated SAR snapshot files into src/test/resources/sar (review the diff before committing)"
+    group = "verification"
+    dependsOn("generateSarSnapshots")
+    from("$projectDir/src/test/resources") {
+      include(sarSnapshotFiles.map { "$it.log" })
+    }
+    into("$projectDir/src/test/resources/sar")
+    rename { it.removeSuffix(".log") }
+    doLast {
+      delete(sarSnapshotFiles.map { file("$projectDir/src/test/resources/$it.log") })
+      // The generator writes minified JSON; pretty-print (2-space indent) so snapshot diffs stay reviewable
+      sarSnapshotFiles.filter { it.endsWith(".json") }.forEach { name ->
+        val snapshot = file("$projectDir/src/test/resources/sar/$name")
+        val pretty = groovy.json.JsonOutput.prettyPrint(snapshot.readText())
+          .replace(Regex("([{\\[])\\s*\n\\s*([}\\]])"), "$1$2")
+        snapshot.writeText(pretty.lines().joinToString("\n") { line ->
+          val indent = line.length - line.trimStart().length
+          " ".repeat(indent / 2) + line.trimStart()
+        })
+      }
+    }
+  }
+
   register<Copy>("installLocalGitHook") {
     from(File(rootProject.rootDir, ".scripts/pre-commit"))
     into(File(rootProject.rootDir, ".git/hooks"))
